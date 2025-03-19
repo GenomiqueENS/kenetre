@@ -2,8 +2,8 @@
  *                  Aozan development code
  *
  * This code may be freely distributed and modified under the
- * terms of the GNU General Public License version 3 or later 
- * and CeCILL. This should be distributed with the code. If you 
+ * terms of the GNU General Public License version 3 or later
+ * and CeCILL. This should be distributed with the code. If you
  * do not have a copy, see:
  *
  *      http://www.gnu.org/licenses/gpl-3.0-standalone.html
@@ -26,19 +26,18 @@ package fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io;
 import static java.nio.charset.Charset.defaultCharset;
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheet;
+import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheetUtils;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
-import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheet;
-import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheetUtils;
-
 /**
  * This class define a writer for Bcl2fastq CSV samplesheet files.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
@@ -54,19 +53,17 @@ public class SampleSheetCSVWriter implements SampleSheetWriter, AutoCloseable {
     final String text;
 
     switch (this.version) {
+      case 1:
+        text = SampleSheetUtils.toSampleSheetV1CSV(samplesheet);
 
-    case 1:
-      text = SampleSheetUtils.toSampleSheetV1CSV(samplesheet);
+        break;
 
-      break;
+      case 2:
+        text = SampleSheetUtils.toSampleSheetV2CSV(samplesheet);
+        break;
 
-    case 2:
-      text = SampleSheetUtils.toSampleSheetV2CSV(samplesheet);
-      break;
-
-    default:
-      throw new IOException(
-          "Unknown bcl2fastq samplesheet format version: " + this.version);
+      default:
+        throw new IOException("Unknown bcl2fastq samplesheet format version: " + this.version);
     }
 
     this.writer.write(this.addCommas ? addMissingComas(text) : text);
@@ -74,6 +71,7 @@ public class SampleSheetCSVWriter implements SampleSheetWriter, AutoCloseable {
 
   /**
    * Set the version of the samplesheet file to read.
+   *
    * @param version the version of the samplesheet file to read
    */
   public void setVersion(final int version) {
@@ -83,6 +81,7 @@ public class SampleSheetCSVWriter implements SampleSheetWriter, AutoCloseable {
 
   /**
    * Get the version of the samplesheet file to read.
+   *
    * @return the version of the samplesheet file to read
    */
   public int getVersion() {
@@ -92,6 +91,7 @@ public class SampleSheetCSVWriter implements SampleSheetWriter, AutoCloseable {
 
   /**
    * Add missing commas, to get a similar output as a spreadsheet CSV export.
+   *
    * @param addCommas if true additional commas will be added to end of lines
    */
   public void addMissingCommas(boolean addCommas) {
@@ -154,6 +154,7 @@ public class SampleSheetCSVWriter implements SampleSheetWriter, AutoCloseable {
 
   /**
    * Public constructor.
+   *
    * @param writer Writer to use
    */
   public SampleSheetCSVWriter(final Writer writer) {
@@ -167,6 +168,7 @@ public class SampleSheetCSVWriter implements SampleSheetWriter, AutoCloseable {
 
   /**
    * Public constructor.
+   *
    * @param os OutputStream to use
    */
   public SampleSheetCSVWriter(final OutputStream os) {
@@ -176,6 +178,7 @@ public class SampleSheetCSVWriter implements SampleSheetWriter, AutoCloseable {
 
   /**
    * Public constructor.
+   *
    * @param outputFile file to use
    * @throws IOException if an error occurs while creating the file
    */
@@ -186,6 +189,7 @@ public class SampleSheetCSVWriter implements SampleSheetWriter, AutoCloseable {
 
   /**
    * Public constructor.
+   *
    * @param outputFilename name of the file to use
    * @throws IOException if an error occurs while creating the file
    */
@@ -193,5 +197,4 @@ public class SampleSheetCSVWriter implements SampleSheetWriter, AutoCloseable {
 
     this.writer = new FileWriter(outputFilename, defaultCharset());
   }
-
 }

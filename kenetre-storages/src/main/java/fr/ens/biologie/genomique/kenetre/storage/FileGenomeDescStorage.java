@@ -26,12 +26,12 @@ package fr.ens.biologie.genomique.kenetre.storage;
 
 import static java.util.Objects.requireNonNull;
 
-import java.io.IOException;
-
 import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
+import java.io.IOException;
 
 /**
  * This class define a basic GenomeDescStorage based on an index file.
+ *
  * @since 1.2
  * @author Laurent Jourdren
  */
@@ -55,13 +55,13 @@ public class FileGenomeDescStorage extends AbstractFileGenomeDescStorage {
 
   /**
    * Create a GenomeDescStorage
+   *
    * @param dir the path of the genome descriptions storage
    * @param logger logger to use
-   * @return a GenomeDescStorage object if the path contains an index storage or
-   *         null if no index storage is found
+   * @return a GenomeDescStorage object if the path contains an index storage or null if no index
+   *     storage is found
    */
-  public static GenomeDescStorage getInstance(final String dir,
-      final GenericLogger logger) {
+  public static GenomeDescStorage getInstance(final String dir, final GenericLogger logger) {
 
     requireNonNull(dir);
 
@@ -78,13 +78,12 @@ public class FileGenomeDescStorage extends AbstractFileGenomeDescStorage {
 
   /**
    * Private constructor.
+   *
    * @param dir the path of the genome descriptions storage
    * @param logger logger to use
    * @throws IOException
    */
-  private FileGenomeDescStorage(DataPath dir, GenericLogger logger)
-      throws IOException {
+  private FileGenomeDescStorage(DataPath dir, GenericLogger logger) throws IOException {
     super(dir, logger);
   }
-
 }

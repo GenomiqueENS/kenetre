@@ -2,24 +2,23 @@ package fr.ens.biologie.genomique.kenetre.util.process;
 
 import static java.util.Objects.requireNonNull;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.transport.DockerHttpClient;
 import com.github.dockerjava.zerodep.ZerodepDockerHttpClient;
-
 import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
 import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
+import java.io.IOException;
+import java.net.URI;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This class define a Docker client using the DockerClient client library.
+ *
  * @author Laurent Jourdren
  * @since 2.6
  */
@@ -34,46 +33,42 @@ public class DockerJavaDockerClient implements DockerClient {
     requireNonNull(dockerConnectionURI);
 
     synchronized (this) {
-
       if (this.client != null) {
         return;
       }
 
       synchronized (this) {
-
         DockerClientConfig standard =
             DefaultDockerClientConfig.createDefaultConfigBuilder().build();
 
-        DockerHttpClient httpClient = new ZerodepDockerHttpClient.Builder()
-            .dockerHost(dockerConnectionURI).build();
+        DockerHttpClient httpClient =
+            new ZerodepDockerHttpClient.Builder().dockerHost(dockerConnectionURI).build();
 
         this.client = DockerClientImpl.getInstance(standard, httpClient);
 
         if (this.client == null) {
-          throw new IOException(
-              "Unable to connect to Docker deamon: " + dockerConnectionURI);
+          throw new IOException("Unable to connect to Docker deamon: " + dockerConnectionURI);
         }
       }
     }
   }
 
   @Override
-  public DockerImageInstance createConnection(String dockerImage)
-      throws IOException {
+  public DockerImageInstance createConnection(String dockerImage) throws IOException {
 
     return createConnection(dockerImage, false);
   }
 
   @Override
-  public DockerImageInstance createConnection(String dockerImage,
-      boolean mountFileIndirections) throws IOException {
+  public DockerImageInstance createConnection(String dockerImage, boolean mountFileIndirections)
+      throws IOException {
 
     if (client == null) {
       throw new IllegalStateException("Docker client not initialized");
     }
 
-    return new DockerJavaDockerImageInstance(this.client, dockerImage,
-        mountFileIndirections, this.logger);
+    return new DockerJavaDockerImageInstance(
+        this.client, dockerImage, mountFileIndirections, this.logger);
   }
 
   @Override
@@ -103,9 +98,7 @@ public class DockerJavaDockerClient implements DockerClient {
   // Constructors
   //
 
-  /**
-   * Constructor.
-   */
+  /** Constructor. */
   public DockerJavaDockerClient() {
 
     this(null);
@@ -113,11 +106,11 @@ public class DockerJavaDockerClient implements DockerClient {
 
   /**
    * Constructor.
+   *
    * @param logger logger to use
    */
   public DockerJavaDockerClient(GenericLogger logger) {
 
     this.logger = logger == null ? new DummyLogger() : logger;
   }
-
 }

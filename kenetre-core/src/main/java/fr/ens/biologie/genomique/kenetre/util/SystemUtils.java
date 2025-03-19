@@ -24,6 +24,7 @@
 
 package fr.ens.biologie.genomique.kenetre.util;
 
+import com.google.common.base.Splitter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -33,20 +34,19 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import com.google.common.base.Splitter;
-
 /**
  * This class define some utility methods for the underlying operating system.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
 public final class SystemUtils {
 
-  private static final String HADOOP_CLASS_TO_TEST =
-      "org.apache.hadoop.io.Text";
+  private static final String HADOOP_CLASS_TO_TEST = "org.apache.hadoop.io.Text";
 
   /**
    * Get the name of the host.
+   *
    * @return The name of the host
    */
   public static String getHostName() {
@@ -64,6 +64,7 @@ public final class SystemUtils {
 
   /**
    * Get IP of the host
+   *
    * @return The IP of the host in textual form
    */
   public static String getIPAddr() {
@@ -81,6 +82,7 @@ public final class SystemUtils {
 
   /**
    * Test if the system is Mac OS X.
+   *
    * @return true if the system is Mac OS X
    */
   public static boolean isMacOsX() {
@@ -89,6 +91,7 @@ public final class SystemUtils {
 
   /**
    * Test if the system is Unix.
+   *
    * @return true if the operating system is Linux.
    */
   public static boolean isLinux() {
@@ -98,6 +101,7 @@ public final class SystemUtils {
 
   /**
    * Test if the system is Windows.
+   *
    * @return true if the operating system is Windows
    */
   public static boolean isWindows() {
@@ -107,6 +111,7 @@ public final class SystemUtils {
 
   /**
    * Test if the system is an *nix.
+   *
    * @return true if the operating system is an *nix
    */
   public static boolean isUnix() {
@@ -116,6 +121,7 @@ public final class SystemUtils {
 
   /**
    * Test if a class is present is the classpath
+   *
    * @param className the class to test
    * @return true if the class is present in the classpath
    */
@@ -137,6 +143,7 @@ public final class SystemUtils {
 
   /**
    * Test if Eoulsan is in Hadoop mode
+   *
    * @return true if Eoulsan is in Hadoop mode
    */
   public static boolean isHadoop() {
@@ -146,6 +153,7 @@ public final class SystemUtils {
 
   /**
    * Get the Java version.
+   *
    * @return the java version
    */
   public static int getJavaVersion() {
@@ -167,13 +175,13 @@ public final class SystemUtils {
 
   /**
    * Get user UID.
+   *
    * @return the user UID or -1 if UID cannot be found
    */
   public static int uid() {
 
     try {
-      return Integer
-          .parseInt(execToString("/usr/bin/id", "-u").replace("\n", "").trim());
+      return Integer.parseInt(execToString("/usr/bin/id", "-u").replace("\n", "").trim());
     } catch (NumberFormatException | IOException e) {
       return -1;
     }
@@ -181,13 +189,13 @@ public final class SystemUtils {
 
   /**
    * Get user GID.
+   *
    * @return the user GID or -1 if GID cannot be found
    */
   public static int gid() {
 
     try {
-      return Integer
-          .parseInt(execToString("/usr/bin/id", "-g").replace("\n", "").trim());
+      return Integer.parseInt(execToString("/usr/bin/id", "-g").replace("\n", "").trim());
     } catch (NumberFormatException | IOException e) {
       return -1;
     }
@@ -199,6 +207,7 @@ public final class SystemUtils {
 
   /**
    * Execute a system command and return the output.
+   *
    * @param args the argument of the command line
    * @return a String with the stdout of the command
    * @throws IOException if an error occurs while executing the command
@@ -208,8 +217,7 @@ public final class SystemUtils {
     ProcessBuilder pb = new ProcessBuilder(args);
     Process p = pb.start();
 
-    try (BufferedReader reader =
-        new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
 
       final StringBuilder result = new StringBuilder();
       String line = null;
@@ -227,9 +235,10 @@ public final class SystemUtils {
 
   /**
    * Search an executable in the system PATH.
+   *
    * @param executableName the name of the interpreter
-   * @return a File with the interpreter path or null if the executable path has
-   *         not been defined in the system PATH
+   * @return a File with the interpreter path or null if the executable path has not been defined in
+   *     the system PATH
    */
   public static File searchExecutableInPATH(final String executableName) {
 
@@ -252,22 +261,21 @@ public final class SystemUtils {
       if (dir.isDirectory() && file.exists() && file.canExecute()) {
         return file;
       }
-
     }
 
     return null;
   }
 
   /**
-   * Check if an internet connection is active by opening a socket on a distant
-   * server.
+   * Check if an internet connection is active by opening a socket on a distant server.
+   *
    * @param hostname server host name
    * @param port server port
    * @param timeout timeout in milliseconds
    * @return true if the host is active
    */
-  public static boolean isActiveConnection(final String hostname,
-      final int port, final int timeout) {
+  public static boolean isActiveConnection(
+      final String hostname, final int port, final int timeout) {
 
     try {
       try (Socket soc = new Socket()) {
@@ -277,14 +285,11 @@ public final class SystemUtils {
     } catch (IOException ex) {
       return false;
     }
-
   }
 
   //
   // Private constructor
   //
 
-  private SystemUtils() {
-  }
-
+  private SystemUtils() {}
 }

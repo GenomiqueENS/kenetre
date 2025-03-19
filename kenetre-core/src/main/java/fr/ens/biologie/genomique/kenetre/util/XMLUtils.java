@@ -26,7 +26,6 @@ package fr.ens.biologie.genomique.kenetre.util;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -35,6 +34,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * This class define utility methods for parsing XML.
+ *
  * @since 1.1
  * @author Laurent Jourdren
  */
@@ -46,6 +46,7 @@ public final class XMLUtils {
 
   /**
    * Get a list of the attribute names of an element.
+   *
    * @param e Element to use
    * @return a list with all the names of the attributes of the node
    */
@@ -71,12 +72,12 @@ public final class XMLUtils {
 
   /**
    * Get the value of an attribute.
+   *
    * @param e Element to use
    * @param attributeName name of the attribute
    * @return the value of the attribute
    */
-  public static String getAttributeValue(final Element e,
-      final String attributeName) {
+  public static String getAttributeValue(final Element e, final String attributeName) {
 
     if (e == null || attributeName == null) {
       return null;
@@ -87,12 +88,13 @@ public final class XMLUtils {
 
   /**
    * Get the list of all the elements of a parent element.
+   *
    * @param parentElement the parent element
    * @param elementName the name of the element
    * @return the list of the elements
    */
-  public static List<Element> getElementsByTagName(final Element parentElement,
-      final String elementName) {
+  public static List<Element> getElementsByTagName(
+      final Element parentElement, final String elementName) {
 
     if (elementName == null || parentElement == null) {
       return null;
@@ -119,12 +121,13 @@ public final class XMLUtils {
 
   /**
    * Get the list of all the first level elements of a document.
+   *
    * @param document the document object
    * @param elementName the name of the element
    * @return the list of the elements
    */
-  public static List<Element> getElementsByTagName(final Document document,
-      final String elementName) {
+  public static List<Element> getElementsByTagName(
+      final Document document, final String elementName) {
 
     if (elementName == null || document == null) {
       return null;
@@ -151,12 +154,12 @@ public final class XMLUtils {
 
   /**
    * Get the value of a tag.
+   *
    * @param parentElement the tag element
    * @param elementName name of the tag
    * @return the value of the tag
    */
-  public static String getTagValue(final Element parentElement,
-      final String elementName) {
+  public static String getTagValue(final Element parentElement, final String elementName) {
 
     if (parentElement == null || elementName == null) {
       return null;
@@ -164,8 +167,7 @@ public final class XMLUtils {
 
     String result = null;
 
-    for (Element e : XMLUtils.getElementsByTagName(parentElement,
-        elementName)) {
+    for (Element e : XMLUtils.getElementsByTagName(parentElement, elementName)) {
       result = e.getTextContent();
     }
 
@@ -174,12 +176,12 @@ public final class XMLUtils {
 
   /**
    * Get the values of a tag.
+   *
    * @param parentElement the tag element
    * @param elementName name of the tag
    * @return a list of string with the values of the tag
    */
-  public static List<String> getTagValues(final Element parentElement,
-      final String elementName) {
+  public static List<String> getTagValues(final Element parentElement, final String elementName) {
 
     if (parentElement == null || elementName == null) {
       return null;
@@ -187,8 +189,7 @@ public final class XMLUtils {
 
     List<String> result = new ArrayList<>();
 
-    for (Element e : XMLUtils.getElementsByTagName(parentElement,
-        elementName)) {
+    for (Element e : XMLUtils.getElementsByTagName(parentElement, elementName)) {
       result.add(e.getTextContent());
     }
 
@@ -197,17 +198,19 @@ public final class XMLUtils {
 
   /**
    * Add an element to a parent element with its value.
+   *
    * @param doc DOM document object
    * @param parentElement parent element
    * @param elementName name of the element
    * @param value text of the element
    */
-  public static void addTagValue(final Document doc,
-      final Element parentElement, final String elementName,
+  public static void addTagValue(
+      final Document doc,
+      final Element parentElement,
+      final String elementName,
       final String value) {
 
-    if (doc == null
-        || parentElement == null || elementName == null || value == null) {
+    if (doc == null || parentElement == null || elementName == null || value == null) {
       return;
     }
 
@@ -218,12 +221,12 @@ public final class XMLUtils {
 
   /**
    * Checks if is element exists by tag name.
+   *
    * @param element the element
    * @param tagName the tag name
    * @return true, if is element exists by tag name
    */
-  public static boolean isElementExistsByTagName(final Element element,
-      final String tagName) {
+  public static boolean isElementExistsByTagName(final Element element, final String tagName) {
 
     if (element == null || tagName == null || tagName.isEmpty()) {
       return false;

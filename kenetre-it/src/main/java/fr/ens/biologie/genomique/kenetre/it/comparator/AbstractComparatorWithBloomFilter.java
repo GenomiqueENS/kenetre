@@ -25,6 +25,8 @@ package fr.ens.biologie.genomique.kenetre.it.comparator;
 
 import static fr.ens.biologie.genomique.kenetre.io.CompressionType.getCompressionTypeByFilename;
 
+import fr.ens.biologie.genomique.eoulsan.util.EnhancedBloomFilter;
+import fr.ens.biologie.genomique.kenetre.io.CompressionType;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,16 +35,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
-import fr.ens.biologie.genomique.eoulsan.util.EnhancedBloomFilter;
-import fr.ens.biologie.genomique.kenetre.io.CompressionType;
-
 /**
  * This abstract class define methods to compare files with use BloomFilter.
+ *
  * @since 2.0
  * @author Sandrine Perrin
  */
-public abstract class AbstractComparatorWithBloomFilter
-    extends AbstractComparator {
+public abstract class AbstractComparatorWithBloomFilter extends AbstractComparator {
 
   // Limited create serialize bloomfilter file for size file inferior to
   // size of serialize bloomfilter file 27369839 bytes with default parameters
@@ -53,8 +52,7 @@ public abstract class AbstractComparatorWithBloomFilter
   private boolean useSerializeFile = false;
 
   @Override
-  public boolean compareFiles(final File fileA, final File fileB)
-      throws IOException {
+  public boolean compareFiles(final File fileA, final File fileB) throws IOException {
 
     // Check input files
     if (!checkFiles(fileA, fileB) && checkFileSize()) {
@@ -68,49 +66,49 @@ public abstract class AbstractComparatorWithBloomFilter
 
     try (InputStream isB = new FileInputStream(fileB)) {
 
-      return compareFiles(getBloomFilter(fileA),
-          getCompressionTypeByFilename(fileB.getAbsolutePath())
-              .createInputStream(isB));
+      return compareFiles(
+          getBloomFilter(fileA),
+          getCompressionTypeByFilename(fileB.getAbsolutePath()).createInputStream(isB));
     }
   }
 
   @Override
-  public boolean compareFiles(final InputStream isA, final InputStream isB)
-      throws IOException {
+  public boolean compareFiles(final InputStream isA, final InputStream isB) throws IOException {
     return compareFiles(buildBloomFilter(isA), isB);
   }
 
   /**
    * Compare two files no ordered, check if they are the same contents.
+   *
    * @param filter from BloomFilterUtils represented the first file
    * @param is the path to the second file,
    * @return boolean true if files are same.
    * @throws IOException if an error occurs while comparing the files.
    */
-  abstract public boolean compareFiles(EnhancedBloomFilter filter,
-      InputStream is) throws IOException;
+  public abstract boolean compareFiles(EnhancedBloomFilter filter, InputStream is)
+      throws IOException;
 
   /**
    * Initialize BloomFilter with the expected number of elements.
+   *
    * @param expectedNumberOfElements expected number of elements
    * @return an initialized Bloom filter
    */
-  protected static EnhancedBloomFilter initBloomFilter(
-      final int expectedNumberOfElements) {
+  protected static EnhancedBloomFilter initBloomFilter(final int expectedNumberOfElements) {
 
     return new EnhancedBloomFilter(expectedNumberOfElements);
   }
 
   /**
-   * In case Serialization is asked, check if the file.ser exists: true retrieve
-   * the bloom filter else create the filter and file.Ser corresponding.
+   * In case Serialization is asked, check if the file.ser exists: true retrieve the bloom filter
+   * else create the filter and file.Ser corresponding.
+   *
    * @param file source to create bloom filter
    * @return bloomFilter completed with the file
-   * @throws IOException if an error occurs while creating the Bloom filter
-   *           object from the serialized file
+   * @throws IOException if an error occurs while creating the Bloom filter object from the
+   *     serialized file
    */
-  public EnhancedBloomFilter getBloomFilter(final File file)
-      throws IOException {
+  public EnhancedBloomFilter getBloomFilter(final File file) throws IOException {
 
     final File bloomFilterSer = new File(file.getAbsolutePath() + ".ser");
 
@@ -119,18 +117,15 @@ public abstract class AbstractComparatorWithBloomFilter
       return EnhancedBloomFilter.deserializationBloomFilter(bloomFilterSer);
     }
 
-    final CompressionType zType =
-        getCompressionTypeByFilename(file.getAbsolutePath());
+    final CompressionType zType = getCompressionTypeByFilename(file.getAbsolutePath());
 
     // Create new filter
     try (InputStream is = new FileInputStream(file)) {
-      final EnhancedBloomFilter bloomFilter =
-          buildBloomFilter(zType.createInputStream(is));
+      final EnhancedBloomFilter bloomFilter = buildBloomFilter(zType.createInputStream(is));
 
       // If need serialize bloomFilter in file only for file
       if (isCreateSerializeFile(file, zType)) {
-        EnhancedBloomFilter.serializationBloomFilter(bloomFilterSer,
-            bloomFilter);
+        EnhancedBloomFilter.serializationBloomFilter(bloomFilterSer, bloomFilter);
       }
 
       return bloomFilter;
@@ -139,14 +134,13 @@ public abstract class AbstractComparatorWithBloomFilter
 
   /**
    * Build BloomFilter represented the input stream.
+   *
    * @param is the input stream source
    * @return BloomFilter corresponding to the input stream
    * @throws IOException if bloom filter creation fails
    */
-  protected EnhancedBloomFilter buildBloomFilter(final InputStream is)
-      throws IOException {
-    final EnhancedBloomFilter filter =
-        initBloomFilter(getExpectedNumberOfElements());
+  protected EnhancedBloomFilter buildBloomFilter(final InputStream is) throws IOException {
+    final EnhancedBloomFilter filter = initBloomFilter(getExpectedNumberOfElements());
 
     final BufferedReader reader =
         new BufferedReader(new InputStreamReader(is, Charset.defaultCharset()));
@@ -166,22 +160,23 @@ public abstract class AbstractComparatorWithBloomFilter
   public String toString() {
 
     return getName()
-        + " compares files with extensions " + getExtensions()
+        + " compares files with extensions "
+        + getExtensions()
         + " use Bloom filter with parameters: expected numbers elements "
-        + getExpectedNumberOfElements() + " and false positive probability "
+        + getExpectedNumberOfElements()
+        + " and false positive probability "
         + getFalsePositiveProbability();
-
   }
 
   /**
-   * Define if serialization bloomfilter file is necessary according parameter
-   * useSerializeFile and size file.
+   * Define if serialization bloomfilter file is necessary according parameter useSerializeFile and
+   * size file.
+   *
    * @param file file source for build bloomfilter
    * @param zType compression type of file
    * @return true if creating serialization file is necessary
    */
-  private boolean isCreateSerializeFile(final File file,
-      final CompressionType zType) {
+  private boolean isCreateSerializeFile(final File file, final CompressionType zType) {
 
     // No serialize file require
     if (!this.useSerializeFile) {
@@ -215,13 +210,11 @@ public abstract class AbstractComparatorWithBloomFilter
     return this.expectedNumberOfElements;
   }
 
-  protected void setExpectedNumberOfElements(
-      final int expectedNumberOfElements) {
+  protected void setExpectedNumberOfElements(final int expectedNumberOfElements) {
     this.expectedNumberOfElements = expectedNumberOfElements;
   }
 
-  protected void setFalsePositiveProbability(
-      final double falsePositiveProbability) {
+  protected void setFalsePositiveProbability(final double falsePositiveProbability) {
     this.falsePositiveProbability = falsePositiveProbability;
   }
 
@@ -235,8 +228,8 @@ public abstract class AbstractComparatorWithBloomFilter
 
   /**
    * Public constructor
-   * @param useSerializeFile true if it needed to save BloomFilter in file with
-   *          extension '.ser'
+   *
+   * @param useSerializeFile true if it needed to save BloomFilter in file with extension '.ser'
    */
   public AbstractComparatorWithBloomFilter(final boolean useSerializeFile) {
     this.useSerializeFile = useSerializeFile;

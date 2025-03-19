@@ -1,17 +1,16 @@
 package fr.ens.biologie.genomique.kenetre.bio.readfilter;
 
+import com.google.common.base.Splitter;
+import fr.ens.biologie.genomique.kenetre.KenetreException;
+import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
+import fr.ens.biologie.genomique.kenetre.bio.readfilter.PolyATailReadFilter.TailType;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.common.base.Splitter;
-
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
-import fr.ens.biologie.genomique.kenetre.bio.readfilter.PolyATailReadFilter.TailType;
-
 /**
  * This class define a read filter that remove reads without a valid polyA tail.
+ *
  * @since 2.4
  * @author Laurent Jourdren
  */
@@ -34,35 +33,30 @@ public class RemoveInvalidPolyAReadFilter extends AbstractReadFilter {
   }
 
   @Override
-  public void setParameter(final String key, final String value)
-      throws KenetreException {
+  public void setParameter(final String key, final String value) throws KenetreException {
 
     switch (key) {
+      case "allowed.tail.type":
+        this.allowed.clear();
 
-    case "allowed.tail.type":
+        for (String type :
+            Splitter.on(',').omitEmptyStrings().trimResults().split(value.toLowerCase())) {
 
-      this.allowed.clear();
+          TailType t = TailType.parse(type);
 
-      for (String type : Splitter.on(',').omitEmptyStrings().trimResults()
-          .split(value.toLowerCase())) {
+          if (t == null) {
+            throw new KenetreException(
+                "Unknown value for " + getName() + "." + key + " parameter: " + type);
+          }
 
-        TailType t = TailType.parse(type);
-
-        if (t == null) {
-          throw new KenetreException("Unknown value for "
-              + getName() + "." + key + " parameter: " + type);
+          this.allowed.add(t.toString().toLowerCase());
         }
 
-        this.allowed.add(t.toString().toLowerCase());
-      }
+        break;
 
-      break;
-
-    default:
-      throw new KenetreException(
-          "Unknown parameter for " + getName() + " read filter: " + key);
+      default:
+        throw new KenetreException("Unknown parameter for " + getName() + " read filter: " + key);
     }
-
   }
 
   @Override
@@ -83,10 +77,8 @@ public class RemoveInvalidPolyAReadFilter extends AbstractReadFilter {
       if (allowed.contains(s)) {
         return true;
       }
-
     }
 
     return false;
   }
-
 }

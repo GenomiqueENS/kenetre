@@ -14,21 +14,26 @@ import java.util.logging.Logger;
 public class ITLogger {
 
   /** Format of the log. */
-  public static final Formatter LOG_FORMATTER = new Formatter() {
+  public static final Formatter LOG_FORMATTER =
+      new Formatter() {
 
-    private final DateFormat df =
-        new SimpleDateFormat("yyyy.MM.dd kk:mm:ss", IT.DEFAULT_LOCALE);
+        private final DateFormat df =
+            new SimpleDateFormat("yyyy.MM.dd kk:mm:ss", IT.DEFAULT_LOCALE);
 
-    @Override
-    public String format(final LogRecord record) {
-      return record.getLevel()
-          + "\t" + this.df.format(new Date(record.getMillis())) + "\t"
-          + record.getMessage() + "\n";
-    }
-  };
+        @Override
+        public String format(final LogRecord record) {
+          return record.getLevel()
+              + "\t"
+              + this.df.format(new Date(record.getMillis()))
+              + "\t"
+              + record.getMessage()
+              + "\n";
+        }
+      };
 
   /**
    * Get the logger.
+   *
    * @return the logger
    */
   public static Logger getLogger() {
@@ -38,6 +43,7 @@ public class ITLogger {
 
   /**
    * Initialize logger.
+   *
    * @param loggerPath log file path
    * @throws IOException if an error occurs while create logger
    */
@@ -70,5 +76,4 @@ public class ITLogger {
     getLogger().setUseParentHandlers(false);
     getLogger().addHandler(fh);
   }
-
 }

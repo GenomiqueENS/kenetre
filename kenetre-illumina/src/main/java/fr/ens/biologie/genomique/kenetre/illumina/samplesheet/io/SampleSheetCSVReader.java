@@ -2,8 +2,8 @@
  *                  Aozan development code
  *
  * This code may be freely distributed and modified under the
- * terms of the GNU General Public License version 3 or later 
- * and CeCILL. This should be distributed with the code. If you 
+ * terms of the GNU General Public License version 3 or later
+ * and CeCILL. This should be distributed with the code. If you
  * do not have a copy, see:
  *
  *      http://www.gnu.org/licenses/gpl-3.0-standalone.html
@@ -26,6 +26,8 @@ package fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io;
 import static fr.ens.biologie.genomique.kenetre.util.StringUtils.removeUTF8BOM;
 import static java.nio.charset.Charset.defaultCharset;
 
+import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheet;
+import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheetUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,11 +38,9 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheet;
-import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheetUtils;
-
 /**
  * This class define a reader for bcl2fastq CSV samplesheet files.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
@@ -55,22 +55,20 @@ public class SampleSheetCSVReader implements SampleSheetReader, AutoCloseable {
     final SampleSheetParser parser;
 
     switch (this.version) {
+      case -1:
+        parser = new SampleSheetDiscoverFormatParser();
+        break;
 
-    case -1:
-      parser = new SampleSheetDiscoverFormatParser();
-      break;
+      case 1:
+        parser = new SampleSheetV1Parser();
+        break;
 
-    case 1:
-      parser = new SampleSheetV1Parser();
-      break;
+      case 2:
+        parser = new SampleSheetV2Parser();
+        break;
 
-    case 2:
-      parser = new SampleSheetV2Parser();
-      break;
-
-    default:
-      throw new IOException(
-          "Unknown bcl2fastq samplesheet format version: " + this.version);
+      default:
+        throw new IOException("Unknown bcl2fastq samplesheet format version: " + this.version);
     }
 
     String line = null;
@@ -96,8 +94,7 @@ public class SampleSheetCSVReader implements SampleSheetReader, AutoCloseable {
 
         // If an error occurs while parsing add the line to the exception
         // message
-        throw new IOException(
-            e.getMessage() + " in line #" + count + ": " + line, e);
+        throw new IOException(e.getMessage() + " in line #" + count + ": " + line, e);
       }
     }
 
@@ -108,6 +105,7 @@ public class SampleSheetCSVReader implements SampleSheetReader, AutoCloseable {
 
   /**
    * Set the version of the samplesheet file to read.
+   *
    * @param version the version of the samplesheet file to read
    */
   public void setVersion(final int version) {
@@ -117,6 +115,7 @@ public class SampleSheetCSVReader implements SampleSheetReader, AutoCloseable {
 
   /**
    * Get the version of the samplesheet file to read.
+   *
    * @return the version of the samplesheet file to read
    */
   public int getVersion() {
@@ -136,6 +135,7 @@ public class SampleSheetCSVReader implements SampleSheetReader, AutoCloseable {
 
   /**
    * Public constructor
+   *
    * @param is InputStream to use
    */
   public SampleSheetCSVReader(final InputStream is) {
@@ -144,12 +144,12 @@ public class SampleSheetCSVReader implements SampleSheetReader, AutoCloseable {
       throw new NullPointerException("InputStream is null");
     }
 
-    this.reader =
-        new BufferedReader(new InputStreamReader(is, defaultCharset()));
+    this.reader = new BufferedReader(new InputStreamReader(is, defaultCharset()));
   }
 
   /**
    * Public constructor
+   *
    * @param file File to use
    * @throws IOException if the file does not exists
    */
@@ -160,8 +160,7 @@ public class SampleSheetCSVReader implements SampleSheetReader, AutoCloseable {
     }
 
     if (!file.isFile()) {
-      throw new FileNotFoundException(
-          "File not found: " + file.getAbsolutePath());
+      throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
     }
 
     this.reader = new BufferedReader(new FileReader(file, defaultCharset()));
@@ -169,6 +168,7 @@ public class SampleSheetCSVReader implements SampleSheetReader, AutoCloseable {
 
   /**
    * Public constructor
+   *
    * @param path File to use
    * @throws IOException if the file does not exists
    */
@@ -179,6 +179,7 @@ public class SampleSheetCSVReader implements SampleSheetReader, AutoCloseable {
 
   /**
    * Public constructor
+   *
    * @param filename File to use
    * @throws IOException if an error occurs while reading the file
    */
@@ -191,11 +192,9 @@ public class SampleSheetCSVReader implements SampleSheetReader, AutoCloseable {
     final File file = new File(filename);
 
     if (!file.isFile()) {
-      throw new FileNotFoundException(
-          "File not found: " + file.getAbsolutePath());
+      throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
     }
 
     this.reader = new BufferedReader(new FileReader(file, defaultCharset()));
   }
-
 }

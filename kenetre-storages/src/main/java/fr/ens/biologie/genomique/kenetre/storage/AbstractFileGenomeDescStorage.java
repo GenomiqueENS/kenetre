@@ -26,6 +26,10 @@ package fr.ens.biologie.genomique.kenetre.storage;
 
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
+import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -38,18 +42,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-
 /**
  * This class define an abstract GenomeDescStorage based on an index file.
+ *
  * @since 2.6
  * @author Laurent Jourdren
  */
-public abstract class AbstractFileGenomeDescStorage
-    implements GenomeDescStorage {
+public abstract class AbstractFileGenomeDescStorage implements GenomeDescStorage {
 
   private static final String INDEX_FILENAME = "genomes_desc_storage.txt";
 
@@ -62,6 +61,7 @@ public abstract class AbstractFileGenomeDescStorage
 
   /**
    * Create a new DataPath object.
+   *
    * @param source source of the DataPath object
    * @return a new DataPath object
    */
@@ -69,6 +69,7 @@ public abstract class AbstractFileGenomeDescStorage
 
   /**
    * Create a new DataPath object.
+   *
    * @param parent parent of the DataPath object
    * @param filename name of the file
    * @return a new DataPath object
@@ -77,6 +78,7 @@ public abstract class AbstractFileGenomeDescStorage
 
   /**
    * This inner class define an entry of the index file.
+   *
    * @author Laurent Jourdren
    */
   private static final class IndexEntry {
@@ -93,9 +95,15 @@ public abstract class AbstractFileGenomeDescStorage
     @Override
     public String toString() {
       return this.getClass().getSimpleName()
-          + "{genomeName=" + this.genomeName + ", genomeFileLength="
-          + this.genomeFileLength + ", genomeFileMD5Sum="
-          + this.genomeFileMD5Sum + ", file=" + this.file + "}";
+          + "{genomeName="
+          + this.genomeName
+          + ", genomeFileLength="
+          + this.genomeFileLength
+          + ", genomeFileMD5Sum="
+          + this.genomeFileMD5Sum
+          + ", file="
+          + this.file
+          + "}";
     }
   }
 
@@ -105,13 +113,14 @@ public abstract class AbstractFileGenomeDescStorage
 
   /**
    * Load the information from the index file
+   *
    * @throws IOException if an error occurs while loading the index file
    */
   private void load() throws IOException {
 
     if (!this.dir.exists()) {
-      throw new IOException("Genome description storage directory not found: "
-          + this.dir.getSource());
+      throw new IOException(
+          "Genome description storage directory not found: " + this.dir.getSource());
     }
 
     final DataPath indexFile = newDataPath(this.dir, INDEX_FILENAME);
@@ -123,8 +132,8 @@ public abstract class AbstractFileGenomeDescStorage
       return;
     }
 
-    final BufferedReader br = new BufferedReader(
-        new InputStreamReader(indexFile.open(), Charset.defaultCharset()));
+    final BufferedReader br =
+        new BufferedReader(new InputStreamReader(indexFile.open(), Charset.defaultCharset()));
 
     final Pattern pattern = Pattern.compile("\t");
     String line = null;
@@ -158,20 +167,21 @@ public abstract class AbstractFileGenomeDescStorage
 
   /**
    * Save the information in the index file
+   *
    * @throws IOException if an error occurs while saving the index file
    */
   private void save() throws IOException {
 
     if (!this.dir.exists()) {
-      throw new IOException("Genome description storage directory not found: "
-          + this.dir.getSource());
+      throw new IOException(
+          "Genome description storage directory not found: " + this.dir.getSource());
     }
 
     final DataPath indexFile = newDataPath(this.dir, INDEX_FILENAME);
 
     // Create an empty index file
-    final BufferedWriter writer = new BufferedWriter(
-        new OutputStreamWriter(indexFile.create(), Charset.defaultCharset()));
+    final BufferedWriter writer =
+        new BufferedWriter(new OutputStreamWriter(indexFile.create(), Charset.defaultCharset()));
     writer.write("#Genome\tGenomeFileMD5\tGenomeFileLength\n");
 
     for (Map.Entry<String, IndexEntry> e : this.entries.entrySet()) {
@@ -206,8 +216,7 @@ public abstract class AbstractFileGenomeDescStorage
     }
   }
 
-  private static String createKey(final long genomeFileLength,
-      final String genomeFileMD5Sum) {
+  private static String createKey(final long genomeFileLength, final String genomeFileMD5Sum) {
 
     return genomeFileMD5Sum + '\t' + genomeFileLength;
   }
@@ -251,8 +260,7 @@ public abstract class AbstractFileGenomeDescStorage
     try {
       return GenomeDescription.load(entry.file.open());
     } catch (IOException e) {
-      this.logger
-          .warn("Cannot read genome description file: " + e.getMessage());
+      this.logger.warn("Cannot read genome description file: " + e.getMessage());
       return null;
     }
   }
@@ -277,21 +285,20 @@ public abstract class AbstractFileGenomeDescStorage
       entry.genomeFileLength = genomeFile.getContentLength();
       entry.genomeFileMD5Sum = computeMD5Sum(genomeFile);
 
-      entry.file = newDataPath(this.dir,
-          entry.genomeFileMD5Sum + "_" + entry.genomeFileLength + ".gdesc");
+      entry.file =
+          newDataPath(this.dir, entry.genomeFileMD5Sum + "_" + entry.genomeFileLength + ".gdesc");
 
       genomeDesc.save(entry.file.create());
       this.entries.put(entry.getKey(), entry);
       save();
-      this.logger.info("Successfully added "
-          + entry.genomeName
-          + " genome description to genome description storage.");
+      this.logger.info(
+          "Successfully added "
+              + entry.genomeName
+              + " genome description to genome description storage.");
     } catch (IOException e) {
       this.logger.warn(
-          "Cannot add genome description file to genome description storage: "
-              + e.getMessage());
+          "Cannot add genome description file to genome description storage: " + e.getMessage());
     }
-
   }
 
   //
@@ -300,12 +307,13 @@ public abstract class AbstractFileGenomeDescStorage
 
   /**
    * Private constructor.
+   *
    * @param dir Path to the index storage
    * @param logger logger to use
    * @throws IOException if an error occurs while testing the index storage
    */
-  protected AbstractFileGenomeDescStorage(final DataPath dir,
-      final GenericLogger logger) throws IOException {
+  protected AbstractFileGenomeDescStorage(final DataPath dir, final GenericLogger logger)
+      throws IOException {
 
     requireNonNull(dir, "Index directory is null");
 
@@ -313,8 +321,10 @@ public abstract class AbstractFileGenomeDescStorage
     this.logger = logger != null ? logger : new DummyLogger();
     load();
 
-    this.logger.info("Genome description storage found. "
-        + this.entries.size() + " entries in : " + dir.getSource());
+    this.logger.info(
+        "Genome description storage found. "
+            + this.entries.size()
+            + " entries in : "
+            + dir.getSource());
   }
-
 }

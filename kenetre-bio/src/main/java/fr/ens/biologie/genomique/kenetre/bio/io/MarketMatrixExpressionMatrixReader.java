@@ -1,5 +1,10 @@
 package fr.ens.biologie.genomique.kenetre.bio.io;
 
+import com.google.common.base.Splitter;
+import fr.ens.biologie.genomique.kenetre.bio.DenseExpressionMatrix;
+import fr.ens.biologie.genomique.kenetre.bio.ExpressionMatrix;
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
+import fr.ens.biologie.genomique.kenetre.util.GuavaCompatibility;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,20 +14,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.zip.GZIPInputStream;
 
-import com.google.common.base.Splitter;
-
-import fr.ens.biologie.genomique.kenetre.bio.DenseExpressionMatrix;
-import fr.ens.biologie.genomique.kenetre.bio.ExpressionMatrix;
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-import fr.ens.biologie.genomique.kenetre.util.GuavaCompatibility;
-
 /**
  * This class define a reader for matrix saved at Market Matrix format.
+ *
  * @author Laurent Jourdren
  * @since 2.2
  */
-public class MarketMatrixExpressionMatrixReader
-    implements ExpressionMatrixReader {
+public class MarketMatrixExpressionMatrixReader implements ExpressionMatrixReader {
 
   static final String MAGIC_KEY = "%%MatrixMarket ";
 
@@ -30,6 +28,7 @@ public class MarketMatrixExpressionMatrixReader
 
   /**
    * Get the row name of a row number
+   *
    * @param rowNumber row number
    * @return the row name
    */
@@ -39,6 +38,7 @@ public class MarketMatrixExpressionMatrixReader
 
   /**
    * Get the column name of a column number
+   *
    * @param columnNumber column number
    * @return the column name
    */
@@ -53,8 +53,7 @@ public class MarketMatrixExpressionMatrixReader
   }
 
   @Override
-  public ExpressionMatrix read(final ExpressionMatrix matrix)
-      throws IOException {
+  public ExpressionMatrix read(final ExpressionMatrix matrix) throws IOException {
 
     Objects.requireNonNull(matrix, "matrix argument cannot be null");
 
@@ -78,8 +77,9 @@ public class MarketMatrixExpressionMatrixReader
             throw new IOException("Invalid Market Matrice header: " + line);
           }
 
-          List<String> fields = GuavaCompatibility.splitToList(
-              Splitter.on(' ').trimResults().omitEmptyStrings(), line);
+          List<String> fields =
+              GuavaCompatibility.splitToList(
+                  Splitter.on(' ').trimResults().omitEmptyStrings(), line);
 
           if (fields.size() < 2) {
             throw new IOException("Invalid Market Matrice header: " + line);
@@ -92,15 +92,14 @@ public class MarketMatrixExpressionMatrixReader
           for (String s : fields.subList(2, fields.size() - 1)) {
 
             switch (s.toLowerCase()) {
-            case "coordinate":
-            case "real":
-            case "integer":
-            case "general":
-              break;
+              case "coordinate":
+              case "real":
+              case "integer":
+              case "general":
+                break;
 
-            default:
-              throw new IOException(
-                  "The reader does not support qualifier: " + s);
+              default:
+                throw new IOException("The reader does not support qualifier: " + s);
             }
           }
 
@@ -115,8 +114,7 @@ public class MarketMatrixExpressionMatrixReader
 
         // Throw an error if the line is too long
         if (line.length() > 1024) {
-          throw new IOException(
-              "Invalide line length (>1024), line#" + lineCount + ": " + line);
+          throw new IOException("Invalide line length (>1024), line#" + lineCount + ": " + line);
         }
 
         line = line.trim();
@@ -126,11 +124,9 @@ public class MarketMatrixExpressionMatrixReader
           continue;
         }
 
-        List<String> fields =
-            GuavaCompatibility.splitToList(Splitter.on(' '), line);
+        List<String> fields = GuavaCompatibility.splitToList(Splitter.on(' '), line);
         if (fields.size() != 3) {
-          throw new IOException(
-              "3 values are expected line #" + lineCount + ": " + line);
+          throw new IOException("3 values are expected line #" + lineCount + ": " + line);
         }
 
         int i;
@@ -142,8 +138,7 @@ public class MarketMatrixExpressionMatrixReader
           j = Integer.parseInt(fields.get(1));
           value = Double.parseDouble(fields.get(2));
         } catch (NumberFormatException e) {
-          throw new IOException(
-              "Invalid number format line #" + lineCount + ": " + line);
+          throw new IOException("Invalid number format line #" + lineCount + ": " + line);
         }
 
         if (nonzero == -1) {
@@ -177,14 +172,13 @@ public class MarketMatrixExpressionMatrixReader
   }
 
   /**
-   * Create an InputStream that can read GZipped files if filename ends with
-   * ".gz" extension.
+   * Create an InputStream that can read GZipped files if filename ends with ".gz" extension.
+   *
    * @param filename the name of file to read
    * @return a InputStream object
    * @throws IOException if an error occurs when opening the file
    */
-  private static InputStream createInputstream(final String filename)
-      throws IOException {
+  private static InputStream createInputstream(final String filename) throws IOException {
 
     if (filename.endsWith(".gz")) {
 
@@ -195,14 +189,13 @@ public class MarketMatrixExpressionMatrixReader
   }
 
   /**
-   * Create an InputStream that can read GZipped files if filename ends with
-   * ".gz" extension.
+   * Create an InputStream that can read GZipped files if filename ends with ".gz" extension.
+   *
    * @param file the file to read
    * @return a InputStream object
    * @throws IOException if an error occurs when opening the file
    */
-  private static InputStream createInputstream(final File file)
-      throws IOException {
+  private static InputStream createInputstream(final File file) throws IOException {
 
     if (file.getName().endsWith(".gz")) {
 
@@ -218,6 +211,7 @@ public class MarketMatrixExpressionMatrixReader
 
   /**
    * Public constructor.
+   *
    * @param is InputStream to use
    */
   public MarketMatrixExpressionMatrixReader(final InputStream is) {
@@ -228,13 +222,13 @@ public class MarketMatrixExpressionMatrixReader
   }
 
   /**
-   * Public constructor. If the filename ends with ".gz" the file will be
-   * uncompressed while reading.
+   * Public constructor. If the filename ends with ".gz" the file will be uncompressed while
+   * reading.
+   *
    * @param file File to use
    * @throws IOException if an error occurs while opening the file
    */
-  public MarketMatrixExpressionMatrixReader(final File file)
-      throws IOException {
+  public MarketMatrixExpressionMatrixReader(final File file) throws IOException {
 
     Objects.requireNonNull(file, "file argument cannot be null");
 
@@ -242,18 +236,16 @@ public class MarketMatrixExpressionMatrixReader
   }
 
   /**
-   * Public constructor. If the filename ends with ".gz" the file will be
-   * uncompressed while reading.
+   * Public constructor. If the filename ends with ".gz" the file will be uncompressed while
+   * reading.
+   *
    * @param filename File to use
    * @throws IOException if an error occurs while opening the file
    */
-  public MarketMatrixExpressionMatrixReader(final String filename)
-      throws IOException {
+  public MarketMatrixExpressionMatrixReader(final String filename) throws IOException {
 
     Objects.requireNonNull(filename, "filename argument cannot be null");
 
     this.is = createInputstream(filename);
-
   }
-
 }

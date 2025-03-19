@@ -24,13 +24,13 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.io;
 
+import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
 import java.io.Closeable;
 import java.io.IOException;
 
-import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
-
 /**
  * This interface define the methods to implements for ReadSequenceWriter.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -38,9 +38,9 @@ public interface ReadSequenceWriter extends Closeable {
 
   /**
    * Write a read.
+   *
    * @param readSequence the read to write
    * @throws IOException if an error occurs while writing data
    */
   void write(ReadSequence readSequence) throws IOException;
-
 }

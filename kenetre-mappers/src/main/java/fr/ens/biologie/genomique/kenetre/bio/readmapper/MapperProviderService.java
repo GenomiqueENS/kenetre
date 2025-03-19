@@ -28,6 +28,7 @@ import fr.ens.biologie.genomique.kenetre.util.ServiceNameLoader;
 
 /**
  * This class define a service to retrieve a MapperProvider.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
@@ -41,6 +42,7 @@ public class MapperProviderService extends ServiceNameLoader<MapperProvider> {
 
   /**
    * Retrieve the singleton static instance of SequenceReadsMapperService.
+   *
    * @return A SequenceReadsMapperService instance
    */
   public static MapperProviderService getInstance() {
@@ -50,11 +52,11 @@ public class MapperProviderService extends ServiceNameLoader<MapperProvider> {
 
   /**
    * Retrieve the singleton static instance of SequenceReadsMapperService.
+   *
    * @param forceNewInstance force the usage of a new instance
    * @return A SequenceReadsMapperService instance
    */
-  public static synchronized MapperProviderService getInstance(
-      boolean forceNewInstance) {
+  public static synchronized MapperProviderService getInstance(boolean forceNewInstance) {
 
     if (forceNewInstance || service == null) {
       service = new MapperProviderService();
@@ -83,11 +85,8 @@ public class MapperProviderService extends ServiceNameLoader<MapperProvider> {
   // Constructor
   //
 
-  /**
-   * Private constructor.
-   */
+  /** Private constructor. */
   private MapperProviderService() {
     super(MapperProvider.class);
   }
-
 }

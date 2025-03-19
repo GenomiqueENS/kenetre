@@ -25,8 +25,9 @@
 package fr.ens.biologie.genomique.kenetre.bio;
 
 /**
- * This class define an exception for biological files entries that can allow
- * retrieve the invalid entry.
+ * This class define an exception for biological files entries that can allow retrieve the invalid
+ * entry.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -44,6 +45,7 @@ public class BadBioEntryException extends Exception {
 
   /**
    * Return the entry at the origin of the exception.
+   *
    * @return a String with the invalid entry
    */
   public final String getEntry() {
@@ -57,6 +59,7 @@ public class BadBioEntryException extends Exception {
 
   /**
    * Public constructor.
+   *
    * @param message message with the origin of the exception
    * @param entry the entry at the origin of the exception
    */

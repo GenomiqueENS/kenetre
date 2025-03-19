@@ -33,7 +33,6 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.Test;
 
 public class StringUtilsTest {
@@ -57,8 +56,7 @@ public class StringUtilsTest {
     assertEquals(".bz2", StringUtils.compressionExtension("toto.tar.bz2"));
     assertEquals(".zip", StringUtils.compressionExtension("toto.tar.zip"));
     assertEquals(".lzo", StringUtils.compressionExtension("toto.tar.lzo"));
-    assertEquals(".deflate",
-        StringUtils.compressionExtension("toto.tar.deflate"));
+    assertEquals(".deflate", StringUtils.compressionExtension("toto.tar.deflate"));
     assertEquals("", StringUtils.compressionExtension("toto.tar"));
     assertEquals("", StringUtils.compressionExtension("toto"));
   }
@@ -66,12 +64,9 @@ public class StringUtilsTest {
   @Test
   public void testfilenameWithoutCompressionExtension() {
 
-    assertEquals("toto.tar",
-        StringUtils.filenameWithoutCompressionExtension("toto.tar.gz"));
-    assertEquals("toto.tar",
-        StringUtils.filenameWithoutCompressionExtension("toto.tar"));
-    assertEquals("toto",
-        StringUtils.filenameWithoutCompressionExtension("toto"));
+    assertEquals("toto.tar", StringUtils.filenameWithoutCompressionExtension("toto.tar.gz"));
+    assertEquals("toto.tar", StringUtils.filenameWithoutCompressionExtension("toto.tar"));
+    assertEquals("toto", StringUtils.filenameWithoutCompressionExtension("toto"));
   }
 
   // @Test
@@ -96,18 +91,15 @@ public class StringUtilsTest {
 
   @Test
   public void testSubStringAfterFirstTab() {
-    assertEquals("titi\ttata",
-        StringUtils.subStringAfterFirstTab("toto\ttiti\ttata"));
-    assertEquals("toto\ttiti\ttata",
-        StringUtils.subStringAfterFirstTab("\ttoto\ttiti\ttata"));
+    assertEquals("titi\ttata", StringUtils.subStringAfterFirstTab("toto\ttiti\ttata"));
+    assertEquals("toto\ttiti\ttata", StringUtils.subStringAfterFirstTab("\ttoto\ttiti\ttata"));
     assertEquals("toto", StringUtils.subStringAfterFirstTab("toto"));
     assertEquals("toto", StringUtils.subStringAfterFirstTab("toto"));
   }
 
   @Test
   public void testSubStringBeforeFirstTab() {
-    assertEquals("toto",
-        StringUtils.subStringBeforeFirstTab("toto\ttiti\ttata"));
+    assertEquals("toto", StringUtils.subStringBeforeFirstTab("toto\ttiti\ttata"));
     assertEquals("toto", StringUtils.subStringBeforeFirstTab("toto"));
   }
 
@@ -144,32 +136,25 @@ public class StringUtilsTest {
   public void testReplacePrefix() {
 
     assertNull(StringUtils.replacePrefix(null, "toto", "titi"));
-    assertEquals("ticoucou",
-        StringUtils.replacePrefix("totocoucou", "toto", "ti"));
-    assertEquals("titicoucou",
-        StringUtils.replacePrefix("totocoucou", "toto", "titi"));
+    assertEquals("ticoucou", StringUtils.replacePrefix("totocoucou", "toto", "ti"));
+    assertEquals("titicoucou", StringUtils.replacePrefix("totocoucou", "toto", "titi"));
     assertEquals("coucou", StringUtils.replacePrefix("totocoucou", "toto", ""));
-    assertEquals("tititotocoucou",
-        StringUtils.replacePrefix("totocoucou", "", "titi"));
-    assertEquals("s3n://sgdb-test/titi.txt",
+    assertEquals("tititotocoucou", StringUtils.replacePrefix("totocoucou", "", "titi"));
+    assertEquals(
+        "s3n://sgdb-test/titi.txt",
         StringUtils.replacePrefix("s3://sgdb-test/titi.txt", "s3:/", "s3n:/"));
   }
 
   @Test
   public void testSerializeStringArray() {
 
-    assertEquals("[]",
-        StringUtils.serializeStringArray(Collections.emptyList()));
-    assertEquals("[]",
-        StringUtils.serializeStringArray(Collections.singletonList("")));
-    assertEquals("[toto]",
-        StringUtils.serializeStringArray(Collections.singletonList("toto")));
-    assertEquals("[toto,titi]",
-        StringUtils.serializeStringArray(Arrays.asList("toto", "titi")));
-    assertEquals("[to\\,to]",
-        StringUtils.serializeStringArray(Collections.singletonList("to,to")));
-    assertEquals("[to\\\\to]",
-        StringUtils.serializeStringArray(Collections.singletonList("to\\to")));
+    assertEquals("[]", StringUtils.serializeStringArray(Collections.emptyList()));
+    assertEquals("[]", StringUtils.serializeStringArray(Collections.singletonList("")));
+    assertEquals("[toto]", StringUtils.serializeStringArray(Collections.singletonList("toto")));
+    assertEquals("[toto,titi]", StringUtils.serializeStringArray(Arrays.asList("toto", "titi")));
+    assertEquals("[to\\,to]", StringUtils.serializeStringArray(Collections.singletonList("to,to")));
+    assertEquals(
+        "[to\\\\to]", StringUtils.serializeStringArray(Collections.singletonList("to\\to")));
   }
 
   @Test
@@ -281,7 +266,6 @@ public class StringUtilsTest {
 
       i++;
     }
-
   }
 
   @Test
@@ -289,31 +273,36 @@ public class StringUtilsTest {
 
     assertNull(StringUtils.splitShellCommandLine(null));
     assertTrue(StringUtils.splitShellCommandLine("").isEmpty());
-    assertEquals(asList("titi", "toto", "tata"),
-        StringUtils.splitShellCommandLine("titi toto tata"));
-    assertEquals(asList("titi", "toto", "tata"),
-        StringUtils.splitShellCommandLine(" titi  toto  tata "));
-    assertEquals(asList("titi", "toto", "tata"),
+    assertEquals(
+        asList("titi", "toto", "tata"), StringUtils.splitShellCommandLine("titi toto tata"));
+    assertEquals(
+        asList("titi", "toto", "tata"), StringUtils.splitShellCommandLine(" titi  toto  tata "));
+    assertEquals(
+        asList("titi", "toto", "tata"),
         StringUtils.splitShellCommandLine(" titi  \"toto\"  tata "));
-    assertEquals(asList("titi", "toto tata"),
-        StringUtils.splitShellCommandLine(" titi  \"toto tata\""));
-    assertEquals(asList("titi", " toto ", "tata"),
+    assertEquals(
+        asList("titi", "toto tata"), StringUtils.splitShellCommandLine(" titi  \"toto tata\""));
+    assertEquals(
+        asList("titi", " toto ", "tata"),
         StringUtils.splitShellCommandLine(" titi  \" toto \" tata\""));
-    assertEquals(asList("titi", "toto", "tata"),
-        StringUtils.splitShellCommandLine(" titi  toto  \"tata"));
-    assertEquals(asList("titi", "toto", "tata"),
-        StringUtils.splitShellCommandLine(" titi  toto  \"tata\""));
-    assertEquals(asList("titi", "toto", "tata"),
+    assertEquals(
+        asList("titi", "toto", "tata"), StringUtils.splitShellCommandLine(" titi  toto  \"tata"));
+    assertEquals(
+        asList("titi", "toto", "tata"), StringUtils.splitShellCommandLine(" titi  toto  \"tata\""));
+    assertEquals(
+        asList("titi", "toto", "tata"),
         StringUtils.splitShellCommandLine("\"titi\"  toto  \"tata\""));
-    assertEquals(asList("titi", "toto", "tata"),
+    assertEquals(
+        asList("titi", "toto", "tata"),
         StringUtils.splitShellCommandLine("\'titi\'  toto  \'tata\'"));
-    assertEquals(asList("titi", "toto tata"),
-        StringUtils.splitShellCommandLine(" titi  \'toto tata\'"));
-    assertEquals(asList("titi", "toto\"tata"),
-        StringUtils.splitShellCommandLine("titi  \'toto\"tata\'"));
-    assertEquals(asList("titi", "toto\'tata"),
-        StringUtils.splitShellCommandLine("titi  \"toto\'tata\""));
-    assertEquals(asList("titi", "to\"to", "ta\'ta"),
+    assertEquals(
+        asList("titi", "toto tata"), StringUtils.splitShellCommandLine(" titi  \'toto tata\'"));
+    assertEquals(
+        asList("titi", "toto\"tata"), StringUtils.splitShellCommandLine("titi  \'toto\"tata\'"));
+    assertEquals(
+        asList("titi", "toto\'tata"), StringUtils.splitShellCommandLine("titi  \"toto\'tata\""));
+    assertEquals(
+        asList("titi", "to\"to", "ta\'ta"),
         StringUtils.splitShellCommandLine(" titi  \'to\"to\'  \"ta\'ta\" "));
   }
 
@@ -337,5 +326,4 @@ public class StringUtilsTest {
     assertEquals("ab", StringUtils.unDoubleQuotes("ab"));
     assertEquals("abc", StringUtils.unDoubleQuotes("abc"));
   }
-
 }

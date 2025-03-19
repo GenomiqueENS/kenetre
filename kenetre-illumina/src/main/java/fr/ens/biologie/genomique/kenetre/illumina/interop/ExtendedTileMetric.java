@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * This internal class save a record from ExtendedTileMetricsOut.bin file.
+ *
  * @author Laurent Jourdren
  * @since 0.3
  */
@@ -70,19 +71,21 @@ public class ExtendedTileMetric extends Metric {
       return Arrays.asList("Lane", "Tile", "OccupiedCount");
     }
 
-    return Arrays.asList("Lane", "Tile", "OccupiedCount", "Upper Left X",
-        "Upper Left Y");
+    return Arrays.asList("Lane", "Tile", "OccupiedCount", "Upper Left X", "Upper Left Y");
   }
 
   @Override
   public List<Number> values() {
     if (super.version < 3) {
-      return Arrays.asList(this.laneNumber, this.tileNumber,
-          this.clusterCountcOccupied);
+      return Arrays.asList(this.laneNumber, this.tileNumber, this.clusterCountcOccupied);
     }
 
-    return Arrays.asList(this.laneNumber, this.tileNumber,
-        this.clusterCountcOccupied, this.upperLeftX, this.upperLeftY);
+    return Arrays.asList(
+        this.laneNumber,
+        this.tileNumber,
+        this.clusterCountcOccupied,
+        this.upperLeftX,
+        this.upperLeftY);
   }
 
   @Override
@@ -91,8 +94,7 @@ public class ExtendedTileMetric extends Metric {
       return Arrays.asList(Integer.class, Integer.class, Float.class);
     }
 
-    return Arrays.asList(Integer.class, Integer.class, Float.class, Float.class,
-        Float.class);
+    return Arrays.asList(Integer.class, Integer.class, Float.class, Float.class, Float.class);
   }
 
   //
@@ -105,12 +107,11 @@ public class ExtendedTileMetric extends Metric {
     float value = bb.getFloat();
 
     switch (code) {
+      case 0:
+        return value;
 
-    case 0:
-      return value;
-
-    default:
-      throw new IllegalStateException();
+      default:
+        throw new IllegalStateException();
     }
   }
 
@@ -126,27 +127,24 @@ public class ExtendedTileMetric extends Metric {
     this.tileNumber = version > 2 ? uIntToLong(bb) : uShortToInt(bb);
 
     switch (version) {
+      case 1:
+        this.clusterCountcOccupied = parseClusterCountV1(bb);
+        break;
 
-    case 1:
-      this.clusterCountcOccupied = parseClusterCountV1(bb);
-      break;
+      case 2:
+        this.clusterCountcOccupied = bb.getFloat();
+        this.upperLeftX = Float.NaN;
+        this.upperLeftY = Float.NaN;
+        break;
 
-    case 2:
-      this.clusterCountcOccupied = bb.getFloat();
-      this.upperLeftX = Float.NaN;
-      this.upperLeftY = Float.NaN;
-      break;
+      case 3:
+        this.clusterCountcOccupied = bb.getFloat();
+        this.upperLeftX = bb.getFloat();
+        this.upperLeftY = bb.getFloat();
+        break;
 
-    case 3:
-      this.clusterCountcOccupied = bb.getFloat();
-      this.upperLeftX = bb.getFloat();
-      this.upperLeftY = bb.getFloat();
-      break;
-
-    default:
-      throw new IllegalArgumentException();
+      default:
+        throw new IllegalArgumentException();
     }
-
   }
-
 }

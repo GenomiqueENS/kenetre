@@ -1,12 +1,12 @@
 package fr.ens.biologie.genomique.kenetre.translator;
 
+import fr.ens.biologie.genomique.kenetre.bio.AnnotationMatrix;
 import java.util.List;
 import java.util.Objects;
 
-import fr.ens.biologie.genomique.kenetre.bio.AnnotationMatrix;
-
 /**
  * This class implements a translator using an AnnotationMatrix.
+ *
  * @since 2.4
  * @author Laurent Jourdren
  */
@@ -36,6 +36,7 @@ public class AnnotationMatrixTranslator extends AbstractTranslator {
 
   /**
    * Public constructor.
+   *
    * @param matrix matrix to use
    */
   public AnnotationMatrixTranslator(final AnnotationMatrix matrix) {
@@ -44,5 +45,4 @@ public class AnnotationMatrixTranslator extends AbstractTranslator {
 
     this.matrix = matrix;
   }
-
 }

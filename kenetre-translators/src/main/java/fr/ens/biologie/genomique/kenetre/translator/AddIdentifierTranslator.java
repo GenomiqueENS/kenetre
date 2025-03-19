@@ -30,6 +30,7 @@ import java.util.List;
 
 /**
  * This class define a translator that add the identifier to translations.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
@@ -44,6 +45,7 @@ public class AddIdentifierTranslator extends AbstractTranslator {
 
   /**
    * Get an ordered list of the translator fields
+   *
    * @return an ordered list of the translator fields.
    */
   @Override
@@ -54,6 +56,7 @@ public class AddIdentifierTranslator extends AbstractTranslator {
 
   /**
    * Get a translation for a feature
+   *
    * @param id Identifier of the feature
    * @param field the field to get
    * @return An array with the annotation of the Feature
@@ -70,6 +73,7 @@ public class AddIdentifierTranslator extends AbstractTranslator {
 
   /**
    * Test if the link information is available for the field
+   *
    * @param field Field to test
    * @return true if link information is available
    */
@@ -81,6 +85,7 @@ public class AddIdentifierTranslator extends AbstractTranslator {
 
   /**
    * Get link information.
+   *
    * @param translatedId Translated id
    * @param field field of the id
    * @return a link for the translated id
@@ -95,9 +100,7 @@ public class AddIdentifierTranslator extends AbstractTranslator {
   // Other methods
   //
 
-  /**
-   * Update the fields from the input translator.
-   */
+  /** Update the fields from the input translator. */
   public void updateFields() {
 
     List<String> tFields = this.translator.getFields();
@@ -113,11 +116,11 @@ public class AddIdentifierTranslator extends AbstractTranslator {
       // System.arraycopy(tFields, 0, this.fields, 1, tFields.size());
       this.fields.addAll(tFields);
     }
-
   }
 
   /**
    * Set the name of the new field of the translator.
+   *
    * @param newFieldName the name of new field
    */
   public void setNewFieldName(final String newFieldName) {
@@ -131,6 +134,7 @@ public class AddIdentifierTranslator extends AbstractTranslator {
 
   /**
    * Get the available identifiers by the translator if possible.
+   *
    * @return a array of string with the identifiers
    */
   @Override
@@ -145,6 +149,7 @@ public class AddIdentifierTranslator extends AbstractTranslator {
 
   /**
    * Public constructor.
+   *
    * @param translator Translator to use
    */
   public AddIdentifierTranslator(final Translator translator) {
@@ -154,11 +159,11 @@ public class AddIdentifierTranslator extends AbstractTranslator {
 
   /**
    * Public constructor.
+   *
    * @param translator Translator to use
    * @param newFieldName the name of new field
    */
-  public AddIdentifierTranslator(final Translator translator,
-      final String newFieldName) {
+  public AddIdentifierTranslator(final Translator translator, final String newFieldName) {
 
     if (translator == null) {
       throw new NullPointerException("Translator can't be null");
@@ -169,5 +174,4 @@ public class AddIdentifierTranslator extends AbstractTranslator {
     setNewFieldName(newFieldName);
     updateFields();
   }
-
 }

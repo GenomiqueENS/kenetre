@@ -2,6 +2,9 @@ package fr.ens.biologie.genomique.kenetre.bio;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.Splitter;
+import fr.ens.biologie.genomique.kenetre.util.GuavaCompatibility;
+import fr.ens.biologie.genomique.kenetre.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,22 +13,17 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import com.google.common.base.Splitter;
-
-import fr.ens.biologie.genomique.kenetre.util.GuavaCompatibility;
-import fr.ens.biologie.genomique.kenetre.util.StringUtils;
-
 /**
- * This class define a BedEntry. <b>Warning</b>: the coordinates stored in the
- * class are 1-based to be coherent with the other classes of the bio packages.
- * However the toBEDXX() methods generate output in 1-based coordinates.
+ * This class define a BedEntry. <b>Warning</b>: the coordinates stored in the class are 1-based to
+ * be coherent with the other classes of the bio packages. However the toBEDXX() methods generate
+ * output in 1-based coordinates.
+ *
  * @author Laurent Jourdren
  * @since 2.2
  */
 public class BEDEntry implements Comparable<BEDEntry> {
 
-  public static class DefaultBEDEntryComparator
-      implements Comparator<BEDEntry> {
+  public static class DefaultBEDEntryComparator implements Comparator<BEDEntry> {
 
     @Override
     public int compare(BEDEntry o1, BEDEntry o2) {
@@ -52,6 +50,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Get the metadata.
+   *
    * @return the metadata of the entry
    */
   public final EntryMetadata getMetadata() {
@@ -61,6 +60,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Get metadata keys names.
+   *
    * @return the metadata keys names
    */
   @Deprecated
@@ -71,6 +71,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * test if a metadata key exists.
+   *
    * @param key key name of the metadata
    * @return true if the entry in the meta data exists
    */
@@ -82,9 +83,9 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Get the metadata values for a key.
+   *
    * @param key name of the metadata entry
-   * @return the values of the attribute or null if the metadata name does not
-   *         exists
+   * @return the values of the attribute or null if the metadata name does not exists
    */
   @Deprecated
   public final List<String> getMetadataEntryValues(final String key) {
@@ -94,6 +95,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Get chromosome name.
+   *
    * @return the chromosome name
    */
   public String getChromosomeName() {
@@ -102,6 +104,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Get the starting position of the feature in the chromosome (zero based).
+   *
    * @return the starts of the feature
    */
   public int getStart() {
@@ -110,6 +113,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Get the ending position of the feature in the chromosome (one based).
+   *
    * @return the ends of the feature
    */
   public int getEnd() {
@@ -118,6 +122,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Get the length of the entry.
+   *
    * @return the length of feature
    */
   public int getLength() {
@@ -126,6 +131,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Get the name of the BED feature.
+   *
    * @return the name of the BED feature
    */
   public String getName() {
@@ -134,6 +140,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Get the score of the feature.
+   *
    * @return the score of the feature
    */
   public String getScore() {
@@ -142,6 +149,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Get the strand of the feature
+   *
    * @return the strand of the feature
    */
   public char getStrand() {
@@ -150,6 +158,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Get the starting position at which the feature is drawn thickly.
+   *
    * @return the starting position at which the feature is drawn thickly
    */
   public int getThickStart() {
@@ -158,6 +167,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Get the ending position at which the feature is drawn thickly.
+   *
    * @return the ending position at which the feature is drawn thickly
    */
   public int getThickEnd() {
@@ -166,15 +176,18 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Get the thick length.
+   *
    * @return the thick length
    */
   public int getThickLength() {
     return this.thickStart == -1 || this.getThickEnd() == -1
-        ? 0 : this.thickEnd - this.thickStart + 1;
+        ? 0
+        : this.thickEnd - this.thickStart + 1;
   }
 
   /**
    * Get the RGB value of the item.
+   *
    * @return the RGB value of the item
    */
   public String getRgbItem() {
@@ -184,6 +197,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Get the block count.
+   *
    * @return the block count
    */
   public int getBlockCount() {
@@ -192,6 +206,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Get the block sizes.
+   *
    * @return the block sizes
    */
   public List<Integer> getBlockSizes() {
@@ -207,6 +222,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Get the block starts.
+   *
    * @return the block starts
    */
   public List<Integer> getBlockStarts() {
@@ -222,6 +238,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Get the block starts.
+   *
    * @return the block starts
    */
   public List<Integer> getBlockEnds() {
@@ -237,6 +254,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Get the block.
+   *
    * @return the block starts
    */
   public List<GenomicInterval> getBlocks() {
@@ -250,6 +268,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Add metadata entry value.
+   *
    * @param key name of key of the metadata entry
    * @param value The value
    * @return true if the value is correctly added to the metadata
@@ -262,17 +281,18 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Add metadata entries values. Stop at first entry that fail to be added.
+   *
    * @param entries the entries to add
    * @return true if all the entries are correctly added to the metadata
    */
-  public final boolean addMetaDataEntries(
-      final Map<String, List<String>> entries) {
+  public final boolean addMetaDataEntries(final Map<String, List<String>> entries) {
 
     return this.metadata.add(entries);
   }
 
   /**
    * Remove a metadata entry.
+   *
    * @param key key of the metadata entry to remove
    * @return true if the entry is removed
    */
@@ -283,6 +303,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Set chromosome name.
+   *
    * @param chromosomeName the chromosome name
    */
   public void setChromosomeName(final String chromosomeName) {
@@ -296,6 +317,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Set the starting position of the feature in the chromosome (zero based).
+   *
    * @param start the start of the feature
    */
   public void setStart(final int start) {
@@ -310,6 +332,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Set the ending position of the feature in the chromosome (one based).
+   *
    * @param end the end position on the chromosome
    */
   public void setEnd(final int end) {
@@ -324,6 +347,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Set the name of the BED feature.
+   *
    * @param name the name of the BED feature
    */
   public void setName(final String name) {
@@ -335,6 +359,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Set the score of the feature.
+   *
    * @param score the score of the feature
    */
   public void setScore(final String score) {
@@ -344,13 +369,13 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Set the score of the feature.
+   *
    * @param score the score of the feature
    */
   public void setScore(final int score) {
 
     if (score < 0 || score > 1000) {
-      throw new IllegalArgumentException(
-          "score must be in the range 0 - 1000: " + score);
+      throw new IllegalArgumentException("score must be in the range 0 - 1000: " + score);
     }
 
     this.score = Integer.toString(score);
@@ -358,6 +383,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Set the score of the feature.
+   *
    * @param score the score of the feature
    */
   public void setScore(final double score) {
@@ -367,26 +393,27 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Set the strand of the feature.
+   *
    * @param strand the strand of the feature
    */
   public void setStrand(final char strand) {
 
     switch (strand) {
-    case '-':
-    case '+':
-    case 0:
-      this.strand = strand;
-      break;
+      case '-':
+      case '+':
+      case 0:
+        this.strand = strand;
+        break;
 
-    default:
-      throw new IllegalArgumentException("Invalid strand value: " + strand);
+      default:
+        throw new IllegalArgumentException("Invalid strand value: " + strand);
     }
   }
 
   /**
    * Set the starting position at which the feature is drawn thickly.
-   * @param thickStart the starting position at which the feature is drawn
-   *          thickly
+   *
+   * @param thickStart the starting position at which the feature is drawn thickly
    */
   public void setThickStart(final int thickStart) {
 
@@ -400,6 +427,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Set the ending position at which the feature is drawn thickly.
+   *
    * @param thickEnd the ending position at which the feature is drawn thickly
    */
   public void setThickEnd(final int thickEnd) {
@@ -414,6 +442,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Set the RGB value of the item.
+   *
    * @param rgbItem the RGB value of the item
    */
   public void setRgbItem(String rgbItem) {
@@ -423,6 +452,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Set the RGB value of the item.
+   *
    * @param r the red value (0-255)
    * @param g the green value (0-255)
    * @param b the blue value (0-255)
@@ -430,18 +460,15 @@ public class BEDEntry implements Comparable<BEDEntry> {
   public void setRgbItem(int r, int g, int b) {
 
     if (r < 0 || r > 255) {
-      throw new IllegalArgumentException(
-          "red value must be in [0-255] interval: " + r);
+      throw new IllegalArgumentException("red value must be in [0-255] interval: " + r);
     }
 
     if (g < 0 || g > 255) {
-      throw new IllegalArgumentException(
-          "green value must be in [0-255] interval: " + g);
+      throw new IllegalArgumentException("green value must be in [0-255] interval: " + g);
     }
 
     if (b < 0 || b > 255) {
-      throw new IllegalArgumentException(
-          "blue value must be in [0-255] interval: " + b);
+      throw new IllegalArgumentException("blue value must be in [0-255] interval: " + b);
     }
 
     this.rgbItem = "" + r + ',' + g + ',' + b;
@@ -449,26 +476,30 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Add a block to the list of block.
+   *
    * @param startBlock start position of the block
    * @param endBlock end position of the block
    * @return true if the addition is a success
    */
   public boolean addBlock(final int startBlock, final int endBlock) {
 
-    return this.blocks.add(new GenomicInterval(this.chromosomeName, startBlock,
-        endBlock, this.strand == 0 ? '.' : this.strand));
+    return this.blocks.add(
+        new GenomicInterval(
+            this.chromosomeName, startBlock, endBlock, this.strand == 0 ? '.' : this.strand));
   }
 
   /**
    * Remove a block to the list of block.
+   *
    * @param startBlock start position of the block
    * @param endBlock end position of the block
    * @return true if the remove of the block is a success
    */
   public boolean removeBlock(final int startBlock, final int endBlock) {
 
-    GenomicInterval block = new GenomicInterval(this.chromosomeName, startBlock,
-        endBlock, this.strand == 0 ? '.' : this.strand);
+    GenomicInterval block =
+        new GenomicInterval(
+            this.chromosomeName, startBlock, endBlock, this.strand == 0 ? '.' : this.strand);
 
     return this.blocks.remove(block);
   }
@@ -479,6 +510,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Convert the object to a BED 12 columns entry.
+   *
    * @return a BED entry
    */
   public String toBED() {
@@ -488,6 +520,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Convert the object to a BED entry.
+   *
    * @param fieldCount number of the fields of the BED entry
    * @return a BED entry
    */
@@ -576,9 +609,18 @@ public class BEDEntry implements Comparable<BEDEntry> {
   @Override
   public int hashCode() {
 
-    return Objects.hash(this.metadata, this.chromosomeName, this.start,
-        this.end, this.name, this.score, this.strand, this.thickStart,
-        this.thickEnd, this.rgbItem, this.blocks);
+    return Objects.hash(
+        this.metadata,
+        this.chromosomeName,
+        this.start,
+        this.end,
+        this.name,
+        this.score,
+        this.strand,
+        this.thickStart,
+        this.thickEnd,
+        this.rgbItem,
+        this.blocks);
   }
 
   @Override
@@ -596,10 +638,13 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
     return Objects.equals(this.metadata, that.metadata)
         && Objects.equals(this.chromosomeName, that.chromosomeName)
-        && this.start == that.start && this.end == that.end
+        && this.start == that.start
+        && this.end == that.end
         && Objects.equals(this.name, that.name)
-        && Objects.equals(this.score, that.score) && this.strand == that.strand
-        && this.thickStart == that.thickStart && this.thickEnd == that.thickEnd
+        && Objects.equals(this.score, that.score)
+        && this.strand == that.strand
+        && this.thickStart == that.thickStart
+        && this.thickEnd == that.thickEnd
         && Objects.equals(this.rgbItem, that.rgbItem)
         && Objects.equals(this.blocks, that.blocks);
   }
@@ -640,6 +685,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Parse an entry.
+   *
    * @param s the entry to parse
    * @throws BadBioEntryException if the entry is malformed
    */
@@ -657,12 +703,12 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Parse an entry.
+   *
    * @param s the entry to parse
    * @param requiredFieldCount the required field count
    * @throws BadBioEntryException if the entry is malformed
    */
-  public void parse(final String s, final int requiredFieldCount)
-      throws BadBioEntryException {
+  public void parse(final String s, final int requiredFieldCount) throws BadBioEntryException {
 
     if (s == null) {
       throw new NullPointerException("s argument cannot be null");
@@ -702,14 +748,13 @@ public class BEDEntry implements Comparable<BEDEntry> {
     }
 
     switch (fields.get(5)) {
+      case "+":
+      case "-":
+        this.strand = fields.get(5).charAt(0);
+        break;
 
-    case "+":
-    case "-":
-      this.strand = fields.get(5).charAt(0);
-      break;
-
-    default:
-      this.strand = 0;
+      default:
+        this.strand = 0;
     }
 
     if (requiredFieldCount == 6) {
@@ -733,31 +778,28 @@ public class BEDEntry implements Comparable<BEDEntry> {
     int blockCount = parseInt(fields.get(9), -1);
 
     if (blockCount == -1) {
-      throw new BadBioEntryException("Invalid block count: " + fields.get(9),
-          s);
+      throw new BadBioEntryException("Invalid block count: " + fields.get(9), s);
     }
 
     List<Integer> sizes = parseIntList(fields.get(10));
     List<Integer> starts = parseIntList(fields.get(11));
 
     if (starts.size() != blockCount) {
-      throw new BadBioEntryException("Invalid block starts: "
-          + blockCount + "\t" + starts.size() + "\t" + fields.get(10), s);
+      throw new BadBioEntryException(
+          "Invalid block starts: " + blockCount + "\t" + starts.size() + "\t" + fields.get(10), s);
     }
     if (sizes.size() != blockCount) {
-      throw new BadBioEntryException("Invalid block sizes: " + fields.get(11),
-          s);
+      throw new BadBioEntryException("Invalid block sizes: " + fields.get(11), s);
     }
 
     for (int i = 0; i < blockCount; i++) {
-      addBlock(this.start + starts.get(i),
-          this.start + starts.get(i) + sizes.get(i));
+      addBlock(this.start + starts.get(i), this.start + starts.get(i) + sizes.get(i));
     }
-
   }
 
   /**
    * Parse an integer in a String.
+   *
    * @param s String to parse
    * @param defaultValue the default value if the string is null
    * @return the parsed integer
@@ -773,13 +815,13 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Parse coordinates in a String.
+   *
    * @param s the string to parse
    * @param diff the difference between position in string in internal storage
    * @param defaultValue the default value
    * @return the parsed integer
    */
-  private static int parseCoordinate(final String s, final int diff,
-      final int defaultValue) {
+  private static int parseCoordinate(final String s, final int diff, final int defaultValue) {
 
     try {
       return Integer.parseInt(s.trim()) + diff;
@@ -790,6 +832,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Parse integers in a string.
+   *
    * @param s String to parse
    * @return a list with the parsed integers
    */
@@ -813,9 +856,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
   // Other methods
   //
 
-  /**
-   * Clear the entry.
-   */
+  /** Clear the entry. */
   public void clear() {
 
     this.chromosomeName = "";
@@ -828,12 +869,9 @@ public class BEDEntry implements Comparable<BEDEntry> {
     this.thickEnd = -1;
     this.rgbItem = "0";
     this.blocks.clear();
-
   }
 
-  /**
-   * Clear the metadata of the entry.
-   */
+  /** Clear the metadata of the entry. */
   public final void clearMetaData() {
 
     this.metadata.clear();
@@ -841,16 +879,18 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Test if a field count for a bed entry is valid.
+   *
    * @param fieldCount the number of fields of a BED entry
    * @throws IllegalArgumentException if the number of field is invalid
    */
   public static void checkBEDFieldCount(final int fieldCount) {
 
     if (fieldCount < 3
-        || fieldCount > 12 || fieldCount == 7 || fieldCount == 10
+        || fieldCount > 12
+        || fieldCount == 7
+        || fieldCount == 10
         || fieldCount == 11) {
-      throw new IllegalArgumentException(
-          "Invalid required field count: " + fieldCount);
+      throw new IllegalArgumentException("Invalid required field count: " + fieldCount);
     }
   }
 
@@ -858,9 +898,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
   // Constructor
   //
 
-  /**
-   * Public constructor.
-   */
+  /** Public constructor. */
   public BEDEntry() {
 
     this(new EntryMetadata());
@@ -868,6 +906,7 @@ public class BEDEntry implements Comparable<BEDEntry> {
 
   /**
    * Public constructor.
+   *
    * @param metadata entry metadata
    */
   public BEDEntry(EntryMetadata metadata) {
@@ -877,5 +916,4 @@ public class BEDEntry implements Comparable<BEDEntry> {
     this.metadata = metadata;
     clear();
   }
-
 }

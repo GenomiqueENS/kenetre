@@ -33,7 +33,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Objects;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,8 +41,9 @@ import org.junit.Test;
  */
 public class GenomicIntervalTest {
 
-  String gffStr = "chr18\tprotein_coding\texon\t32322743\t32323204\t.\t+\t."
-      + "\tID=exon:ENSMUST00000025242:1; PARENT=ENSMUST00000025242;";
+  String gffStr =
+      "chr18\tprotein_coding\texon\t32322743\t32323204\t.\t+\t."
+          + "\tID=exon:ENSMUST00000025242:1; PARENT=ENSMUST00000025242;";
   GFFEntry gffEnt = new GFFEntry();
   GenomicInterval gi;
 
@@ -144,18 +144,14 @@ public class GenomicIntervalTest {
     // the interval covers "gi"
     assertTrue(gi.intersect(32323300, 32322700));
 
-    assertTrue(
-        gi.intersect(new GenomicInterval("chr18", 32322800, 32322800, '+')));
+    assertTrue(gi.intersect(new GenomicInterval("chr18", 32322800, 32322800, '+')));
     assertFalse(gi.intersect(null));
-    assertFalse(
-        gi.intersect(new GenomicInterval("chr1", 32322800, 32322800, '+')));
-    assertFalse(
-        gi.intersect(new GenomicInterval("chr18", 32322800, 32322800, '-')));
+    assertFalse(gi.intersect(new GenomicInterval("chr1", 32322800, 32322800, '+')));
+    assertFalse(gi.intersect(new GenomicInterval("chr18", 32322800, 32322800, '-')));
+    assertTrue(gi.intersect(new GenomicInterval("chr18", 32322800, 32322800, '.')));
     assertTrue(
-        gi.intersect(new GenomicInterval("chr18", 32322800, 32322800, '.')));
-    assertTrue(new GenomicInterval("chr18", 32322743, 32323204, '.')
-        .intersect(new GenomicInterval("chr18", 32322800, 32322800, '+')));
-
+        new GenomicInterval("chr18", 32322743, 32323204, '.')
+            .intersect(new GenomicInterval("chr18", 32322800, 32322800, '+')));
   }
 
   @Test
@@ -179,25 +175,23 @@ public class GenomicIntervalTest {
     assertEquals(1, gi.intersectLength(1000, 500));
     assertEquals(1, gi.intersectLength(3000, 2000));
 
-    assertEquals(1001,
-        gi.intersectLength(new GenomicInterval("chr18", 1000, 2000, '+')));
+    assertEquals(1001, gi.intersectLength(new GenomicInterval("chr18", 1000, 2000, '+')));
     assertEquals(0, gi.intersectLength(null));
-    assertEquals(0,
-        gi.intersectLength(new GenomicInterval("chr1", 1000, 2000, '+')));
-    assertEquals(0,
-        gi.intersectLength(new GenomicInterval("chr18", 1000, 2000, '-')));
-    assertEquals(1001,
-        gi.intersectLength(new GenomicInterval("chr18", 1000, 2000, '.')));
-    assertEquals(1001, new GenomicInterval("chr18", 1000, 2000, '.')
-        .intersectLength(new GenomicInterval("chr18", 1000, 2000, '+')));
-
+    assertEquals(0, gi.intersectLength(new GenomicInterval("chr1", 1000, 2000, '+')));
+    assertEquals(0, gi.intersectLength(new GenomicInterval("chr18", 1000, 2000, '-')));
+    assertEquals(1001, gi.intersectLength(new GenomicInterval("chr18", 1000, 2000, '.')));
+    assertEquals(
+        1001,
+        new GenomicInterval("chr18", 1000, 2000, '.')
+            .intersectLength(new GenomicInterval("chr18", 1000, 2000, '+')));
   }
 
   @Test
   public void testCompareTo() {
 
-    String str = "chr18\tprotein_coding\texon\t32351555\t32351624\t.\t-\t.\t"
-        + "ID=exon:ENSMUST00000025242:2; PARENT=ENSMUST00000025242; ";
+    String str =
+        "chr18\tprotein_coding\texon\t32351555\t32351624\t.\t-\t.\t"
+            + "ID=exon:ENSMUST00000025242:2; PARENT=ENSMUST00000025242; ";
     GFFEntry gff = new GFFEntry();
     try {
       gff.parseGFF3(str);
@@ -214,8 +208,9 @@ public class GenomicIntervalTest {
     assertTrue(genInt.compareTo(gi) > 0);
     assertEquals(0, gi.compareTo(gi));
 
-    str = "chr19\tprotein_coding\texon\t32351555\t32351624\t.\t-\t.\t"
-        + "ID=exon:ENSMUST00000025242:2; PARENT=ENSMUST00000025242; ";
+    str =
+        "chr19\tprotein_coding\texon\t32351555\t32351624\t.\t-\t.\t"
+            + "ID=exon:ENSMUST00000025242:2; PARENT=ENSMUST00000025242; ";
     gff = new GFFEntry();
     try {
       gff.parseGFF3(str);
@@ -363,8 +358,7 @@ public class GenomicIntervalTest {
   @Test
   public void testHashcode() {
 
-    assertEquals(Objects.hash("chr1", 10, 100, '.'),
-        new GenomicInterval("chr1", 10, 100, '.').hashCode());
+    assertEquals(
+        Objects.hash("chr1", 10, 100, '.'), new GenomicInterval("chr1", 10, 100, '.').hashCode());
   }
-
 }

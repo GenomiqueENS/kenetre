@@ -24,16 +24,16 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.io;
 
+import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 
-import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-
 /**
  * this class implements a FastQ writer.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -61,6 +61,7 @@ public class FastqWriter implements ReadSequenceWriter {
 
   /**
    * Public constructor.
+   *
    * @param writer Writer to use
    */
   public FastqWriter(final Writer writer) {
@@ -74,6 +75,7 @@ public class FastqWriter implements ReadSequenceWriter {
 
   /**
    * Public constructor.
+   *
    * @param os OutputStream to use
    */
   public FastqWriter(final OutputStream os) {
@@ -83,6 +85,7 @@ public class FastqWriter implements ReadSequenceWriter {
 
   /**
    * Public constructor.
+   *
    * @param outputFile file to use
    * @throws IOException if an error occurs while creating the output file
    */
@@ -93,6 +96,7 @@ public class FastqWriter implements ReadSequenceWriter {
 
   /**
    * Public constructor.
+   *
    * @param outputFilename name of the file to use
    * @throws IOException if an error occurs while creating the output file
    */
@@ -100,5 +104,4 @@ public class FastqWriter implements ReadSequenceWriter {
 
     this.writer = FileUtils.createFastBufferedWriter(outputFilename);
   }
-
 }

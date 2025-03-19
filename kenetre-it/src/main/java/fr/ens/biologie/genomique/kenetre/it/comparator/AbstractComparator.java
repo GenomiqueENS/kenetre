@@ -35,6 +35,7 @@ import java.util.Collection;
 
 /**
  * This abstract class define methods to compare files.
+ *
  * @since 2.0
  * @author Sandrine Perrin
  */
@@ -44,15 +45,13 @@ public abstract class AbstractComparator implements Comparator {
   private String causeFailComparison = null;
 
   @Override
-  public boolean compareFiles(final String pathA, final String pathB)
-      throws IOException {
+  public boolean compareFiles(final String pathA, final String pathB) throws IOException {
 
     return compareFiles(new File(pathA), new File(pathB));
   }
 
   @Override
-  public boolean compareFiles(final File fileA, final File fileB)
-      throws IOException {
+  public boolean compareFiles(final File fileA, final File fileB) throws IOException {
 
     // Check input files
     if (!checkFiles(fileA, fileB) && checkFileSize()) {
@@ -73,17 +72,15 @@ public abstract class AbstractComparator implements Comparator {
         InputStream isB = new FileInputStream(fileB)) {
 
       return compareFiles(
-          getCompressionTypeByFilename(fileA.getAbsolutePath())
-              .createInputStream(isA),
-          getCompressionTypeByFilename(fileB.getAbsolutePath())
-              .createInputStream(isB));
+          getCompressionTypeByFilename(fileA.getAbsolutePath()).createInputStream(isA),
+          getCompressionTypeByFilename(fileB.getAbsolutePath()).createInputStream(isB));
     }
   }
 
   /**
    * Test if files size can be used to detect if the two files are not the same.
-   * @return true if the files size can be used to detect if the two files are
-   *         not the same
+   *
+   * @return true if the files size can be used to detect if the two files are not the same
    */
   protected boolean checkFileSize() {
     // TODO to verify interesting to implement
@@ -96,13 +93,13 @@ public abstract class AbstractComparator implements Comparator {
 
   /**
    * Check input files of methods of the class.
+   *
    * @param fileA first file to check
    * @param fileB second file to check
    * @return false if the files does not have the same length
    * @throws IOException if an input file is invalid
    */
-  protected static boolean checkFiles(final File fileA, final File fileB)
-      throws IOException {
+  protected static boolean checkFiles(final File fileA, final File fileB) throws IOException {
 
     checkExistingStandardFile(fileA, fileA.getAbsolutePath());
     checkExistingStandardFile(fileB, fileB.getAbsolutePath());
@@ -121,10 +118,10 @@ public abstract class AbstractComparator implements Comparator {
   }
 
   @Override
-  abstract public Collection<String> getExtensions();
+  public abstract Collection<String> getExtensions();
 
   @Override
-  abstract public String getName();
+  public abstract String getName();
 
   //
   // Getter
@@ -137,8 +134,9 @@ public abstract class AbstractComparator implements Comparator {
 
   @Override
   public void setCauseFailComparison(final String line) {
-    this.causeFailComparison = (this.causeFailComparison == null)
-        ? "[" + line + "]" : this.causeFailComparison + "\n[" + line + "]";
-
+    this.causeFailComparison =
+        (this.causeFailComparison == null)
+            ? "[" + line + "]"
+            : this.causeFailComparison + "\n[" + line + "]";
   }
 }

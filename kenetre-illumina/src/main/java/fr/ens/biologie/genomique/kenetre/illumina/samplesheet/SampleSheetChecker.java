@@ -1,5 +1,6 @@
 package fr.ens.biologie.genomique.kenetre.illumina.samplesheet;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,8 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import fr.ens.biologie.genomique.kenetre.KenetreException;
 
 public class SampleSheetChecker {
 
@@ -23,6 +22,7 @@ public class SampleSheetChecker {
 
   /**
    * Get the maximum sample ID length.
+   *
    * @return the maximum sample ID length
    */
   public int getSampleIdMaxLength() {
@@ -31,6 +31,7 @@ public class SampleSheetChecker {
 
   /**
    * Test if underscore is allowed in sample ID.
+   *
    * @return true if underscore is allowed in sample ID
    */
   public boolean isAllowUnderscoreInSampleID() {
@@ -43,6 +44,7 @@ public class SampleSheetChecker {
 
   /**
    * Set he maximum sample ID length.
+   *
    * @param sampleIdMaxLength the maximum sample ID length
    */
   public void setSampleIdMaxLength(boolean sampleIdMaxLength) {
@@ -52,6 +54,7 @@ public class SampleSheetChecker {
 
   /**
    * Set if underscore is allowed in sample ID.
+   *
    * @param allowUnderscoreInSampleID true if underscore is allowed in sample ID
    */
   public void setAllowUnderscoreInSampleID(boolean allowUnderscoreInSampleID) {
@@ -64,34 +67,33 @@ public class SampleSheetChecker {
 
   /**
    * Check a samplesheet.
+   *
    * @param samplesheet Bcl2fastq samplesheet object to check
    * @return a list of warnings
    * @throws KenetreException if the samplesheet is not valid
    */
-  public List<String> checkSampleSheet(final SampleSheet samplesheet)
-      throws KenetreException {
+  public List<String> checkSampleSheet(final SampleSheet samplesheet) throws KenetreException {
 
     return checkSampleSheet(samplesheet, null);
   }
 
   /**
    * Check a samplesheet.
+   *
    * @param samplesheet the samplesheet
    * @param flowCellId the flow cell id
-   * @param allowUnderscoreInSampleID allow underscore characters in Sample_ID
-   *          fields
+   * @param allowUnderscoreInSampleID allow underscore characters in Sample_ID fields
    * @return the list
    * @throws KenetreException if the samplesheet is not valid
    */
-  public List<String> checkSampleSheet(final SampleSheet samplesheet,
-      final String flowCellId) throws KenetreException {
+  public List<String> checkSampleSheet(final SampleSheet samplesheet, final String flowCellId)
+      throws KenetreException {
 
     if (samplesheet == null) {
       throw new NullPointerException("The samplesheet object is null");
     }
 
-    TableSection table =
-        SampleSheetUtils.getCheckedDemuxTableSection(samplesheet);
+    TableSection table = SampleSheetUtils.getCheckedDemuxTableSection(samplesheet);
 
     if (table.size() == 0) {
       throw new KenetreException("No samples found in the samplesheet.");
@@ -101,14 +103,12 @@ public class SampleSheetChecker {
 
     final List<String> warnings = new ArrayList<String>();
 
-    final Map<Integer, Set<String>> indexes =
-        new HashMap<Integer, Set<String>>();
+    final Map<Integer, Set<String>> indexes = new HashMap<Integer, Set<String>>();
     final Set<String> sampleIds = new HashSet<String>();
     final Set<String> sampleNames = new HashSet<String>();
     final Set<Integer> laneWithIndexes = new HashSet<Integer>();
     final Set<Integer> laneWithoutIndexes = new HashSet<Integer>();
-    final Map<String, Set<Integer>> sampleInLanes =
-        new HashMap<String, Set<Integer>>();
+    final Map<String, Set<Integer>> sampleInLanes = new HashMap<String, Set<Integer>>();
     final Map<String, String> samplesProjects = new HashMap<String, String>();
     final Map<String, String> samplesIndex = new HashMap<String, String>();
 
@@ -124,10 +124,9 @@ public class SampleSheetChecker {
         if (flowCellId != null) {
 
           // Check if the flow cell id is the flow cell id expected
-          if (!flowCellId.trim().toUpperCase()
-              .equals(sampleFCID.toUpperCase())) {
-            throw new KenetreException("Bad flowcell name found: "
-                + sampleFCID + " (" + flowCellId + " expected).");
+          if (!flowCellId.trim().toUpperCase().equals(sampleFCID.toUpperCase())) {
+            throw new KenetreException(
+                "Bad flowcell name found: " + sampleFCID + " (" + flowCellId + " expected).");
           }
         }
       }
@@ -153,18 +152,15 @@ public class SampleSheetChecker {
         checkIndex(sample.getIndex2());
       }
       if (!sample.isIndex1Field() && sample.isIndex2Field()) {
-        warnings.add("Found a column in the samplesheet for index 2 "
-            + "but not for index 1");
+        warnings.add("Found a column in the samplesheet for index 2 " + "but not for index 1");
       }
 
       // Check sample Index
-      checkSampleIndex(sample.getSampleId(), sample.getIndex1(),
-          sample.getIndex2(), samplesIndex);
+      checkSampleIndex(sample.getSampleId(), sample.getIndex1(), sample.getIndex2(), samplesIndex);
 
       // Check the description
       if (sample.isDescriptionField()) {
-        checkSampleDescription(sample.getSampleId(), sample.getDescription(),
-            true, warnings);
+        checkSampleDescription(sample.getSampleId(), sample.getDescription(), true, warnings);
       }
 
       // Check sample project
@@ -179,8 +175,7 @@ public class SampleSheetChecker {
         index = null;
       } else {
 
-        index = sample.getIndex1()
-            + (sample.getIndex2() != null ? '-' + sample.getIndex2() : "");
+        index = sample.getIndex1() + (sample.getIndex2() != null ? '-' + sample.getIndex2() : "");
       }
 
       final int lane = sample.getLane();
@@ -190,14 +185,12 @@ public class SampleSheetChecker {
 
         if (laneWithoutIndexes.contains(lane)) {
           throw new KenetreException(
-              "Found two samples without index for the same lane: "
-                  + lane + ".");
+              "Found two samples without index for the same lane: " + lane + ".");
         }
 
         if (laneWithIndexes.contains(lane)) {
           throw new KenetreException(
-              "Found a lane with indexed and non indexed samples: "
-                  + lane + ".");
+              "Found a lane with indexed and non indexed samples: " + lane + ".");
         }
 
         laneWithoutIndexes.add(lane);
@@ -205,8 +198,7 @@ public class SampleSheetChecker {
 
         if (laneWithoutIndexes.contains(lane)) {
           throw new KenetreException(
-              "Found a lane with indexed and non indexed samples: "
-                  + lane + ".");
+              "Found a lane with indexed and non indexed samples: " + lane + ".");
         }
         laneWithIndexes.add(lane);
       }
@@ -216,8 +208,7 @@ public class SampleSheetChecker {
 
         if (indexes.get(lane).contains(index)) {
           throw new KenetreException(
-              "Found a lane with two time the same index: "
-                  + lane + " (" + index + ").");
+              "Found a lane with two time the same index: " + lane + " (" + index + ").");
         }
 
       } else {
@@ -226,8 +217,13 @@ public class SampleSheetChecker {
 
       // Check sample and project
       if (sample.isSampleProjectField()) {
-        checkSampleAndProject(sample.getSampleId(), sample.getSampleProject(),
-            sample.getLane(), sampleInLanes, samplesProjects, warnings);
+        checkSampleAndProject(
+            sample.getSampleId(),
+            sample.getSampleProject(),
+            sample.getLane(),
+            sampleInLanes,
+            samplesProjects,
+            warnings);
       }
 
       indexes.get(lane).add(index);
@@ -237,8 +233,7 @@ public class SampleSheetChecker {
     checkSampleInLanes(sampleInLanes, warnings);
 
     // Return unique warnings
-    final List<String> result =
-        new ArrayList<String>(new HashSet<String>(warnings));
+    final List<String> result = new ArrayList<String>(new HashSet<String>(warnings));
     Collections.sort(result);
 
     return result;
@@ -246,6 +241,7 @@ public class SampleSheetChecker {
 
   /**
    * Check charset of a string.
+   *
    * @param s the string to check
    * @throws KenetreException if an invalid characted is found
    */
@@ -260,15 +256,14 @@ public class SampleSheetChecker {
       final int c = s.codePointAt(i);
 
       if (c < ' ' || c >= 127) {
-        throw new KenetreException(
-            "Found invalid character '" + (char) c + "' in \"" + s + "\".");
+        throw new KenetreException("Found invalid character '" + (char) c + "' in \"" + s + "\".");
       }
     }
-
   }
 
   /**
    * Check fcid.
+   *
    * @param fcid the fcid
    * @throws KenetreException if the FCID value is invalid
    */
@@ -286,15 +281,14 @@ public class SampleSheetChecker {
       final char c = fcid.charAt(i);
       if (!(Character.isLetterOrDigit(c))) {
         throw new KenetreException(
-            "Invalid flow cell id, only letters or digits are allowed: "
-                + fcid + ".");
+            "Invalid flow cell id, only letters or digits are allowed: " + fcid + ".");
       }
     }
-
   }
 
   /**
    * Check sample id.
+   *
    * @param sampleId the sample id
    * @param sampleIds the sample ids
    * @throws KenetreException if the sample id is invalid
@@ -314,15 +308,18 @@ public class SampleSheetChecker {
     if (hasForbiddenCharacter(sampleId, this.allowUnderscoreInSampleID)) {
       throw new KenetreException(
           "Invalid sample id, only letters, digits, '-' or '_' characters are allowed: "
-              + sampleId + ".");
+              + sampleId
+              + ".");
     }
 
     // Check the length of the Id
-    if (this.sampleIdMaxLength > 0
-        && sampleId.length() > this.sampleIdMaxLength) {
+    if (this.sampleIdMaxLength > 0 && sampleId.length() > this.sampleIdMaxLength) {
       throw new KenetreException(
           "Invalid sample id, a valid id cannot be longuer than "
-              + this.sampleIdMaxLength + " characters: " + sampleId + ".");
+              + this.sampleIdMaxLength
+              + " characters: "
+              + sampleId
+              + ".");
     }
 
     sampleIds.add(sampleId);
@@ -330,22 +327,20 @@ public class SampleSheetChecker {
 
   /**
    * Check if a string has a forbidden character in samplesheet
+   *
    * @param s the string to test
    * @param allowUnderscoreInSampleID allow underscore characters
    * @return true if a forbidden character is found
    */
-  public static boolean hasForbiddenCharacter(String s,
-      boolean allowUnderscoreInSampleID) {
+  public static boolean hasForbiddenCharacter(String s, boolean allowUnderscoreInSampleID) {
 
     for (int i = 0; i < s.length(); i++) {
 
       final char c = s.charAt(i);
 
-      if (!(Character.isLetterOrDigit(c)
-          || (c == '_' && !allowUnderscoreInSampleID) || c == '-')) {
+      if (!(Character.isLetterOrDigit(c) || (c == '_' && !allowUnderscoreInSampleID) || c == '-')) {
 
         return true;
-
       }
     }
 
@@ -354,13 +349,17 @@ public class SampleSheetChecker {
 
   /**
    * Check sample name.
+   *
    * @param sampleName the sample name
    * @param sampleNames the sample names
    * @throws KenetreException if the sample name is invalid
    */
-  private void checkSampleName(final String sampleName,
-      final Set<String> sampleNames, Boolean isBcl2Fastq2,
-      final List<String> warnings) throws KenetreException {
+  private void checkSampleName(
+      final String sampleName,
+      final Set<String> sampleNames,
+      Boolean isBcl2Fastq2,
+      final List<String> warnings)
+      throws KenetreException {
 
     if (isNullOrEmpty(sampleName)) {
 
@@ -369,7 +368,6 @@ public class SampleSheetChecker {
 
       } else {
         warnings.add("Empty or null Sample Name detected.");
-
       }
     }
     // Check charset
@@ -379,7 +377,8 @@ public class SampleSheetChecker {
     if (hasForbiddenCharacter(sampleName, allowUnderscoreInSampleID)) {
       throw new KenetreException(
           "Invalid sample id, only letters, digits, '-' or '_' characters are allowed : "
-              + sampleName + ".");
+              + sampleName
+              + ".");
     }
 
     sampleNames.add(sampleName);
@@ -387,18 +386,18 @@ public class SampleSheetChecker {
 
   /**
    * Check sample ref.
+   *
    * @param sampleId the sample id
    * @param sampleRef the sample ref
    * @throws KenetreException if the sample ref is invalid
    */
-  private static void checkSampleRef(final String sampleId,
-      final String sampleRef) throws KenetreException {
+  private static void checkSampleRef(final String sampleId, final String sampleRef)
+      throws KenetreException {
 
     // Check if null of empty
     if (isNullOrEmpty(sampleRef)) {
       throw new KenetreException(
-          "Found a null or empty sample reference for sample: "
-              + sampleId + ".");
+          "Found a null or empty sample reference for sample: " + sampleId + ".");
     }
 
     // Check charset
@@ -410,13 +409,15 @@ public class SampleSheetChecker {
       if (!(Character.isLetterOrDigit(c) || c == ' ' || c == '-' || c == '_')) {
         throw new KenetreException(
             "Invalid sample reference, only letters, digits, ' ', '-' or '_' characters are allowed: "
-                + sampleRef + ".");
+                + sampleRef
+                + ".");
       }
     }
   }
 
   /**
    * Check index.
+   *
    * @param index the index
    * @throws KenetreException the index is invalid
    */
@@ -428,44 +429,44 @@ public class SampleSheetChecker {
 
     for (int i = 0; i < index.length(); i++) {
       switch (index.codePointAt(i)) {
+        case 'A':
+        case 'a':
+        case 'T':
+        case 't':
+        case 'G':
+        case 'g':
+        case 'C':
+        case 'c':
+          break;
 
-      case 'A':
-      case 'a':
-      case 'T':
-      case 't':
-      case 'G':
-      case 'g':
-      case 'C':
-      case 'c':
-        break;
-
-      default:
-        throw new KenetreException("Invalid index found: " + index + ".");
+        default:
+          throw new KenetreException("Invalid index found: " + index + ".");
       }
     }
-
   }
 
   /**
    * Check sample description.
+   *
    * @param sampleId the sample id
    * @param sampleDescription the sample description
    * @throws KenetreException if the sample description is invalid
    */
-  private static void checkSampleDescription(final String sampleId,
-      final String sampleDescription, Boolean isBcl2Fastq2,
-      final List<String> warnings) throws KenetreException {
+  private static void checkSampleDescription(
+      final String sampleId,
+      final String sampleDescription,
+      Boolean isBcl2Fastq2,
+      final List<String> warnings)
+      throws KenetreException {
 
     // Check if null of empty
     if (isNullOrEmpty(sampleDescription)) {
 
       if (!isBcl2Fastq2) {
-        throw new KenetreException(
-            "Found a null or empty description for sample: " + sampleId);
+        throw new KenetreException("Found a null or empty description for sample: " + sampleId);
 
       } else {
-        warnings
-            .add("Found a null or empty description for sample: " + sampleId);
+        warnings.add("Found a null or empty description for sample: " + sampleId);
       }
     }
 
@@ -476,19 +477,23 @@ public class SampleSheetChecker {
     for (int i = 0; i < sampleDescription.length(); i++) {
       final char c = sampleDescription.charAt(i);
       if (c == '\'' || c == '\"') {
-        throw new KenetreException("Invalid sample description, '"
-            + c + "' character is not allowed: " + sampleDescription + ".");
+        throw new KenetreException(
+            "Invalid sample description, '"
+                + c
+                + "' character is not allowed: "
+                + sampleDescription
+                + ".");
       }
     }
   }
 
   /**
    * Check sample project.
+   *
    * @param sampleProject the sample project
    * @throws KenetreException if the sample project is invalid
    */
-  private static void checkSampleProject(final String sampleProject)
-      throws KenetreException {
+  private static void checkSampleProject(final String sampleProject) throws KenetreException {
 
     // Check if null of empty
     if (isNullOrEmpty(sampleProject)) {
@@ -501,13 +506,15 @@ public class SampleSheetChecker {
       if (!(Character.isLetterOrDigit(c) || c == '-' || c == '_')) {
         throw new KenetreException(
             "Invalid sample project, only letters, digits, '-' or '_' characters are allowed: "
-                + sampleProject + ".");
+                + sampleProject
+                + ".");
       }
     }
   }
 
   /**
    * Check sample and project.
+   *
    * @param sampleId the sample id
    * @param projectName the project name
    * @param lane the lane
@@ -516,10 +523,13 @@ public class SampleSheetChecker {
    * @param warnings the warnings
    * @throws KenetreException if the sample and/or project is invalid
    */
-  private static void checkSampleAndProject(final String sampleId,
-      final String projectName, final int lane,
+  private static void checkSampleAndProject(
+      final String sampleId,
+      final String projectName,
+      final int lane,
       final Map<String, Set<Integer>> sampleInLanes,
-      final Map<String, String> samplesProjects, final List<String> warnings)
+      final Map<String, String> samplesProjects,
+      final List<String> warnings)
       throws KenetreException {
 
     // Check if two or more project use the same sample
@@ -540,8 +550,8 @@ public class SampleSheetChecker {
     }
 
     if (lanes.contains(lane)) {
-      warnings.add("The sample \""
-          + sampleId + "\" exists two or more times in the lane " + lane + ".");
+      warnings.add(
+          "The sample \"" + sampleId + "\" exists two or more times in the lane " + lane + ".");
     }
 
     lanes.add(lane);
@@ -549,12 +559,12 @@ public class SampleSheetChecker {
 
   /**
    * Check sample in lanes.
+   *
    * @param sampleInLanes the sample in lanes
    * @param warnings the warnings
    */
   private static void checkSampleInLanes(
-      final Map<String, Set<Integer>> sampleInLanes,
-      final List<String> warnings) {
+      final Map<String, Set<Integer>> sampleInLanes, final List<String> warnings) {
 
     for (Map.Entry<String, Set<Integer>> e : sampleInLanes.entrySet()) {
 
@@ -588,14 +598,18 @@ public class SampleSheetChecker {
 
   /**
    * Check sample index.
+   *
    * @param sampleName the sample name
    * @param index1 the first index * @param index2 the second index
    * @param samplesIndex the samples index
    * @throws KenetreException if the sample index is invalid
    */
-  private static void checkSampleIndex(final String sampleName,
-      final String index1, final String index2,
-      final Map<String, String> samplesIndex) throws KenetreException {
+  private static void checkSampleIndex(
+      final String sampleName,
+      final String index1,
+      final String index2,
+      final Map<String, String> samplesIndex)
+      throws KenetreException {
 
     if (index1 == null) {
       return;
@@ -603,11 +617,11 @@ public class SampleSheetChecker {
 
     final String key = index1 + (index2 != null ? '-' + index2 : "");
 
-    if (samplesIndex.containsKey(sampleName)
-        && !samplesIndex.get(sampleName).equals(key)) {
-      throw new KenetreException("The sample \""
-          + sampleName
-          + "\" is defined in several lanes but without the same index.");
+    if (samplesIndex.containsKey(sampleName) && !samplesIndex.get(sampleName).equals(key)) {
+      throw new KenetreException(
+          "The sample \""
+              + sampleName
+              + "\" is defined in several lanes but without the same index.");
     }
 
     samplesIndex.put(sampleName, key);
@@ -619,6 +633,7 @@ public class SampleSheetChecker {
 
   /**
    * Test if a string is null or empty.
+   *
    * @param s string to test
    * @return true if the input string is null or empty
    */
@@ -626,5 +641,4 @@ public class SampleSheetChecker {
 
     return s == null || s.isEmpty();
   }
-
 }

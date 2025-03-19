@@ -24,26 +24,23 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.io;
 
+import fr.ens.biologie.genomique.kenetre.bio.Sequence;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Iterator;
 
-import fr.ens.biologie.genomique.kenetre.bio.Sequence;
-
 /**
  * This interface define methods to implements for SequenceReader.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
-public interface SequenceReader
-    extends Iterator<Sequence>, Iterable<Sequence>, Closeable {
+public interface SequenceReader extends Iterator<Sequence>, Iterable<Sequence>, Closeable {
 
   /**
-   * Throw an exception if an exception has been caught while last hasNext()
-   * method call.
-   * @throws IOException if an exception has been caught while last hasNext()
-   *           method call
+   * Throw an exception if an exception has been caught while last hasNext() method call.
+   *
+   * @throws IOException if an exception has been caught while last hasNext() method call
    */
   void throwException() throws IOException;
-
 }

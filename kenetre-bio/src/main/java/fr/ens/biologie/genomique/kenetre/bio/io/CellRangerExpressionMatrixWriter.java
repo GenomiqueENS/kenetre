@@ -9,6 +9,8 @@ import static fr.ens.biologie.genomique.kenetre.bio.io.CellRangerExpressionMatri
 import static fr.ens.biologie.genomique.kenetre.bio.io.CellRangerExpressionMatrixReader.MATRIX_V2_FILENAME;
 import static fr.ens.biologie.genomique.kenetre.bio.io.CellRangerExpressionMatrixReader.checkCellRangerFormatVersion;
 
+import fr.ens.biologie.genomique.kenetre.bio.AnnotationMatrix;
+import fr.ens.biologie.genomique.kenetre.bio.ExpressionMatrix;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -23,16 +25,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.zip.GZIPOutputStream;
 
-import fr.ens.biologie.genomique.kenetre.bio.AnnotationMatrix;
-import fr.ens.biologie.genomique.kenetre.bio.ExpressionMatrix;
-
 /**
  * This class define a writer to save matrix saved in Cell Ranger format.
+ *
  * @author Laurent Jourdren
  * @since 2.4
  */
-public class CellRangerExpressionMatrixWriter
-    extends MarketMatrixExpressionMatrixWriter {
+public class CellRangerExpressionMatrixWriter extends MarketMatrixExpressionMatrixWriter {
 
   public static final String DEFAULT_FEATURE_TYPE = "Gene Expression";
 
@@ -42,8 +41,8 @@ public class CellRangerExpressionMatrixWriter
   private final String featureType;
 
   @Override
-  public void write(final ExpressionMatrix matrix,
-      final Collection<String> rowNamesToWrite) throws IOException {
+  public void write(final ExpressionMatrix matrix, final Collection<String> rowNamesToWrite)
+      throws IOException {
 
     // Write matrix
     super.write(matrix, rowNamesToWrite);
@@ -57,6 +56,7 @@ public class CellRangerExpressionMatrixWriter
 
   /**
    * Write barcodes.
+   *
    * @param matrix the matrix
    * @throws IOException if an error occurs while writing the barcodes
    */
@@ -72,11 +72,12 @@ public class CellRangerExpressionMatrixWriter
 
   /**
    * Write features.
+   *
    * @param matrix the matrix
    * @throws IOException if an error occurs while writing the features
    */
-  private void writeFeatures(final ExpressionMatrix matrix,
-      final Collection<String> rowNamesToWrite) throws IOException {
+  private void writeFeatures(
+      final ExpressionMatrix matrix, final Collection<String> rowNamesToWrite) throws IOException {
 
     try (Writer writer = createWriter(this.featuresFile)) {
 
@@ -85,22 +86,22 @@ public class CellRangerExpressionMatrixWriter
         if (rowNamesToWrite.contains(geneName)) {
 
           String alias = this.geneAliases.get(geneName);
-          writer.write(geneName
-              + '\t' + (alias == null ? "" : alias)
-              + (this.featureType != null ? ("\t" + this.featureType) : "")
-              + '\n');
+          writer.write(
+              geneName
+                  + '\t'
+                  + (alias == null ? "" : alias)
+                  + (this.featureType != null ? ("\t" + this.featureType) : "")
+                  + '\n');
         }
       }
     }
   }
 
   private static Map<String, String> extractGeneAliases(
-      final AnnotationMatrix annotation, final String geneAliasesField)
-      throws IOException {
+      final AnnotationMatrix annotation, final String geneAliasesField) throws IOException {
 
     Objects.requireNonNull(annotation, "annotation parameter cannot be null");
-    Objects.requireNonNull(geneAliasesField,
-        "geneAliasesField parameter cannot be null");
+    Objects.requireNonNull(geneAliasesField, "geneAliasesField parameter cannot be null");
 
     if (!annotation.containsColumn(geneAliasesField)) {
       throw new IOException("Unknown field in annotation: " + geneAliasesField);
@@ -116,8 +117,8 @@ public class CellRangerExpressionMatrixWriter
   }
 
   /**
-   * Create a writer that can writer GZipped files if filename ends with ".gz"
-   * extension.
+   * Create a writer that can writer GZipped files if filename ends with ".gz" extension.
+   *
    * @param file the file to write
    * @return a BufferedReader object
    * @throws IOException if an error occurs while creating the writer
@@ -126,8 +127,7 @@ public class CellRangerExpressionMatrixWriter
 
     if (file.getName().endsWith(".gz")) {
 
-      return new OutputStreamWriter(
-          new GZIPOutputStream(new FileOutputStream(file)));
+      return new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(file)));
     }
 
     return new FileWriter(file, Charset.defaultCharset());
@@ -139,25 +139,25 @@ public class CellRangerExpressionMatrixWriter
 
   /**
    * Public constructor
+   *
    * @param directory CellRanger matrix directory
    * @throws IOException if an error occurs while reading the TSV files
    */
-  public CellRangerExpressionMatrixWriter(final File directory)
-      throws IOException {
+  public CellRangerExpressionMatrixWriter(final File directory) throws IOException {
 
     this(directory, DEFAULT_CELL_RANGER_FORMAT);
   }
 
   /**
    * Public constructor
+   *
    * @param directory CellRanger matrix directory
    * @param annotation the annotation matrix
-   * @param annotationField the field of the annotation matrix that contains the
-   *          gene aliases
+   * @param annotationField the field of the annotation matrix that contains the gene aliases
    * @throws IOException if an error occurs while reading the TSV files
    */
-  public CellRangerExpressionMatrixWriter(final File directory,
-      final AnnotationMatrix annotation, final String annotationField)
+  public CellRangerExpressionMatrixWriter(
+      final File directory, final AnnotationMatrix annotation, final String annotationField)
       throws IOException {
 
     this(directory, annotation, annotationField, DEFAULT_CELL_RANGER_FORMAT);
@@ -165,90 +165,104 @@ public class CellRangerExpressionMatrixWriter
 
   /**
    * Public constructor
+   *
    * @param directory CellRanger matrix directory
    * @param geneAliases gene aliases
    * @throws IOException if an error occurs while reading the TSV files
    */
-  public CellRangerExpressionMatrixWriter(final File directory,
-      final Map<String, String> geneAliases) throws IOException {
+  public CellRangerExpressionMatrixWriter(
+      final File directory, final Map<String, String> geneAliases) throws IOException {
 
     this(directory, geneAliases, DEFAULT_CELL_RANGER_FORMAT, null);
   }
 
   /**
    * Public constructor
+   *
    * @param directory CellRanger matrix directory
    * @param formatVersion Cell Ranger format version
    * @throws IOException if an error occurs while reading the TSV files
    */
-  public CellRangerExpressionMatrixWriter(final File directory,
-      final int formatVersion) throws IOException {
+  public CellRangerExpressionMatrixWriter(final File directory, final int formatVersion)
+      throws IOException {
 
     this(directory, Collections.emptyMap(), formatVersion, null);
   }
 
   /**
    * Public constructor
+   *
    * @param directory CellRanger matrix directory
    * @param annotation the annotation matrix
-   * @param annotationField the field of the annotation matrix that contains the
-   *          gene aliases
+   * @param annotationField the field of the annotation matrix that contains the gene aliases
    * @param formatVersion Cell Ranger format version
    * @throws IOException if an error occurs while reading the TSV files
    */
-  public CellRangerExpressionMatrixWriter(final File directory,
-      final AnnotationMatrix annotation, final String annotationField,
-      final int formatVersion) throws IOException {
+  public CellRangerExpressionMatrixWriter(
+      final File directory,
+      final AnnotationMatrix annotation,
+      final String annotationField,
+      final int formatVersion)
+      throws IOException {
 
     this(directory, annotation, annotationField, formatVersion, null);
   }
 
   /**
    * Public constructor
+   *
    * @param directory CellRanger matrix directory
    * @param annotation the annotation matrix
-   * @param annotationField the field of the annotation matrix that contains the
-   *          gene aliases
+   * @param annotationField the field of the annotation matrix that contains the gene aliases
    * @param formatVersion Cell Ranger format version
-   * @param featureType feature type, the value of the third column of
-   *          features.tsv.gz file
+   * @param featureType feature type, the value of the third column of features.tsv.gz file
    * @throws IOException if an error occurs while reading the TSV files
    */
-  public CellRangerExpressionMatrixWriter(final File directory,
-      final AnnotationMatrix annotation, final String annotationField,
-      final int formatVersion, final String featureType) throws IOException {
+  public CellRangerExpressionMatrixWriter(
+      final File directory,
+      final AnnotationMatrix annotation,
+      final String annotationField,
+      final int formatVersion,
+      final String featureType)
+      throws IOException {
 
-    this(directory, extractGeneAliases(annotation, annotationField),
-        formatVersion, featureType);
+    this(directory, extractGeneAliases(annotation, annotationField), formatVersion, featureType);
   }
 
   /**
    * Public constructor
+   *
    * @param directory CellRanger matrix directory
    * @param geneAliases gene aliases
    * @param formatVersion format version
-   * @param featureType feature type, the value of the third column of
-   *          features.tsv.gz file
+   * @param featureType feature type, the value of the third column of features.tsv.gz file
    * @throws IOException if an error occurs while reading the TSV files
    */
-  public CellRangerExpressionMatrixWriter(final File directory,
-      final Map<String, String> geneAliases, final int formatVersion,
-      final String featureType) throws IOException {
+  public CellRangerExpressionMatrixWriter(
+      final File directory,
+      final Map<String, String> geneAliases,
+      final int formatVersion,
+      final String featureType)
+      throws IOException {
 
-    super(new File(directory, checkCellRangerFormatVersion(formatVersion) == 2
-        ? MATRIX_V2_FILENAME : MATRIX_FILENAME));
+    super(
+        new File(
+            directory,
+            checkCellRangerFormatVersion(formatVersion) == 2
+                ? MATRIX_V2_FILENAME
+                : MATRIX_FILENAME));
 
     Objects.requireNonNull(geneAliases, "geneAliases parameter cannot be null");
 
-    this.featureType = formatVersion == 1
-        ? null
-        : (featureType == null ? DEFAULT_FEATURE_TYPE : featureType.trim());
+    this.featureType =
+        formatVersion == 1
+            ? null
+            : (featureType == null ? DEFAULT_FEATURE_TYPE : featureType.trim());
 
-    this.featuresFile = new File(directory,
-        formatVersion == 2 ? GENES_V2_FILENAME : GENES_FILENAME);
-    this.barcodesFile = new File(directory,
-        formatVersion == 2 ? BARCODES_V2_FILENAME : BARCODES_FILENAME);
+    this.featuresFile =
+        new File(directory, formatVersion == 2 ? GENES_V2_FILENAME : GENES_FILENAME);
+    this.barcodesFile =
+        new File(directory, formatVersion == 2 ? BARCODES_V2_FILENAME : BARCODES_FILENAME);
     this.geneAliases = geneAliases;
   }
-
 }

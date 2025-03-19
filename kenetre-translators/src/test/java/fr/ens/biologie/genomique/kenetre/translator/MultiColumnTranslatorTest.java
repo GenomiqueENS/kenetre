@@ -7,7 +7,6 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.Test;
 
 public class MultiColumnTranslatorTest {
@@ -18,8 +17,7 @@ public class MultiColumnTranslatorTest {
   private static final String[] ARRAY_ROW_THREE = {"C", "3.0", "C3", "0"};
   private static final String[] ARRAY_ROW_FOUR = {"D", "4", "D4", "0"};
   private static final String[] ARRAY_ROW_FIVE = {"E", "4", "D4"};
-  private final MultiColumnTranslator transl =
-      new MultiColumnTranslator(ARRAY_FIELD);
+  private final MultiColumnTranslator transl = new MultiColumnTranslator(ARRAY_FIELD);
 
   @Test
   public void testAddRow() {
@@ -45,7 +43,6 @@ public class MultiColumnTranslatorTest {
     assertEquals("Col2", fields.get(0));
     assertEquals("Col3", fields.get(1));
     assertEquals("Col4", fields.get(2));
-
   }
 
   @Test
@@ -77,5 +74,4 @@ public class MultiColumnTranslatorTest {
       assertTrue(true);
     }
   }
-
 }

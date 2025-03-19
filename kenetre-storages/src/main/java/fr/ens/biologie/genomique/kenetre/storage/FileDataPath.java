@@ -26,6 +26,8 @@ package fr.ens.biologie.genomique.kenetre.storage;
 
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.io.CompressionType;
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,12 +41,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import fr.ens.biologie.genomique.kenetre.io.CompressionType;
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-
 /**
- * This class define a bridge between Kenetre DataPath objects and Java File
- * objects.
+ * This class define a bridge between Kenetre DataPath objects and Java File objects.
+ *
  * @since 2.6
  * @author Laurent Jourdren
  */
@@ -72,8 +71,7 @@ public class FileDataPath implements DataPath, Comparable<FileDataPath> {
   @Override
   public InputStream open() throws IOException {
 
-    CompressionType ct =
-        CompressionType.getCompressionTypeByFilename(this.file.getName());
+    CompressionType ct = CompressionType.getCompressionTypeByFilename(this.file.getName());
 
     return ct.createInputStream(rawOpen());
   }
@@ -87,8 +85,7 @@ public class FileDataPath implements DataPath, Comparable<FileDataPath> {
   @Override
   public OutputStream create() throws IOException {
 
-    CompressionType ct =
-        CompressionType.getCompressionTypeByFilename(this.file.getName());
+    CompressionType ct = CompressionType.getCompressionTypeByFilename(this.file.getName());
 
     return ct.createOutputStream(rawCreate());
   }
@@ -212,6 +209,7 @@ public class FileDataPath implements DataPath, Comparable<FileDataPath> {
 
   /**
    * Constructor.
+   *
    * @param source source of the file
    */
   public FileDataPath(String source) {
@@ -223,6 +221,7 @@ public class FileDataPath implements DataPath, Comparable<FileDataPath> {
 
   /**
    * Constructor.
+   *
    * @param file file object to wrap
    */
   public FileDataPath(File file) {
@@ -234,6 +233,7 @@ public class FileDataPath implements DataPath, Comparable<FileDataPath> {
 
   /**
    * Constructor.
+   *
    * @param parent parent file
    * @param filename filename
    */
@@ -250,5 +250,4 @@ public class FileDataPath implements DataPath, Comparable<FileDataPath> {
 
     this.file = new File(p.file, filename);
   }
-
 }

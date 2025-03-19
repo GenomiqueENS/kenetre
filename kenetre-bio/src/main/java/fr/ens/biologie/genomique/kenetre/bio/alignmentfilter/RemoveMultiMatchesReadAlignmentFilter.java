@@ -24,19 +24,17 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.alignmentfilter;
 
+import htsjdk.samtools.SAMRecord;
 import java.util.List;
 
-import htsjdk.samtools.SAMRecord;
-
 /**
- * This alignments filter remove all the alignments if more there is more one
- * alignments for a read.
+ * This alignments filter remove all the alignments if more there is more one alignments for a read.
+ *
  * @since 1.1
  * @author Laurent Jourdren
  * @author Claire Wallon
  */
-public class RemoveMultiMatchesReadAlignmentFilter
-    extends AbstractReadAlignmentFilter {
+public class RemoveMultiMatchesReadAlignmentFilter extends AbstractReadAlignmentFilter {
 
   public static final String FILTER_NAME = "removemultimatches";
 
@@ -70,35 +68,32 @@ public class RemoveMultiMatchesReadAlignmentFilter
     else {
 
       switch (records.size()) {
+        case 1:
+          return;
 
-      case 1:
-        return;
+        case 2:
+          int countFirstInPair = 0;
+          int countSecondInPair = 0;
 
-      case 2:
+          for (SAMRecord record : records) {
 
-        int countFirstInPair = 0;
-        int countSecondInPair = 0;
-
-        for (SAMRecord record : records) {
-
-          if (record.getFirstOfPairFlag()) {
-            countFirstInPair++;
-          } else if (record.getSecondOfPairFlag()) {
-            countSecondInPair++;
+            if (record.getFirstOfPairFlag()) {
+              countFirstInPair++;
+            } else if (record.getSecondOfPairFlag()) {
+              countSecondInPair++;
+            }
           }
-        }
 
-        if (countFirstInPair > 1 || countSecondInPair > 1) {
+          if (countFirstInPair > 1 || countSecondInPair > 1) {
+            records.clear();
+          }
+
+          break;
+
+        default:
           records.clear();
-        }
-
-        break;
-
-      default:
-        records.clear();
-        break;
+          break;
       }
-
     }
   }
 
@@ -107,5 +102,4 @@ public class RemoveMultiMatchesReadAlignmentFilter
 
     return this.getClass().getSimpleName() + "{name=" + getName() + "}";
   }
-
 }

@@ -2,6 +2,10 @@ package fr.ens.biologie.genomique.kenetre.bio.io;
 
 import static fr.ens.biologie.genomique.kenetre.bio.io.BioCharsets.BED_CHARSET;
 
+import fr.ens.biologie.genomique.kenetre.bio.BEDEntry;
+import fr.ens.biologie.genomique.kenetre.bio.BadBioEntryException;
+import fr.ens.biologie.genomique.kenetre.bio.EntryMetadata;
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
@@ -12,18 +16,13 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import fr.ens.biologie.genomique.kenetre.bio.BEDEntry;
-import fr.ens.biologie.genomique.kenetre.bio.BadBioEntryException;
-import fr.ens.biologie.genomique.kenetre.bio.EntryMetadata;
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-
 /**
  * This class defines a BED reader.
+ *
  * @since 2.3
  * @author Laurent Jourdren
  */
-public class BEDReader
-    implements Iterator<BEDEntry>, Iterable<BEDEntry>, Closeable {
+public class BEDReader implements Iterator<BEDEntry>, Iterable<BEDEntry>, Closeable {
 
   private final BufferedReader reader;
   private BEDEntry result = null;
@@ -109,6 +108,7 @@ public class BEDReader
 
   /**
    * Close the stream.
+   *
    * @throws IOException if an error occurs while closing the file
    */
   @Override
@@ -118,10 +118,9 @@ public class BEDReader
   }
 
   /**
-   * Throw an exception if an exception has been caught while last hasNext()
-   * method call.
-   * @throws IOException if an exception has been caught while last hasNext()
-   *           method call
+   * Throw an exception if an exception has been caught while last hasNext() method call.
+   *
+   * @throws IOException if an exception has been caught while last hasNext() method call
    * @throws BadBioEntryException if the last entry is not valid
    */
   public void throwException() throws IOException, BadBioEntryException {
@@ -141,6 +140,7 @@ public class BEDReader
 
   /**
    * Public constructor
+   *
    * @param is InputStream to use
    */
   public BEDReader(final InputStream is) {
@@ -154,6 +154,7 @@ public class BEDReader
 
   /**
    * Public constructor
+   *
    * @param file File to use
    * @throws FileNotFoundException if the file is not found
    */
@@ -168,6 +169,7 @@ public class BEDReader
 
   /**
    * Public constructor.
+   *
    * @param filename File to use
    * @throws FileNotFoundException if the file is not found
    */
@@ -175,5 +177,4 @@ public class BEDReader
 
     this.reader = FileUtils.createBufferedReader(filename, BED_CHARSET);
   }
-
 }

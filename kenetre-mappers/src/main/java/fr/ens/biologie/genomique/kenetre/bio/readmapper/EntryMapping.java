@@ -26,16 +26,16 @@ package fr.ens.biologie.genomique.kenetre.bio.readmapper;
 
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.bio.FastqFormat;
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
+import fr.ens.biologie.genomique.kenetre.util.ReporterIncrementer;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import fr.ens.biologie.genomique.kenetre.bio.FastqFormat;
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-import fr.ens.biologie.genomique.kenetre.util.ReporterIncrementer;
-
 /**
  * This class define a mapping.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -56,6 +56,7 @@ public class EntryMapping {
 
   /**
    * Get the FASTQ format.
+   *
    * @return the mapper arguments
    */
   public FastqFormat getFastqFormat() {
@@ -64,6 +65,7 @@ public class EntryMapping {
 
   /**
    * Get the mapper arguments.
+   *
    * @return the mapper arguments
    */
   public List<String> getMapperArguments() {
@@ -72,6 +74,7 @@ public class EntryMapping {
 
   /**
    * Get the number of threads to use.
+   *
    * @return the number of threads to use
    */
   public int getThreadNumber() {
@@ -80,6 +83,7 @@ public class EntryMapping {
 
   /**
    * Test if multiple instances is enabled.
+   *
    * @return true if multiple instances is enabled
    */
   public boolean isMultipleInstancesEnabled() {
@@ -88,6 +92,7 @@ public class EntryMapping {
 
   /**
    * Get the name of the mapper
+   *
    * @return the name of the mapper
    */
   public String getName() {
@@ -96,6 +101,7 @@ public class EntryMapping {
 
   /**
    * Get the mapper version.
+   *
    * @return a string with the version of the mapper
    */
   public String getVersion() {
@@ -104,6 +110,7 @@ public class EntryMapping {
 
   /**
    * Get the mapper flavor.
+   *
    * @return a string with the flavor of the mapper
    */
   public String getFlavor() {
@@ -112,6 +119,7 @@ public class EntryMapping {
 
   /**
    * Get the temporary directory to use by the mapper.
+   *
    * @return the temporary directory to use by the mapper
    */
   public File getTemporaryDirectory() {
@@ -120,6 +128,7 @@ public class EntryMapping {
 
   /**
    * Get the executor.
+   *
    * @return the executor
    */
   public MapperExecutor getExecutor() {
@@ -128,6 +137,7 @@ public class EntryMapping {
 
   /**
    * Get the index directory.
+   *
    * @return the index output directory
    */
   public File getIndexDirectory() {
@@ -136,6 +146,7 @@ public class EntryMapping {
 
   /**
    * Get the provider of the mapper.
+   *
    * @return the provider of the mapper
    */
   protected MapperProvider getProvider() {
@@ -144,6 +155,7 @@ public class EntryMapping {
 
   /**
    * Get the mapper instance.
+   *
    * @return the mapper instance
    */
   public MapperInstance getMapperInstance() {
@@ -156,6 +168,7 @@ public class EntryMapping {
 
   /**
    * Map in single-end mode.
+   *
    * @return a MapperProcess process
    * @throws IOException if an error occurs while starting the mapping
    */
@@ -166,20 +179,18 @@ public class EntryMapping {
 
   /**
    * Map in single-end mode.
+   *
    * @param errorFile standard error file
    * @param logFile log file
    * @return a MapperProcess process
    * @throws IOException if an error occurs while starting the mapping
    */
-  public MapperProcess mapSE(final File errorFile, final File logFile)
-      throws IOException {
+  public MapperProcess mapSE(final File errorFile, final File logFile) throws IOException {
 
-    this.logger.debug("Mapping with "
-        + this.mapperIndex.getMapperName() + " in single-end mode");
+    this.logger.debug("Mapping with " + this.mapperIndex.getMapperName() + " in single-end mode");
 
     // Process to mapping
-    final MapperProcess result =
-        getProvider().mapSE(this, null, errorFile, logFile);
+    final MapperProcess result = getProvider().mapSE(this, null, errorFile, logFile);
 
     // Set counter
     result.setIncrementer(this.incrementer, this.counterGroup);
@@ -192,6 +203,7 @@ public class EntryMapping {
 
   /**
    * Map in paired-end mode.
+   *
    * @return a MapperProcess process
    * @throws IOException if an error occurs while starting the mapping
    */
@@ -202,20 +214,18 @@ public class EntryMapping {
 
   /**
    * Map in paired-end mode.
+   *
    * @param errorFile standard error file
    * @param logFile log file
    * @return a MapperProcess process
    * @throws IOException if an error occurs while starting the mapping
    */
-  public MapperProcess mapPE(final File errorFile, final File logFile)
-      throws IOException {
+  public MapperProcess mapPE(final File errorFile, final File logFile) throws IOException {
 
-    this.logger.debug("Mapping with "
-        + this.mapperIndex.getMapperName() + " in paired-end mode");
+    this.logger.debug("Mapping with " + this.mapperIndex.getMapperName() + " in paired-end mode");
 
     // Process to mapping
-    final MapperProcess result =
-        getProvider().mapPE(this, null, null, errorFile, logFile);
+    final MapperProcess result = getProvider().mapPE(this, null, null, errorFile, logFile);
 
     // Set counter
     result.setIncrementer(this.incrementer, this.counterGroup);
@@ -232,6 +242,7 @@ public class EntryMapping {
 
   /**
    * Constructor.
+   *
    * @param mapperIndex mapper index object
    * @param fastqFormat FASTQ format
    * @param mapperArguments the mapper arguments
@@ -240,10 +251,14 @@ public class EntryMapping {
    * @param incrementer the incrementer
    * @param counterGroup the counter group
    */
-  EntryMapping(final MapperIndex mapperIndex, final FastqFormat fastqFormat,
-      final List<String> mapperArguments, final int threadNumber,
+  EntryMapping(
+      final MapperIndex mapperIndex,
+      final FastqFormat fastqFormat,
+      final List<String> mapperArguments,
+      final int threadNumber,
       final boolean multipleInstanceEnabled,
-      final ReporterIncrementer incrementer, final String counterGroup,
+      final ReporterIncrementer incrementer,
+      final String counterGroup,
       final GenericLogger logger) {
 
     requireNonNull(mapperIndex, "mapperIndex cannot be null");
@@ -253,15 +268,13 @@ public class EntryMapping {
     this.mapperIndex = mapperIndex;
     this.fastqFormat = fastqFormat;
     this.mapperArguments = mapperArguments;
-    this.multipleInstanceEnabled = mapperIndex.getMapperInstance().getMapper()
-        .getProvider().isMultipleInstancesAllowed()
-        && multipleInstanceEnabled;
-    this.threadNumber =
-        threadNumber > 1 && !this.multipleInstanceEnabled ? threadNumber : 1;
+    this.multipleInstanceEnabled =
+        mapperIndex.getMapperInstance().getMapper().getProvider().isMultipleInstancesAllowed()
+            && multipleInstanceEnabled;
+    this.threadNumber = threadNumber > 1 && !this.multipleInstanceEnabled ? threadNumber : 1;
 
     this.incrementer = incrementer;
     this.counterGroup = counterGroup;
     this.logger = logger;
   }
-
 }

@@ -3,18 +3,17 @@ package fr.ens.biologie.genomique.kenetre.util.process;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
+import fr.ens.biologie.genomique.kenetre.util.SystemUtils;
+import fr.ens.biologie.genomique.kenetre.util.Utils;
+import fr.ens.biologie.genomique.kenetre.util.process.DockerImageInstance.ProgressHandler;
+import fr.ens.biologie.genomique.kenetre.util.process.SimpleProcess.AdvancedProcess;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-import fr.ens.biologie.genomique.kenetre.util.SystemUtils;
-import fr.ens.biologie.genomique.kenetre.util.Utils;
-import fr.ens.biologie.genomique.kenetre.util.process.DockerImageInstance.ProgressHandler;
-import fr.ens.biologie.genomique.kenetre.util.process.SimpleProcess.AdvancedProcess;
 
 public class Singukarity3DockerImageInstance extends AbstractSimpleProcess
     implements DockerImageInstance {
@@ -26,26 +25,43 @@ public class Singukarity3DockerImageInstance extends AbstractSimpleProcess
   private final GenericLogger logger;
 
   @Override
-  public AdvancedProcess start(final List<String> commandLine,
+  public AdvancedProcess start(
+      final List<String> commandLine,
       final File executionDirectory,
       final Map<String, String> environmentVariables,
-      final File temporaryDirectory, final File stdoutFile,
-      final File stderrFile, final boolean redirectErrorStream,
-      final File... filesUsed) throws IOException {
+      final File temporaryDirectory,
+      final File stdoutFile,
+      final File stderrFile,
+      final boolean redirectErrorStream,
+      final File... filesUsed)
+      throws IOException {
 
     requireNonNull(commandLine, "commandLine argument cannot be null");
     requireNonNull(stdoutFile, "stdoutFile argument cannot be null");
     requireNonNull(stderrFile, "stderrFile argument cannot be null");
 
-    this.logger.debug(getClass().getSimpleName()
-        + ": commandLine=" + commandLine + ", executionDirectory="
-        + executionDirectory + ", environmentVariables=" + environmentVariables
-        + ", temporaryDirectory=" + temporaryDirectory + ", stdoutFile="
-        + stdoutFile + ", stderrFile=" + stderrFile + ", redirectErrorStream="
-        + redirectErrorStream + ", filesUsed=" + Arrays.toString(filesUsed));
+    this.logger.debug(
+        getClass().getSimpleName()
+            + ": commandLine="
+            + commandLine
+            + ", executionDirectory="
+            + executionDirectory
+            + ", environmentVariables="
+            + environmentVariables
+            + ", temporaryDirectory="
+            + temporaryDirectory
+            + ", stdoutFile="
+            + stdoutFile
+            + ", stderrFile="
+            + stderrFile
+            + ", redirectErrorStream="
+            + redirectErrorStream
+            + ", filesUsed="
+            + Arrays.toString(filesUsed));
 
     if (executionDirectory != null) {
-      checkArgument(executionDirectory.isDirectory(),
+      checkArgument(
+          executionDirectory.isDirectory(),
           "execution directory does not exists or is not a directory: "
               + executionDirectory.getAbsolutePath());
     }
@@ -84,8 +100,7 @@ public class Singukarity3DockerImageInstance extends AbstractSimpleProcess
     }
 
     // Bind directories
-    toBind(command, directoriesToBind, this.convertNFSFilesToMountRoots,
-        this.logger);
+    toBind(command, directoriesToBind, this.convertNFSFilesToMountRoots, this.logger);
 
     // Remove container at the end of the execution
     command.add("--rm");
@@ -106,29 +121,31 @@ public class Singukarity3DockerImageInstance extends AbstractSimpleProcess
     final Process process = pb.start();
 
     return () -> {
-
       try {
         return process.waitFor();
       } catch (InterruptedException e) {
         throw new IOException(e);
       }
     };
-
   }
 
   /**
    * Add the volume arguments to the Docker command line.
+   *
    * @param command the command line
    * @param files the share files to add
    * @throws IOException if an error occurs when converting the file path
    */
-  private static void toBind(final List<String> command, final List<File> files,
-      final boolean convertNFSFilesToMountRoots, final GenericLogger logger)
+  private static void toBind(
+      final List<String> command,
+      final List<File> files,
+      final boolean convertNFSFilesToMountRoots,
+      final GenericLogger logger)
       throws IOException {
 
-    for (File file : DockerUtils
-        .fileIndirections(DockerUtils.convertNFSFileToMountPoint(files,
-            convertNFSFilesToMountRoots, logger))) {
+    for (File file :
+        DockerUtils.fileIndirections(
+            DockerUtils.convertNFSFileToMountPoint(files, convertNFSFilesToMountRoots, logger))) {
 
       command.add("--bind");
       command.add(file.getAbsolutePath() + ':' + file.getAbsolutePath());
@@ -138,8 +155,8 @@ public class Singukarity3DockerImageInstance extends AbstractSimpleProcess
   @Override
   public void pullImageIfNotExists() throws IOException {
 
-    String images = ProcessUtils.execToString(
-        "docker images | tr -s ' ' | cut -f 1,2 -d ' ' | tr ' ' :");
+    String images =
+        ProcessUtils.execToString("docker images | tr -s ' ' | cut -f 1,2 -d ' ' | tr ' ' :");
 
     for (String image : images.split("\n")) {
 
@@ -155,19 +172,16 @@ public class Singukarity3DockerImageInstance extends AbstractSimpleProcess
     try {
       exitCode = p.waitFor();
     } catch (InterruptedException e) {
-      throw new IOException(
-          "Error while pulling Docker image: " + this.dockerImage);
+      throw new IOException("Error while pulling Docker image: " + this.dockerImage);
     }
 
     if (exitCode != 0) {
-      throw new IOException(
-          "Error while pulling Docker image: " + this.dockerImage);
+      throw new IOException("Error while pulling Docker image: " + this.dockerImage);
     }
   }
 
   @Override
-  public void pullImageIfNotExists(final ProgressHandler progress)
-      throws IOException {
+  public void pullImageIfNotExists(final ProgressHandler progress) throws IOException {
 
     if (progress != null) {
       progress.update(0);
@@ -186,17 +200,17 @@ public class Singukarity3DockerImageInstance extends AbstractSimpleProcess
 
   /**
    * Constructor.
+   *
    * @param dockerImage Docker image
    * @param logger logger to use
    */
-  Singukarity3DockerImageInstance(final String dockerImage,
-      final boolean mountFileIndirections, final GenericLogger logger) {
+  Singukarity3DockerImageInstance(
+      final String dockerImage, final boolean mountFileIndirections, final GenericLogger logger) {
 
     requireNonNull(dockerImage, "dockerImage argument cannot be null");
     requireNonNull(logger, "logger argument cannot be null");
 
-    logger.debug(
-        getClass().getSimpleName() + " docker image used: " + dockerImage);
+    logger.debug(getClass().getSimpleName() + " docker image used: " + dockerImage);
 
     this.dockerImage = dockerImage;
     this.userUid = SystemUtils.uid();
@@ -205,5 +219,4 @@ public class Singukarity3DockerImageInstance extends AbstractSimpleProcess
     this.convertNFSFilesToMountRoots = mountFileIndirections;
     this.logger = logger;
   }
-
 }

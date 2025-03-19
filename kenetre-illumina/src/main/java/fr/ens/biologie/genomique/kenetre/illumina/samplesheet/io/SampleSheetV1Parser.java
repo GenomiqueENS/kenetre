@@ -2,8 +2,8 @@
  *                  Aozan development code
  *
  * This code may be freely distributed and modified under the
- * terms of the GNU General Public License version 3 or later 
- * and CeCILL. This should be distributed with the code. If you 
+ * terms of the GNU General Public License version 3 or later
+ * and CeCILL. This should be distributed with the code. If you
  * do not have a copy, see:
  *
  *      http://www.gnu.org/licenses/gpl-3.0-standalone.html
@@ -28,24 +28,33 @@ import static fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSh
 import static fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetReaderUtils.parseLane;
 import static fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetReaderUtils.trimFields;
 
-import java.io.IOException;
-import java.util.List;
-
 import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.Sample;
 import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheet;
 import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.TableSection;
+import java.io.IOException;
+import java.util.List;
 
 /**
- * This class allow to easily write reader for SampleSheet objects in text
- * format.
+ * This class allow to easily write reader for SampleSheet objects in text format.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
 public class SampleSheetV1Parser implements SampleSheetParser {
 
   static final String[] FIELDNAMES =
-      new String[] {"FCID", "Lane", "SampleID", "SampleRef", "Index",
-          "Description", "Control", "Recipe", "Operator", "SampleProject"};
+      new String[] {
+        "FCID",
+        "Lane",
+        "SampleID",
+        "SampleRef",
+        "Index",
+        "Description",
+        "Control",
+        "Recipe",
+        "Operator",
+        "SampleProject"
+      };
 
   private final SampleSheet samplesheet;
   private final TableSection tableSection;
@@ -53,6 +62,7 @@ public class SampleSheetV1Parser implements SampleSheetParser {
 
   /**
    * Convert a field name to internal field name.
+   *
    * @param fieldName the field name to convert
    * @return the field name to use with SampleSheet internal model
    */
@@ -141,8 +151,7 @@ public class SampleSheetV1Parser implements SampleSheetParser {
     sample.set(convertFieldName(FIELDNAMES[5]), fields.get(5));
 
     // Control
-    sample.set(convertFieldName(FIELDNAMES[6]),
-        "" + parseControlField(fields.get(6)));
+    sample.set(convertFieldName(FIELDNAMES[6]), "" + parseControlField(fields.get(6)));
 
     // Recipe
     sample.set(convertFieldName(FIELDNAMES[7]), fields.get(7));
@@ -154,8 +163,7 @@ public class SampleSheetV1Parser implements SampleSheetParser {
     sample.set(convertFieldName(FIELDNAMES[9]), fields.get(9));
   }
 
-  private static boolean parseControlField(final String value)
-      throws IOException {
+  private static boolean parseControlField(final String value) throws IOException {
 
     if ("".equals(value)) {
       throw new IOException("Empty value in the control field");
@@ -186,8 +194,6 @@ public class SampleSheetV1Parser implements SampleSheetParser {
 
     this.samplesheet = new SampleSheet();
     this.samplesheet.setVersion(1);
-    this.tableSection =
-        this.samplesheet.addTableSection(BCL2FASTQ_DEMUX_TABLE_NAME);
+    this.tableSection = this.samplesheet.addTableSection(BCL2FASTQ_DEMUX_TABLE_NAME);
   }
-
 }

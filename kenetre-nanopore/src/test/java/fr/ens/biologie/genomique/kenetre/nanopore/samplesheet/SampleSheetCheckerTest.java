@@ -2,9 +2,8 @@ package fr.ens.biologie.genomique.kenetre.nanopore.samplesheet;
 
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
 import fr.ens.biologie.genomique.kenetre.KenetreException;
+import org.junit.Test;
 
 public class SampleSheetCheckerTest {
 
@@ -38,7 +37,6 @@ public class SampleSheetCheckerTest {
 
     s.setKit("SQK-LSK110   EXP-NBD196");
     assertPass(checker, s);
-
   }
 
   private void assertFail(SampleSheetChecker checker, SampleSheet sampleSheet) {
@@ -61,5 +59,4 @@ public class SampleSheetCheckerTest {
       assertTrue(false);
     }
   }
-
 }

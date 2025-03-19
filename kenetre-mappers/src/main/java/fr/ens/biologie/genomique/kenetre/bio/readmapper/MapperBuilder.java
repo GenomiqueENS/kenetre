@@ -26,14 +26,14 @@ package fr.ens.biologie.genomique.kenetre.bio.readmapper;
 
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
 import java.io.File;
 import java.util.Objects;
 
-import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-
 /**
  * This class define a mapper builder.
+ *
  * @author Laurent Jourdren
  * @since 2.6
  */
@@ -44,12 +44,12 @@ public class MapperBuilder {
   private String applicationName = "kenetre";
   private String applicationVersion = "unknown";
   private File tempDir = new File(System.getProperty("java.io.tmpdir"));
-  private File executablesTempDir =
-      new File(System.getProperty("java.io.tmpdir"));
+  private File executablesTempDir = new File(System.getProperty("java.io.tmpdir"));
   private boolean useNewServiceInstance;
 
   /**
    * Set the logger.
+   *
    * @param logger the logger to set
    * @return the MapperBuilder instance
    */
@@ -63,6 +63,7 @@ public class MapperBuilder {
 
   /**
    * Set the application name.
+   *
    * @param applicationName the applicationName to set
    * @return the MapperBuilder instance
    */
@@ -76,6 +77,7 @@ public class MapperBuilder {
 
   /**
    * Set the application version.
+   *
    * @param applicationVersion the applicationVersion to set
    * @return the MapperBuilder instance
    */
@@ -89,6 +91,7 @@ public class MapperBuilder {
 
   /**
    * Set the temporary directory.
+   *
    * @param tempDir the temporary directory to set
    * @return the MapperBuilder instance
    */
@@ -102,6 +105,7 @@ public class MapperBuilder {
 
   /**
    * Set the temporary directory for executables.
+   *
    * @param executablesTempDir the temporary directory for executables to set
    * @return the MapperBuilder instance
    */
@@ -115,6 +119,7 @@ public class MapperBuilder {
 
   /**
    * Force the usage of a new service instance to get ReadFilter objects.
+   *
    * @param forceUseNewServiceInstance force new service instance usage
    */
   public void useNewServiceInstance(boolean forceUseNewServiceInstance) {
@@ -128,20 +133,26 @@ public class MapperBuilder {
 
   /**
    * Build the mapper instance.
+   *
    * @return a mapper instance
    */
   public Mapper build() {
 
-    MapperProvider provider = MapperProviderService
-        .getInstance(this.useNewServiceInstance).newService(this.mapperName);
+    MapperProvider provider =
+        MapperProviderService.getInstance(this.useNewServiceInstance).newService(this.mapperName);
 
     if (provider == null) {
       this.logger.error("Unknown mapper: " + this.mapperName);
       return null;
     }
 
-    return new Mapper(provider, this.tempDir, this.executablesTempDir,
-        this.logger, this.applicationName, this.applicationVersion);
+    return new Mapper(
+        provider,
+        this.tempDir,
+        this.executablesTempDir,
+        this.logger,
+        this.applicationName,
+        this.applicationVersion);
   }
 
   //
@@ -150,6 +161,7 @@ public class MapperBuilder {
 
   /**
    * Public constructor.
+   *
    * @param mapperName mapper name
    */
   public MapperBuilder(String mapperName) {
@@ -160,6 +172,7 @@ public class MapperBuilder {
 
   /**
    * Public constructor.
+   *
    * @param mapper mapper to use for initial configuration of the builder
    */
   public MapperBuilder(Mapper mapper) {
@@ -173,5 +186,4 @@ public class MapperBuilder {
     this.tempDir = mapper.getTemporaryDirectory();
     this.executablesTempDir = mapper.getExecutablesTemporaryDirectory();
   }
-
 }

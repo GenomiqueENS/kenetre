@@ -1,14 +1,13 @@
 package fr.ens.biologie.genomique.kenetre.bio.readfilter;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
+import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
 import org.usadellab.trimmomatic.fastq.FastqRecord;
 import org.usadellab.trimmomatic.trim.AbstractSingleRecordTrimmer;
 
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
-
 /**
- * This classe define an abstract trimmomatic ReadFilter that allow paired-end
- * and single-end.
+ * This classe define an abstract trimmomatic ReadFilter that allow paired-end and single-end.
+ *
  * @since 1.0
  * @author du
  */
@@ -22,8 +21,7 @@ public abstract class AbstractTrimmomaticReadFilter extends AbstractReadFilter {
   }
 
   @Override
-  public void setParameter(final String key, final String value)
-      throws KenetreException {
+  public void setParameter(final String key, final String value) throws KenetreException {
 
     if ("arguments".equals(key)) {
 
@@ -34,8 +32,7 @@ public abstract class AbstractTrimmomaticReadFilter extends AbstractReadFilter {
       }
 
     } else {
-      throw new KenetreException(
-          "Unknown parameter for " + getName() + " read filter: " + key);
+      throw new KenetreException("Unknown parameter for " + getName() + " read filter: " + key);
     }
   }
 
@@ -49,11 +46,11 @@ public abstract class AbstractTrimmomaticReadFilter extends AbstractReadFilter {
 
   /**
    * Create a Trimmer object
+   *
    * @param trimmerArgs trimmer arguments
    * @return new sequence after trimmomatic
    */
-  protected abstract AbstractSingleRecordTrimmer createTrimmer(
-      String trimmerArgs);
+  protected abstract AbstractSingleRecordTrimmer createTrimmer(String trimmerArgs);
 
   @Override
   public boolean accept(final ReadSequence read) {
@@ -64,8 +61,13 @@ public abstract class AbstractTrimmomaticReadFilter extends AbstractReadFilter {
     }
 
     // Fastq record entry
-    FastqRecord in = new FastqRecord(read.getName(), read.getSequence(), "",
-        read.getQuality(), read.getFastqFormat().getAsciiOffset());
+    FastqRecord in =
+        new FastqRecord(
+            read.getName(),
+            read.getSequence(),
+            "",
+            read.getQuality(),
+            read.getFastqFormat().getAsciiOffset());
 
     // Fastq record exit
     FastqRecord out = this.trimmer.processRecord(in);
@@ -81,5 +83,4 @@ public abstract class AbstractTrimmomaticReadFilter extends AbstractReadFilter {
 
     return true;
   }
-
 }

@@ -28,6 +28,7 @@ import java.util.Arrays;
 
 /**
  * This class define some statistical functions.
+ *
  * @since 1.1
  * @author Laurent Jourdren
  */
@@ -35,6 +36,7 @@ public final class StatUtils {
 
   /**
    * Get the mean of an array of integers.
+   *
    * @param values The array of integers
    * @return the median
    */
@@ -55,6 +57,7 @@ public final class StatUtils {
 
   /**
    * Get the mean of an array of doubles.
+   *
    * @param values The array of doubles
    * @return the median
    */
@@ -75,6 +78,7 @@ public final class StatUtils {
 
   /**
    * Get the median of an array of integer.
+   *
    * @param values The array of integer
    * @return the median
    */
@@ -85,6 +89,7 @@ public final class StatUtils {
 
   /**
    * Get the median of an array of doubles.
+   *
    * @param values The array of doubles
    * @return the median
    */
@@ -95,6 +100,7 @@ public final class StatUtils {
 
   /**
    * Get the percentile of a array of integers.
+   *
    * @param values The array of integers
    * @param p the percentile to compute
    * @return the percentile
@@ -110,6 +116,7 @@ public final class StatUtils {
 
   /**
    * Get the percentile of a array of doubles.
+   *
    * @param values The array of doubles
    * @param p the percentile to compute
    * @return the percentile
@@ -123,8 +130,8 @@ public final class StatUtils {
     return percentile(values, 0, values.length, p);
   }
 
-  private static double percentile(final int[] values, final int begin,
-      final int length, final double p) {
+  private static double percentile(
+      final int[] values, final int begin, final int length, final double p) {
 
     test(values, begin, length);
 
@@ -156,8 +163,8 @@ public final class StatUtils {
     return lower + dif * (upper - lower);
   }
 
-  private static double percentile(final double[] values, final int begin,
-      final int length, final double p) {
+  private static double percentile(
+      final double[] values, final int begin, final int length, final double p) {
 
     test(values, begin, length);
 
@@ -189,8 +196,7 @@ public final class StatUtils {
     return lower + dif * (upper - lower);
   }
 
-  private static boolean test(final int[] values, final int begin,
-      final int length) {
+  private static boolean test(final int[] values, final int begin, final int length) {
 
     if (values == null) {
       throw new IllegalArgumentException("input value array is null");
@@ -215,8 +221,7 @@ public final class StatUtils {
     return true;
   }
 
-  private static boolean test(final double[] values, final int begin,
-      final int length) {
+  private static boolean test(final double[] values, final int begin, final int length) {
 
     if (values == null) {
       throw new IllegalArgumentException("input value array is null");
@@ -240,5 +245,4 @@ public final class StatUtils {
 
     return true;
   }
-
 }

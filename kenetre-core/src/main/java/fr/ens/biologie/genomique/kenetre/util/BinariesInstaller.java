@@ -26,6 +26,9 @@ package fr.ens.biologie.genomique.kenetre.util;
 
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
+import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -37,12 +40,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-
 /**
  * This class is used to install binaries bundled in the jar.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -52,21 +52,19 @@ public class BinariesInstaller {
 
   /** Platforms where the application is available. */
   public static final Set<String> AVAILABLE_BINARY_ARCH =
-      Collections.unmodifiableSet(
-          new HashSet<>(Arrays.asList("linux\tamd64", "linux\tx86_64")));
+      Collections.unmodifiableSet(new HashSet<>(Arrays.asList("linux\tamd64", "linux\tx86_64")));
 
   /** Platforms alias. */
   public static final Map<String, String> AVAILABLE_BINARY_ARCH_ALIAS =
-      Collections.unmodifiableMap(
-          Collections.singletonMap("linux\tx86_64", "linux\tamd64"));
+      Collections.unmodifiableMap(Collections.singletonMap("linux\tx86_64", "linux\tamd64"));
 
   private GenericLogger logger;
   private String appName;
   private String appLowerCaseName;
   private String appVersion;
 
-  private void install(final String inputPath, final String file,
-      final String outputPath) throws IOException {
+  private void install(final String inputPath, final String file, final String outputPath)
+      throws IOException {
 
     if (new File(outputPath, file).isFile()) {
       this.logger.debug(file + " is already installed.");
@@ -78,19 +76,16 @@ public class BinariesInstaller {
     if (!outputDir.isDirectory()) {
       if (!outputDir.mkdirs()) {
         throw new IOException(
-            "Can't create directory for binaries installation: "
-                + outputDir.getAbsolutePath());
+            "Can't create directory for binaries installation: " + outputDir.getAbsolutePath());
       }
       outputDir.setWritable(true, false);
     }
 
     final String resourcePath = inputPath.toLowerCase() + "/" + file;
-    final InputStream is =
-        BinariesInstaller.class.getResourceAsStream(resourcePath);
+    final InputStream is = BinariesInstaller.class.getResourceAsStream(resourcePath);
 
     if (is == null) {
-      throw new FileNotFoundException(
-          "Unable to find the correct resource (" + resourcePath + ")");
+      throw new FileNotFoundException("Unable to find the correct resource (" + resourcePath + ")");
     }
 
     final File outputFile = new File(outputDir, file);
@@ -106,13 +101,14 @@ public class BinariesInstaller {
     is.close();
     fos.close();
 
-    outputFile.setExecutable(true, false);  
+    outputFile.setExecutable(true, false);
     outputFile.setReadable(true, false);
   }
 
   /**
-   * Install a binary bundled in the jar in a temporary directory. If no
-   * temporary directory is defined, use the "java.io.tmpdir" property.
+   * Install a binary bundled in the jar in a temporary directory. If no temporary directory is
+   * defined, use the "java.io.tmpdir" property.
+   *
    * @param softwarePackage software name
    * @param packageVersion software version
    * @param binaryFilename program to install
@@ -120,26 +116,34 @@ public class BinariesInstaller {
    * @return a string with the path of the installed binary
    * @throws IOException if an error occurs while installing binary
    */
-  public String install(final String softwarePackage,
-      final String packageVersion, final String binaryFilename,
-      final String tempDir) throws IOException {
+  public String install(
+      final String softwarePackage,
+      final String packageVersion,
+      final String binaryFilename,
+      final String tempDir)
+      throws IOException {
 
-    final File tempDirFile = new File(tempDir == null
-        ? System.getProperty("java.io.tmpdir") : tempDir.trim());
+    final File tempDirFile =
+        new File(tempDir == null ? System.getProperty("java.io.tmpdir") : tempDir.trim());
 
     if (!tempDirFile.exists()) {
-      throw new IOException(
-          "Temporary directory does not exits: " + tempDirFile);
+      throw new IOException("Temporary directory does not exits: " + tempDirFile);
     }
 
     if (!tempDirFile.isDirectory()) {
-      throw new IOException(
-          "Temporary directory is not a directory: " + tempDirFile);
+      throw new IOException("Temporary directory is not a directory: " + tempDirFile);
     }
 
-    final String outputPath = tempDirFile.getAbsolutePath()
-        + "/" + this.appLowerCaseName + "/" + this.appVersion + "/"
-        + softwarePackage + "/" + packageVersion;
+    final String outputPath =
+        tempDirFile.getAbsolutePath()
+            + "/"
+            + this.appLowerCaseName
+            + "/"
+            + this.appVersion
+            + "/"
+            + softwarePackage
+            + "/"
+            + packageVersion;
 
     // Test if the file is already installed
     if (new File(outputPath, binaryFilename).isFile()) {
@@ -150,9 +154,16 @@ public class BinariesInstaller {
     final String os = System.getProperty("os.name").toLowerCase();
     final String arch = System.getProperty("os.arch").toLowerCase();
 
-    this.logger.debug("Try to install \""
-        + binaryFilename + "\" of " + softwarePackage + " package for " + os
-        + " (" + arch + ")");
+    this.logger.debug(
+        "Try to install \""
+            + binaryFilename
+            + "\" of "
+            + softwarePackage
+            + " package for "
+            + os
+            + " ("
+            + arch
+            + ")");
 
     // Get inputPath
     final String inputPath = getInputPath(softwarePackage, packageVersion);
@@ -160,29 +171,27 @@ public class BinariesInstaller {
     // install the file
     install(inputPath, binaryFilename, outputPath);
 
-    this.logger.debug(
-        "Successful installation of " + binaryFilename + " in " + outputPath);
+    this.logger.debug("Successful installation of " + binaryFilename + " in " + outputPath);
     return outputPath + "/" + binaryFilename;
   }
 
   /**
    * Check if a software is available.
+   *
    * @param softwarePackage software name
    * @param packageVersion software version
    * @param binaryFilename software binary
    * @return true if the software is available
    */
-  public boolean check(final String softwarePackage,
-      final String packageVersion, final String binaryFilename) {
+  public boolean check(
+      final String softwarePackage, final String packageVersion, final String binaryFilename) {
 
     try {
 
       final String inputPath = getInputPath(softwarePackage, packageVersion);
-      final String resourcePath =
-          inputPath.toLowerCase() + "/" + binaryFilename;
+      final String resourcePath = inputPath.toLowerCase() + "/" + binaryFilename;
 
-      final InputStream is =
-          BinariesInstaller.class.getResourceAsStream(resourcePath);
+      final InputStream is = BinariesInstaller.class.getResourceAsStream(resourcePath);
 
       if (is == null) {
         return false;
@@ -199,13 +208,14 @@ public class BinariesInstaller {
 
   /**
    * Get the directory path of a binary.
+   *
    * @param softwarePackage the software package
    * @param packageVersion the package version
    * @return the directory path as a String
    * @throws IOException if the software is not available
    */
-  private String getInputPath(final String softwarePackage,
-      final String packageVersion) throws IOException {
+  private String getInputPath(final String softwarePackage, final String packageVersion)
+      throws IOException {
 
     if (!SystemUtils.isUnix()) {
       throw new IOException("Can only install binaries on *nix systems.");
@@ -219,8 +229,7 @@ public class BinariesInstaller {
     // Check if platform is allowed
     if (!AVAILABLE_BINARY_ARCH.contains(osArchKey)) {
       throw new FileNotFoundException(
-          "There is no executable for your platform ("
-              + os + ") included in " + this.appName);
+          "There is no executable for your platform (" + os + ") included in " + this.appName);
     }
 
     // Change the os and arch if alias
@@ -240,6 +249,7 @@ public class BinariesInstaller {
 
   /**
    * Constructor.
+   *
    * @param applicationName application name
    * @param version application version
    */
@@ -249,21 +259,20 @@ public class BinariesInstaller {
 
   /**
    * Constructor.
+   *
    * @param applicationName application name
    * @param applicationVersion application version
    * @param logger logger
    */
-  public BinariesInstaller(String applicationName, String applicationVersion,
-      GenericLogger logger) {
+  public BinariesInstaller(
+      String applicationName, String applicationVersion, GenericLogger logger) {
 
     requireNonNull(applicationName);
     requireNonNull(applicationVersion);
 
     this.appName = applicationName.trim();
     this.appLowerCaseName = this.appName.toLowerCase();
-    this.appVersion = applicationVersion != null
-        ? applicationVersion.trim() : "unknown-version";
+    this.appVersion = applicationVersion != null ? applicationVersion.trim() : "unknown-version";
     this.logger = logger != null ? logger : new DummyLogger();
   }
-
 }

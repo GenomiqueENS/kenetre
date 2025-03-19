@@ -26,17 +26,16 @@ package fr.ens.biologie.genomique.kenetre.bio.readfilter;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
 import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
 import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
 import fr.ens.biologie.genomique.kenetre.util.ReporterIncrementer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * This class define a read filter that calls successively a list of read
- * filters.
+ * This class define a read filter that calls successively a list of read filters.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -72,12 +71,11 @@ public class MultiReadFilter implements ReadFilter {
       if (!rf.accept(read)) {
 
         if (this.incrementer != null) {
-          this.incrementer.incrCounter(this.counterGroup,
-              "reads rejected by " + rf.getName() + " filter", 1);
+          this.incrementer.incrCounter(
+              this.counterGroup, "reads rejected by " + rf.getName() + " filter", 1);
         }
         return false;
       }
-
     }
 
     return true;
@@ -91,12 +89,11 @@ public class MultiReadFilter implements ReadFilter {
       if (!rf.accept(read1, read2)) {
 
         if (this.incrementer != null) {
-          this.incrementer.incrCounter(this.counterGroup,
-              "reads rejected by " + rf.getName() + " filter", 1);
+          this.incrementer.incrCounter(
+              this.counterGroup, "reads rejected by " + rf.getName() + " filter", 1);
         }
         return false;
       }
-
     }
 
     return true;
@@ -104,6 +101,7 @@ public class MultiReadFilter implements ReadFilter {
 
   /**
    * Add a filter to the multi filter.
+   *
    * @param filter filter to add
    */
   public void addFilter(final ReadFilter filter) {
@@ -111,7 +109,6 @@ public class MultiReadFilter implements ReadFilter {
     if (filter != null) {
       this.list.add(filter);
     }
-
   }
 
   @Override
@@ -132,11 +129,11 @@ public class MultiReadFilter implements ReadFilter {
   }
 
   @Override
-  public void init() {
-  }
+  public void init() {}
 
   /**
    * Get the name of the filters.
+   *
    * @return a list with the names of the filters
    */
   public List<String> getFilterNames() {
@@ -153,17 +150,20 @@ public class MultiReadFilter implements ReadFilter {
   public String toString() {
 
     return this.getClass().getSimpleName()
-        + "{incrementer=" + this.incrementer + ",counterGroup="
-        + this.counterGroup + " , list=" + this.list + "}";
+        + "{incrementer="
+        + this.incrementer
+        + ",counterGroup="
+        + this.counterGroup
+        + " , list="
+        + this.list
+        + "}";
   }
 
   //
   // Constructors
   //
 
-  /**
-   * Public constructor.
-   */
+  /** Public constructor. */
   public MultiReadFilter() {
 
     this(null, null);
@@ -171,11 +171,11 @@ public class MultiReadFilter implements ReadFilter {
 
   /**
    * Public constructor.
+   *
    * @param incrementer incrementer to use
    * @param counterGroup counter group for the incrementer
    */
-  public MultiReadFilter(final ReporterIncrementer incrementer,
-      final String counterGroup) {
+  public MultiReadFilter(final ReporterIncrementer incrementer, final String counterGroup) {
 
     this.incrementer = incrementer;
     this.counterGroup = counterGroup;
@@ -183,6 +183,7 @@ public class MultiReadFilter implements ReadFilter {
 
   /**
    * Public constructor.
+   *
    * @param filters filters to add
    */
   public MultiReadFilter(final List<ReadFilter> filters) {
@@ -192,12 +193,15 @@ public class MultiReadFilter implements ReadFilter {
 
   /**
    * Public constructor.
+   *
    * @param incrementer incrementer to use
    * @param counterGroup counter group for the incrementer
    * @param filters filters to add
    */
-  public MultiReadFilter(final ReporterIncrementer incrementer,
-      final String counterGroup, final List<ReadFilter> filters) {
+  public MultiReadFilter(
+      final ReporterIncrementer incrementer,
+      final String counterGroup,
+      final List<ReadFilter> filters) {
 
     this.incrementer = incrementer;
     this.counterGroup = counterGroup;
@@ -209,5 +213,4 @@ public class MultiReadFilter implements ReadFilter {
       }
     }
   }
-
 }

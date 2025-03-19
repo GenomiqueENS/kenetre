@@ -26,6 +26,9 @@ package fr.ens.biologie.genomique.kenetre.util;
 
 import static java.nio.charset.Charset.defaultCharset;
 
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
+import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -43,12 +46,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-
 /**
  * This class implements a pseudo map-reduce framework.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -63,6 +63,7 @@ public abstract class PseudoMapReduce {
 
   /**
    * This class avoid storing repeated entries of a list in memory.
+   *
    * @author Laurent Jourdren
    */
   private static final class RepeatedEntriesList<E> extends AbstractList<E> {
@@ -135,7 +136,6 @@ public abstract class PseudoMapReduce {
         public void remove() {
           throw new UnsupportedOperationException();
         }
-
       };
     }
 
@@ -144,7 +144,6 @@ public abstract class PseudoMapReduce {
 
       this.map.clear();
     }
-
   }
 
   //
@@ -153,24 +152,27 @@ public abstract class PseudoMapReduce {
 
   /**
    * Mapper.
+   *
    * @param value input of the mapper
    * @param output List of output of the mapper
    * @param reporter reporter
    * @throws IOException if an error occurs while executing the mapper
    */
-  public abstract void map(final String value, final List<String> output,
-      final Reporter reporter) throws IOException;
+  public abstract void map(final String value, final List<String> output, final Reporter reporter)
+      throws IOException;
 
   /**
    * Reducer
+   *
    * @param key input key of the reducer
    * @param values values for the key
    * @param output list of output values of the reducer
    * @param reporter reporter
    * @throws IOException if an error occurs while executing the reducer
    */
-  public abstract void reduce(final String key, Iterator<String> values,
-      final List<String> output, final Reporter reporter) throws IOException;
+  public abstract void reduce(
+      final String key, Iterator<String> values, final List<String> output, final Reporter reporter)
+      throws IOException;
 
   //
   // Getter
@@ -178,6 +180,7 @@ public abstract class PseudoMapReduce {
 
   /**
    * Get the reporter object of the Pseudo map reduce.
+   *
    * @return the reporter object.
    */
   public Reporter getReporter() {
@@ -187,6 +190,7 @@ public abstract class PseudoMapReduce {
 
   /**
    * Get the logger.
+   *
    * @return the logger
    */
   public GenericLogger getLogger() {
@@ -200,9 +204,9 @@ public abstract class PseudoMapReduce {
 
   /**
    * Execute the map phase with a file as input.
+   *
    * @param inputFile input file for the mapper
-   * @throws IOException if an error occurs while creating files required by the
-   *           map tasks
+   * @throws IOException if an error occurs while creating files required by the map tasks
    */
   public void doMap(final File inputFile) throws IOException {
 
@@ -222,11 +226,11 @@ public abstract class PseudoMapReduce {
   }
 
   /**
-   * Execute the map phase with an InputStream as input Create a list of file :
-   * one for each index file used
+   * Execute the map phase with an InputStream as input Create a list of file : one for each index
+   * file used
+   *
    * @param is input stream for the mapper
-   * @throws IOException if an error occurs while creating files required by the
-   *           map tasks
+   * @throws IOException if an error occurs while creating files required by the map tasks
    */
   public void doMap(final InputStream is) throws IOException {
 
@@ -236,9 +240,7 @@ public abstract class PseudoMapReduce {
 
     this.reporter.clear();
 
-    try (
-        BufferedReader br =
-            new BufferedReader(new InputStreamReader(is, defaultCharset()));
+    try (BufferedReader br = new BufferedReader(new InputStreamReader(is, defaultCharset()));
         Writer bw = new FileWriter(getMapOutputTempFile(), defaultCharset())) {
 
       final List<String> results = new ArrayList<>();
@@ -259,7 +261,6 @@ public abstract class PseudoMapReduce {
 
         results.clear();
       }
-
     }
   }
 
@@ -269,6 +270,7 @@ public abstract class PseudoMapReduce {
 
   /**
    * Set the temporary directory.
+   *
    * @param directory the temporary directory
    */
   public void setMapReduceTemporaryDirectory(final File directory) {
@@ -278,6 +280,7 @@ public abstract class PseudoMapReduce {
 
   /**
    * Get the temporary directory.
+   *
    * @return the temporary directory
    */
   public File getMapReduceTemporaryDirectory() {
@@ -287,9 +290,9 @@ public abstract class PseudoMapReduce {
 
   /**
    * Sort several files in sortOutputFile
+   *
    * @return true if success sort
-   * @throws IOException if an error occurs while executing external sort
-   *           command
+   * @throws IOException if an error occurs while executing external sort command
    */
   private boolean sort() throws IOException {
 
@@ -330,8 +333,7 @@ public abstract class PseudoMapReduce {
     // Remove temporary map output files
     for (File mapOutputFile : this.listMapOutputFile) {
       if (!mapOutputFile.delete()) {
-        this.logger.warn("Can not delete map output file: "
-            + mapOutputFile.getAbsolutePath());
+        this.logger.warn("Can not delete map output file: " + mapOutputFile.getAbsolutePath());
       }
     }
 
@@ -344,9 +346,9 @@ public abstract class PseudoMapReduce {
 
   /**
    * Execute the reduce phase with a file as output.
+   *
    * @param outputFile output file for the reducer
-   * @throws IOException if an error occurs while creating files required by the
-   *           reduce tasks
+   * @throws IOException if an error occurs while creating files required by the reduce tasks
    */
   public void doReduce(final File outputFile) throws IOException {
 
@@ -359,9 +361,9 @@ public abstract class PseudoMapReduce {
 
   /**
    * Execute the reduce phase with an OutputStream as output.
+   *
    * @param os output stream for the reducer
-   * @throws IOException if an error occurs while creating files required by the
-   *           reduce tasks
+   * @throws IOException if an error occurs while creating files required by the reduce tasks
    */
   public void doReduce(final OutputStream os) throws IOException {
 
@@ -374,12 +376,10 @@ public abstract class PseudoMapReduce {
     }
 
     // Create reader
-    final BufferedReader br =
-        FileUtils.createBufferedReader(this.sortOutputFile);
+    final BufferedReader br = FileUtils.createBufferedReader(this.sortOutputFile);
 
     // Create writer
-    final BufferedWriter bw =
-        new BufferedWriter(new OutputStreamWriter(os, defaultCharset()));
+    final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, defaultCharset()));
 
     String line = null;
     String currentKey = null;
@@ -433,8 +433,7 @@ public abstract class PseudoMapReduce {
     br.close();
     bw.close();
     if (!this.sortOutputFile.delete()) {
-      this.logger.warn("Can not delete sort output file: "
-          + this.sortOutputFile.getAbsolutePath());
+      this.logger.warn("Can not delete sort output file: " + this.sortOutputFile.getAbsolutePath());
     }
   }
 
@@ -451,5 +450,4 @@ public abstract class PseudoMapReduce {
 
     this.logger = logger != null ? logger : new DummyLogger();
   }
-
 }

@@ -1,5 +1,7 @@
 package fr.ens.biologie.genomique.kenetre.bio;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,12 +13,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-
 /**
- * This class define a dense matrix. This a generalization of the
- * DenseExpressionMatrix.
+ * This class define a dense matrix. This a generalization of the DenseExpressionMatrix.
+ *
  * @author Laurent Jourdren
  * @since 2.4
  */
@@ -121,8 +120,7 @@ public class DenseMatrix<E> extends AbstractMatrix<E> {
   //
 
   @Override
-  public void setValue(final String rowName, final String columnName,
-      final E value) {
+  public void setValue(final String rowName, final String columnName, final E value) {
 
     Objects.requireNonNull(rowName, "rowName argument cannot be null");
     Objects.requireNonNull(columnName, "columnName argument cannot be null");
@@ -138,8 +136,7 @@ public class DenseMatrix<E> extends AbstractMatrix<E> {
     }
 
     // Set the value
-    ((List<E>) this.values.get(rowName)).set(this.columnIndex.get(columnName),
-        value);
+    ((List<E>) this.values.get(rowName)).set(this.columnIndex.get(columnName), value);
   }
 
   @Override
@@ -152,8 +149,7 @@ public class DenseMatrix<E> extends AbstractMatrix<E> {
     }
 
     // Add the default values
-    this.values.putAll(rowName,
-        Collections.nCopies(this.columnIndex.size(), this.defaultValue));
+    this.values.putAll(rowName, Collections.nCopies(this.columnIndex.size(), this.defaultValue));
 
     // Add the row name in the order of row
     this.rowOrder.add(rowName);
@@ -184,24 +180,20 @@ public class DenseMatrix<E> extends AbstractMatrix<E> {
         list.add(this.defaultValue);
       }
     }
-
   }
 
   @Override
-  public void renameColumn(final String oldColumnName,
-      final String newColumnName) {
+  public void renameColumn(final String oldColumnName, final String newColumnName) {
 
     Objects.requireNonNull(oldColumnName, "oldColumnName cannot be null");
     Objects.requireNonNull(newColumnName, "newColumnName cannot be null");
 
     if (!containsColumn(oldColumnName)) {
-      throw new IllegalArgumentException(
-          "Unknown column name: " + oldColumnName);
+      throw new IllegalArgumentException("Unknown column name: " + oldColumnName);
     }
 
     if (containsColumn(newColumnName)) {
-      throw new IllegalArgumentException(
-          "The new column name already exists: " + newColumnName);
+      throw new IllegalArgumentException("The new column name already exists: " + newColumnName);
     }
 
     this.columnIndex.put(newColumnName, this.columnIndex.get(oldColumnName));
@@ -214,8 +206,7 @@ public class DenseMatrix<E> extends AbstractMatrix<E> {
     Objects.requireNonNull(columnName, "columnName argument cannot be null");
 
     if (!this.columnIndex.containsKey(columnName)) {
-      throw new IllegalArgumentException(
-          "columnName does not exists: " + columnName);
+      throw new IllegalArgumentException("columnName does not exists: " + columnName);
     }
 
     // Get columnIndex
@@ -291,10 +282,10 @@ public class DenseMatrix<E> extends AbstractMatrix<E> {
 
   /**
    * Public constructor.
+   *
    * @param defaultValue the default value of the matrix
    */
   public DenseMatrix(final E defaultValue) {
     this.defaultValue = defaultValue;
   }
-
 }

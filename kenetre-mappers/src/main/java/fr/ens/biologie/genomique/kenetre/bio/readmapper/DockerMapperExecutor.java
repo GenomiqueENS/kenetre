@@ -28,6 +28,13 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.MoreObjects;
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
+import fr.ens.biologie.genomique.kenetre.util.StringUtils;
+import fr.ens.biologie.genomique.kenetre.util.process.DockerImageInstance;
+import fr.ens.biologie.genomique.kenetre.util.process.DockerManager;
+import fr.ens.biologie.genomique.kenetre.util.process.SimpleProcess.AdvancedProcess;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,18 +46,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import com.google.common.base.MoreObjects;
-
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-import fr.ens.biologie.genomique.kenetre.util.StringUtils;
-import fr.ens.biologie.genomique.kenetre.util.process.DockerImageInstance;
-import fr.ens.biologie.genomique.kenetre.util.process.DockerManager;
-import fr.ens.biologie.genomique.kenetre.util.process.SimpleProcess.AdvancedProcess;
-
 /**
- * This class define a mapper executor that executes process in Docker
- * containers.
+ * This class define a mapper executor that executes process in Docker containers.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -62,6 +60,7 @@ public class DockerMapperExecutor implements MapperExecutor {
 
   /**
    * This class define an executor result.
+   *
    * @author Laurent Jourdren
    */
   private class DockerResult implements Result {
@@ -75,8 +74,7 @@ public class DockerMapperExecutor implements MapperExecutor {
     public InputStream getInputStream() throws IOException {
 
       if (this.stdoutFile == null) {
-        throw new IOException(
-            "The excution command has not been configured to redirect stdout");
+        throw new IOException("The excution command has not been configured to redirect stdout");
       }
 
       try {
@@ -86,8 +84,7 @@ public class DockerMapperExecutor implements MapperExecutor {
 
         return Channels.newInputStream(fis.getChannel());
       } catch (FileNotFoundException e) {
-        logger.error("Cannot find stdout named pipe of the container: "
-            + this.stdoutFile);
+        logger.error("Cannot find stdout named pipe of the container: " + this.stdoutFile);
         return null;
       }
     }
@@ -125,6 +122,7 @@ public class DockerMapperExecutor implements MapperExecutor {
 
     /**
      * Constructor.
+     *
      * @param command command to execute
      * @param executionDirectory execution directory
      * @param stdout true if stdout will be read
@@ -133,9 +131,14 @@ public class DockerMapperExecutor implements MapperExecutor {
      * @param filesUsed files used by the process
      * @throws IOException if an error occurs while creating the object
      */
-    private DockerResult(final List<String> command,
-        final File executionDirectory, boolean stdout, final File stdErrFile,
-        final boolean redirectStderr, File... filesUsed) throws IOException {
+    private DockerResult(
+        final List<String> command,
+        final File executionDirectory,
+        boolean stdout,
+        final File stdErrFile,
+        final boolean redirectStderr,
+        File... filesUsed)
+        throws IOException {
 
       requireNonNull(command, "command argument cannot be null");
 
@@ -172,9 +175,16 @@ public class DockerMapperExecutor implements MapperExecutor {
       final File finalErrFile = stdErrFile == null ? nullFile : stdErrFile;
       final File[] files = newFilesUsed.toArray(new File[0]);
 
-      this.process = dockerConnection.start(
-          convertCommand(command, this.stdoutFile, redirectStderr),
-          executionDirectory, null, null, nullFile, finalErrFile, false, files);
+      this.process =
+          dockerConnection.start(
+              convertCommand(command, this.stdoutFile, redirectStderr),
+              executionDirectory,
+              null,
+              null,
+              nullFile,
+              finalErrFile,
+              false,
+              files);
     }
   }
 
@@ -191,13 +201,11 @@ public class DockerMapperExecutor implements MapperExecutor {
   public boolean isExecutable(final String executable) throws IOException {
 
     requireNonNull(executable, "binaryFilename argument cannot be null");
-    checkArgument(!executable.isEmpty(),
-        "binaryFilename argument cannot be empty");
+    checkArgument(!executable.isEmpty(), "binaryFilename argument cannot be empty");
 
     final List<String> command = newArrayList("which", executable);
 
-    final Result result =
-        execute(command, null, false, null, false, (File[]) null);
+    final Result result = execute(command, null, false, null, false, (File[]) null);
 
     return result.waitFor() == 0;
   }
@@ -211,15 +219,19 @@ public class DockerMapperExecutor implements MapperExecutor {
   }
 
   @Override
-  public Result execute(final List<String> command,
-      final File executionDirectory, final boolean stdout,
-      final File stdErrFile, final boolean redirectStderr,
-      final File... filesUsed) throws IOException {
+  public Result execute(
+      final List<String> command,
+      final File executionDirectory,
+      final boolean stdout,
+      final File stdErrFile,
+      final boolean redirectStderr,
+      final File... filesUsed)
+      throws IOException {
 
     requireNonNull(command, "executable argument cannot be null");
 
-    return new DockerResult(command, executionDirectory, stdout, stdErrFile,
-        redirectStderr, filesUsed);
+    return new DockerResult(
+        command, executionDirectory, stdout, stdErrFile, redirectStderr, filesUsed);
   }
 
   //
@@ -228,13 +240,14 @@ public class DockerMapperExecutor implements MapperExecutor {
 
   /**
    * Convert command to sh command if needed.
+   *
    * @param command the command to convert
    * @param stdout the stdout file to use
    * @param redirectStderr redirect stderr to stdout
    * @return a converted command
    */
-  private List<String> convertCommand(final List<String> command,
-      final File stdout, final boolean redirectStderr) {
+  private List<String> convertCommand(
+      final List<String> command, final File stdout, final boolean redirectStderr) {
 
     requireNonNull(command, "command argument cannot be null");
 
@@ -273,7 +286,8 @@ public class DockerMapperExecutor implements MapperExecutor {
 
     return MoreObjects.toStringHelper(this)
         .add("dockerConnection", dockerConnection)
-        .add("temporaryDirectory", temporaryDirectory).toString();
+        .add("temporaryDirectory", temporaryDirectory)
+        .toString();
   }
 
   //
@@ -282,23 +296,22 @@ public class DockerMapperExecutor implements MapperExecutor {
 
   /**
    * Constructor.
+   *
    * @param dockerImage Docker image
    * @param temporaryDirectory temporary directory
    * @param logger logger to use
    * @throws IOException if an error occurs while creating the connection
    */
-  DockerMapperExecutor(final String dockerImage, final File temporaryDirectory,
-      final GenericLogger logger) throws IOException {
+  DockerMapperExecutor(
+      final String dockerImage, final File temporaryDirectory, final GenericLogger logger)
+      throws IOException {
 
     requireNonNull(dockerImage, "dockerImage argument cannot be null");
-    requireNonNull(temporaryDirectory,
-        "temporaryDirectory argument cannot be null");
+    requireNonNull(temporaryDirectory, "temporaryDirectory argument cannot be null");
     requireNonNull(logger, "logger argument cannot be null");
 
     this.temporaryDirectory = temporaryDirectory;
-    this.dockerConnection =
-        DockerManager.getInstance().createImageInstance(dockerImage);
+    this.dockerConnection = DockerManager.getInstance().createImageInstance(dockerImage);
     this.logger = logger;
   }
-
 }

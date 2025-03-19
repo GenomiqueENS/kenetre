@@ -24,6 +24,7 @@
 
 /**
  * This package contain classes related to translators I/O.
+ *
  * @since 2.0
  */
 package fr.ens.biologie.genomique.kenetre.translator.io;

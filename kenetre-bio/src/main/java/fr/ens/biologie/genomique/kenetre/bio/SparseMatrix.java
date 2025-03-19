@@ -17,6 +17,7 @@ import java.util.TreeMap;
 /**
  * This class define a sparse expression matrix. This a generalization of the
  * SparseExpressionMatrix.
+ *
  * @author Laurent Jourdren
  * @since 2.4
  */
@@ -37,8 +38,7 @@ public class SparseMatrix<E> extends AbstractMatrix<E> {
   @Override
   public List<String> getRowNames() {
 
-    return Collections
-        .unmodifiableList(new ArrayList<>(this.rowNames.keySet()));
+    return Collections.unmodifiableList(new ArrayList<>(this.rowNames.keySet()));
   }
 
   @Override
@@ -50,8 +50,7 @@ public class SparseMatrix<E> extends AbstractMatrix<E> {
   @Override
   public List<String> getColumnNames() {
 
-    return Collections
-        .unmodifiableList(new ArrayList<>(this.columnNames.keySet()));
+    return Collections.unmodifiableList(new ArrayList<>(this.columnNames.keySet()));
   }
 
   @Override
@@ -154,14 +153,12 @@ public class SparseMatrix<E> extends AbstractMatrix<E> {
               this.lastRowName = reverseRowNames.get(rowId);
             }
 
-            return new BasicEntry<>(this.lastRowName,
-                reverseColumnNames.get(columnId), e.getValue());
+            return new BasicEntry<>(
+                this.lastRowName, reverseColumnNames.get(columnId), e.getValue());
           }
         };
-
       }
     };
-
   }
 
   @Override
@@ -239,20 +236,17 @@ public class SparseMatrix<E> extends AbstractMatrix<E> {
   }
 
   @Override
-  public void renameColumn(final String oldColumnName,
-      final String newColumnName) {
+  public void renameColumn(final String oldColumnName, final String newColumnName) {
 
     Objects.requireNonNull(oldColumnName, "oldColumnName cannot be null");
     Objects.requireNonNull(newColumnName, "newColumnName cannot be null");
 
     if (!containsColumn(oldColumnName)) {
-      throw new IllegalArgumentException(
-          "Unknown column name: " + oldColumnName);
+      throw new IllegalArgumentException("Unknown column name: " + oldColumnName);
     }
 
     if (containsColumn(newColumnName)) {
-      throw new IllegalArgumentException(
-          "The new column name already exists: " + newColumnName);
+      throw new IllegalArgumentException("The new column name already exists: " + newColumnName);
     }
 
     Integer columnId = getColumnId(oldColumnName);
@@ -267,8 +261,7 @@ public class SparseMatrix<E> extends AbstractMatrix<E> {
     Objects.requireNonNull(columnName, "columnName argument cannot be null");
 
     if (!this.columnNames.containsKey(columnName)) {
-      throw new IllegalArgumentException(
-          "columnName does not exists: " + columnName);
+      throw new IllegalArgumentException("columnName does not exists: " + columnName);
     }
 
     // Remove the values
@@ -387,10 +380,10 @@ public class SparseMatrix<E> extends AbstractMatrix<E> {
 
   /**
    * Public constructor.
+   *
    * @param defaultValue the default value of the matrix
    */
   public SparseMatrix(final E defaultValue) {
     this.defaultValue = defaultValue;
   }
-
 }

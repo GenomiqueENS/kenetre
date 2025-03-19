@@ -2,8 +2,8 @@
  *                 Aozan development code
  *
  * This code may be freely distributed and modified under the
- * terms of the GNU General Public License version 3 or later 
- * and CeCILL. This should be distributed with the code. If you 
+ * terms of the GNU General Public License version 3 or later
+ * and CeCILL. This should be distributed with the code. If you
  * do not have a copy, see:
  *
  *      http://www.gnu.org/licenses/gpl-3.0-standalone.html
@@ -23,6 +23,7 @@
 
 package fr.ens.biologie.genomique.kenetre.illumina.interop;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -30,11 +31,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-
 /**
- * This class define a specified iterator for reading the binary file
- * QMetricsOut.bin.
+ * This class define a specified iterator for reading the binary file QMetricsOut.bin.
+ *
  * @author Laurent Jourdren
  * @author Cyril Firmo
  * @since Aozan 2.0
@@ -78,30 +77,30 @@ public class QMetricsReader extends AbstractBinaryFileReader<QMetric> {
   }
 
   @Override
-  protected void readMetricRecord(final List<QMetric> collection,
-      final ByteBuffer bb, final int version) {
+  protected void readMetricRecord(
+      final List<QMetric> collection, final ByteBuffer bb, final int version) {
 
     switch (version) {
-    case 4:
-      collection.add(new QMetric(version, bb, -1, null));
-      break;
+      case 4:
+        collection.add(new QMetric(version, bb, -1, null));
+        break;
 
-    case 5:
-      collection.add(new QMetric(version, bb, -1, this.remappedScoreQuality));
-      break;
+      case 5:
+        collection.add(new QMetric(version, bb, -1, this.remappedScoreQuality));
+        break;
 
-    case 6:
-      collection.add(new QMetric(version, bb, this.qualityScoreBinNumber,
-          this.remappedScoreQuality));
-      break;
+      case 6:
+        collection.add(
+            new QMetric(version, bb, this.qualityScoreBinNumber, this.remappedScoreQuality));
+        break;
 
-    case 7:
-      collection.add(new QMetric(version, bb, this.qualityScoreBinNumber,
-          this.remappedScoreQuality));
-      break;
+      case 7:
+        collection.add(
+            new QMetric(version, bb, this.qualityScoreBinNumber, this.remappedScoreQuality));
+        break;
 
-    default:
-      throw new IllegalArgumentException();
+      default:
+        throw new IllegalArgumentException();
     }
   }
 
@@ -109,23 +108,23 @@ public class QMetricsReader extends AbstractBinaryFileReader<QMetric> {
   protected void readOptionalFlag(ByteBuffer bb, int version) {
 
     switch (version) {
-    case 4:
-      return;
+      case 4:
+        return;
 
-    case 5:
-      readOptionalFlagVersion5(bb);
-      return;
+      case 5:
+        readOptionalFlagVersion5(bb);
+        return;
 
-    case 6:
-      readOptionalFlagVersion6(bb);
-      return;
+      case 6:
+        readOptionalFlagVersion6(bb);
+        return;
 
-    case 7:
-      readOptionalFlagVersion7(bb);
-      return;
+      case 7:
+        readOptionalFlagVersion7(bb);
+        return;
 
-    default:
-      throw new IllegalArgumentException();
+      default:
+        throw new IllegalArgumentException();
     }
   }
 
@@ -214,6 +213,7 @@ public class QMetricsReader extends AbstractBinaryFileReader<QMetric> {
 
   /**
    * Get an integer telling if Qscore binning is enabled
+   *
    * @return if Qscore binning is enabled.
    */
   public int getQualityScoreBinningEnabled() {
@@ -222,6 +222,7 @@ public class QMetricsReader extends AbstractBinaryFileReader<QMetric> {
 
   /**
    * Get the number of bin
+   *
    * @return int number of bin
    */
   public int getQualityScoreBinNumber() {
@@ -230,6 +231,7 @@ public class QMetricsReader extends AbstractBinaryFileReader<QMetric> {
 
   /**
    * Get an array of int with the lower boundaries of each bin
+   *
    * @return int[] the lower boundaries of each bin
    */
   public int[] getLowerBoundary() {
@@ -238,6 +240,7 @@ public class QMetricsReader extends AbstractBinaryFileReader<QMetric> {
 
   /**
    * Get an array of int with the upper boundaries of each bin
+   *
    * @return int[] the upper boundaries of each bin
    */
   public int[] getUpperBoundary() {
@@ -245,8 +248,8 @@ public class QMetricsReader extends AbstractBinaryFileReader<QMetric> {
   }
 
   /**
-   * Get an array of int with the value on which quality score of a bin is
-   * remapped
+   * Get an array of int with the value on which quality score of a bin is remapped
+   *
    * @return int[] remapped score quality
    */
   public int[] getRemappedScoreQuality() {
@@ -255,6 +258,7 @@ public class QMetricsReader extends AbstractBinaryFileReader<QMetric> {
 
   /**
    * Set an integer telling if Qscore binning is enabled
+   *
    * @param value integer if Qscore binning is enabled.
    */
   public void setQualityScoreBinningEnabled(int value) {
@@ -263,6 +267,7 @@ public class QMetricsReader extends AbstractBinaryFileReader<QMetric> {
 
   /**
    * Set the number of bin
+   *
    * @param value int number of bin
    */
   public void setQualityScoreBinNumber(int value) {
@@ -271,6 +276,7 @@ public class QMetricsReader extends AbstractBinaryFileReader<QMetric> {
 
   /**
    * Set an array of int with the lower boundaries of each bin
+   *
    * @param value int[] the lower boundaries of each bin
    */
   public void setLowerBoundary(int[] value) {
@@ -279,6 +285,7 @@ public class QMetricsReader extends AbstractBinaryFileReader<QMetric> {
 
   /**
    * Set an array of int with the upper boundaries of each bin
+   *
    * @param value int[] the upper boundaries of each bin
    */
   public void setUpperBoundary(int[] value) {
@@ -286,8 +293,8 @@ public class QMetricsReader extends AbstractBinaryFileReader<QMetric> {
   }
 
   /**
-   * Set an array of int with the value on which quality score of a bin is
-   * remapped
+   * Set an array of int with the value on which quality score of a bin is remapped
+   *
    * @param value int[] remapped score quality
    */
   public void setRemappedScoreQuality(int[] value) {
@@ -301,5 +308,4 @@ public class QMetricsReader extends AbstractBinaryFileReader<QMetric> {
   public QMetricsReader(final File dirPath) throws KenetreException {
     super(dirPath);
   }
-
 }

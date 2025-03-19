@@ -31,6 +31,7 @@ import java.util.Map;
 
 /**
  * This class define a translator composed of several translators.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
@@ -40,6 +41,7 @@ public class ConcatTranslator extends AbstractTranslator {
 
   /**
    * Get an ordered list of the translator fields
+   *
    * @return an ordered list of the translator fields.
    */
   @Override
@@ -50,6 +52,7 @@ public class ConcatTranslator extends AbstractTranslator {
 
   /**
    * Get a translation for a feature
+   *
    * @param id Identifier of the feature
    * @param field the field to get
    * @return An array with the annotation of the Feature
@@ -68,6 +71,7 @@ public class ConcatTranslator extends AbstractTranslator {
 
   /**
    * Test if the link information is available for the field
+   *
    * @param field Field to test
    * @return true if link information is available
    */
@@ -85,6 +89,7 @@ public class ConcatTranslator extends AbstractTranslator {
 
   /**
    * Get link information.
+   *
    * @param translatedId Translated id
    * @param field field of the id
    * @return a link for the translated id
@@ -103,6 +108,7 @@ public class ConcatTranslator extends AbstractTranslator {
 
   /**
    * Add a translator to the concat translator.
+   *
    * @param translator Translator to add
    */
   public void addTranslator(final Translator translator) {
@@ -129,22 +135,18 @@ public class ConcatTranslator extends AbstractTranslator {
   // Constructors
   //
 
-  /**
-   * Public constructor.
-   */
-  public ConcatTranslator() {
-  }
+  /** Public constructor. */
+  public ConcatTranslator() {}
 
   /**
    * Public constructor.
+   *
    * @param translator1 first translator to add
    * @param translator2 first translator to add
    */
-  public ConcatTranslator(final Translator translator1,
-      final Translator translator2) {
+  public ConcatTranslator(final Translator translator1, final Translator translator2) {
 
     addTranslator(translator1);
     addTranslator(translator2);
   }
-
 }

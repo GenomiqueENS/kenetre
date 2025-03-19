@@ -27,20 +27,20 @@ package fr.ens.biologie.genomique.kenetre.bio.readmapper;
 import static fr.ens.biologie.genomique.kenetre.io.FileUtils.checkExistingStandardFile;
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.bio.FastqFormat;
+import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
+import fr.ens.biologie.genomique.kenetre.bio.io.FastqReader;
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
+import fr.ens.biologie.genomique.kenetre.util.ReporterIncrementer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import fr.ens.biologie.genomique.kenetre.bio.FastqFormat;
-import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
-import fr.ens.biologie.genomique.kenetre.bio.io.FastqReader;
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-import fr.ens.biologie.genomique.kenetre.util.ReporterIncrementer;
-
 /**
  * This class define a mapping using files as input.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -54,6 +54,7 @@ public class FileMapping extends EntryMapping {
 
   /**
    * Throws the exception if occurs
+   *
    * @throws IOException if an error has occurred
    */
   public void throwMappingException() throws IOException {
@@ -69,6 +70,7 @@ public class FileMapping extends EntryMapping {
 
   /**
    * Map files in paired-end mode.
+   *
    * @param readsFile1 first file
    * @param readsFile2 second file
    * @param errorFile standard error file
@@ -76,21 +78,19 @@ public class FileMapping extends EntryMapping {
    * @return a MapperProcess object
    * @throws IOException if an error occurs while launching the mapper
    */
-  public final MapperProcess mapPE(final File readsFile1, final File readsFile2,
-      final File errorFile, final File logFile) throws IOException {
+  public final MapperProcess mapPE(
+      final File readsFile1, final File readsFile2, final File errorFile, final File logFile)
+      throws IOException {
 
     requireNonNull(readsFile1, "readsFile1 is null");
     requireNonNull(readsFile2, "readsFile2 is null");
 
-    checkExistingStandardFile(readsFile1,
-        "readsFile1 not exits or is not a standard file.");
-    checkExistingStandardFile(readsFile2,
-        "readsFile2 not exits or is not a standard file.");
+    checkExistingStandardFile(readsFile1, "readsFile1 not exits or is not a standard file.");
+    checkExistingStandardFile(readsFile2, "readsFile2 not exits or is not a standard file.");
 
     this.logger.debug("First pair FASTQ file to map: " + readsFile1);
     this.logger.debug("Second pair FASTQ file to map: " + readsFile2);
-    this.logger.debug("Mapping with "
-        + this.mapperIndex.getMapperName() + " in paired-end mode");
+    this.logger.debug("Mapping with " + this.mapperIndex.getMapperName() + " in paired-end mode");
 
     // Process to mapping
     final MapperProcess result =
@@ -107,6 +107,7 @@ public class FileMapping extends EntryMapping {
 
   /**
    * Map reads of FASTQ file in paired end mode.
+   *
    * @param in1 FASTQ input file with reads of the first end
    * @param in2 FASTQ input file with reads of the first end mapper
    * @param errorFile standard error file
@@ -114,14 +115,14 @@ public class FileMapping extends EntryMapping {
    * @return an InputStream with SAM data
    * @throws IOException if an error occurs while mapping the reads
    */
-  public MapperProcess mapPE(final InputStream in1, final InputStream in2,
-      final File errorFile, final File logFile) throws IOException {
+  public MapperProcess mapPE(
+      final InputStream in1, final InputStream in2, final File errorFile, final File logFile)
+      throws IOException {
 
     requireNonNull(in1, "in1 argument is null");
     requireNonNull(in2, "in2 argument is null");
 
-    this.logger.debug("Mapping with "
-        + this.mapperIndex.getMapperName() + " in paired-end mode");
+    this.logger.debug("Mapping with " + this.mapperIndex.getMapperName() + " in paired-end mode");
 
     requireNonNull(in1, "readsFile1 is null");
     requireNonNull(in2, "readsFile2 is null");
@@ -138,19 +139,19 @@ public class FileMapping extends EntryMapping {
 
   /**
    * Map reads of FASTQ file in single end mode.
+   *
    * @param in FASTQ input stream
    * @param errorFile standard error file
    * @param logFile log file
    * @return an InputStream with SAM data
    * @throws IOException if an error occurs while mapping the reads
    */
-  public MapperProcess mapSE(final InputStream in, final File errorFile,
-      final File logFile) throws IOException {
+  public MapperProcess mapSE(final InputStream in, final File errorFile, final File logFile)
+      throws IOException {
 
     requireNonNull(in, "in argument is null");
 
-    this.logger.debug("Mapping with "
-        + this.mapperIndex.getMapperName() + " in single-end mode");
+    this.logger.debug("Mapping with " + this.mapperIndex.getMapperName() + " in single-end mode");
 
     // Process to mapping
     final MapperProcess mapperProcess = super.mapSE(errorFile, logFile);
@@ -163,27 +164,25 @@ public class FileMapping extends EntryMapping {
 
   /**
    * Map reads of FASTQ file in single end mode.
+   *
    * @param readsFile FASTQ input file
    * @param errorFile standard error file
    * @param logFile log file
    * @return an InputStream with SAM data
    * @throws IOException if an error occurs while mapping the reads
    */
-  public MapperProcess mapSE(final File readsFile, final File errorFile,
-      final File logFile) throws IOException {
+  public MapperProcess mapSE(final File readsFile, final File errorFile, final File logFile)
+      throws IOException {
 
     requireNonNull(readsFile, "readsFile is null");
 
-    checkExistingStandardFile(readsFile,
-        "reads File not exits or is not a standard file.");
+    checkExistingStandardFile(readsFile, "reads File not exits or is not a standard file.");
 
     this.logger.debug("FASTQ file to map: " + readsFile);
-    this.logger.debug("Mapping with "
-        + this.mapperIndex.getMapperName() + " in single-end mode");
+    this.logger.debug("Mapping with " + this.mapperIndex.getMapperName() + " in single-end mode");
 
     // Process to mapping
-    final MapperProcess result =
-        getProvider().mapSE(this, readsFile, errorFile, logFile);
+    final MapperProcess result = getProvider().mapSE(this, readsFile, errorFile, logFile);
 
     // Set counter
     result.setIncrementer(this.incrementer, this.counterGroup);
@@ -196,79 +195,83 @@ public class FileMapping extends EntryMapping {
 
   /**
    * Write first pairs entries to the mapper process.
+   *
    * @param in first pairs FASTQ file
    * @param mp mapper process
    * @throws FileNotFoundException if the input cannot be found
    */
-  private void writeFirstPairEntries(final InputStream in,
-      final MapperProcess mp) throws FileNotFoundException {
+  private void writeFirstPairEntries(final InputStream in, final MapperProcess mp)
+      throws FileNotFoundException {
 
     requireNonNull(in, "in argument cannot be null");
     requireNonNull(mp, "mp argument cannot be null");
 
-    final Thread t = new Thread(() -> {
+    final Thread t =
+        new Thread(
+            () -> {
+              try {
+                final FastqReader reader = new FastqReader(in);
 
-      try {
-        final FastqReader reader = new FastqReader(in);
+                for (ReadSequence read : reader) {
+                  mp.writeEntry1(read);
+                }
 
-        for (ReadSequence read : reader) {
-          mp.writeEntry1(read);
-        }
+                reader.close();
+                mp.closeWriter1();
 
-        reader.close();
-        mp.closeWriter1();
-
-      } catch (IOException e) {
-        mappingException = e;
-      }
-    }, "Mapper writeFirstPairEntries thread");
+              } catch (IOException e) {
+                mappingException = e;
+              }
+            },
+            "Mapper writeFirstPairEntries thread");
 
     t.start();
   }
 
   /**
    * Write first pairs entries to the mapper process.
+   *
    * @param in first pairs FASTQ file
    * @param mp mapper process
    * @throws FileNotFoundException if the input cannot be found
    */
-  private void writeSecondPairEntries(final InputStream in,
-      final MapperProcess mp) throws FileNotFoundException {
+  private void writeSecondPairEntries(final InputStream in, final MapperProcess mp)
+      throws FileNotFoundException {
 
     requireNonNull(in, "in argument cannot be null");
     requireNonNull(mp, "mp argument cannot be null");
 
-    final Thread t = new Thread(() -> {
+    final Thread t =
+        new Thread(
+            () -> {
+              try {
 
-      try {
+                final FastqReader reader = new FastqReader(in);
 
-        final FastqReader reader = new FastqReader(in);
+                for (ReadSequence read : reader) {
+                  mp.writeEntry2(read);
+                }
 
-        for (ReadSequence read : reader) {
-          mp.writeEntry2(read);
-        }
+                reader.close();
+                mp.closeWriter2();
 
-        reader.close();
-        mp.closeWriter2();
-
-      } catch (IOException e) {
-        mappingException = e;
-      }
-    }, "Mapper writeSecondPairEntries thread");
+              } catch (IOException e) {
+                mappingException = e;
+              }
+            },
+            "Mapper writeSecondPairEntries thread");
 
     t.start();
   }
 
   @Override
-  public MapperProcess mapPE(final File errorFile, final File logFile)
-      throws IOException {
+  public MapperProcess mapPE(final File errorFile, final File logFile) throws IOException {
 
     throw new IllegalStateException();
   }
 
   @Override
-  public MapperProcess mapSE(final File errorFile, final File logFile)
-      throws IOException {
+  public MapperProcess mapSE(final File errorFile, final File logFile) throws IOException {
 
     throw new IllegalStateException();
   }
@@ -279,6 +282,7 @@ public class FileMapping extends EntryMapping {
 
   /**
    * Constructor.
+   *
    * @param mapperIndex mapper index object
    * @param fastqFormat FASTQ format
    * @param mapperArguments the mapper arguments
@@ -288,14 +292,24 @@ public class FileMapping extends EntryMapping {
    * @param counterGroup the counter group
    * @param logger the logger
    */
-  public FileMapping(final MapperIndex mapperIndex,
-      final FastqFormat fastqFormat, final List<String> mapperArguments,
-      final int threadNumber, final boolean multipleInstanceEnabled,
-      final ReporterIncrementer incrementer, final String counterGroup,
+  public FileMapping(
+      final MapperIndex mapperIndex,
+      final FastqFormat fastqFormat,
+      final List<String> mapperArguments,
+      final int threadNumber,
+      final boolean multipleInstanceEnabled,
+      final ReporterIncrementer incrementer,
+      final String counterGroup,
       final GenericLogger logger) {
 
-    super(mapperIndex, fastqFormat, mapperArguments, threadNumber,
-        multipleInstanceEnabled, incrementer, counterGroup, logger);
+    super(
+        mapperIndex,
+        fastqFormat,
+        mapperArguments,
+        threadNumber,
+        multipleInstanceEnabled,
+        incrementer,
+        counterGroup,
+        logger);
   }
-
 }

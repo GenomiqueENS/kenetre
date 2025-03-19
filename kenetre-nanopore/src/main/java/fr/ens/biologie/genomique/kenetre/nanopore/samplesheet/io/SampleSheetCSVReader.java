@@ -2,6 +2,9 @@ package fr.ens.biologie.genomique.kenetre.nanopore.samplesheet.io;
 
 import static java.nio.charset.Charset.defaultCharset;
 
+import com.google.common.base.Splitter;
+import fr.ens.biologie.genomique.kenetre.KenetreException;
+import fr.ens.biologie.genomique.kenetre.nanopore.samplesheet.SampleSheet;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,18 +16,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import com.google.common.base.Splitter;
-
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-import fr.ens.biologie.genomique.kenetre.nanopore.samplesheet.SampleSheet;
-
 /**
  * This class reads a Nanopore sample sheet file in CSV format.
+ *
  * @since 0.20
  * @author Laurent Jourdren
  */
-public class SampleSheetCSVReader extends AbstractSampleSheetReader
-    implements AutoCloseable {
+public class SampleSheetCSVReader extends AbstractSampleSheetReader implements AutoCloseable {
 
   private final BufferedReader reader;
 
@@ -66,6 +64,7 @@ public class SampleSheetCSVReader extends AbstractSampleSheetReader
 
   /**
    * Public constructor
+   *
    * @param is InputStream to use
    */
   public SampleSheetCSVReader(final InputStream is) {
@@ -74,12 +73,12 @@ public class SampleSheetCSVReader extends AbstractSampleSheetReader
       throw new NullPointerException("InputStream is null");
     }
 
-    this.reader =
-        new BufferedReader(new InputStreamReader(is, defaultCharset()));
+    this.reader = new BufferedReader(new InputStreamReader(is, defaultCharset()));
   }
 
   /**
    * Public constructor
+   *
    * @param file File to use
    * @throws IOException if the file does not exists
    */
@@ -90,8 +89,7 @@ public class SampleSheetCSVReader extends AbstractSampleSheetReader
     }
 
     if (!file.isFile()) {
-      throw new FileNotFoundException(
-          "File not found: " + file.getAbsolutePath());
+      throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
     }
 
     this.reader = new BufferedReader(new FileReader(file, defaultCharset()));
@@ -99,6 +97,7 @@ public class SampleSheetCSVReader extends AbstractSampleSheetReader
 
   /**
    * Public constructor
+   *
    * @param path File to use
    * @throws IOException if the file does not exists
    */
@@ -109,6 +108,7 @@ public class SampleSheetCSVReader extends AbstractSampleSheetReader
 
   /**
    * Public constructor
+   *
    * @param filename File to use
    * @throws IOException if an error occurs while reading the file
    */
@@ -121,11 +121,9 @@ public class SampleSheetCSVReader extends AbstractSampleSheetReader
     final File file = new File(filename);
 
     if (!file.isFile()) {
-      throw new FileNotFoundException(
-          "File not found: " + file.getAbsolutePath());
+      throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
     }
 
     this.reader = new BufferedReader(new FileReader(file, defaultCharset()));
   }
-
 }

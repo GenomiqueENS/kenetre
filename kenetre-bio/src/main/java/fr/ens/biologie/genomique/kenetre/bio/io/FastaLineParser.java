@@ -26,6 +26,7 @@ package fr.ens.biologie.genomique.kenetre.bio.io;
 
 import static fr.ens.biologie.genomique.kenetre.bio.io.BioCharsets.FASTA_CHARSET;
 
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,11 +34,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-
 /**
- * This class allow to parse FASTA files line by line without storing the whole
- * sequence in memory.
+ * This class allow to parse FASTA files line by line without storing the whole sequence in memory.
+ *
  * @since 1.1
  * @author Laurent Jourdren
  */
@@ -49,8 +48,8 @@ public class FastaLineParser {
   private boolean fastaSectionFound;
 
   /**
-   * Parse the next sequence line of the FASTA file and return the current
-   * sequence name.
+   * Parse the next sequence line of the FASTA file and return the current sequence name.
+   *
    * @return the current sequence name
    * @throws IOException if an error occurs while reading the FASTA file
    */
@@ -81,9 +80,7 @@ public class FastaLineParser {
         continue;
 
       } else if (this.seqName == null) {
-        throw new IOException(
-            "No fasta header found at the beginning of the fasta file: "
-                + line);
+        throw new IOException("No fasta header found at the beginning of the fasta file: " + line);
       }
 
       this.sequence = trim;
@@ -95,6 +92,7 @@ public class FastaLineParser {
 
   /**
    * Get the sequence of the last read line.
+   *
    * @return a String with the sequence trimmed
    */
   public String getSequence() {
@@ -108,6 +106,7 @@ public class FastaLineParser {
 
   /**
    * Public constructor.
+   *
    * @param is InputStream to use
    */
   public FastaLineParser(final InputStream is) {
@@ -117,6 +116,7 @@ public class FastaLineParser {
 
   /**
    * Public constructor.
+   *
    * @param is InputStream to use
    * @param gffFile the input file is a GFF file
    */
@@ -134,6 +134,7 @@ public class FastaLineParser {
 
   /**
    * Public constructor.
+   *
    * @param file File to use
    * @throws FileNotFoundException if the file does not exists
    */
@@ -144,12 +145,12 @@ public class FastaLineParser {
 
   /**
    * Public constructor.
+   *
    * @param file File to use
    * @param gffFile the input file is a GFF file
    * @throws FileNotFoundException if the file does not exists
    */
-  public FastaLineParser(final File file, final boolean gffFile)
-      throws FileNotFoundException {
+  public FastaLineParser(final File file, final boolean gffFile) throws FileNotFoundException {
 
     if (file == null) {
       throw new NullPointerException("File is null");
@@ -164,6 +165,7 @@ public class FastaLineParser {
 
   /**
    * Public constructor.
+   *
    * @param filename File to use
    * @throws FileNotFoundException if the file does not exists
    */
@@ -174,6 +176,7 @@ public class FastaLineParser {
 
   /**
    * Public constructor.
+   *
    * @param filename File to use
    * @param gffFile the input file is a GFF file
    * @throws FileNotFoundException if the file does not exists
@@ -187,5 +190,4 @@ public class FastaLineParser {
       this.fastaSectionFound = true;
     }
   }
-
 }

@@ -24,14 +24,14 @@
 
 package fr.ens.biologie.genomique.kenetre.storage;
 
+import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
+import fr.ens.biologie.genomique.kenetre.bio.readmapper.MapperInstance;
 import java.io.File;
 import java.util.Map;
 
-import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
-import fr.ens.biologie.genomique.kenetre.bio.readmapper.MapperInstance;
-
 /**
  * This interface define a genome index storage.
+ *
  * @since 2.6
  * @author Laurent Jourdren
  */
@@ -39,23 +39,29 @@ public interface GenomeIndexStorage {
 
   /**
    * Get the DataFile that corresponds to a mapper and a genome
+   *
    * @param mapperInstance mapper
    * @param genome genome description object for the genome
    * @param additionalDescription description of the additional parameters
-   * @return a file that contains the path to the index or null if the index has
-   *         not yet been computed
+   * @return a file that contains the path to the index or null if the index has not yet been
+   *     computed
    */
-  File get(MapperInstance mapperInstance, GenomeDescription genome,
+  File get(
+      MapperInstance mapperInstance,
+      GenomeDescription genome,
       Map<String, String> additionalDescription);
 
   /**
    * Put the index archive in the storage.
+   *
    * @param mapperInstance mapper
    * @param genome genome description object
    * @param additionalDescription description of the additional parameters
    * @param indexArchive the file that contains the index
    */
-  void put(MapperInstance mapperInstance, GenomeDescription genome,
-      Map<String, String> additionalDescription, File indexArchive);
-
+  void put(
+      MapperInstance mapperInstance,
+      GenomeDescription genome,
+      Map<String, String> additionalDescription,
+      File indexArchive);
 }

@@ -6,7 +6,6 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,8 +18,7 @@ public class UniqueIdentifierTranslatorTest {
   private static final String[] ARRAY_ROW_FOUR = {"D", "4", "D4", "0"};
   private static final String[] ARRAY_ROW_FIVE = {"E", "4", "D4"};
   private static final String[] ARRAY_UNIQUE_IDS = {"A", "B", "C"};
-  private final MultiColumnTranslator transl =
-      new MultiColumnTranslator(ARRAY_FIELD);
+  private final MultiColumnTranslator transl = new MultiColumnTranslator(ARRAY_FIELD);
 
   @Before
   public void setUp() throws Exception {
@@ -29,7 +27,6 @@ public class UniqueIdentifierTranslatorTest {
     transl.addRow(ARRAY_ROW_THREE);
     transl.addRow(ARRAY_ROW_FOUR);
     transl.addRow(ARRAY_ROW_FIVE);
-
   }
 
   @Test
@@ -74,5 +71,4 @@ public class UniqueIdentifierTranslatorTest {
       assertTrue(true);
     }
   }
-
 }

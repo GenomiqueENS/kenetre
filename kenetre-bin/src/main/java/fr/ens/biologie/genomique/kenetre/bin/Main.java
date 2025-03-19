@@ -2,13 +2,15 @@ package fr.ens.biologie.genomique.kenetre.bin;
 
 import static java.util.Collections.unmodifiableList;
 
+import com.google.common.base.Strings;
+import fr.ens.biologie.genomique.kenetre.bin.action.Action;
+import fr.ens.biologie.genomique.kenetre.bin.action.ActionService;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -16,13 +18,9 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import com.google.common.base.Strings;
-
-import fr.ens.biologie.genomique.kenetre.bin.action.Action;
-import fr.ens.biologie.genomique.kenetre.bin.action.ActionService;
-
 /**
  * This class define the main class for Kenetre bin.
+ *
  * @since 0.28
  * @author Laurent Jourdren
  */
@@ -42,11 +40,9 @@ public class Main {
   public static final String APP_VERSION_STRING = getVersion();
 
   /** Project email. */
-  public static final String CONTACT_EMAIL =
-      APP_NAME_LOWER_CASE + "@biologie.ens.fr";
+  public static final String CONTACT_EMAIL = APP_NAME_LOWER_CASE + "@biologie.ens.fr";
 
-  private static final String WEBSITE_URL =
-      "https://github.com/GenomiqueENS/Kenetre";
+  private static final String WEBSITE_URL = "https://github.com/GenomiqueENS/Kenetre";
 
   /** Licence text. */
   public static final String LICENSE_TXT =
@@ -54,16 +50,25 @@ public class Main {
           + " version 2.1 or later and CeCILL-C.";
 
   /** About string, plain text version. */
-  public static final String ABOUT_TXT = APP_NAME
-      + " version " + APP_VERSION_STRING
-      + " is a set of library for NGS analysis and useful programs.\n\nAuthors:\n"
-      + " Laurent Jourdren (Project leader and maintainer)\n" + "Contacts:\n"
-      + " Email: " + CONTACT_EMAIL + "\n" + " Website: " + WEBSITE_URL + "\n"
-      + "Copyright IBENS genomics core facility\n" + LICENSE_TXT + "\n";
+  public static final String ABOUT_TXT =
+      APP_NAME
+          + " version "
+          + APP_VERSION_STRING
+          + " is a set of library for NGS analysis and useful programs.\n\nAuthors:\n"
+          + " Laurent Jourdren (Project leader and maintainer)\n"
+          + "Contacts:\n"
+          + " Email: "
+          + CONTACT_EMAIL
+          + "\n"
+          + " Website: "
+          + WEBSITE_URL
+          + "\n"
+          + "Copyright IBENS genomics core facility\n"
+          + LICENSE_TXT
+          + "\n";
 
   /** The welcome message. */
-  public static final String WELCOME_MSG =
-      APP_NAME + " version " + APP_VERSION_STRING;
+  public static final String WELCOME_MSG = APP_NAME + " version " + APP_VERSION_STRING;
 
   private static Main main;
   private final List<String> args;
@@ -73,6 +78,7 @@ public class Main {
 
   /**
    * Exit the application.
+   *
    * @param exitCode exit code
    */
   public static void exit(final int exitCode) {
@@ -82,6 +88,7 @@ public class Main {
 
   /**
    * Print error message to the user and exits the application.
+   *
    * @param e Exception
    * @param message message to show to the use
    */
@@ -92,35 +99,36 @@ public class Main {
 
   /**
    * Print error message to the user and exits the application.
+   *
    * @param e Exception
    * @param message message to show to the use
    * @param logMessage true if message must be logged
    */
-  public static void errorExit(final Throwable e, final String message,
-      final boolean logMessage) {
+  public static void errorExit(final Throwable e, final String message, final boolean logMessage) {
 
     errorExit(e, message, logMessage, 1);
   }
 
   /**
    * Print error message to the user and exits the application.
+   *
    * @param e Exception
    * @param message message to show to the use
    */
-  public static void errorExit(final Throwable e, final String message,
-      int exitCode) {
+  public static void errorExit(final Throwable e, final String message, int exitCode) {
 
     errorExit(e, message, true, exitCode);
   }
 
   /**
    * Print error message to the user and exits the application.
+   *
    * @param e Exception
    * @param message message to show to the use
    * @param logMessage true if message must be logged
    */
-  public static void errorExit(final Throwable e, final String message,
-      final boolean logMessage, int exitCode) {
+  public static void errorExit(
+      final Throwable e, final String message, final boolean logMessage, int exitCode) {
 
     System.err.println("\n=== " + APP_NAME + " Error ===");
     System.err.println(message);
@@ -132,6 +140,7 @@ public class Main {
 
   /**
    * Show a message and then exit.
+   *
    * @param message the message to show
    */
   public static void showMessageAndExit(final String message) {
@@ -142,6 +151,7 @@ public class Main {
 
   /**
    * Show a message and then exit.
+   *
    * @param message the message to show
    */
   public static void showErrorMessageAndExit(final String message) {
@@ -152,6 +162,7 @@ public class Main {
 
   /**
    * Print the stack trace for an exception.
+   *
    * @param e Exception
    */
   private static void printStackTrace(final Throwable e) {
@@ -167,6 +178,7 @@ public class Main {
 
   /**
    * Show command line help.
+   *
    * @param options Options of the software
    */
   protected void help(final Options options) {
@@ -180,8 +192,8 @@ public class Main {
 
       if (!action.isHidden()) {
 
-        System.out.println(Strings.padEnd(" - " + action.getName(), 23, ' ')
-            + action.getDescription());
+        System.out.println(
+            Strings.padEnd(" - " + action.getName(), 23, ' ') + action.getDescription());
       }
     }
 
@@ -190,6 +202,7 @@ public class Main {
 
   /**
    * Create options for command line
+   *
    * @return an Options object
    */
   @SuppressWarnings("static-access")
@@ -199,19 +212,18 @@ public class Main {
     final Options options = new Options();
 
     options.addOption("v", "version", false, "show version of the software");
-    options.addOption("about", false,
-        "display information about this software");
+    options.addOption("about", false, "display information about this software");
     options.addOption("h", "help", false, "display this help");
-    options.addOption("l", "license", false,
-        "display information about the license of this software");
-    options.addOption("e", "exit-code", false,
-        "return a non zero exit code if an error occurs");
+    options.addOption(
+        "l", "license", false, "display information about the license of this software");
+    options.addOption("e", "exit-code", false, "return a non zero exit code if an error occurs");
 
     return options;
   }
 
   /**
    * Parse the options of the command line
+   *
    * @return the number of options argument in the command line
    */
   private int parseCommandLine() {
@@ -248,15 +260,14 @@ public class Main {
       }
 
     } catch (ParseException e) {
-      errorExit(e,
-          "Error while parsing command line arguments: " + e.getMessage());
+      errorExit(e, "Error while parsing command line arguments: " + e.getMessage());
     }
 
     // No arguments found
     if (this.args == null || this.args.size() == argsOptions) {
 
-      showErrorMessageAndExit("This program needs one argument."
-          + " Use the -h option to get more information.\n");
+      showErrorMessageAndExit(
+          "This program needs one argument." + " Use the -h option to get more information.\n");
     }
 
     return argsOptions;
@@ -264,6 +275,7 @@ public class Main {
 
   /**
    * Parse the action name and arguments from command line.
+   *
    * @param optionsCount number of options in the command line
    */
   private void parseAction(final int optionsCount) {
@@ -277,14 +289,19 @@ public class Main {
 
     // Action not found ?
     if (this.action == null) {
-      showErrorMessageAndExit("Unknown action: "
-          + actionName + ".\n" + "type: " + APP_NAME_LOWER_CASE
-          + " -help for more help.\n");
+      showErrorMessageAndExit(
+          "Unknown action: "
+              + actionName
+              + ".\n"
+              + "type: "
+              + APP_NAME_LOWER_CASE
+              + " -help for more help.\n");
     }
   }
 
   /**
    * Get command line arguments.
+   *
    * @return Returns the arguments
    */
   public List<String> getArgs() {
@@ -294,6 +311,7 @@ public class Main {
 
   /**
    * Get the action.
+   *
    * @return Returns the action
    */
   public Action getAction() {
@@ -303,6 +321,7 @@ public class Main {
 
   /**
    * Get the action arguments.
+   *
    * @return Returns the actionArgs
    */
   public List<String> getActionArgs() {
@@ -312,6 +331,7 @@ public class Main {
 
   /**
    * Get the exit code to use when an error occurs.
+   *
    * @return Returns the exit code to use when an error occurs
    */
   public int getErrorExitCode() {
@@ -361,13 +381,13 @@ public class Main {
       if (!classPath.startsWith("jar")) {
         // Class not from JAR
 
-        String basePath = classPath.substring(0,
-            classPath.length() - clazz.getName().length() - ".class".length());
+        String basePath =
+            classPath.substring(
+                0, classPath.length() - clazz.getName().length() - ".class".length());
         manifestPath = basePath + MANIFEST_FILE;
 
       } else {
-        manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1)
-            + MANIFEST_FILE;
+        manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1) + MANIFEST_FILE;
       }
 
       Manifest manifest = new Manifest(new URL(manifestPath).openStream());
@@ -383,6 +403,7 @@ public class Main {
 
   /**
    * Constructor.
+   *
    * @param args command line argument.
    */
   Main(final String[] args) {
@@ -402,6 +423,7 @@ public class Main {
 
   /**
    * Main method of the program.
+   *
    * @param args command line arguments
    */
   public static void main(final String[] args) {
@@ -425,5 +447,4 @@ public class Main {
       errorExit(e, e.getMessage(), main.getErrorExitCode());
     }
   }
-
 }

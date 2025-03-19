@@ -1,5 +1,8 @@
 package fr.ens.biologie.genomique.eoulsan.util;
 
+import com.google.common.hash.BloomFilter;
+import com.google.common.hash.Funnel;
+import com.google.common.hash.PrimitiveSink;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -10,13 +13,10 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
-import com.google.common.hash.BloomFilter;
-import com.google.common.hash.Funnel;
-import com.google.common.hash.PrimitiveSink;
-
 /**
- * This class define Bloom filters utils. <b>Warning</b>: this class only exists
- * in this package for compatibility issues with deserialisation.
+ * This class define Bloom filters utils. <b>Warning</b>: this class only exists in this package for
+ * compatibility issues with deserialisation.
+ *
  * @author Sandrine Perrin
  * @since 2.0
  */
@@ -41,15 +41,15 @@ public class EnhancedBloomFilter implements Serializable {
 
   /**
    * Build or retrieve a bloomFilterUtils from a file used .
+   *
    * @param fileSer filename to serialization
    * @return BloomFilter completed
    * @throws IOException if an error occurs during deserialization
    */
-  public static EnhancedBloomFilter deserializationBloomFilter(
-      final File fileSer) throws IOException {
+  public static EnhancedBloomFilter deserializationBloomFilter(final File fileSer)
+      throws IOException {
 
-    try (ObjectInputStream ois =
-        new ObjectInputStream(new FileInputStream(fileSer))) {
+    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileSer))) {
 
       return (EnhancedBloomFilter) ois.readObject();
     } catch (Exception e) {
@@ -60,12 +60,13 @@ public class EnhancedBloomFilter implements Serializable {
 
   /**
    * Build a serialization file with the instance of bloomFilterUtils
+   *
    * @param fileSer filename to serialization
    * @param bloomFilter bloomFilter to serialization
    * @throws IOException if an error occurs during serialization
    */
-  public static void serializationBloomFilter(final File fileSer,
-      final EnhancedBloomFilter bloomFilter) throws IOException {
+  public static void serializationBloomFilter(
+      final File fileSer, final EnhancedBloomFilter bloomFilter) throws IOException {
 
     if (bloomFilter == null) {
       throw new IOException("Bloom filter not exists");
@@ -82,11 +83,11 @@ public class EnhancedBloomFilter implements Serializable {
     } catch (FileNotFoundException e) {
       throw new IOException("Cannot serialize file: " + fileSer, e);
     }
-
   }
 
   /**
    * Compare parameters used to create bloom filter
+   *
    * @param that bloom filter to compare
    * @return same parameters true else false
    */
@@ -100,6 +101,7 @@ public class EnhancedBloomFilter implements Serializable {
   //
   /**
    * Get the bloom filter.
+   *
    * @return the bloom filter
    */
   public BloomFilter<String> getBf() {
@@ -108,6 +110,7 @@ public class EnhancedBloomFilter implements Serializable {
 
   /**
    * Get number of elements added in bloom filter.
+   *
    * @return the number of elements added in bloom filter
    */
   public int getAddedNumberOfElements() {
@@ -116,6 +119,7 @@ public class EnhancedBloomFilter implements Serializable {
 
   /**
    * Get the expected number of elements.
+   *
    * @return the expected number of elements
    */
   public int getExpectedNumberOfElements() {
@@ -124,6 +128,7 @@ public class EnhancedBloomFilter implements Serializable {
 
   /**
    * Get the false positive rate.
+   *
    * @return the false positive rate
    */
   public double getFalsePositiveProbability() {
@@ -134,9 +139,13 @@ public class EnhancedBloomFilter implements Serializable {
   public String toString() {
 
     return "Bloom filter features"
-        + "\n\tfalse positive probability " + getFalsePositiveProbability()
-        + "%" + "\n\tnumber elements expected " + getExpectedNumberOfElements()
-        + "\n\tnumber elements added " + getAddedNumberOfElements();
+        + "\n\tfalse positive probability "
+        + getFalsePositiveProbability()
+        + "%"
+        + "\n\tnumber elements expected "
+        + getExpectedNumberOfElements()
+        + "\n\tnumber elements added "
+        + getAddedNumberOfElements();
   }
 
   //
@@ -145,6 +154,7 @@ public class EnhancedBloomFilter implements Serializable {
 
   /**
    * Public constructor.
+   *
    * @param expectedNumberOfElements parameter to create bloom filter
    */
   public EnhancedBloomFilter(final int expectedNumberOfElements) {
@@ -153,13 +163,12 @@ public class EnhancedBloomFilter implements Serializable {
 
   /**
    * Public constructor.
-   * @param expectedNumberOfElements parameter to create bloom filter, must be
-   *          positive
-   * @param falsePositiveProbability parameter to create bloom filter, must be
-   *          between 0 and 100%
+   *
+   * @param expectedNumberOfElements parameter to create bloom filter, must be positive
+   * @param falsePositiveProbability parameter to create bloom filter, must be between 0 and 100%
    */
-  public EnhancedBloomFilter(final int expectedNumberOfElements,
-      final double falsePositiveProbability) {
+  public EnhancedBloomFilter(
+      final int expectedNumberOfElements, final double falsePositiveProbability) {
 
     // Check parameter
     if (expectedNumberOfElements <= 0) {
@@ -178,30 +187,33 @@ public class EnhancedBloomFilter implements Serializable {
     this.expectedNumberOfElements = expectedNumberOfElements;
     this.falsePositiveProbability = falsePositiveProbability;
 
-    this.bf = BloomFilter.create(new Funnel<String>() {
+    this.bf =
+        BloomFilter.create(
+            new Funnel<String>() {
 
-      private static final long serialVersionUID = 1L;
+              private static final long serialVersionUID = 1L;
 
-      @Override
-      public void funnel(final String from, final PrimitiveSink into) {
-        into.putString(from, StandardCharsets.UTF_8);
-      }
-
-    }, expectedNumberOfElements, falsePositiveProbability);
-
+              @Override
+              public void funnel(final String from, final PrimitiveSink into) {
+                into.putString(from, StandardCharsets.UTF_8);
+              }
+            },
+            expectedNumberOfElements,
+            falsePositiveProbability);
   }
 
   /**
    * Public constructor.
+   *
    * @param bf the Bloom filters
    * @param addedNumberOfElements added number of elements
-   * @param expectedNumberOfElements parameter to create bloom filter, must be
-   *          positive
-   * @param falsePositiveProbability parameter to create bloom filter, must be
-   *          between 0 and 100%
+   * @param expectedNumberOfElements parameter to create bloom filter, must be positive
+   * @param falsePositiveProbability parameter to create bloom filter, must be between 0 and 100%
    */
-  public EnhancedBloomFilter(final BloomFilter<String> bf,
-      final int addedNumberOfElements, final int expectedNumberOfElements,
+  public EnhancedBloomFilter(
+      final BloomFilter<String> bf,
+      final int addedNumberOfElements,
+      final int expectedNumberOfElements,
       final double falsePositiveProbability) {
 
     if (bf == null) {
@@ -213,5 +225,4 @@ public class EnhancedBloomFilter implements Serializable {
     this.expectedNumberOfElements = expectedNumberOfElements;
     this.falsePositiveProbability = falsePositiveProbability;
   }
-
 }

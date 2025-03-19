@@ -3,6 +3,18 @@ package fr.ens.biologie.genomique.kenetre.util.process;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
+import com.github.dockerjava.api.async.ResultCallback;
+import com.github.dockerjava.api.command.CreateContainerCmd;
+import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.command.InspectContainerResponse.ContainerState;
+import com.github.dockerjava.api.command.LogContainerCmd;
+import com.github.dockerjava.api.command.PullImageResultCallback;
+import com.github.dockerjava.api.command.WaitContainerResultCallback;
+import com.github.dockerjava.api.model.Bind;
+import com.github.dockerjava.api.model.Frame;
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
+import fr.ens.biologie.genomique.kenetre.util.SystemUtils;
+import fr.ens.biologie.genomique.kenetre.util.Utils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -16,23 +28,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import com.github.dockerjava.api.async.ResultCallback;
-import com.github.dockerjava.api.command.CreateContainerCmd;
-import com.github.dockerjava.api.command.CreateContainerResponse;
-import com.github.dockerjava.api.command.InspectContainerResponse.ContainerState;
-import com.github.dockerjava.api.command.LogContainerCmd;
-import com.github.dockerjava.api.command.PullImageResultCallback;
-import com.github.dockerjava.api.command.WaitContainerResultCallback;
-import com.github.dockerjava.api.model.Bind;
-import com.github.dockerjava.api.model.Frame;
-
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-import fr.ens.biologie.genomique.kenetre.util.SystemUtils;
-import fr.ens.biologie.genomique.kenetre.util.Utils;
-
 /**
- * This class define a Docker image instance using the DockerClient Docker
- * client library.
+ * This class define a Docker image instance using the DockerClient Docker client library.
+ *
  * @author Laurent Jourdren
  * @since 2.6
  */
@@ -79,15 +77,15 @@ public class DockerJavaDockerImageInstance extends AbstractSimpleProcess
       try {
 
         switch (item.getStreamType()) {
-        case STDOUT:
-          this.stdoutChannel.write(item.getPayload());
-          break;
-        case STDERR:
-          this.stderrChannel.write(item.getPayload());
-          break;
+          case STDOUT:
+            this.stdoutChannel.write(item.getPayload());
+            break;
+          case STDERR:
+            this.stderrChannel.write(item.getPayload());
+            break;
 
-        default:
-          break;
+          default:
+            break;
         }
 
       } catch (IOException e) {
@@ -135,25 +133,23 @@ public class DockerJavaDockerImageInstance extends AbstractSimpleProcess
       try {
 
         switch (item.getStreamType()) {
-        case STDOUT:
-          this.stdoutChannel.write(item.getPayload());
-          break;
-        case STDERR:
-          this.stderrChannel.write(item.getPayload());
-          break;
+          case STDOUT:
+            this.stdoutChannel.write(item.getPayload());
+            break;
+          case STDERR:
+            this.stderrChannel.write(item.getPayload());
+            break;
 
-        default:
-          break;
+          default:
+            break;
         }
 
       } catch (IOException e) {
         logger.error(e.getMessage());
       }
-
     }
 
-    LogWriteRedirect(File stdoutFile, File stderrFile)
-        throws FileNotFoundException {
+    LogWriteRedirect(File stdoutFile, File stderrFile) throws FileNotFoundException {
 
       this.stdoutChannel = new FileOutputStream(stdoutFile);
       this.stderrChannel = new FileOutputStream(stderrFile);
@@ -161,24 +157,43 @@ public class DockerJavaDockerImageInstance extends AbstractSimpleProcess
   }
 
   @Override
-  public AdvancedProcess start(List<String> commandLine,
-      File executionDirectory, Map<String, String> environmentVariables,
-      File temporaryDirectory, File stdoutFile, File stderrFile,
-      boolean redirectErrorStream, File... filesUsed) throws IOException {
+  public AdvancedProcess start(
+      List<String> commandLine,
+      File executionDirectory,
+      Map<String, String> environmentVariables,
+      File temporaryDirectory,
+      File stdoutFile,
+      File stderrFile,
+      boolean redirectErrorStream,
+      File... filesUsed)
+      throws IOException {
 
     requireNonNull(commandLine, "commandLine argument cannot be null");
     requireNonNull(stdoutFile, "stdoutFile argument cannot be null");
     requireNonNull(stderrFile, "stderrFile argument cannot be null");
 
-    this.logger.debug(getClass().getSimpleName()
-        + ": commandLine=" + commandLine + ", executionDirectory="
-        + executionDirectory + ", environmentVariables=" + environmentVariables
-        + ", temporaryDirectory=" + temporaryDirectory + ", stdoutFile="
-        + stdoutFile + ", stderrFile=" + stderrFile + ", redirectErrorStream="
-        + redirectErrorStream + ", filesUsed=" + Arrays.toString(filesUsed));
+    this.logger.debug(
+        getClass().getSimpleName()
+            + ": commandLine="
+            + commandLine
+            + ", executionDirectory="
+            + executionDirectory
+            + ", environmentVariables="
+            + environmentVariables
+            + ", temporaryDirectory="
+            + temporaryDirectory
+            + ", stdoutFile="
+            + stdoutFile
+            + ", stderrFile="
+            + stderrFile
+            + ", redirectErrorStream="
+            + redirectErrorStream
+            + ", filesUsed="
+            + Arrays.toString(filesUsed));
 
     if (executionDirectory != null) {
-      checkArgument(executionDirectory.isDirectory(),
+      checkArgument(
+          executionDirectory.isDirectory(),
           "execution directory does not exists or is not a directory: "
               + executionDirectory.getAbsolutePath());
     }
@@ -195,11 +210,10 @@ public class DockerJavaDockerImageInstance extends AbstractSimpleProcess
     pullImageIfNotExists();
 
     // Create container configuration
-    this.logger
-        .debug("Configure container, command to execute: " + commandLine);
+    this.logger.debug("Configure container, command to execute: " + commandLine);
 
-    final CreateContainerCmd cmd = this.dockerClient
-        .createContainerCmd(this.dockerImage).withCmd(commandLine);
+    final CreateContainerCmd cmd =
+        this.dockerClient.createContainerCmd(this.dockerImage).withCmd(commandLine);
 
     // Set the working directory
     if (executionDirectory != null) {
@@ -220,14 +234,13 @@ public class DockerJavaDockerImageInstance extends AbstractSimpleProcess
     // Define temporary directory
     if (temporaryDirectory != null && temporaryDirectory.isDirectory()) {
       toBind.add(temporaryDirectory);
-      env.add(
-          TMP_DIR_ENV_VARIABLE + "=" + temporaryDirectory.getAbsolutePath());
+      env.add(TMP_DIR_ENV_VARIABLE + "=" + temporaryDirectory.getAbsolutePath());
     }
 
     // Set binds
     cmd.getHostConfig()
-        .setBinds(createBinds(executionDirectory, toBind,
-            this.convertNFSFilesToMountRoots, this.logger)
+        .setBinds(
+            createBinds(executionDirectory, toBind, this.convertNFSFilesToMountRoots, this.logger)
                 .toArray(new Bind[0]));
 
     // Set environment variables
@@ -246,22 +259,21 @@ public class DockerJavaDockerImageInstance extends AbstractSimpleProcess
     redirect(containerId, stdoutFile, stderrFile, redirectErrorStream);
 
     // Get process exit code
-    ContainerState state =
-        this.dockerClient.inspectContainerCmd(containerId).exec().getState();
+    ContainerState state = this.dockerClient.inspectContainerCmd(containerId).exec().getState();
 
     if ("running".equals(state.getStatus()) && state.getPidLong() == 0L) {
-      throw new IOException(
-          "Error while executing container, container pid is 0");
+      throw new IOException("Error while executing container, container pid is 0");
     }
 
     return () -> {
-
       long exitValue;
 
       // Wait the end of the container
       this.logger.debug("Wait the end of the Docker container: " + containerId);
-      this.dockerClient.waitContainerCmd(containerId)
-          .exec(new WaitContainerResultCallback()).awaitStatusCode();
+      this.dockerClient
+          .waitContainerCmd(containerId)
+          .exec(new WaitContainerResultCallback())
+          .awaitStatusCode();
 
       // Get process exit code
       ContainerState exitState =
@@ -279,25 +291,28 @@ public class DockerJavaDockerImageInstance extends AbstractSimpleProcess
     };
   }
 
-  private void redirect(final String containerId, final File stdout,
-      final File stderr, final boolean redirectErrorStream)
+  private void redirect(
+      final String containerId,
+      final File stdout,
+      final File stderr,
+      final boolean redirectErrorStream)
       throws FileNotFoundException {
 
-    LogContainerCmd logContainerCmd =
-        this.dockerClient.logContainerCmd(containerId);
+    LogContainerCmd logContainerCmd = this.dockerClient.logContainerCmd(containerId);
     logContainerCmd.withStdOut(true).withStdErr(true);
 
-    ResultCallback.Adapter<Frame> callback = redirectErrorStream
-        ? new LogWriteRedirect(stdout, stderr)
-        : new LogWriteAll(stdout, stderr);
+    ResultCallback.Adapter<Frame> callback =
+        redirectErrorStream
+            ? new LogWriteRedirect(stdout, stderr)
+            : new LogWriteAll(stdout, stderr);
 
     try {
       logContainerCmd.exec(callback).awaitCompletion();
     } catch (InterruptedException e) {
       this.logger.error(e.getMessage());
     }
-
-  };
+  }
+  ;
 
   @Override
   public void pullImageIfNotExists() throws IOException {
@@ -313,19 +328,19 @@ public class DockerJavaDockerImageInstance extends AbstractSimpleProcess
     }
 
     try {
-      this.dockerClient.pullImageCmd(imageName).withTag(tag)
+      this.dockerClient
+          .pullImageCmd(imageName)
+          .withTag(tag)
           .exec(new PullImageResultCallback())
           .awaitCompletion(30, TimeUnit.SECONDS);
 
     } catch (InterruptedException e) {
       throw new IOException(e);
     }
-
   }
 
   @Override
-  public void pullImageIfNotExists(ProgressHandler progress)
-      throws IOException {
+  public void pullImageIfNotExists(ProgressHandler progress) throws IOException {
 
     pullImageIfNotExists();
   }
@@ -336,36 +351,40 @@ public class DockerJavaDockerImageInstance extends AbstractSimpleProcess
 
   /**
    * Create Docker binds.
+   *
    * @param executionDirectory execution directory
    * @param files files to binds
    * @param convertNFSFilesToMountRoots convert NFS files to mount points
    * @return a list with binds to create
    */
-  private static List<Bind> createBinds(final File executionDirectory,
-      final List<File> files, final boolean convertNFSFilesToMountRoots,
-      final GenericLogger logger) throws IOException {
+  private static List<Bind> createBinds(
+      final File executionDirectory,
+      final List<File> files,
+      final boolean convertNFSFilesToMountRoots,
+      final GenericLogger logger)
+      throws IOException {
 
     List<Bind> binds = new ArrayList<>();
     Set<File> mounted = new HashSet<>();
 
     if (executionDirectory != null) {
 
-      File f = convertNFSFilesToMountRoots
-          ? DockerUtils.convertNFSFileToMountPoint(executionDirectory, logger)
-          : executionDirectory;
+      File f =
+          convertNFSFilesToMountRoots
+              ? DockerUtils.convertNFSFileToMountPoint(executionDirectory, logger)
+              : executionDirectory;
 
       binds.add(Bind.parse(f.getAbsolutePath() + ':' + f.getAbsolutePath()));
       mounted.add(f.getAbsoluteFile());
     }
 
     if (files != null) {
-      for (File f : DockerUtils
-          .fileIndirections(DockerUtils.convertNFSFileToMountPoint(files,
-              convertNFSFilesToMountRoots, logger))) {
+      for (File f :
+          DockerUtils.fileIndirections(
+              DockerUtils.convertNFSFileToMountPoint(files, convertNFSFilesToMountRoots, logger))) {
 
         if (!mounted.contains(f.getAbsoluteFile())) {
-          binds
-              .add(Bind.parse(f.getAbsolutePath() + ':' + f.getAbsolutePath()));
+          binds.add(Bind.parse(f.getAbsolutePath() + ':' + f.getAbsolutePath()));
           mounted.add(f.getAbsoluteFile());
         }
       }
@@ -380,21 +399,22 @@ public class DockerJavaDockerImageInstance extends AbstractSimpleProcess
 
   /**
    * Constructor.
+   *
    * @param dockerClient Docker connection URI
    * @param dockerImage Docker image
    * @param logger logger to use
    */
   DockerJavaDockerImageInstance(
       final com.github.dockerjava.api.DockerClient dockerClient,
-      final String dockerImage, final boolean mountFileIndirections,
+      final String dockerImage,
+      final boolean mountFileIndirections,
       GenericLogger logger) {
 
     requireNonNull(dockerClient, "dockerClient argument cannot be null");
     requireNonNull(dockerImage, "dockerImage argument cannot be null");
     requireNonNull(logger, "logger argument cannot be null");
 
-    logger.debug(
-        getClass().getSimpleName() + " docker image used: " + dockerImage);
+    logger.debug(getClass().getSimpleName() + " docker image used: " + dockerImage);
 
     this.dockerClient = dockerClient;
     this.dockerImage = dockerImage;
@@ -403,5 +423,4 @@ public class DockerJavaDockerImageInstance extends AbstractSimpleProcess
     this.convertNFSFilesToMountRoots = mountFileIndirections;
     this.logger = logger;
   }
-
 }

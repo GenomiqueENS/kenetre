@@ -3,12 +3,9 @@ package fr.ens.biologie.genomique.kenetre.bio.readfilter;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
-import fr.ens.biologie.genomique.kenetre.bio.readfilter.ReadFilter;
-import fr.ens.biologie.genomique.kenetre.bio.readfilter.RequireGGGHeadReadFilter;
+import org.junit.Test;
 
 public class RequireGGGHeadReadFilterTest {
 
@@ -50,7 +47,5 @@ public class RequireGGGHeadReadFilterTest {
 
     r = new ReadSequence("seqname", "GNNNNNNNCCC", "!!!!!!!!!!!");
     assertFalse(filter.accept(r));
-
   }
-
 }

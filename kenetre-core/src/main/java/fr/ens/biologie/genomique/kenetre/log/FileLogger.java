@@ -1,5 +1,6 @@
 package fr.ens.biologie.genomique.kenetre.log;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
@@ -7,18 +8,15 @@ import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-
 /**
- * This class define a logger using the java.util.logging API that write log in
- * a file.
+ * This class define a logger using the java.util.logging API that write log in a file.
+ *
  * @author Laurent Jourdren
  */
 public class FileLogger extends AbstractJavaUtilLoggingLogger {
 
   @Override
-  protected Handler createHandler(Map<String, String> conf)
-      throws KenetreException {
+  protected Handler createHandler(Map<String, String> conf) throws KenetreException {
 
     // Get Log path
     String logPath = Objects.toString(conf.get("log.file"), "");
@@ -49,13 +47,12 @@ public class FileLogger extends AbstractJavaUtilLoggingLogger {
 
   /**
    * Constructor.
+   *
    * @param loggerName name of the logger
    * @param conf configuration
    * @throws KenetreException if an error occurs while creating the logger
    */
-  public FileLogger(String loggerName, Map<String, String> conf)
-      throws KenetreException {
+  public FileLogger(String loggerName, Map<String, String> conf) throws KenetreException {
     super(loggerName, conf);
   }
-
 }

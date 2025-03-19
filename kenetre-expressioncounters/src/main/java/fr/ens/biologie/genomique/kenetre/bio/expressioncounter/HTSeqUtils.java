@@ -30,17 +30,7 @@ import static fr.ens.biologie.genomique.kenetre.bio.expressioncounter.OverlapMod
 import static fr.ens.biologie.genomique.kenetre.bio.expressioncounter.StrandUsage.REVERSE;
 import static fr.ens.biologie.genomique.kenetre.bio.expressioncounter.StrandUsage.YES;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.base.Splitter;
-
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.bio.BadBioEntryException;
 import fr.ens.biologie.genomique.kenetre.bio.GFFEntry;
@@ -53,18 +43,24 @@ import htsjdk.samtools.Cigar;
 import htsjdk.samtools.CigarElement;
 import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMRecord;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
- * This class groups HTSeq functions that are used in both local and distributed
- * modes.
+ * This class groups HTSeq functions that are used in both local and distributed modes.
+ *
  * @since 1.2
  * @author Claire Wallon
  */
 public class HTSeqUtils {
 
-  /**
-   * This class define a unknown chromosome exception.
-   */
+  /** This class define a unknown chromosome exception. */
   public static class UnknownChromosomeException extends KenetreException {
 
     private static final long serialVersionUID = -7074516037283735042L;
@@ -74,10 +70,14 @@ public class HTSeqUtils {
     }
   }
 
-  public static void storeAnnotation(final GenomicArray<String> features,
-      final InputStream annotationIs, final boolean gtfFormat,
-      final String featureType, final StrandUsage stranded,
-      final String attributeId, final boolean splitAttributeValues,
+  public static void storeAnnotation(
+      final GenomicArray<String> features,
+      final InputStream annotationIs,
+      final boolean gtfFormat,
+      final String featureType,
+      final StrandUsage stranded,
+      final String attributeId,
+      final boolean splitAttributeValues,
       final Map<String, Integer> counts)
       throws IOException, KenetreException, BadBioEntryException {
 
@@ -95,18 +95,18 @@ public class HTSeqUtils {
           final String featureId = gff.getAttributeValue(attributeId);
           if (featureId == null) {
 
-            throw new KenetreException("Feature "
-                + featureType + " does not contain a " + attributeId
-                + " attribute");
+            throw new KenetreException(
+                "Feature " + featureType + " does not contain a " + attributeId + " attribute");
           }
 
           if ((stranded == StrandUsage.YES || stranded == StrandUsage.REVERSE)
               && '.' == gff.getStrand()) {
 
-            throw new KenetreException("Feature "
-                + featureType
-                + " does not have strand information but you are running "
-                + "htseq-count in stranded mode.");
+            throw new KenetreException(
+                "Feature "
+                    + featureType
+                    + " does not have strand information but you are running "
+                    + "htseq-count in stranded mode.");
           }
 
           // Addition to the list of features of a GenomicInterval object
@@ -122,8 +122,7 @@ public class HTSeqUtils {
 
           // Split parent if needed
           for (String f : featureIds) {
-            features.addEntry(
-                new GenomicInterval(gff, stranded.isSaveStrandInfo()), f);
+            features.addEntry(new GenomicInterval(gff, stranded.isSaveStrandInfo()), f);
             counts.put(f, 0);
           }
         }
@@ -133,14 +132,14 @@ public class HTSeqUtils {
   }
 
   /**
-   * Add intervals of a SAM record that are alignment matches (thanks to the
-   * CIGAR code).
+   * Add intervals of a SAM record that are alignment matches (thanks to the CIGAR code).
+   *
    * @param record the SAM record to treat
    * @param stranded strand to consider
    * @return the list of intervals of the SAM record
    */
-  public static List<GenomicInterval> addIntervals(final SAMRecord record,
-      final StrandUsage stranded) {
+  public static List<GenomicInterval> addIntervals(
+      final SAMRecord record, final StrandUsage stranded) {
 
     if (record == null) {
       return null;
@@ -154,18 +153,24 @@ public class HTSeqUtils {
 
       // the read has to be mapped to the opposite strand as the feature
       if (stranded == REVERSE) {
-        result.addAll(parseCigar(record.getCigar(), record.getReferenceName(),
-            record.getAlignmentStart(),
-            record.getReadNegativeStrandFlag() ? '+' : '-'));
+        result.addAll(
+            parseCigar(
+                record.getCigar(),
+                record.getReferenceName(),
+                record.getAlignmentStart(),
+                record.getReadNegativeStrandFlag() ? '+' : '-'));
       }
       // stranded == "yes" (so the read has to be mapped to the same strand as
       // the feature) or stranded == "no" (so the read is considered
       // overlapping with a feature regardless of whether it is mapped to the
       // same or the opposite strand as the feature)
       else {
-        result.addAll(parseCigar(record.getCigar(), record.getReferenceName(),
-            record.getAlignmentStart(),
-            record.getReadNegativeStrandFlag() ? '-' : '+'));
+        result.addAll(
+            parseCigar(
+                record.getCigar(),
+                record.getReferenceName(),
+                record.getAlignmentStart(),
+                record.getReadNegativeStrandFlag() ? '-' : '+'));
       }
     }
 
@@ -174,18 +179,24 @@ public class HTSeqUtils {
 
       // the read has to be mapped to the opposite strand as the feature
       if (stranded == StrandUsage.REVERSE) {
-        result.addAll(parseCigar(record.getCigar(), record.getReferenceName(),
-            record.getAlignmentStart(),
-            record.getReadNegativeStrandFlag() ? '-' : '+'));
+        result.addAll(
+            parseCigar(
+                record.getCigar(),
+                record.getReferenceName(),
+                record.getAlignmentStart(),
+                record.getReadNegativeStrandFlag() ? '-' : '+'));
       }
       // stranded == "yes" (so the read has to be mapped to the same strand as
       // the feature) or stranded == "no" (so the read is considered
       // overlapping with a feature regardless of whether it is mapped to the
       // same or the opposite strand as the feature)
       else {
-        result.addAll(parseCigar(record.getCigar(), record.getReferenceName(),
-            record.getAlignmentStart(),
-            record.getReadNegativeStrandFlag() ? '+' : '-'));
+        result.addAll(
+            parseCigar(
+                record.getCigar(),
+                record.getReferenceName(),
+                record.getAlignmentStart(),
+                record.getReadNegativeStrandFlag() ? '+' : '-'));
       }
     } else {
       return null;
@@ -195,16 +206,16 @@ public class HTSeqUtils {
   }
 
   /**
-   * Parse a CIGAR string to have intervals of a chromosome that are alignments
-   * matches.
+   * Parse a CIGAR string to have intervals of a chromosome that are alignments matches.
+   *
    * @param cigar CIGAR string to parse
    * @param chromosome chromosome that support the alignment
    * @param start start position of the alignment
    * @param strand strand to consider
    * @return the list of intervals that are alignments matches
    */
-  public static List<GenomicInterval> parseCigar(final Cigar cigar,
-      final String chromosome, final int start, final char strand) {
+  public static List<GenomicInterval> parseCigar(
+      final Cigar cigar, final String chromosome, final int start, final char strand) {
 
     if (cigar == null) {
       return null;
@@ -220,25 +231,24 @@ public class HTSeqUtils {
 
       switch (co) {
 
-      // the CIGAR element correspond to a mapped region
-      case M:
-      case EQ:
-      case X:
-        result.add(new GenomicInterval(chromosome, pos, pos + len - 1, strand));
-        pos += len;
-        break;
-
-      // the CIGAR element did not correspond to a mapped region
-      default:
-        // regions coded by a 'I' (insertion) do not have to be counted
-        // (are there other cases like this one ?)
-        if (co.consumesReferenceBases()) {
+        // the CIGAR element correspond to a mapped region
+        case M:
+        case EQ:
+        case X:
+          result.add(new GenomicInterval(chromosome, pos, pos + len - 1, strand));
           pos += len;
-        }
+          break;
 
-        break;
+        // the CIGAR element did not correspond to a mapped region
+        default:
+          // regions coded by a 'I' (insertion) do not have to be counted
+          // (are there other cases like this one ?)
+          if (co.consumesReferenceBases()) {
+            pos += len;
+          }
+
+          break;
       }
-
     }
 
     return result;
@@ -246,18 +256,19 @@ public class HTSeqUtils {
 
   /**
    * Determine features that overlap genomic intervals.
+   *
    * @param ivList the list of genomic intervals
    * @param features the list of features
    * @param mode the overlap mode
    * @param stranded the stranded mode
-   * @return the set of features that overlap genomic intervals according to the
-   *         overlap mode
-   * @throws KenetreException if an error occurs while getting overlapped
-   *           features
+   * @return the set of features that overlap genomic intervals according to the overlap mode
+   * @throws KenetreException if an error occurs while getting overlapped features
    */
   public static Set<String> featuresOverlapped(
-      final List<GenomicInterval> ivList, final GenomicArray<String> features,
-      final OverlapMode mode, final StrandUsage stranded)
+      final List<GenomicInterval> ivList,
+      final GenomicArray<String> features,
+      final OverlapMode mode,
+      final StrandUsage stranded)
       throws KenetreException {
 
     Set<String> fs = null;
@@ -286,15 +297,13 @@ public class HTSeqUtils {
 
         // At least one interval is found
         if (intervals != null && intervals.size() > 0) {
-          for (Map.Entry<GenomicInterval, Set<String>> e : intervals
-              .entrySet()) {
+          for (Map.Entry<GenomicInterval, Set<String>> e : intervals.entrySet()) {
 
             if (e.getValue() != null) {
               fs.addAll(e.getValue());
             }
           }
         }
-
       }
     }
 
@@ -327,8 +336,7 @@ public class HTSeqUtils {
 
         // At least one interval is found
         if (intervals.size() > 0) {
-          for (Map.Entry<GenomicInterval, Set<String>> i : intervals
-              .entrySet()) {
+          for (Map.Entry<GenomicInterval, Set<String>> i : intervals.entrySet()) {
 
             final Set<String> fs2 = i.getValue();
 
@@ -338,7 +346,6 @@ public class HTSeqUtils {
               } else {
                 fs.retainAll(fs2);
               }
-
             }
           }
         }
@@ -356,8 +363,8 @@ public class HTSeqUtils {
   }
 
   /**
-   * Filter the output of GenomicArray.getEntries() by keeping only features on
-   * a strand
+   * Filter the output of GenomicArray.getEntries() by keeping only features on a strand
+   *
    * @param intervals intervals to filter
    * @param strand strand to keep
    */
@@ -380,5 +387,4 @@ public class HTSeqUtils {
       intervals.remove(iv);
     }
   }
-
 }

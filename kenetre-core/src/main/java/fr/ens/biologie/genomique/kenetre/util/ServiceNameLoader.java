@@ -24,6 +24,9 @@
 
 package fr.ens.biologie.genomique.kenetre.util;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -35,13 +38,10 @@ import java.util.List;
 import java.util.ServiceConfigurationError;
 import java.util.Set;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimaps;
-
 /**
- * This class is a service loader that allow to filter class to retrieve and get
- * service by its name and not by its class name.
+ * This class is a service loader that allow to filter class to retrieve and get service by its name
+ * and not by its class name.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -51,15 +51,14 @@ public abstract class ServiceNameLoader<S> {
 
   private final Class<S> service;
   private final ClassLoader loader;
-  private final ListMultimap<String, String> classNames =
-      ArrayListMultimap.create();
+  private final ListMultimap<String, String> classNames = ArrayListMultimap.create();
   private final ListMultimap<String, S> cache = ArrayListMultimap.create();
   private final Set<String> classesToNotLoad = new HashSet<>();
   private boolean notYetLoaded = true;
 
   /**
-   * This method allow to filter class that can be returned by
-   * EoulsanServiceLoader.
+   * This method allow to filter class that can be returned by EoulsanServiceLoader.
+   *
    * @param clazz class to test
    * @return true if the class is allowed
    */
@@ -67,12 +66,14 @@ public abstract class ServiceNameLoader<S> {
 
   /**
    * Get the method of the class service to use to get the name of the service.
+   *
    * @return a string with the method name
    */
   protected abstract String getMethodName();
 
   /**
    * Test if results of new instance.
+   *
    * @return true if results must be cached
    */
   protected boolean isCache() {
@@ -82,6 +83,7 @@ public abstract class ServiceNameLoader<S> {
 
   /**
    * Test if service name must be case sensible.
+   *
    * @return true if service name must be case sensible
    */
   protected boolean isServiceNameCaseSensible() {
@@ -91,6 +93,7 @@ public abstract class ServiceNameLoader<S> {
 
   /**
    * Add a class to not load.
+   *
    * @param className class name to not load
    */
   public void addClassToNotLoad(final String className) {
@@ -104,6 +107,7 @@ public abstract class ServiceNameLoader<S> {
 
   /**
    * Add classes to not load.
+   *
    * @param classNames class names to not load
    */
   public void addClassesToNotLoad(final Collection<String> classNames) {
@@ -119,9 +123,7 @@ public abstract class ServiceNameLoader<S> {
     }
   }
 
-  /**
-   * Clear classes to not load.
-   */
+  /** Clear classes to not load. */
   public void clearClassesToNotLoad() {
 
     this.classesToNotLoad.clear();
@@ -129,6 +131,7 @@ public abstract class ServiceNameLoader<S> {
 
   /**
    * Remove a class to not load.
+   *
    * @param className class name
    */
   public void removeClassToNotLoad(final String className) {
@@ -142,6 +145,7 @@ public abstract class ServiceNameLoader<S> {
 
   /**
    * Remove classes to not load.
+   *
    * @param classNames class names
    */
   public void removeClassesToNotLoad(final Collection<String> classNames) {
@@ -159,6 +163,7 @@ public abstract class ServiceNameLoader<S> {
 
   /**
    * Get the class names to not load.
+   *
    * @return a set with the names of the classes to not load
    */
   public Set<String> getClassesToNotLoad() {
@@ -166,9 +171,7 @@ public abstract class ServiceNameLoader<S> {
     return Collections.unmodifiableSet(this.classesToNotLoad);
   }
 
-  /**
-   * Reload the list of the available class services.
-   */
+  /** Reload the list of the available class services. */
   public synchronized void reload() {
 
     this.notYetLoaded = false;
@@ -181,36 +184,33 @@ public abstract class ServiceNameLoader<S> {
 
     try {
 
-      for (ServiceListLoader.Entry e : ServiceListLoader
-          .loadEntries(this.service.getName(), this.loader)) {
+      for (ServiceListLoader.Entry e :
+          ServiceListLoader.loadEntries(this.service.getName(), this.loader)) {
 
         // Check if class is allowed to be load
         if (!this.classesToNotLoad.contains(e.getValue())) {
 
           // Process class
-          processClassName(e.getUrl().toString(), e.getLineNumber(),
-              e.getValue());
+          processClassName(e.getUrl().toString(), e.getLineNumber(), e.getValue());
         }
       }
 
     } catch (IOException e) {
-      throw new ServiceConfigurationError(
-          this.service.getName() + ": " + e.getMessage());
+      throw new ServiceConfigurationError(this.service.getName() + ": " + e.getMessage());
     }
-
   }
 
   /**
    * Parse a SPI file.
+   *
    * @param url URL of the file
    */
-  private void processClassName(final String url, final int lineNumber,
-      final String className) {
+  private void processClassName(final String url, final int lineNumber, final String className) {
 
     // Check if the class name is valid
     if (!checkClassName(className)) {
-      throw new ServiceConfigurationError(this.service.getName()
-          + ": " + url + ":" + lineNumber + ": Invalid Java class name");
+      throw new ServiceConfigurationError(
+          this.service.getName() + ": " + url + ":" + lineNumber + ": Invalid Java class name");
     }
 
     final Class<?> clazz;
@@ -220,8 +220,8 @@ public abstract class ServiceNameLoader<S> {
       clazz = Class.forName(className, false, this.loader);
 
     } catch (ClassNotFoundException e) {
-      throw new ServiceConfigurationError(this.service.getName()
-          + ": " + url + ": Class not found: " + className);
+      throw new ServiceConfigurationError(
+          this.service.getName() + ": " + url + ": Class not found: " + className);
     }
 
     // Filter classes
@@ -234,36 +234,44 @@ public abstract class ServiceNameLoader<S> {
     try {
       obj = this.service.cast(clazz.newInstance());
     } catch (InstantiationException | IllegalAccessException e) {
-      throw new ServiceConfigurationError(this.service.getName()
-          + ": " + url + ": Class cannot be instanced: " + className);
+      throw new ServiceConfigurationError(
+          this.service.getName() + ": " + url + ": Class cannot be instanced: " + className);
     }
 
     final Method m;
     try {
       m = obj.getClass().getMethod(getMethodName());
     } catch (SecurityException | NoSuchMethodException e) {
-      throw new ServiceConfigurationError(this.service.getName()
-          + ": " + url + ": Method " + getMethodName()
-          + "() cannot be instanced in class: " + className);
+      throw new ServiceConfigurationError(
+          this.service.getName()
+              + ": "
+              + url
+              + ": Method "
+              + getMethodName()
+              + "() cannot be instanced in class: "
+              + className);
     }
 
     final String name;
     try {
       name = (String) m.invoke(obj);
-    } catch (IllegalArgumentException | IllegalAccessException
-        | InvocationTargetException e) {
-      throw new ServiceConfigurationError(this.service.getName()
-          + ": " + url + ": Method " + getMethodName()
-          + "() cannot be invoked in class: " + className);
+    } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
+      throw new ServiceConfigurationError(
+          this.service.getName()
+              + ": "
+              + url
+              + ": Method "
+              + getMethodName()
+              + "() cannot be invoked in class: "
+              + className);
     }
 
     if (name == null) {
-      throw new ServiceConfigurationError(this.service.getName()
-          + ": " + url + ": Method " + getMethodName() + "() returns null");
+      throw new ServiceConfigurationError(
+          this.service.getName() + ": " + url + ": Method " + getMethodName() + "() returns null");
     }
 
-    final String serviceName =
-        isServiceNameCaseSensible() ? name : name.toLowerCase();
+    final String serviceName = isServiceNameCaseSensible() ? name : name.toLowerCase();
 
     if (!this.classNames.containsValue(className)) {
       this.classNames.put(serviceName, className);
@@ -272,6 +280,7 @@ public abstract class ServiceNameLoader<S> {
 
   /**
    * Check if the class name is a valid java class name
+   *
    * @param className class name to test
    * @return true if the class name is valid
    */
@@ -304,6 +313,7 @@ public abstract class ServiceNameLoader<S> {
 
   /**
    * Create a new service from its name.
+   *
    * @param serviceName name of the service
    * @return a new object
    */
@@ -320,6 +330,7 @@ public abstract class ServiceNameLoader<S> {
 
   /**
    * Create a list of new services from its name.
+   *
    * @param serviceName name of the service
    * @return a list with the new objects
    */
@@ -333,8 +344,8 @@ public abstract class ServiceNameLoader<S> {
       reload();
     }
 
-    final String serviceNameLower = isServiceNameCaseSensible()
-        ? serviceName.trim() : serviceName.toLowerCase().trim();
+    final String serviceNameLower =
+        isServiceNameCaseSensible() ? serviceName.trim() : serviceName.toLowerCase().trim();
 
     // Test if service is already in cache
     if (this.cache.containsKey(serviceNameLower)) {
@@ -360,11 +371,11 @@ public abstract class ServiceNameLoader<S> {
 
           result.add(newInstance);
         } catch (InstantiationException | IllegalAccessException e) {
-          throw new ServiceConfigurationError(this.service.getName()
-              + ": " + serviceNameLower + " cannot be instanced");
+          throw new ServiceConfigurationError(
+              this.service.getName() + ": " + serviceNameLower + " cannot be instanced");
         } catch (ClassNotFoundException e) {
-          throw new ServiceConfigurationError(this.service.getName()
-              + ": Class for " + serviceNameLower + " cannot be found");
+          throw new ServiceConfigurationError(
+              this.service.getName() + ": Class for " + serviceNameLower + " cannot be found");
         }
       }
     }
@@ -374,6 +385,7 @@ public abstract class ServiceNameLoader<S> {
 
   /**
    * Return the list of the available services.
+   *
    * @return a MultiMap with the available services
    */
   public ListMultimap<String, String> getServiceClasses() {
@@ -387,6 +399,7 @@ public abstract class ServiceNameLoader<S> {
 
   /**
    * Test if a service exists.
+   *
    * @param serviceName name of the service
    * @return true if service exists
    */
@@ -411,6 +424,7 @@ public abstract class ServiceNameLoader<S> {
 
   /**
    * Public constructor.
+   *
    * @param service service class
    */
   public ServiceNameLoader(final Class<S> service) {
@@ -420,6 +434,7 @@ public abstract class ServiceNameLoader<S> {
 
   /**
    * Public constructor.
+   *
    * @param service service class
    * @param loader class loader to use
    */
@@ -430,8 +445,6 @@ public abstract class ServiceNameLoader<S> {
     }
 
     this.service = service;
-    this.loader = loader == null
-        ? this.getClass().getClassLoader() : loader;
+    this.loader = loader == null ? this.getClass().getClassLoader() : loader;
   }
-
 }

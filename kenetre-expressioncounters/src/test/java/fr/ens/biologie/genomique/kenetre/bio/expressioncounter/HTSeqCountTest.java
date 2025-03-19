@@ -44,6 +44,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
+import fr.ens.biologie.genomique.kenetre.bio.BadBioEntryException;
+import fr.ens.biologie.genomique.kenetre.bio.GFFEntry;
+import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
+import fr.ens.biologie.genomique.kenetre.bio.io.GTFReader;
+import fr.ens.biologie.genomique.kenetre.util.LocalReporter;
+import htsjdk.samtools.SAMRecord;
+import htsjdk.samtools.SamInputResource;
+import htsjdk.samtools.SamReader;
+import htsjdk.samtools.SamReaderFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,26 +62,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-import fr.ens.biologie.genomique.kenetre.bio.BadBioEntryException;
-import fr.ens.biologie.genomique.kenetre.bio.GFFEntry;
-import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
-import fr.ens.biologie.genomique.kenetre.bio.expressioncounter.ExpressionCounterCounter;
-import fr.ens.biologie.genomique.kenetre.bio.expressioncounter.HTSeqCounter;
-import fr.ens.biologie.genomique.kenetre.bio.expressioncounter.StrandUsage;
-import fr.ens.biologie.genomique.kenetre.bio.io.GTFReader;
-import fr.ens.biologie.genomique.kenetre.util.LocalReporter;
-import htsjdk.samtools.SAMRecord;
-import htsjdk.samtools.SamInputResource;
-import htsjdk.samtools.SamReader;
-import htsjdk.samtools.SamReaderFactory;
-
 /**
  * This class test the HTSeqCount class.
+ *
  * @author Laurent Jourdren
  */
 public class HTSeqCountTest {
@@ -85,11 +81,8 @@ public class HTSeqCountTest {
 
   private GenomeDescription genomeDescription;
 
-  /**
-   * This class allow to compare SAM output files from the counter.
-   */
-  private static class IteratorComparator
-      implements Iterable<SAMRecord>, Iterator<SAMRecord> {
+  /** This class allow to compare SAM output files from the counter. */
+  private static class IteratorComparator implements Iterable<SAMRecord>, Iterator<SAMRecord> {
 
     private final Iterator<SAMRecord> sourceRecords;
     private final Iterator<SAMRecord> expectedRecords;
@@ -139,20 +132,18 @@ public class HTSeqCountTest {
 
     /**
      * Sort the values for the ambiguous cases.
+     *
      * @param samRecord the samRecord to process
      */
-    private static void sortSAMAbiguousTagValues(SAMRecord samRecord,
-        final String samTag) {
+    private static void sortSAMAbiguousTagValues(SAMRecord samRecord, final String samTag) {
 
       String value = (String) samRecord.getAttribute(samTag);
 
-      if (value == null
-          || !value.startsWith("__ambiguous[") || value.indexOf('+') == -1) {
+      if (value == null || !value.startsWith("__ambiguous[") || value.indexOf('+') == -1) {
         return;
       }
 
-      String[] values = value.substring("__ambiguous[".length())
-          .replace("]", "").split("\\+");
+      String[] values = value.substring("__ambiguous[".length()).replace("]", "").split("\\+");
       Arrays.sort(values);
 
       boolean first = true;
@@ -174,18 +165,18 @@ public class HTSeqCountTest {
 
     /**
      * Constructor.
+     *
      * @param sourceRecords source SAM entry
      * @param expectedRecords expected SAM entry
      * @param samTag the sam tag to use
      */
-    private IteratorComparator(final SamReader sourceRecords,
-        final SamReader expectedRecords, final String samTag) {
+    private IteratorComparator(
+        final SamReader sourceRecords, final SamReader expectedRecords, final String samTag) {
 
       this.sourceRecords = sourceRecords.iterator();
       this.expectedRecords = expectedRecords.iterator();
       this.samTag = samTag;
     }
-
   }
 
   @Before
@@ -198,13 +189,11 @@ public class HTSeqCountTest {
   }
 
   @Test
-  public void testCountWithNH()
-      throws KenetreException, IOException, BadBioEntryException {
+  public void testCountWithNH() throws KenetreException, IOException, BadBioEntryException {
 
     // htseq-count -m intersection-nonempty --nonunique none
     HTSeqCounter counter = new HTSeqCounter();
-    counter.setParameter(OVERLAP_MODE_PARAMETER_NAME,
-        INTERSECTION_NONEMPTY.getName());
+    counter.setParameter(OVERLAP_MODE_PARAMETER_NAME, INTERSECTION_NONEMPTY.getName());
     counter.setParameter(GENOMIC_TYPE_PARAMETER_NAME, "exon");
     counter.setParameter(ATTRIBUTE_ID_PARAMETER_NAME, "gene_id");
     counter.setParameter(STRANDED_PARAMETER_NAME, YES.getName());
@@ -213,8 +202,7 @@ public class HTSeqCountTest {
   }
 
   @Test
-  public void testCountWithNHUnion()
-      throws KenetreException, IOException, BadBioEntryException {
+  public void testCountWithNHUnion() throws KenetreException, IOException, BadBioEntryException {
 
     // htseq-count -m intersection-nonempty --nonunique none
     HTSeqCounter counter = new HTSeqCounter();
@@ -232,24 +220,20 @@ public class HTSeqCountTest {
 
     // htseq-count -m intersection-nonempty --nonunique none
     HTSeqCounter counter = new HTSeqCounter();
-    counter.setParameter(OVERLAP_MODE_PARAMETER_NAME,
-        INTERSECTION_STRICT.getName());
+    counter.setParameter(OVERLAP_MODE_PARAMETER_NAME, INTERSECTION_STRICT.getName());
     counter.setParameter(GENOMIC_TYPE_PARAMETER_NAME, "exon");
     counter.setParameter(ATTRIBUTE_ID_PARAMETER_NAME, "gene_id");
     counter.setParameter(STRANDED_PARAMETER_NAME, YES.getName());
 
-    compareCounts(counter,
-        "/yeast_RNASeq_excerpt_withNH_counts_intersection-strict.tsv");
+    compareCounts(counter, "/yeast_RNASeq_excerpt_withNH_counts_intersection-strict.tsv");
   }
 
   @Test
-  public void testCountWithNHNo()
-      throws KenetreException, IOException, BadBioEntryException {
+  public void testCountWithNHNo() throws KenetreException, IOException, BadBioEntryException {
 
     // htseq-count -m intersection-nonempty --nonunique none
     HTSeqCounter counter = new HTSeqCounter();
-    counter.setParameter(OVERLAP_MODE_PARAMETER_NAME,
-        INTERSECTION_NONEMPTY.getName());
+    counter.setParameter(OVERLAP_MODE_PARAMETER_NAME, INTERSECTION_NONEMPTY.getName());
     counter.setParameter(GENOMIC_TYPE_PARAMETER_NAME, "exon");
     counter.setParameter(ATTRIBUTE_ID_PARAMETER_NAME, "gene_id");
     counter.setParameter(STRANDED_PARAMETER_NAME, NO.getName());
@@ -258,13 +242,11 @@ public class HTSeqCountTest {
   }
 
   @Test
-  public void testCountWithNHReverse()
-      throws KenetreException, IOException, BadBioEntryException {
+  public void testCountWithNHReverse() throws KenetreException, IOException, BadBioEntryException {
 
     // htseq-count -m intersection-nonempty --nonunique none
     HTSeqCounter counter = new HTSeqCounter();
-    counter.setParameter(OVERLAP_MODE_PARAMETER_NAME,
-        INTERSECTION_NONEMPTY.getName());
+    counter.setParameter(OVERLAP_MODE_PARAMETER_NAME, INTERSECTION_NONEMPTY.getName());
     counter.setParameter(GENOMIC_TYPE_PARAMETER_NAME, "exon");
     counter.setParameter(ATTRIBUTE_ID_PARAMETER_NAME, "gene_id");
     counter.setParameter(STRANDED_PARAMETER_NAME, REVERSE.getName());
@@ -273,13 +255,11 @@ public class HTSeqCountTest {
   }
 
   @Test
-  public void testCountNonUnique()
-      throws KenetreException, IOException, BadBioEntryException {
+  public void testCountNonUnique() throws KenetreException, IOException, BadBioEntryException {
 
     // htseq-count -m intersection-nonempty --nonunique all
     HTSeqCounter counter = new HTSeqCounter();
-    counter.setParameter(OVERLAP_MODE_PARAMETER_NAME,
-        INTERSECTION_NONEMPTY.getName());
+    counter.setParameter(OVERLAP_MODE_PARAMETER_NAME, INTERSECTION_NONEMPTY.getName());
     counter.setParameter(GENOMIC_TYPE_PARAMETER_NAME, "exon");
     counter.setParameter(ATTRIBUTE_ID_PARAMETER_NAME, "gene_id");
     counter.setParameter(STRANDED_PARAMETER_NAME, StrandUsage.YES.getName());
@@ -296,32 +276,27 @@ public class HTSeqCountTest {
     // htseq-count -m intersection-nonempty --nonunique none
     // --secondary-alignments ignore
     HTSeqCounter counter = new HTSeqCounter();
-    counter.setParameter(OVERLAP_MODE_PARAMETER_NAME,
-        INTERSECTION_NONEMPTY.getName());
+    counter.setParameter(OVERLAP_MODE_PARAMETER_NAME, INTERSECTION_NONEMPTY.getName());
     counter.setParameter(GENOMIC_TYPE_PARAMETER_NAME, "exon");
     counter.setParameter(ATTRIBUTE_ID_PARAMETER_NAME, "gene_id");
     counter.setParameter(STRANDED_PARAMETER_NAME, YES.getName());
     counter.setParameter(REMOVE_SECONDARY_ALIGNMENTS_PARAMETER_NAME, "true");
 
-    compareCounts(counter,
-        "/yeast_RNASeq_excerpt_withNH_counts_ignore_secondary.tsv");
+    compareCounts(counter, "/yeast_RNASeq_excerpt_withNH_counts_ignore_secondary.tsv");
   }
 
   @Test
-  public void testCountSamOutput()
-      throws KenetreException, IOException, BadBioEntryException {
+  public void testCountSamOutput() throws KenetreException, IOException, BadBioEntryException {
 
     // htseq-count -m intersection-nonempty --nonunique none
     // --secondary-alignments ignore
     HTSeqCounter counter = new HTSeqCounter();
-    counter.setParameter(OVERLAP_MODE_PARAMETER_NAME,
-        INTERSECTION_NONEMPTY.getName());
+    counter.setParameter(OVERLAP_MODE_PARAMETER_NAME, INTERSECTION_NONEMPTY.getName());
     counter.setParameter(GENOMIC_TYPE_PARAMETER_NAME, "exon");
     counter.setParameter(ATTRIBUTE_ID_PARAMETER_NAME, "gene_id");
     counter.setParameter(STRANDED_PARAMETER_NAME, YES.getName());
 
-    compareSams(counter, "/yeast_RNASeq_excerpt_withNH_counts.sam",
-        SAM_TAG_DEFAULT);
+    compareSams(counter, "/yeast_RNASeq_excerpt_withNH_counts.sam", SAM_TAG_DEFAULT);
   }
 
   @Test
@@ -331,17 +306,14 @@ public class HTSeqCountTest {
     // htseq-count -m intersection-nonempty --nonunique none
     // --secondary-alignments ignore
     HTSeqCounter counter = new HTSeqCounter();
-    counter.setParameter(OVERLAP_MODE_PARAMETER_NAME,
-        INTERSECTION_NONEMPTY.getName());
+    counter.setParameter(OVERLAP_MODE_PARAMETER_NAME, INTERSECTION_NONEMPTY.getName());
     counter.setParameter(GENOMIC_TYPE_PARAMETER_NAME, "exon");
     counter.setParameter(ATTRIBUTE_ID_PARAMETER_NAME, "gene_id");
     counter.setParameter(STRANDED_PARAMETER_NAME, YES.getName());
-    counter.setParameter(REMOVE_NON_ASSIGNED_FEATURES_SAM_TAGS_PARAMETER_NAME,
-        "true");
+    counter.setParameter(REMOVE_NON_ASSIGNED_FEATURES_SAM_TAGS_PARAMETER_NAME, "true");
     counter.setParameter(SAM_TAG_TO_USE_PARAMETER_NAME, "XT");
 
-    compareSams(counter,
-        "/yeast_RNASeq_excerpt_withNH_counts_only_assigned.sam", "XT");
+    compareSams(counter, "/yeast_RNASeq_excerpt_withNH_counts_only_assigned.sam", "XT");
   }
 
   //
@@ -350,16 +322,16 @@ public class HTSeqCountTest {
 
   /**
    * Compare counts.
+   *
    * @param counter counter
    * @param expectedRessource expected counts resources
    * @throws IOException if an error occurs while reading the expected counts
    * @throws KenetreException if an error occurs while counting
    */
-  private void compareCounts(HTSeqCounter counter,
-      final String expectedRessource) throws IOException, KenetreException {
+  private void compareCounts(HTSeqCounter counter, final String expectedRessource)
+      throws IOException, KenetreException {
 
-    try (GTFReader reader =
-        new GTFReader(this.getClass().getResourceAsStream(GTF_RESSOURCE))) {
+    try (GTFReader reader = new GTFReader(this.getClass().getResourceAsStream(GTF_RESSOURCE))) {
       counter.init(this.genomeDescription, reader);
     }
 
@@ -376,20 +348,22 @@ public class HTSeqCountTest {
 
   /**
    * Compare counts with values in a ressource file.
+   *
    * @param counts the count to compare
    * @param ressource the ressource with the excepted values
    * @throws IOException if an error occurs while reading the expected values
    */
-  private void compareCounts(final Map<String, Integer> counts,
-      final LocalReporter reporter, final String ressource) throws IOException {
+  private void compareCounts(
+      final Map<String, Integer> counts, final LocalReporter reporter, final String ressource)
+      throws IOException {
 
     assertNotNull(counts);
     assertNotNull(ressource);
 
     int entryCounts = 0;
 
-    try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-        this.getClass().getResourceAsStream(ressource)))) {
+    try (BufferedReader reader =
+        new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(ressource)))) {
 
       String line;
       while ((line = reader.readLine()) != null) {
@@ -405,12 +379,11 @@ public class HTSeqCountTest {
 
         if (line.startsWith("__")) {
 
-          ExpressionCounterCounter c =
-              ExpressionCounterCounter.getCounterFromHTSeqCountName(key);
+          ExpressionCounterCounter c = ExpressionCounterCounter.getCounterFromHTSeqCountName(key);
 
           if (c != null) {
-            assertEquals(value == 0 ? -1 : value,
-                reporter.getCounterValue(COUNTER_GROUP, c.counterName()));
+            assertEquals(
+                value == 0 ? -1 : value, reporter.getCounterValue(COUNTER_GROUP, c.counterName()));
           }
 
           continue;
@@ -423,59 +396,57 @@ public class HTSeqCountTest {
       }
       assertEquals(entryCounts, counts.size());
     }
-
   }
 
   /**
    * Compare counts.
+   *
    * @param counter counter
    * @param expectedRessource expected counts resources
    * @param samTag the SAM tag to use
    * @throws IOException if an error occurs while reading the expected counts
    * @throws EoulsanException if an error occurs while counting
    */
-  private void compareSams(HTSeqCounter counter, final String expectedRessource,
-      final String samTag) throws IOException, KenetreException {
+  private void compareSams(
+      HTSeqCounter counter, final String expectedRessource, final String samTag)
+      throws IOException, KenetreException {
 
-    try (GTFReader reader =
-        new GTFReader(this.getClass().getResourceAsStream(GTF_RESSOURCE))) {
+    try (GTFReader reader = new GTFReader(this.getClass().getResourceAsStream(GTF_RESSOURCE))) {
       counter.init(this.genomeDescription, reader);
     }
 
     LocalReporter reporter = new LocalReporter();
-    try (
-        InputStream sourceStream =
-            this.getClass().getResourceAsStream(SAM_RESSOURCE);
-        InputStream expectedStream = this.getClass()
-            .getResourceAsStream(HTSEQ_RESSOURCE_DIR + expectedRessource)) {
+    try (InputStream sourceStream = this.getClass().getResourceAsStream(SAM_RESSOURCE);
+        InputStream expectedStream =
+            this.getClass().getResourceAsStream(HTSEQ_RESSOURCE_DIR + expectedRessource)) {
 
-      SamReader sourceReader = SamReaderFactory.makeDefault()
-          .open(SamInputResource.of(sourceStream));
+      SamReader sourceReader =
+          SamReaderFactory.makeDefault().open(SamInputResource.of(sourceStream));
 
-      SamReader expectedReader = SamReaderFactory.makeDefault()
-          .open(SamInputResource.of(expectedStream));
+      SamReader expectedReader =
+          SamReaderFactory.makeDefault().open(SamInputResource.of(expectedStream));
 
       counter.count(
-          new IteratorComparator(sourceReader, expectedReader, samTag),
-          reporter, COUNTER_GROUP);
+          new IteratorComparator(sourceReader, expectedReader, samTag), reporter, COUNTER_GROUP);
     }
   }
 
   /**
    * Load genome description from GTF ressource.
+   *
    * @return a GenomeDescription object
    * @throws IOException if an error occurs while reading the ressource
    */
   private GenomeDescription loadGenomeDescription() throws IOException {
 
-    try (GTFReader reader =
-        new GTFReader(this.getClass().getResourceAsStream(GTF_RESSOURCE))) {
+    try (GTFReader reader = new GTFReader(this.getClass().getResourceAsStream(GTF_RESSOURCE))) {
       return createGenomeDescriptionFromAnnotation(reader);
     }
   }
 
   /**
    * Create a GenomeDescription object from an annotation stream.
+   *
    * @param annotation annotation stream
    * @return a GenomeDescription
    */
@@ -505,5 +476,4 @@ public class HTSeqCountTest {
 
     return result;
   }
-
 }

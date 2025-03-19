@@ -26,6 +26,8 @@ package fr.ens.biologie.genomique.kenetre.bio.io;
 
 import static fr.ens.biologie.genomique.kenetre.bio.io.BioCharsets.FASTA_CHARSET;
 
+import fr.ens.biologie.genomique.kenetre.bio.Sequence;
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -35,11 +37,9 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import fr.ens.biologie.genomique.kenetre.bio.Sequence;
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-
 /**
  * This class define a Fasta reader.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -107,8 +107,7 @@ public class FastaReader implements SequenceReader {
 
           if (this.nextSequenceName == null) {
             throw new IOException(
-                "No fasta header found at the beginning of the fasta file: "
-                    + line);
+                "No fasta header found at the beginning of the fasta file: " + line);
           }
 
           this.sb.append(trim);
@@ -163,6 +162,7 @@ public class FastaReader implements SequenceReader {
 
   /**
    * Public constructor
+   *
    * @param is InputStream to use
    */
   public FastaReader(final InputStream is) {
@@ -176,6 +176,7 @@ public class FastaReader implements SequenceReader {
 
   /**
    * Public constructor
+   *
    * @param file File to use
    * @throws FileNotFoundException if the file does not exists
    */
@@ -190,6 +191,7 @@ public class FastaReader implements SequenceReader {
 
   /**
    * Public constructor
+   *
    * @param filename File to use
    * @throws FileNotFoundException if the file does not exists
    */
@@ -197,5 +199,4 @@ public class FastaReader implements SequenceReader {
 
     this.reader = FileUtils.createBufferedReader(filename, FASTA_CHARSET);
   }
-
 }

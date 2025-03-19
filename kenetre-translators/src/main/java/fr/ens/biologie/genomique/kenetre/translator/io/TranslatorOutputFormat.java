@@ -28,6 +28,7 @@ import java.io.IOException;
 
 /**
  * This interface define a translator output format.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
@@ -35,6 +36,7 @@ public interface TranslatorOutputFormat {
 
   /**
    * Add an header field.
+   *
    * @param fieldName name of the field
    * @throws IOException if an error occurs
    */
@@ -42,18 +44,21 @@ public interface TranslatorOutputFormat {
 
   /**
    * Add a mew line.
+   *
    * @throws IOException if an error occurs
    */
   void newLine() throws IOException;
 
   /**
    * Add an empty value.
+   *
    * @throws IOException if an error occurs
    */
   void writeEmpty() throws IOException;
 
   /**
    * Add a long value.
+   *
    * @param l long value
    * @throws IOException if an error occurs
    */
@@ -61,6 +66,7 @@ public interface TranslatorOutputFormat {
 
   /**
    * Add a double value.
+   *
    * @param d double value
    * @throws IOException if an error occurs
    */
@@ -68,6 +74,7 @@ public interface TranslatorOutputFormat {
 
   /**
    * Add a text value.
+   *
    * @param text text value
    * @throws IOException if an error occurs
    */
@@ -75,6 +82,7 @@ public interface TranslatorOutputFormat {
 
   /**
    * Add a link value.
+   *
    * @param text text value
    * @param link link value
    * @throws IOException if an error occurs
@@ -83,6 +91,7 @@ public interface TranslatorOutputFormat {
 
   /**
    * Close the output format.
+   *
    * @throws IOException if an error occurs
    */
   void close() throws IOException;

@@ -7,6 +7,7 @@ import java.util.Map;
 
 /**
  * This interface define how to easily launch a subprocess.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -19,6 +20,7 @@ public interface SimpleProcess {
 
   /**
    * Execute a process.
+   *
    * @param commandLine command line
    * @param executionDirectory execution directory
    * @param temporaryDirectory temporary directory
@@ -28,12 +30,18 @@ public interface SimpleProcess {
    * @return the exit code of the process
    * @throws IOException if an error occurs while running the process
    */
-  int execute(List<String> commandLine, File executionDirectory,
-      File temporaryDirectory, File stdoutFile, File stderrFile,
-      File... filesUsed) throws IOException;
+  int execute(
+      List<String> commandLine,
+      File executionDirectory,
+      File temporaryDirectory,
+      File stdoutFile,
+      File stderrFile,
+      File... filesUsed)
+      throws IOException;
 
   /**
    * Execute a process.
+   *
    * @param commandLine command line
    * @param executionDirectory execution directory
    * @param environmentVariables environment variables
@@ -45,13 +53,20 @@ public interface SimpleProcess {
    * @return the exit code of the process
    * @throws IOException if an error occurs while running the process
    */
-  int execute(List<String> commandLine, File executionDirectory,
-      Map<String, String> environmentVariables, File temporaryDirectory,
-      File stdoutFile, File stderrFile, boolean redirectErrorStream,
-      File... filesUsed) throws IOException;
+  int execute(
+      List<String> commandLine,
+      File executionDirectory,
+      Map<String, String> environmentVariables,
+      File temporaryDirectory,
+      File stdoutFile,
+      File stderrFile,
+      boolean redirectErrorStream,
+      File... filesUsed)
+      throws IOException;
 
   /**
    * Start a process.
+   *
    * @param commandLine command line
    * @param executionDirectory execution directory
    * @param environmentVariables environment variables
@@ -63,9 +78,14 @@ public interface SimpleProcess {
    * @return an AdvancedProcess object
    * @throws IOException if an error occurs while starting the process
    */
-  AdvancedProcess start(List<String> commandLine, File executionDirectory,
-      Map<String, String> environmentVariables, File temporaryDirectory,
-      File stdoutFile, File stderrFile, boolean redirectErrorStream,
-      File... filesUsed) throws IOException;
-
+  AdvancedProcess start(
+      List<String> commandLine,
+      File executionDirectory,
+      Map<String, String> environmentVariables,
+      File temporaryDirectory,
+      File stdoutFile,
+      File stderrFile,
+      boolean redirectErrorStream,
+      File... filesUsed)
+      throws IOException;
 }

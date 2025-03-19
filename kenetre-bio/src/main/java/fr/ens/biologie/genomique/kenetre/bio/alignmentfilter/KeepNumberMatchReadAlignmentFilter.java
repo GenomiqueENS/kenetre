@@ -24,20 +24,18 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.alignmentfilter;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
+import htsjdk.samtools.SAMRecord;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-import htsjdk.samtools.SAMRecord;
-
 /**
- * This alignments filter keep a given number of the first alignments for a
- * read.
+ * This alignments filter keep a given number of the first alignments for a read.
+ *
  * @since 1.2
  * @author Claire Wallon
  */
-public class KeepNumberMatchReadAlignmentFilter
-    extends AbstractReadAlignmentFilter {
+public class KeepNumberMatchReadAlignmentFilter extends AbstractReadAlignmentFilter {
 
   public static final String FILTER_NAME = "keepnumbermatch";
   private int numberMatch = -1;
@@ -53,8 +51,7 @@ public class KeepNumberMatchReadAlignmentFilter
   }
 
   @Override
-  public void setParameter(final String key, final String value)
-      throws KenetreException {
+  public void setParameter(final String key, final String value) throws KenetreException {
 
     if (key == null || value == null) {
       return;
@@ -69,8 +66,7 @@ public class KeepNumberMatchReadAlignmentFilter
       }
 
       if (this.numberMatch < 0) {
-        throw new KenetreException(
-            "Invalid number of match to keep: " + this.numberMatch);
+        throw new KenetreException("Invalid number of match to keep: " + this.numberMatch);
       }
     } else {
       throw new KenetreException(
@@ -83,8 +79,7 @@ public class KeepNumberMatchReadAlignmentFilter
 
     if (this.numberMatch < 0) {
       throw new IllegalArgumentException(
-          "The number of match to keep is not set for "
-              + getName() + " alignments filter.");
+          "The number of match to keep is not set for " + getName() + " alignments filter.");
     }
   }
 
@@ -124,7 +119,10 @@ public class KeepNumberMatchReadAlignmentFilter
   public String toString() {
 
     return this.getClass().getSimpleName()
-        + "{name=" + getName() + ", numberMatch=" + this.numberMatch + "}";
+        + "{name="
+        + getName()
+        + ", numberMatch="
+        + this.numberMatch
+        + "}";
   }
-
 }

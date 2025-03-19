@@ -3,11 +3,8 @@ package fr.ens.biologie.genomique.kenetre.bio.readfilter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
 import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
-import fr.ens.biologie.genomique.kenetre.bio.readfilter.GGGHeadReadFilter;
-import fr.ens.biologie.genomique.kenetre.bio.readfilter.ReadFilter;
+import org.junit.Test;
 
 public class GGGHeadReadFilterTest {
 
@@ -16,8 +13,8 @@ public class GGGHeadReadFilterTest {
 
     ReadFilter filter = new GGGHeadReadFilter();
 
-    ReadSequence r = new ReadSequence("96f7d3fa-263e-465d-b2e9-bbe2998426f4",
-        "GGGNNNNNCCC", "!!!!!!!!!!!");
+    ReadSequence r =
+        new ReadSequence("96f7d3fa-263e-465d-b2e9-bbe2998426f4", "GGGNNNNNCCC", "!!!!!!!!!!!");
 
     assertTrue(filter.accept(r));
     assertEquals(
@@ -45,6 +42,4 @@ public class GGGHeadReadFilterTest {
         "96f7d3fa-263e-465d-b2e9-bbe2998426f4 start_sequence= start_G_count=0 end_sequence= end_C_count=0",
         r.getName());
   }
-
 }
-

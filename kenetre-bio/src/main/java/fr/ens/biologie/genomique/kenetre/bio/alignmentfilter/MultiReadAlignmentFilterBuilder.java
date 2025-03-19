@@ -26,6 +26,10 @@ package fr.ens.biologie.genomique.kenetre.bio.alignmentfilter;
 
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
+import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
+import fr.ens.biologie.genomique.kenetre.util.ReporterIncrementer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,13 +37,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import fr.ens.biologie.genomique.kenetre.util.ReporterIncrementer;
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-
 /**
  * This builder allow to create a MultiAlignmentsFilter object.
+ *
  * @since 1.1
  * @author Laurent Jourdren
  */
@@ -53,6 +53,7 @@ public class MultiReadAlignmentFilterBuilder {
 
   /**
    * Set the logger to use.
+   *
    * @param logger the logger to use
    */
   private void setLogger(GenericLogger logger) {
@@ -63,6 +64,7 @@ public class MultiReadAlignmentFilterBuilder {
 
   /**
    * Get the logger.
+   *
    * @return the logger
    */
   public GenericLogger getLogger() {
@@ -72,32 +74,31 @@ public class MultiReadAlignmentFilterBuilder {
 
   /**
    * Add a parameter to the builder
+   *
    * @param key key of the parameter
    * @param value value of the parameter
    * @return true if the parameter has been successfully added
-   * @throws KenetreException if the filter reference in the key does not exist
-   *           or if an error occurs while setting the parameter in the
-   *           dedicated filter
+   * @throws KenetreException if the filter reference in the key does not exist or if an error
+   *     occurs while setting the parameter in the dedicated filter
    */
-  public boolean addParameter(final String key, final String value)
-      throws KenetreException {
+  public boolean addParameter(final String key, final String value) throws KenetreException {
 
     return addParameter(key, value, false);
   }
 
   /**
    * Add a parameter to the builder
+   *
    * @param key key of the parameter
    * @param value value of the parameter
-   * @param noExceptionIfFilterNotExists do not thrown an exception if the
-   *          filter does not exists.
+   * @param noExceptionIfFilterNotExists do not thrown an exception if the filter does not exists.
    * @return true if the parameter has been successfully added
-   * @throws KenetreException if the filter reference in the key does not exist
-   *           or if an error occurs while setting the parameter in the
-   *           dedicated filter
+   * @throws KenetreException if the filter reference in the key does not exist or if an error
+   *     occurs while setting the parameter in the dedicated filter
    */
-  public boolean addParameter(final String key, final String value,
-      final boolean noExceptionIfFilterNotExists) throws KenetreException {
+  public boolean addParameter(
+      final String key, final String value, final boolean noExceptionIfFilterNotExists)
+      throws KenetreException {
 
     if (key == null || value == null) {
       return false;
@@ -125,8 +126,8 @@ public class MultiReadAlignmentFilterBuilder {
     if (this.mapFilters.containsKey(filterName)) {
       filter = this.mapFilters.get(filterName);
     } else {
-      filter = ReadAlignmentFilterService
-          .getInstance(this.useNewServiceInstance).newService(filterName);
+      filter =
+          ReadAlignmentFilterService.getInstance(this.useNewServiceInstance).newService(filterName);
 
       if (filter == null) {
 
@@ -134,8 +135,7 @@ public class MultiReadAlignmentFilterBuilder {
           return false;
         }
 
-        throw new KenetreException(
-            "Unable to find " + filterName + " alignments filter.");
+        throw new KenetreException("Unable to find " + filterName + " alignments filter.");
       }
 
       filter.setLogger(this.logger);
@@ -148,13 +148,17 @@ public class MultiReadAlignmentFilterBuilder {
       final String valueTrimmed = value.trim();
       filter.setParameter(filterKey, valueTrimmed);
       this.mapParameters.put(keyTrimmed, valueTrimmed);
-      getLogger().info("Set alignments filter \""
-          + filterName + "\" with parameter: " + filterKey + "="
-          + valueTrimmed);
+      getLogger()
+          .info(
+              "Set alignments filter \""
+                  + filterName
+                  + "\" with parameter: "
+                  + filterKey
+                  + "="
+                  + valueTrimmed);
     } else {
       this.mapParameters.put(filterName, "");
-      getLogger().info(
-          "Set alignments filter \"" + filterName + "\" with no parameter");
+      getLogger().info("Set alignments filter \"" + filterName + "\" with no parameter");
     }
 
     return true;
@@ -162,13 +166,12 @@ public class MultiReadAlignmentFilterBuilder {
 
   /**
    * Add parameters to the builder.
+   *
    * @param parameters parameters to add
-   * @throws KenetreException if the filter reference in the key does not exist
-   *           or if an error occurs while setting the parameter in the
-   *           dedicated filter
+   * @throws KenetreException if the filter reference in the key does not exist or if an error
+   *     occurs while setting the parameter in the dedicated filter
    */
-  public void addParameters(final Map<String, String> parameters)
-      throws KenetreException {
+  public void addParameters(final Map<String, String> parameters) throws KenetreException {
 
     if (parameters == null) {
       return;
@@ -181,9 +184,9 @@ public class MultiReadAlignmentFilterBuilder {
 
   /**
    * Create the final MultiAlignmentFilter.
+   *
    * @return a new MultiAlignmentsFilter object
-   * @throws KenetreException if an error occurs while initialize one of the
-   *           filter
+   * @throws KenetreException if an error occurs while initialize one of the filter
    */
   public MultiReadAlignmentFilter getAlignmentFilter() throws KenetreException {
 
@@ -196,26 +199,25 @@ public class MultiReadAlignmentFilterBuilder {
 
   /**
    * Create the final MultiAlignmentsFilter.
+   *
    * @param incrementer incrementer to use
    * @param counterGroup counter group for the incrementer
    * @return a new MultiAlignmentsFilter object
-   * @throws KenetreException if an error occurs while initialize one of the
-   *           filter
+   * @throws KenetreException if an error occurs while initialize one of the filter
    */
   public MultiReadAlignmentFilter getAlignmentFilter(
-      final ReporterIncrementer incrementer, final String counterGroup)
-      throws KenetreException {
+      final ReporterIncrementer incrementer, final String counterGroup) throws KenetreException {
 
     for (ReadAlignmentFilter f : this.listFilter) {
       f.init();
     }
 
-    return new MultiReadAlignmentFilter(incrementer, counterGroup,
-        this.listFilter);
+    return new MultiReadAlignmentFilter(incrementer, counterGroup, this.listFilter);
   }
 
   /**
    * Get a map with all the parameters used to create the MultiAlignmentsFilter.
+   *
    * @return an ordered map object
    */
   public Map<String, String> getParameters() {
@@ -225,6 +227,7 @@ public class MultiReadAlignmentFilterBuilder {
 
   /**
    * Force the usage of a new service instance to get ReadFilter objects.
+   *
    * @param forceUseNewServiceInstance force new service instance usage
    */
   public void useNewServiceInstance(boolean forceUseNewServiceInstance) {
@@ -236,14 +239,12 @@ public class MultiReadAlignmentFilterBuilder {
   // Constructors
   //
 
-  /**
-   * Public constructor.
-   */
-  public MultiReadAlignmentFilterBuilder() {
-  }
+  /** Public constructor. */
+  public MultiReadAlignmentFilterBuilder() {}
 
   /**
    * Public constructor.
+   *
    * @param logger the logger to use
    */
   public MultiReadAlignmentFilterBuilder(final GenericLogger logger) {
@@ -253,10 +254,10 @@ public class MultiReadAlignmentFilterBuilder {
 
   /**
    * Public constructor.
+   *
    * @param parameters parameters to add to the builder
-   * @throws KenetreException if the filter reference in the key does not exist
-   *           or if an error occurs while setting the parameter in the
-   *           dedicated filter
+   * @throws KenetreException if the filter reference in the key does not exist or if an error
+   *     occurs while setting the parameter in the dedicated filter
    */
   public MultiReadAlignmentFilterBuilder(final Map<String, String> parameters)
       throws KenetreException {
@@ -266,17 +267,16 @@ public class MultiReadAlignmentFilterBuilder {
 
   /**
    * Public constructor.
+   *
    * @param logger the logger to use
    * @param parameters parameters to add to the builder
-   * @throws KenetreException if the filter reference in the key does not exist
-   *           or if an error occurs while setting the parameter in the
-   *           dedicated filter
+   * @throws KenetreException if the filter reference in the key does not exist or if an error
+   *     occurs while setting the parameter in the dedicated filter
    */
-  public MultiReadAlignmentFilterBuilder(final GenericLogger logger,
-      final Map<String, String> parameters) throws KenetreException {
+  public MultiReadAlignmentFilterBuilder(
+      final GenericLogger logger, final Map<String, String> parameters) throws KenetreException {
 
     setLogger(logger);
     addParameters(parameters);
   }
-
 }

@@ -32,8 +32,8 @@ import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
 import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
 
 /**
- * This class define a read filter that allow to filter paired-end reads of
- * single end reads.
+ * This class define a read filter that allow to filter paired-end reads of single end reads.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -85,8 +85,7 @@ public class PairedEndReadFilter implements ReadFilter {
   }
 
   @Override
-  public void setParameter(final String key, final String value)
-      throws KenetreException {
+  public void setParameter(final String key, final String value) throws KenetreException {
 
     if (key == null || value == null) {
       return;
@@ -97,32 +96,28 @@ public class PairedEndReadFilter implements ReadFilter {
     } else if ("accept.single.end".equals(key.trim())) {
       this.acceptPairedEnd = Boolean.parseBoolean(value.trim());
     } else {
-      throw new KenetreException(
-          "Unknown parameter for " + getName() + " read filter: " + key);
+      throw new KenetreException("Unknown parameter for " + getName() + " read filter: " + key);
     }
-
   }
 
   @Override
-  public void init() {
-  }
+  public void init() {}
 
   @Override
   public String toString() {
 
     return this.getClass().getSimpleName()
-        + "{acceptSingleEnd=" + this.acceptSingleEnd + ", acceptPairedEnd="
-        + this.acceptPairedEnd + "}";
+        + "{acceptSingleEnd="
+        + this.acceptSingleEnd
+        + ", acceptPairedEnd="
+        + this.acceptPairedEnd
+        + "}";
   }
 
   //
   // Constructor
   //
 
-  /**
-   * Public constructor.
-   */
-  public PairedEndReadFilter() {
-  }
-
+  /** Public constructor. */
+  public PairedEndReadFilter() {}
 }

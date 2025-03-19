@@ -8,15 +8,18 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
 /**
- * This class allow to automatically detect the format of an expression matrix
- * file.
+ * This class allow to automatically detect the format of an expression matrix file.
+ *
  * @author Laurent Jourdren
  * @since 2.4
  */
 public class ExpressionMatrixFormatFinderInputStream extends InputStream {
 
   public enum MatrixFormat {
-    TSV, SPARSE, MARKET_MATRIX, UNKNOWN
+    TSV,
+    SPARSE,
+    MARKET_MATRIX,
+    UNKNOWN
   }
 
   private InputStream is;
@@ -32,6 +35,7 @@ public class ExpressionMatrixFormatFinderInputStream extends InputStream {
 
   /**
    * Find the matrix format.
+   *
    * @return the matrix format
    * @throws IOException if an error occurs while finding the version
    */
@@ -48,14 +52,15 @@ public class ExpressionMatrixFormatFinderInputStream extends InputStream {
       this.cache = readed;
     }
 
-    try (final BufferedReader reader = new BufferedReader(new InputStreamReader(
-        new ByteArrayInputStream(this.cache), Charset.defaultCharset()))) {
+    try (final BufferedReader reader =
+        new BufferedReader(
+            new InputStreamReader(
+                new ByteArrayInputStream(this.cache), Charset.defaultCharset()))) {
 
       String line;
       int lineCount = 0;
 
-      while (((line = reader.readLine()) != null)
-          && lineCount < MAX_LINES_TO_READ) {
+      while (((line = reader.readLine()) != null) && lineCount < MAX_LINES_TO_READ) {
 
         line = line.trim();
 
@@ -84,40 +89,39 @@ public class ExpressionMatrixFormatFinderInputStream extends InputStream {
 
   /**
    * Get the format of the data to read.
+   *
    * @return The format of the data to read
    * @throws IOException if an error occurs while reading data
    */
   public MatrixFormat getExpressionMatrixFormat() throws IOException {
 
-    if (!this.testFormatDone)
-      this.format = findMatrixFormat();
+    if (!this.testFormatDone) this.format = findMatrixFormat();
 
     return this.format;
   }
 
   /**
    * Get the ExpressionMatrixReader for the data.
+   *
    * @return the ExpressionMatrixReader for the data
    * @throws IOException if an error occurs while reading data
    */
   public ExpressionMatrixReader getExpressionMatrixReader() throws IOException {
 
     switch (getExpressionMatrixFormat()) {
+      case TSV:
+        return new TSVExpressionMatrixReader(this);
 
-    case TSV:
-      return new TSVExpressionMatrixReader(this);
+      case SPARSE:
+        return new SparseExpressionMatrixReader(this);
 
-    case SPARSE:
-      return new SparseExpressionMatrixReader(this);
+      case MARKET_MATRIX:
+        return new MarketMatrixExpressionMatrixReader(this);
 
-    case MARKET_MATRIX:
-      return new MarketMatrixExpressionMatrixReader(this);
-
-    case UNKNOWN:
-    default:
-      throw new IOException("Unknown Design format");
+      case UNKNOWN:
+      default:
+        throw new IOException("Unknown Design format");
     }
-
   }
 
   //
@@ -131,8 +135,7 @@ public class ExpressionMatrixFormatFinderInputStream extends InputStream {
       return -1;
     }
 
-    if (this.cacheIndex < this.cache.length)
-      return this.cache[this.cacheIndex++];
+    if (this.cacheIndex < this.cache.length) return this.cache[this.cacheIndex++];
 
     return this.is.read();
   }
@@ -150,6 +153,7 @@ public class ExpressionMatrixFormatFinderInputStream extends InputStream {
 
   /**
    * Public constructor.
+   *
    * @param is InputStream to read
    */
   public ExpressionMatrixFormatFinderInputStream(final InputStream is) {
@@ -160,5 +164,4 @@ public class ExpressionMatrixFormatFinderInputStream extends InputStream {
 
     this.is = is;
   }
-
 }

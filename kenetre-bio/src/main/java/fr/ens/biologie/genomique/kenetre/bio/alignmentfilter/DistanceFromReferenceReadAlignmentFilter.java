@@ -24,21 +24,19 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.alignmentfilter;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
+import htsjdk.samtools.SAMRecord;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-import htsjdk.samtools.SAMRecord;
-
 /**
- * This alignments filter keep alignments of a read according to the distance of
- * the read from the reference sequence on the genome. This filter is useful to
- * detect SNP and indel.
+ * This alignments filter keep alignments of a read according to the distance of the read from the
+ * reference sequence on the genome. This filter is useful to detect SNP and indel.
+ *
  * @since 1.2
  * @author Claire Wallon
  */
-public class DistanceFromReferenceReadAlignmentFilter
-    extends AbstractReadAlignmentFilter {
+public class DistanceFromReferenceReadAlignmentFilter extends AbstractReadAlignmentFilter {
 
   public static final String FILTER_NAME = "distancefromreference";
   private int distance = -1;
@@ -55,8 +53,7 @@ public class DistanceFromReferenceReadAlignmentFilter
   }
 
   @Override
-  public void setParameter(final String key, final String value)
-      throws KenetreException {
+  public void setParameter(final String key, final String value) throws KenetreException {
 
     if (key == null || value == null) {
       return;
@@ -84,8 +81,7 @@ public class DistanceFromReferenceReadAlignmentFilter
 
     if (this.distance < 0) {
       throw new IllegalArgumentException(
-          "The distance from the reference is not set for "
-              + getName() + " alignments filter.");
+          "The distance from the reference is not set for " + getName() + " alignments filter.");
     }
   }
 
@@ -102,7 +98,8 @@ public class DistanceFromReferenceReadAlignmentFilter
     if (!records.get(0).getReadPairedFlag()) {
       for (SAMRecord r : records) {
         if (!r.getCigarString().contains("S")
-            && !r.getCigarString().contains("H") && r.getAttribute("NM") != null
+            && !r.getCigarString().contains("H")
+            && r.getAttribute("NM") != null
             && r.getIntegerAttribute("NM") <= this.distance) {
           recordsToKeep.add(r);
         }
@@ -111,8 +108,7 @@ public class DistanceFromReferenceReadAlignmentFilter
 
     // paired-end mode
     else {
-      for (int counterRecord = 0; counterRecord < records.size()
-          - 1; counterRecord += 2) {
+      for (int counterRecord = 0; counterRecord < records.size() - 1; counterRecord += 2) {
         final SAMRecord r1 = records.get(counterRecord);
         final SAMRecord r2 = records.get(counterRecord + 1);
         if (!r1.getCigarString().contains("S")
@@ -131,14 +127,16 @@ public class DistanceFromReferenceReadAlignmentFilter
 
     records.clear();
     records.addAll(recordsToKeep);
-
   }
 
   @Override
   public String toString() {
 
     return this.getClass().getSimpleName()
-        + "{name=" + getName() + ", distance=" + this.distance + "}";
+        + "{name="
+        + getName()
+        + ", distance="
+        + this.distance
+        + "}";
   }
-
 }

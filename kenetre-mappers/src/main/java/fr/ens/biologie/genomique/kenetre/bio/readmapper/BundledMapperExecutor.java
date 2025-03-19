@@ -26,6 +26,10 @@ package fr.ens.biologie.genomique.kenetre.bio.readmapper;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
+import fr.ens.biologie.genomique.kenetre.util.BinariesInstaller;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,15 +38,9 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.util.List;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.MoreObjects;
-
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-import fr.ens.biologie.genomique.kenetre.util.BinariesInstaller;
-
 /**
- * This class define a mapper executor that executes process bundled in Eoulsan
- * jar file.
+ * This class define a mapper executor that executes process bundled in Eoulsan jar file.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -55,8 +53,8 @@ public class BundledMapperExecutor implements MapperExecutor {
   private final GenericLogger logger;
 
   /**
-   * This class define an executor result for BundledMapperExecutor and
-   * PathMapperExecutor.
+   * This class define an executor result for BundledMapperExecutor and PathMapperExecutor.
+   *
    * @author Laurent Jourdren
    */
   static class ProcessResult implements Result {
@@ -85,6 +83,7 @@ public class BundledMapperExecutor implements MapperExecutor {
 
     /**
      * Constructor.
+     *
      * @param process Java Process object
      */
     ProcessResult(final Process process) {
@@ -114,8 +113,7 @@ public class BundledMapperExecutor implements MapperExecutor {
     }
 
     // Define the lock file
-    File lockFile =
-        new File(this.executablesTemporaryDirectory, executable + ".lock");
+    File lockFile = new File(this.executablesTemporaryDirectory, executable + ".lock");
 
     String result;
 
@@ -126,8 +124,12 @@ public class BundledMapperExecutor implements MapperExecutor {
       // Lock
       FileLock lock = channel.lock();
 
-      result = this.installer.install(this.softwarePackage, this.version,
-          executable, this.executablesTemporaryDirectory.getAbsolutePath());
+      result =
+          this.installer.install(
+              this.softwarePackage,
+              this.version,
+              executable,
+              this.executablesTemporaryDirectory.getAbsolutePath());
 
       // Unlock
       lock.release();
@@ -161,10 +163,14 @@ public class BundledMapperExecutor implements MapperExecutor {
   }
 
   @Override
-  public Result execute(final List<String> command,
-      final File executionDirectory, final boolean stdout,
-      final File stdErrFile, final boolean redirectStderr,
-      final File... fileUsed) throws IOException {
+  public Result execute(
+      final List<String> command,
+      final File executionDirectory,
+      final boolean stdout,
+      final File stdErrFile,
+      final boolean redirectStderr,
+      final File... fileUsed)
+      throws IOException {
 
     requireNonNull(command, "command argument cannot be null");
 
@@ -183,8 +189,7 @@ public class BundledMapperExecutor implements MapperExecutor {
       builder.directory(executionDirectory);
     }
 
-    this.logger
-        .info("Process command: " + Joiner.on(' ').join(builder.command()));
+    this.logger.info("Process command: " + Joiner.on(' ').join(builder.command()));
     this.logger.info("Process directory: " + builder.directory());
     this.logger.debug("Process redirect output: " + builder.redirectOutput());
     this.logger.debug("Process redirect error: " + builder.redirectError());
@@ -200,7 +205,8 @@ public class BundledMapperExecutor implements MapperExecutor {
   public String toString() {
 
     return MoreObjects.toStringHelper(this)
-        .add("softwarePackage", softwarePackage).add("version", version)
+        .add("softwarePackage", softwarePackage)
+        .add("version", version)
         .add("executablesTemporaryDirectory", executablesTemporaryDirectory)
         .toString();
   }
@@ -211,6 +217,7 @@ public class BundledMapperExecutor implements MapperExecutor {
 
   /**
    * Constructor.
+   *
    * @param softwarePackage software package of the mapper
    * @param version version of the mapper
    * @param logger the logger to use
@@ -218,25 +225,25 @@ public class BundledMapperExecutor implements MapperExecutor {
    * @param applicationName name of the application
    * @param applicationVersion version of the application
    */
-  BundledMapperExecutor(final String softwarePackage, final String version,
-      final File executablesTemporaryDirectory, final GenericLogger logger,
-      final String applicationName, final String applicationVersion) {
+  BundledMapperExecutor(
+      final String softwarePackage,
+      final String version,
+      final File executablesTemporaryDirectory,
+      final GenericLogger logger,
+      final String applicationName,
+      final String applicationVersion) {
 
     requireNonNull(softwarePackage, "dockerConnection argument cannot be null");
     requireNonNull(version, "version argument cannot be null");
-    requireNonNull(executablesTemporaryDirectory,
-        "dockerConnection argument cannot be null");
+    requireNonNull(executablesTemporaryDirectory, "dockerConnection argument cannot be null");
     requireNonNull(logger, "logger argument cannot be null");
     requireNonNull(applicationName, "applicationName argument cannot be null");
-    requireNonNull(applicationVersion,
-        "applicationName argument cannot be null");
+    requireNonNull(applicationVersion, "applicationName argument cannot be null");
 
-    this.installer =
-        new BinariesInstaller(applicationName, applicationVersion, logger);
+    this.installer = new BinariesInstaller(applicationName, applicationVersion, logger);
     this.softwarePackage = softwarePackage;
     this.version = version;
     this.executablesTemporaryDirectory = executablesTemporaryDirectory;
     this.logger = logger;
   }
-
 }

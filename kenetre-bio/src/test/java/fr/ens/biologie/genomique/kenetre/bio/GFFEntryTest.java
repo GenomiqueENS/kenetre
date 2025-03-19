@@ -39,51 +39,51 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.Test;
 
 @SuppressWarnings("deprecation")
 public class GFFEntryTest {
 
   private final String[] TEST_GFF3_STRINGS = {
-
-      "ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN",
-      "ctg123\t.\tTF_binding_site\t1000\t1012\t.\t+\t.\tID=tfbs00001;Parent=gene00001",
-      "ctg123\t.\tmRNA\t1050\t9000\t.\t+\t.\tID=mRNA00001;Parent=gene00001;Name=EDEN.1",
-      "ctg123\t.\tmRNA\t1050\t9000\t.\t+\t.\tID=mRNA00002;Parent=gene00001;Name=EDEN.2",
-      "ctg123\t.\tmRNA\t1300\t9000\t.\t+\t.\tID=mRNA00003;Parent=gene00001;Name=EDEN.3",
-      "ctg123\t.\texon\t1300\t1500\t.\t+\t.\tID=exon00001;Parent=mRNA00003",
-      "ctg123\t.\texon\t1050\t1500\t.\t+\t.\tID=exon00002;Parent=mRNA00001,mRNA00002",
-      "ctg123\t.\texon\t3000\t3902\t.\t+\t.\tID=exon00003;Parent=mRNA00001,mRNA00003",
-      "ctg123\t.\texon\t5000\t5500\t.\t+\t.\tID=exon00004;Parent=mRNA00001,mRNA00002,mRNA00003",
-      "ctg123\t.\texon\t7000\t9000\t.\t+\t.\tID=exon00005;Parent=mRNA00001,mRNA00002,mRNA00003",
-      "ctg123\t.\tCDS\t1201\t1500\t.\t+\t0\tID=cds00001;Parent=mRNA00001;Name=edenprotein.1",
-      "ctg123\t.\tCDS\t3000\t3902\t.\t+\t0\tID=cds00001;Parent=mRNA00001;Name=edenprotein.1",
-      "ctg123\t.\tCDS\t5000\t5500\t.\t+\t0\tID=cds00001;Parent=mRNA00001;Name=edenprotein.1",
-      "ctg123\t.\tCDS\t7000\t7600\t.\t+\t0\tID=cds00001;Parent=mRNA00001;Name=edenprotein.1",
-      "ctg123\t.\tCDS\t1201\t1500\t.\t+\t0\tID=cds00002;Parent=mRNA00002;Name=edenprotein.2",
-      "ctg123\t.\tCDS\t5000\t5500\t.\t+\t0\tID=cds00002;Parent=mRNA00002;Name=edenprotein.2",
-      "ctg123\t.\tCDS\t7000\t7600\t.\t+\t0\tID=cds00002;Parent=mRNA00002;Name=edenprotein.2",
-      "ctg123\t.\tCDS\t3301\t3902\t.\t+\t0\tID=cds00003;Parent=mRNA00003;Name=edenprotein.3",
-      "ctg123\t.\tCDS\t5000\t5500\t.\t+\t1\tID=cds00003;Parent=mRNA00003;Name=edenprotein.3",
-      "ctg123\t.\tCDS\t7000\t7600\t.\t+\t2\tID=cds00003;Parent=mRNA00003;Name=edenprotein.3",
-      "ctg123\t.\tCDS\t3391\t3902\t.\t+\t0\tID=cds00004;Parent=mRNA00003;Name=edenprotein.4",
-      "ctg123\t.\tCDS\t5000\t5500\t.\t+\t1\tID=cds00004;Parent=mRNA00003;Name=edenprotein.4",
-      "Ctg123\t.\tCDS\t7000\t7600\t.\t+\t2\tID=cds00004;Parent=mRNA00003;Name=edenprotein.4",};
+    "ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN",
+    "ctg123\t.\tTF_binding_site\t1000\t1012\t.\t+\t.\tID=tfbs00001;Parent=gene00001",
+    "ctg123\t.\tmRNA\t1050\t9000\t.\t+\t.\tID=mRNA00001;Parent=gene00001;Name=EDEN.1",
+    "ctg123\t.\tmRNA\t1050\t9000\t.\t+\t.\tID=mRNA00002;Parent=gene00001;Name=EDEN.2",
+    "ctg123\t.\tmRNA\t1300\t9000\t.\t+\t.\tID=mRNA00003;Parent=gene00001;Name=EDEN.3",
+    "ctg123\t.\texon\t1300\t1500\t.\t+\t.\tID=exon00001;Parent=mRNA00003",
+    "ctg123\t.\texon\t1050\t1500\t.\t+\t.\tID=exon00002;Parent=mRNA00001,mRNA00002",
+    "ctg123\t.\texon\t3000\t3902\t.\t+\t.\tID=exon00003;Parent=mRNA00001,mRNA00003",
+    "ctg123\t.\texon\t5000\t5500\t.\t+\t.\tID=exon00004;Parent=mRNA00001,mRNA00002,mRNA00003",
+    "ctg123\t.\texon\t7000\t9000\t.\t+\t.\tID=exon00005;Parent=mRNA00001,mRNA00002,mRNA00003",
+    "ctg123\t.\tCDS\t1201\t1500\t.\t+\t0\tID=cds00001;Parent=mRNA00001;Name=edenprotein.1",
+    "ctg123\t.\tCDS\t3000\t3902\t.\t+\t0\tID=cds00001;Parent=mRNA00001;Name=edenprotein.1",
+    "ctg123\t.\tCDS\t5000\t5500\t.\t+\t0\tID=cds00001;Parent=mRNA00001;Name=edenprotein.1",
+    "ctg123\t.\tCDS\t7000\t7600\t.\t+\t0\tID=cds00001;Parent=mRNA00001;Name=edenprotein.1",
+    "ctg123\t.\tCDS\t1201\t1500\t.\t+\t0\tID=cds00002;Parent=mRNA00002;Name=edenprotein.2",
+    "ctg123\t.\tCDS\t5000\t5500\t.\t+\t0\tID=cds00002;Parent=mRNA00002;Name=edenprotein.2",
+    "ctg123\t.\tCDS\t7000\t7600\t.\t+\t0\tID=cds00002;Parent=mRNA00002;Name=edenprotein.2",
+    "ctg123\t.\tCDS\t3301\t3902\t.\t+\t0\tID=cds00003;Parent=mRNA00003;Name=edenprotein.3",
+    "ctg123\t.\tCDS\t5000\t5500\t.\t+\t1\tID=cds00003;Parent=mRNA00003;Name=edenprotein.3",
+    "ctg123\t.\tCDS\t7000\t7600\t.\t+\t2\tID=cds00003;Parent=mRNA00003;Name=edenprotein.3",
+    "ctg123\t.\tCDS\t3391\t3902\t.\t+\t0\tID=cds00004;Parent=mRNA00003;Name=edenprotein.4",
+    "ctg123\t.\tCDS\t5000\t5500\t.\t+\t1\tID=cds00004;Parent=mRNA00003;Name=edenprotein.4",
+    "Ctg123\t.\tCDS\t7000\t7600\t.\t+\t2\tID=cds00004;Parent=mRNA00003;Name=edenprotein.4",
+  };
 
   private final String[] TEST_GTF_STRINGS = {
-      "1\thavana\tgene\t11869\t14409\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\";",
-      "1\thavana\ttranscript\t11869\t14409\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000456328\"; transcript_version \"2\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-002\"; transcript_source \"havana\"; transcript_biotype \"processed_transcript\"; havana_transcript \"OTTHUMT00000362751\"; havana_transcript_version \"1\"; tag \"basic\"; transcript_support_level \"1\";",
-      "1\thavana\texon\t11869\t12227\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000456328\"; transcript_version \"2\"; exon_number \"1\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-002\"; transcript_source \"havana\"; transcript_biotype \"processed_transcript\"; havana_transcript \"OTTHUMT00000362751\"; havana_transcript_version \"1\"; exon_id \"ENSE00002234944\"; exon_version \"1\"; tag \"basic\"; transcript_support_level \"1\";",
-      "1\thavana\texon\t12613\t12721\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000456328\"; transcript_version \"2\"; exon_number \"2\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-002\"; transcript_source \"havana\"; transcript_biotype \"processed_transcript\"; havana_transcript \"OTTHUMT00000362751\"; havana_transcript_version \"1\"; exon_id \"ENSE00003582793\"; exon_version \"1\"; tag \"basic\"; transcript_support_level \"1\";",
-      "1\thavana\texon\t13221\t14409\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000456328\"; transcript_version \"2\"; exon_number \"3\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-002\"; transcript_source \"havana\"; transcript_biotype \"processed_transcript\"; havana_transcript \"OTTHUMT00000362751\"; havana_transcript_version \"1\"; exon_id \"ENSE00002312635\"; exon_version \"1\"; tag \"basic\"; transcript_support_level \"1\";",
-      "1\thavana\ttranscript\t12010\t13670\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000450305\"; transcript_version \"2\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-001\"; transcript_source \"havana\"; transcript_biotype \"transcribed_unprocessed_pseudogene\"; havana_transcript \"OTTHUMT00000002844\"; havana_transcript_version \"2\"; tag \"basic\"; transcript_support_level \"NA\";",
-      "1\thavana\texon\t12010\t12057\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000450305\"; transcript_version \"2\"; exon_number \"1\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-001\"; transcript_source \"havana\"; transcript_biotype \"transcribed_unprocessed_pseudogene\"; havana_transcript \"OTTHUMT00000002844\"; havana_transcript_version \"2\"; exon_id \"ENSE00001948541\"; exon_version \"1\"; tag \"basic\"; transcript_support_level \"NA\";",
-      "1\thavana\texon\t12179\t12227\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000450305\"; transcript_version \"2\"; exon_number \"2\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-001\"; transcript_source \"havana\"; transcript_biotype \"transcribed_unprocessed_pseudogene\"; havana_transcript \"OTTHUMT00000002844\"; havana_transcript_version \"2\"; exon_id \"ENSE00001671638\"; exon_version \"2\"; tag \"basic\"; transcript_support_level \"NA\";",
-      "1\thavana\texon\t12613\t12697\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000450305\"; transcript_version \"2\"; exon_number \"3\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-001\"; transcript_source \"havana\"; transcript_biotype \"transcribed_unprocessed_pseudogene\"; havana_transcript \"OTTHUMT00000002844\"; havana_transcript_version \"2\"; exon_id \"ENSE00001758273\"; exon_version \"2\"; tag \"basic\"; transcript_support_level \"NA\";",
-      "1\thavana\texon\t12975\t13052\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000450305\"; transcript_version \"2\"; exon_number \"4\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-001\"; transcript_source \"havana\"; transcript_biotype \"transcribed_unprocessed_pseudogene\"; havana_transcript \"OTTHUMT00000002844\"; havana_transcript_version \"2\"; exon_id \"ENSE00001799933\"; exon_version \"2\"; tag \"basic\"; transcript_support_level \"NA\";",
-      "1\thavana\texon\t13221\t13374\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000450305\"; transcript_version \"2\"; exon_number \"5\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-001\"; transcript_source \"havana\"; transcript_biotype \"transcribed_unprocessed_pseudogene\"; havana_transcript \"OTTHUMT00000002844\"; havana_transcript_version \"2\"; exon_id \"ENSE00001746346\"; exon_version \"2\"; tag \"basic\"; transcript_support_level \"NA\";",
-      "1\thavana\texon\t13453\t13670\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000450305\"; transcript_version \"2\"; exon_number \"6\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-001\"; transcript_source \"havana\"; transcript_biotype \"transcribed_unprocessed_pseudogene\"; havana_transcript \"OTTHUMT00000002844\"; havana_transcript_version \"2\"; exon_id \"ENSE00001863096\"; exon_version \"1\"; tag \"basic\"; transcript_support_level \"NA\";"};
+    "1\thavana\tgene\t11869\t14409\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\";",
+    "1\thavana\ttranscript\t11869\t14409\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000456328\"; transcript_version \"2\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-002\"; transcript_source \"havana\"; transcript_biotype \"processed_transcript\"; havana_transcript \"OTTHUMT00000362751\"; havana_transcript_version \"1\"; tag \"basic\"; transcript_support_level \"1\";",
+    "1\thavana\texon\t11869\t12227\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000456328\"; transcript_version \"2\"; exon_number \"1\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-002\"; transcript_source \"havana\"; transcript_biotype \"processed_transcript\"; havana_transcript \"OTTHUMT00000362751\"; havana_transcript_version \"1\"; exon_id \"ENSE00002234944\"; exon_version \"1\"; tag \"basic\"; transcript_support_level \"1\";",
+    "1\thavana\texon\t12613\t12721\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000456328\"; transcript_version \"2\"; exon_number \"2\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-002\"; transcript_source \"havana\"; transcript_biotype \"processed_transcript\"; havana_transcript \"OTTHUMT00000362751\"; havana_transcript_version \"1\"; exon_id \"ENSE00003582793\"; exon_version \"1\"; tag \"basic\"; transcript_support_level \"1\";",
+    "1\thavana\texon\t13221\t14409\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000456328\"; transcript_version \"2\"; exon_number \"3\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-002\"; transcript_source \"havana\"; transcript_biotype \"processed_transcript\"; havana_transcript \"OTTHUMT00000362751\"; havana_transcript_version \"1\"; exon_id \"ENSE00002312635\"; exon_version \"1\"; tag \"basic\"; transcript_support_level \"1\";",
+    "1\thavana\ttranscript\t12010\t13670\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000450305\"; transcript_version \"2\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-001\"; transcript_source \"havana\"; transcript_biotype \"transcribed_unprocessed_pseudogene\"; havana_transcript \"OTTHUMT00000002844\"; havana_transcript_version \"2\"; tag \"basic\"; transcript_support_level \"NA\";",
+    "1\thavana\texon\t12010\t12057\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000450305\"; transcript_version \"2\"; exon_number \"1\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-001\"; transcript_source \"havana\"; transcript_biotype \"transcribed_unprocessed_pseudogene\"; havana_transcript \"OTTHUMT00000002844\"; havana_transcript_version \"2\"; exon_id \"ENSE00001948541\"; exon_version \"1\"; tag \"basic\"; transcript_support_level \"NA\";",
+    "1\thavana\texon\t12179\t12227\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000450305\"; transcript_version \"2\"; exon_number \"2\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-001\"; transcript_source \"havana\"; transcript_biotype \"transcribed_unprocessed_pseudogene\"; havana_transcript \"OTTHUMT00000002844\"; havana_transcript_version \"2\"; exon_id \"ENSE00001671638\"; exon_version \"2\"; tag \"basic\"; transcript_support_level \"NA\";",
+    "1\thavana\texon\t12613\t12697\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000450305\"; transcript_version \"2\"; exon_number \"3\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-001\"; transcript_source \"havana\"; transcript_biotype \"transcribed_unprocessed_pseudogene\"; havana_transcript \"OTTHUMT00000002844\"; havana_transcript_version \"2\"; exon_id \"ENSE00001758273\"; exon_version \"2\"; tag \"basic\"; transcript_support_level \"NA\";",
+    "1\thavana\texon\t12975\t13052\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000450305\"; transcript_version \"2\"; exon_number \"4\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-001\"; transcript_source \"havana\"; transcript_biotype \"transcribed_unprocessed_pseudogene\"; havana_transcript \"OTTHUMT00000002844\"; havana_transcript_version \"2\"; exon_id \"ENSE00001799933\"; exon_version \"2\"; tag \"basic\"; transcript_support_level \"NA\";",
+    "1\thavana\texon\t13221\t13374\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000450305\"; transcript_version \"2\"; exon_number \"5\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-001\"; transcript_source \"havana\"; transcript_biotype \"transcribed_unprocessed_pseudogene\"; havana_transcript \"OTTHUMT00000002844\"; havana_transcript_version \"2\"; exon_id \"ENSE00001746346\"; exon_version \"2\"; tag \"basic\"; transcript_support_level \"NA\";",
+    "1\thavana\texon\t13453\t13670\t.\t+\t.\tgene_id \"ENSG00000223972\"; gene_version \"5\"; transcript_id \"ENST00000450305\"; transcript_version \"2\"; exon_number \"6\"; gene_name \"DDX11L1\"; gene_source \"havana\"; gene_biotype \"transcribed_unprocessed_pseudogene\"; havana_gene \"OTTHUMG00000000961\"; havana_gene_version \"2\"; transcript_name \"DDX11L1-001\"; transcript_source \"havana\"; transcript_biotype \"transcribed_unprocessed_pseudogene\"; havana_transcript \"OTTHUMT00000002844\"; havana_transcript_version \"2\"; exon_id \"ENSE00001863096\"; exon_version \"1\"; tag \"basic\"; transcript_support_level \"NA\";"
+  };
 
   @Test
   public void testParseGFF3() {
@@ -116,8 +116,7 @@ public class GFFEntryTest {
     }
 
     try {
-      e.parseGFF3(
-          "ctg123\tbidon\tgene\tBIDON\t9000\t111.11\t+\t2\tID=gene00001;Name=EDEN");
+      e.parseGFF3("ctg123\tbidon\tgene\tBIDON\t9000\t111.11\t+\t2\tID=gene00001;Name=EDEN");
     } catch (BadBioEntryException e1) {
       fail();
     }
@@ -142,12 +141,10 @@ public class GFFEntryTest {
     }
 
     try {
-      e.parse(
-          "ctg123\tbidon\tgene\tBIDON\t9000\t111.11\t+\t2\tID=gene00001;Name=EDEN");
+      e.parse("ctg123\tbidon\tgene\tBIDON\t9000\t111.11\t+\t2\tID=gene00001;Name=EDEN");
     } catch (BadBioEntryException e1) {
       fail();
     }
-
   }
 
   @Test
@@ -174,8 +171,7 @@ public class GFFEntryTest {
       assertEquals("B0273.1", e.getAttributeValue("Transcript"));
       assertEquals("Zn-Finger", e.getAttributeValue("Note"));
 
-      e.parseGTF(
-          "IV\tcurated\t5'UTR\t5506800\t5508999\t.\t+\t.\tTranscript B0273.1");
+      e.parseGTF("IV\tcurated\t5'UTR\t5506800\t5508999\t.\t+\t.\tTranscript B0273.1");
 
       assertEquals(1, e.getAttributesNames().size());
       assertEquals("B0273.1", e.getAttributeValue("Transcript"));
@@ -192,8 +188,7 @@ public class GFFEntryTest {
 
       assertEquals(2, e.getAttributesNames().size());
       assertEquals("3q12.1", e.getAttributeValue("Band"));
-      assertEquals("Marfan's syndrome,dystrophic dysplasia",
-          e.getAttributeValue("Note"));
+      assertEquals("Marfan's syndrome,dystrophic dysplasia", e.getAttributeValue("Note"));
 
       e.parseGTF(
           "Chr3\tgiemsa\theterochromatin\t4500000\t6000000\t.\t.\t.\tBand 3q12.1 ; Alias MFX");
@@ -202,8 +197,7 @@ public class GFFEntryTest {
       assertEquals("3q12.1", e.getAttributeValue("Band"));
       assertEquals("MFX", e.getAttributeValue("Alias"));
 
-      e.parseGTF(
-          "Chr1\tassembly\tchromosome\t1\t14972282\t.\t+\t.\tSequence Chr1");
+      e.parseGTF("Chr1\tassembly\tchromosome\t1\t14972282\t.\t+\t.\tSequence Chr1");
 
       assertEquals(1, e.getAttributesNames().size());
       assertEquals("Chr1", e.getAttributeValue("Sequence"));
@@ -212,7 +206,6 @@ public class GFFEntryTest {
       exp.printStackTrace();
       fail();
     }
-
   }
 
   @Test
@@ -237,8 +230,7 @@ public class GFFEntryTest {
 
     GFFEntry e = new GFFEntry();
     try {
-      e.parseGFF3(
-          "ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
+      e.parseGFF3("ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
     } catch (BadBioEntryException exp) {
       fail();
     }
@@ -251,8 +243,7 @@ public class GFFEntryTest {
 
     GFFEntry e = new GFFEntry();
     try {
-      e.parseGFF3(
-          "ctg123\tGenbank\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
+      e.parseGFF3("ctg123\tGenbank\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
     } catch (BadBioEntryException exp) {
       fail();
     }
@@ -265,8 +256,7 @@ public class GFFEntryTest {
 
     GFFEntry e = new GFFEntry();
     try {
-      e.parseGFF3(
-          "ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
+      e.parseGFF3("ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
     } catch (BadBioEntryException exp) {
       fail();
     }
@@ -279,8 +269,7 @@ public class GFFEntryTest {
 
     GFFEntry e = new GFFEntry();
     try {
-      e.parseGFF3(
-          "ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
+      e.parseGFF3("ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
     } catch (BadBioEntryException exp) {
       fail();
     }
@@ -293,8 +282,7 @@ public class GFFEntryTest {
 
     GFFEntry e = new GFFEntry();
     try {
-      e.parseGFF3(
-          "ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
+      e.parseGFF3("ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
     } catch (BadBioEntryException exp) {
       fail();
     }
@@ -307,8 +295,7 @@ public class GFFEntryTest {
 
     GFFEntry e = new GFFEntry();
     try {
-      e.parseGFF3(
-          "ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
+      e.parseGFF3("ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
     } catch (BadBioEntryException exp) {
       fail();
     }
@@ -321,8 +308,7 @@ public class GFFEntryTest {
 
     GFFEntry e = new GFFEntry();
     try {
-      e.parseGFF3(
-          "ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
+      e.parseGFF3("ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
     } catch (BadBioEntryException exp) {
       fail();
     }
@@ -335,8 +321,7 @@ public class GFFEntryTest {
 
     GFFEntry e = new GFFEntry();
     try {
-      e.parseGFF3(
-          "ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
+      e.parseGFF3("ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
     } catch (BadBioEntryException exp) {
       fail();
     }
@@ -349,8 +334,7 @@ public class GFFEntryTest {
 
     GFFEntry e = new GFFEntry();
     try {
-      e.parseGFF3(
-          "ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
+      e.parseGFF3("ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
     } catch (BadBioEntryException exp) {
       fail();
     }
@@ -386,8 +370,7 @@ public class GFFEntryTest {
     assertEquals(Collections.emptySet(), e.getMetadataKeyNames());
 
     try {
-      e.parseGFF3(
-          "ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
+      e.parseGFF3("ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
     } catch (BadBioEntryException exp) {
       fail();
     }
@@ -417,8 +400,7 @@ public class GFFEntryTest {
     assertEquals(0, e.getAttributesNames().size());
 
     try {
-      e.parseGFF3(
-          "ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
+      e.parseGFF3("ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
     } catch (BadBioEntryException exp) {
       fail();
     }
@@ -438,8 +420,7 @@ public class GFFEntryTest {
     assertFalse(e.isMetaDataEntry("toto"));
 
     try {
-      e.parseGFF3(
-          "ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
+      e.parseGFF3("ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
     } catch (BadBioEntryException exp) {
       fail();
     }
@@ -468,8 +449,7 @@ public class GFFEntryTest {
     assertFalse(e.isAttribute("Name"));
 
     try {
-      e.parseGFF3(
-          "ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
+      e.parseGFF3("ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
     } catch (BadBioEntryException exp) {
       fail();
     }
@@ -492,8 +472,7 @@ public class GFFEntryTest {
     assertEquals(Collections.emptyList(), e.getMetadataEntryValues("toto"));
 
     try {
-      e.parseGFF3(
-          "ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
+      e.parseGFF3("ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
     } catch (BadBioEntryException exp) {
       fail();
     }
@@ -517,15 +496,13 @@ public class GFFEntryTest {
     assertNull(e.getAttributeValue("toto"));
 
     try {
-      e.parseGFF3(
-          "ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
+      e.parseGFF3("ctg123\t.\tgene\t1000\t9000\t.\t+\t.\tID=gene00001;Name=EDEN");
     } catch (BadBioEntryException exp) {
       fail();
     }
 
     assertEquals("gene00001", e.getAttributeValue("ID"));
     assertEquals("EDEN", e.getAttributeValue("Name"));
-
   }
 
   @Test
@@ -665,18 +642,14 @@ public class GFFEntryTest {
 
     assertTrue(e.addMetaDataEntry("key", "val1"));
     assertEquals(Collections.singleton("key"), e.getMetadataKeyNames());
-    assertEquals(Collections.singletonList("val1"),
-        e.getMetadataEntryValues("key"));
+    assertEquals(Collections.singletonList("val1"), e.getMetadataEntryValues("key"));
     assertTrue(e.addMetaDataEntry("key", "val2"));
     assertEquals(Collections.singleton("key"), e.getMetadataKeyNames());
-    assertEquals(Arrays.asList("val1", "val2"),
-        e.getMetadataEntryValues("key"));
+    assertEquals(Arrays.asList("val1", "val2"), e.getMetadataEntryValues("key"));
 
     assertTrue(e.addMetaDataEntry("key2", "val3"));
-    assertEquals(new HashSet<>(Arrays.asList("key", "key2")),
-        e.getMetadataKeyNames());
-    assertEquals(Collections.singletonList("val3"),
-        e.getMetadataEntryValues("key2"));
+    assertEquals(new HashSet<>(Arrays.asList("key", "key2")), e.getMetadataKeyNames());
+    assertEquals(Collections.singletonList("val3"), e.getMetadataEntryValues("key2"));
   }
 
   @Test
@@ -723,14 +696,11 @@ public class GFFEntryTest {
     e.addMetaDataEntry("key1", "value1");
     assertEquals(Collections.singleton("key1"), e.getMetadataKeyNames());
     e.addMetaDataEntry("key2", "value2");
-    assertEquals(new HashSet<>(asList("key1", "key2")),
-        e.getMetadataKeyNames());
+    assertEquals(new HashSet<>(asList("key1", "key2")), e.getMetadataKeyNames());
     assertFalse(e.removeMetaDataEntry("key3"));
-    assertEquals(new HashSet<>(asList("key1", "key2")),
-        e.getMetadataKeyNames());
+    assertEquals(new HashSet<>(asList("key1", "key2")), e.getMetadataKeyNames());
     assertFalse(e.removeMetaDataEntry(null));
-    assertEquals(new HashSet<>(asList("key1", "key2")),
-        e.getMetadataKeyNames());
+    assertEquals(new HashSet<>(asList("key1", "key2")), e.getMetadataKeyNames());
     assertTrue(e.removeMetaDataEntry("key1"));
     assertEquals(Collections.singleton("key2"), e.getMetadataKeyNames());
   }
@@ -792,8 +762,7 @@ public class GFFEntryTest {
     assertEquals(Collections.emptySet(), e.getAttributesNames());
 
     try {
-      e.parseGFF3(
-          "ctg123\tbidon\tgene\t1000\t9000\t111.11\t+\t2\tID=gene00001;Name=EDEN");
+      e.parseGFF3("ctg123\tbidon\tgene\t1000\t9000\t111.11\t+\t2\tID=gene00001;Name=EDEN");
     } catch (BadBioEntryException e1) {
       fail();
     }
@@ -867,7 +836,6 @@ public class GFFEntryTest {
 
     GFFEntry e = new GFFEntry();
     assertTrue(e.isValidStrand());
-
   }
 
   @Test
@@ -909,15 +877,13 @@ public class GFFEntryTest {
     GFFEntry e = new GFFEntry();
 
     try {
-      e.parseGFF3(
-          "ctg123\tbidon\tgene\t1000\t9000\t111.11\t+\t2\tID=gene00001;Name=EDEN");
+      e.parseGFF3("ctg123\tbidon\tgene\t1000\t9000\t111.11\t+\t2\tID=gene00001;Name=EDEN");
     } catch (BadBioEntryException e1) {
       fail();
     }
 
     assertEquals(
-        "ctg123\tbidon\tgene\t1000\t9000\t111.11\t+\t2\tID=gene00001;Name=EDEN",
-        e.toGFF3());
+        "ctg123\tbidon\tgene\t1000\t9000\t111.11\t+\t2\tID=gene00001;Name=EDEN", e.toGFF3());
 
     try {
       e.parseGFF3(".\t.\t.\t.\t.\t.\t.\t.\t");
@@ -928,7 +894,6 @@ public class GFFEntryTest {
     assertEquals(".\t.\t.\t.\t.\t.\t.\t.\t.", e.toGFF3());
 
     assertEquals(".\t.\t.\t.\t.\t.\t.\t.\t.", e.toString());
-
   }
 
   @Test
@@ -937,8 +902,7 @@ public class GFFEntryTest {
     GFFEntry e = new GFFEntry();
 
     try {
-      e.parseGFF3(
-          "ctg123\tbidon\tgene\t1000\t9000\t111.11\t+\t2\tID=gene00001;Name=EDEN");
+      e.parseGFF3("ctg123\tbidon\tgene\t1000\t9000\t111.11\t+\t2\tID=gene00001;Name=EDEN");
     } catch (BadBioEntryException e1) {
       fail();
     }
@@ -948,8 +912,7 @@ public class GFFEntryTest {
         e.toGTF());
 
     try {
-      e.parseGTF(
-          "ctg123\tbidon\tgene\t1000\t9000\t111.11\t+\t2\tID \"gene00001\";Name \"EDEN\";");
+      e.parseGTF("ctg123\tbidon\tgene\t1000\t9000\t111.11\t+\t2\tID \"gene00001\";Name \"EDEN\";");
     } catch (BadBioEntryException e1) {
       fail();
     }
@@ -983,7 +946,6 @@ public class GFFEntryTest {
     }
 
     assertEquals(".\t.\t.\t.\t.\t.\t.\t.\t.", e.toGTF());
-
   }
 
   @Test
@@ -1048,5 +1010,4 @@ public class GFFEntryTest {
         Collections.singletonMap("key3", Collections.singletonList("value3")),
         e2.getMetadata().entries());
   }
-
 }

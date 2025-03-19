@@ -13,6 +13,10 @@ import static fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheet
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
+import fr.ens.biologie.genomique.kenetre.KenetreRuntimeException;
+import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetDiscoverFormatParser;
+import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,13 +31,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-import fr.ens.biologie.genomique.kenetre.KenetreRuntimeException;
-import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetDiscoverFormatParser;
-import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetReader;
-
 /**
  * This class define samplesheet useful methods.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -43,6 +43,7 @@ public class SampleSheetUtils {
 
   /**
    * Convert a SampleSheet object to CSV.
+   *
    * @param samplesheet SampleSheet samplesheet object to convert
    * @return a String with the converted samplesheet
    */
@@ -95,15 +96,14 @@ public class SampleSheetUtils {
       sb.append(quote(s.getSampleProject()));
 
       sb.append('\n');
-
     }
 
     return sb.toString();
   }
 
   /**
-   * Convert the name of a field of the samplesheet model to the bcl2fastq 2
-   * samplesheet field name.
+   * Convert the name of a field of the samplesheet model to the bcl2fastq 2 samplesheet field name.
+   *
    * @param fieldName the field name to convert
    * @return the converted field name
    */
@@ -150,6 +150,7 @@ public class SampleSheetUtils {
 
   /**
    * Convert a SampleSheet object to CSV.
+   *
    * @param samplesheet SampleSheet samplesheet object to convert
    * @return a String with the converted samplesheet
    */
@@ -175,8 +176,7 @@ public class SampleSheetUtils {
       sb.append(sectionHeader(section));
 
       if (samplesheet.containsPropertySection(section)) {
-        sb.append(
-            propertySectionToCSV(samplesheet.getPropertySection(section)));
+        sb.append(propertySectionToCSV(samplesheet.getPropertySection(section)));
       } else {
         sb.append(tableSectionToCSV(samplesheet.getTableSection(section)));
       }
@@ -271,6 +271,7 @@ public class SampleSheetUtils {
 
   /**
    * Quote only string containing comma
+   *
    * @param String string to process
    */
   private static String quoteStringWithComma(final String s) {
@@ -288,6 +289,7 @@ public class SampleSheetUtils {
 
   /**
    * Duplicate sample for all lanes if lane field does not exists.
+   *
    * @param samplesheet the samplesheet
    * @param laneCount the number of lanes
    */
@@ -299,8 +301,7 @@ public class SampleSheetUtils {
     }
 
     if (laneCount < 1) {
-      throw new IllegalArgumentException(
-          "The lane count cannot be lower than 1: " + laneCount);
+      throw new IllegalArgumentException("The lane count cannot be lower than 1: " + laneCount);
     }
 
     TableSection table;
@@ -322,8 +323,7 @@ public class SampleSheetUtils {
       samples.add(s);
     }
 
-    final List<Map<String, String>> samplesToDuplicate =
-        new ArrayList<Map<String, String>>();
+    final List<Map<String, String>> samplesToDuplicate = new ArrayList<Map<String, String>>();
 
     for (Sample s : samples) {
 
@@ -352,12 +352,11 @@ public class SampleSheetUtils {
   }
 
   /**
-   * Check if the required field for creating the QC report exists in the
-   * samplesheet.
+   * Check if the required field for creating the QC report exists in the samplesheet.
+   *
    * @param samplesheet the samplesheet
    */
-  public static void checkRequiredQCSampleFields(
-      final SampleSheet samplesheet) {
+  public static void checkRequiredQCSampleFields(final SampleSheet samplesheet) {
 
     if (samplesheet == null) {
       throw new NullPointerException("The samplesheet argument cannot be null");
@@ -371,8 +370,8 @@ public class SampleSheetUtils {
       return;
     }
 
-    for (String fieldName : Arrays.asList("sampleref", INDEX1_FIELD_NAME,
-        DESCRIPTION_FIELD_NAME, PROJECT_FIELD_NAME)) {
+    for (String fieldName :
+        Arrays.asList("sampleref", INDEX1_FIELD_NAME, DESCRIPTION_FIELD_NAME, PROJECT_FIELD_NAME)) {
 
       if (table.isSampleFieldName(fieldName)) {
         throw new KenetreRuntimeException(
@@ -388,98 +387,93 @@ public class SampleSheetUtils {
 
   /**
    * Parse a samplesheet in a tabulated format from a String
+   *
    * @param s string to parse
    * @return a Bcl2fastq samplesheet object
    * @throws IOException if an error occurs
    */
-  public static SampleSheet parseCSVSamplesheet(final String s)
-      throws IOException {
+  public static SampleSheet parseCSVSamplesheet(final String s) throws IOException {
 
     if (s == null) {
       return null;
     }
 
-    try (SampleSheetReader reader = new SampleSheetReader() {
+    try (SampleSheetReader reader =
+        new SampleSheetReader() {
 
-      @Override
-      public SampleSheet read() throws IOException {
+          @Override
+          public SampleSheet read() throws IOException {
 
-        final String[] lines = s.split("\n");
-        final SampleSheetDiscoverFormatParser parser =
-            new SampleSheetDiscoverFormatParser();
+            final String[] lines = s.split("\n");
+            final SampleSheetDiscoverFormatParser parser = new SampleSheetDiscoverFormatParser();
 
-        for (final String line : lines) {
+            for (final String line : lines) {
 
-          if ("".equals(line.trim())) {
-            continue;
+              if ("".equals(line.trim())) {
+                continue;
+              }
+
+              // Parse the line
+              parser.parseLine(parseCSVSamplesheetLine(line));
+            }
+
+            return parser.getSampleSheet();
           }
 
-          // Parse the line
-          parser.parseLine(parseCSVSamplesheetLine(line));
-        }
-
-        return parser.getSampleSheet();
-      }
-
-      @Override
-      public void close() throws IOException {
-      }
-
-    }) {
+          @Override
+          public void close() throws IOException {}
+        }) {
       return reader.read();
     }
-
   }
 
   /**
    * Parse a samplesheet in a tabulated format from a String
+   *
    * @param s string to parse
    * @return a Bcl2fastq samplesheet object
    * @throws IOException if an error occurs
    */
-  public static SampleSheet parseTabulatedSamplesheet(final String s)
-      throws IOException {
+  public static SampleSheet parseTabulatedSamplesheet(final String s) throws IOException {
 
     if (s == null) {
       return null;
     }
 
-    try (SampleSheetReader reader = new SampleSheetReader() {
+    try (SampleSheetReader reader =
+        new SampleSheetReader() {
 
-      @Override
-      public SampleSheet read() throws IOException {
+          @Override
+          public SampleSheet read() throws IOException {
 
-        final String[] lines = s.split("\n");
-        final SampleSheetDiscoverFormatParser parser =
-            new SampleSheetDiscoverFormatParser();
+            final String[] lines = s.split("\n");
+            final SampleSheetDiscoverFormatParser parser = new SampleSheetDiscoverFormatParser();
 
-        for (final String line : lines) {
+            for (final String line : lines) {
 
-          if ("".equals(line.trim())) {
-            continue;
+              if ("".equals(line.trim())) {
+                continue;
+              }
+
+              // Parse the line
+              parser.parseLine(parseTabulatedSamplesheetLine(line));
+            }
+
+            return parser.getSampleSheet();
           }
 
-          // Parse the line
-          parser.parseLine(parseTabulatedSamplesheetLine(line));
-        }
-
-        return parser.getSampleSheet();
-      }
-
-      @Override
-      public void close() throws IOException {
-      }
-
-    }) {
+          @Override
+          public void close() throws IOException {}
+        }) {
       return reader.read();
     }
   }
 
   /**
    * Custom splitter for Bcl2fastq CSV file.
+   *
    * @param line line to parse
-   * @return a list of String with the contents of each cell without unnecessary
-   *         quotes
+   * @return a list of String with the contents of each cell without unnecessary quotes
    */
   public static final List<String> parseCSVSamplesheetLine(final String line) {
 
@@ -507,7 +501,6 @@ public class SampleSheetUtils {
           sb.append(c);
         }
       }
-
     }
     result.add(sb.toString());
 
@@ -516,9 +509,9 @@ public class SampleSheetUtils {
 
   /**
    * Custom splitter for Bcl2fastq tabulated file.
+   *
    * @param line line to parse
-   * @return a list of String with the contents of each cell without unnecessary
-   *         quotes
+   * @return a list of String with the contents of each cell without unnecessary quotes
    */
   public static List<String> parseTabulatedSamplesheetLine(final String line) {
 
@@ -535,13 +528,13 @@ public class SampleSheetUtils {
 
   /**
    * Replace index shortcuts in a samplesheet object by index sequences.
+   *
    * @param samplesheet Bcl2fastq samplesheet object
    * @param sequences map for the sequences
    * @throws KenetreException if the shortcut is unknown
    */
   public static void replaceIndexShortcutsBySequences(
-      final SampleSheet samplesheet, final Map<String, String> sequences)
-      throws KenetreException {
+      final SampleSheet samplesheet, final Map<String, String> sequences) throws KenetreException {
 
     if (samplesheet == null || sequences == null) {
       return;
@@ -562,8 +555,7 @@ public class SampleSheetUtils {
         String index1 = sample.getIndex1();
 
         if (index1 == null) {
-          throw new NullPointerException(
-              "Sample index1 is null for sample: " + sample);
+          throw new NullPointerException("Sample index1 is null for sample: " + sample);
         }
 
         index1 = index1.trim().toLowerCase();
@@ -573,8 +565,8 @@ public class SampleSheetUtils {
         } catch (KenetreException e) {
 
           if (!sequences.containsKey(index1)) {
-            throw new KenetreException("Unknown index 1 sequence shortcut ("
-                + index1 + ") for sample: " + sample);
+            throw new KenetreException(
+                "Unknown index 1 sequence shortcut (" + index1 + ") for sample: " + sample);
           }
           sample.setIndex1(sequences.get(index1));
         }
@@ -585,8 +577,7 @@ public class SampleSheetUtils {
         String index2 = sample.getIndex2();
 
         if (index2 == null) {
-          throw new NullPointerException(
-              "Sample index2 is null for sample: " + sample);
+          throw new NullPointerException("Sample index2 is null for sample: " + sample);
         }
 
         index2 = index2.trim().toLowerCase();
@@ -596,8 +587,8 @@ public class SampleSheetUtils {
         } catch (KenetreException e) {
 
           if (!sequences.containsKey(index2)) {
-            throw new KenetreException("Unknown index 2 sequence shortcut ("
-                + index2 + ") for sample: " + sample);
+            throw new KenetreException(
+                "Unknown index 2 sequence shortcut (" + index2 + ") for sample: " + sample);
           }
           sample.setIndex2(sequences.get(index2));
         }
@@ -607,62 +598,66 @@ public class SampleSheetUtils {
 
   /**
    * Get and check if demultiplexing section exists in a samplesheet.
+   *
    * @param samplesheet the samplesheet
    * @return a TableSection object
-   * @throws KenetreException if the demultiplexing sample table does not exist
-   *           in the samplesheet
+   * @throws KenetreException if the demultiplexing sample table does not exist in the samplesheet
    */
-  public static TableSection getCheckedDemuxTableSection(
-      SampleSheet samplesheet) throws KenetreException {
+  public static TableSection getCheckedDemuxTableSection(SampleSheet samplesheet)
+      throws KenetreException {
 
     requireNonNull(samplesheet);
 
     try {
       return samplesheet.getDemuxSection();
     } catch (NoSuchElementException e) {
-      throw new KenetreException(
-          "No sample table for demultiplexing found in samplesheet");
+      throw new KenetreException("No sample table for demultiplexing found in samplesheet");
     }
-
   }
 
   /**
    * Remove forbidden fields in BCLConvert_Data section.
+   *
    * @param samplesheet sample sheet to process
    * @throws KenetreException if the section does not exists
    */
-  public static void removeBclConvertDataForbiddenFields(
-      SampleSheet samplesheet) throws KenetreException {
+  public static void removeBclConvertDataForbiddenFields(SampleSheet samplesheet)
+      throws KenetreException {
 
-    removeBclConvertDataForbiddenFields(samplesheet,
-        asList(Sample.LANE_FIELD_NAME, Sample.SAMPLE_ID_FIELD_NAME,
-            Sample.INDEX1_FIELD_NAME, Sample.INDEX2_FIELD_NAME,
+    removeBclConvertDataForbiddenFields(
+        samplesheet,
+        asList(
+            Sample.LANE_FIELD_NAME,
+            Sample.SAMPLE_ID_FIELD_NAME,
+            Sample.INDEX1_FIELD_NAME,
+            Sample.INDEX2_FIELD_NAME,
             Sample.PROJECT_FIELD_NAME));
   }
 
   /**
    * Remove forbidden fields in BCLConvert_Data section.
+   *
    * @param samplesheet sample sheet to process
    * @param fieldsToKeep a collection with the field to keep
    * @throws KenetreException if the section does not exists
    */
   public static void removeBclConvertDataForbiddenFields(
-      SampleSheet samplesheet, Collection<String> fieldsToKeep)
-      throws KenetreException {
+      SampleSheet samplesheet, Collection<String> fieldsToKeep) throws KenetreException {
 
     requireNonNull(samplesheet);
     requireNonNull(fieldsToKeep);
 
     if (!samplesheet.containsSection(BCLCONVERT_DEMUX_TABLE_NAME)) {
-      throw new KenetreException("No section "
-          + BCLCONVERT_DEMUX_TABLE_NAME + " found in samplesheet");
+      throw new KenetreException(
+          "No section " + BCLCONVERT_DEMUX_TABLE_NAME + " found in samplesheet");
     }
 
-    TableSection demuxTable =
-        samplesheet.getTableSection(BCLCONVERT_DEMUX_TABLE_NAME);
+    TableSection demuxTable = samplesheet.getTableSection(BCLCONVERT_DEMUX_TABLE_NAME);
 
     Set<String> validFields =
-        fieldsToKeep.stream().filter(Objects::nonNull).map(String::toLowerCase)
+        fieldsToKeep.stream()
+            .filter(Objects::nonNull)
+            .map(String::toLowerCase)
             .collect(Collectors.toCollection(HashSet::new));
 
     for (String fieldName : demuxTable.getSamplesFieldNames()) {
@@ -679,38 +674,44 @@ public class SampleSheetUtils {
 
   /**
    * Move the forbidden fields in BCLConvert_Data section.
+   *
    * @param samplesheet sample sheet to process
    * @param otherSectionName other section name
    * @throws KenetreException if the section does not exists
    */
   public static void moveBclConvertDataForbiddenFieldsInNewSection(
-      SampleSheet samplesheet, String otherSectionName)
-      throws KenetreException {
+      SampleSheet samplesheet, String otherSectionName) throws KenetreException {
 
-    moveBclConvertDataForbiddenFieldsInNewSection(samplesheet, otherSectionName,
-        asList(Sample.LANE_FIELD_NAME, Sample.SAMPLE_ID_FIELD_NAME,
-            Sample.INDEX1_FIELD_NAME, Sample.INDEX2_FIELD_NAME,
+    moveBclConvertDataForbiddenFieldsInNewSection(
+        samplesheet,
+        otherSectionName,
+        asList(
+            Sample.LANE_FIELD_NAME,
+            Sample.SAMPLE_ID_FIELD_NAME,
+            Sample.INDEX1_FIELD_NAME,
+            Sample.INDEX2_FIELD_NAME,
             Sample.PROJECT_FIELD_NAME));
   }
 
   /**
    * Move the forbidden fields in BCLConvert_Data section.
+   *
    * @param samplesheet sample sheet to process
    * @param otherSectionName other section name
    * @param fieldsToKeep a collection with the field to keep
    * @throws KenetreException if the section does not exists
    */
   public static void moveBclConvertDataForbiddenFieldsInNewSection(
-      SampleSheet samplesheet, String otherSectionName,
-      Collection<String> fieldsToKeep) throws KenetreException {
+      SampleSheet samplesheet, String otherSectionName, Collection<String> fieldsToKeep)
+      throws KenetreException {
 
     requireNonNull(samplesheet);
     requireNonNull(otherSectionName);
     requireNonNull(fieldsToKeep);
 
     if (!samplesheet.containsSection(BCLCONVERT_DEMUX_TABLE_NAME)) {
-      throw new KenetreException("No section "
-          + BCLCONVERT_DEMUX_TABLE_NAME + " found in samplesheet");
+      throw new KenetreException(
+          "No section " + BCLCONVERT_DEMUX_TABLE_NAME + " found in samplesheet");
     }
 
     if (samplesheet.containsSection(otherSectionName)) {
@@ -718,12 +719,13 @@ public class SampleSheetUtils {
           "No section " + otherSectionName + " already found in samplesheet");
     }
 
-    TableSection demuxTable =
-        samplesheet.getTableSection(BCLCONVERT_DEMUX_TABLE_NAME);
+    TableSection demuxTable = samplesheet.getTableSection(BCLCONVERT_DEMUX_TABLE_NAME);
     TableSection otherTable = samplesheet.addTableSection(otherSectionName);
 
     Set<String> validFields =
-        fieldsToKeep.stream().filter(Objects::nonNull).map(String::toLowerCase)
+        fieldsToKeep.stream()
+            .filter(Objects::nonNull)
+            .map(String::toLowerCase)
             .collect(Collectors.toCollection(HashSet::new));
 
     for (Sample s : demuxTable.getSamples()) {
@@ -734,15 +736,14 @@ public class SampleSheetUtils {
 
         // Add the required field in the new section
         switch (fieldName.toLowerCase().trim()) {
+          case Sample.LANE_FIELD_NAME:
+          case Sample.SAMPLE_ID_FIELD_NAME:
+          case Sample.PROJECT_FIELD_NAME:
+            newSample.set(fieldName, s.get(fieldName));
+            break;
 
-        case Sample.LANE_FIELD_NAME:
-        case Sample.SAMPLE_ID_FIELD_NAME:
-        case Sample.PROJECT_FIELD_NAME:
-          newSample.set(fieldName, s.get(fieldName));
-          break;
-
-        default:
-          break;
+          default:
+            break;
         }
 
         if (validFields.contains(fieldName.toLowerCase().trim())) {
@@ -757,15 +758,15 @@ public class SampleSheetUtils {
   }
 
   /**
-   * Merge a section with forbidden fields for BCL Convert in the
-   * BCLConvert_Data section of the sample sheet.
+   * Merge a section with forbidden fields for BCL Convert in the BCLConvert_Data section of the
+   * sample sheet.
+   *
    * @param samplesheet the sample sheet
    * @param otherSectionName name of the section to merge
    * @throws KenetreException if an error occurs while merging sections
    */
   public static void mergeBclConvertDataAndForbiddenData(
-      SampleSheet samplesheet, String otherSectionName)
-      throws KenetreException {
+      SampleSheet samplesheet, String otherSectionName) throws KenetreException {
 
     requireNonNull(samplesheet);
     requireNonNull(otherSectionName);
@@ -775,8 +776,7 @@ public class SampleSheetUtils {
       return;
     }
 
-    TableSection demuxTable =
-        samplesheet.getTableSection(BCLCONVERT_DEMUX_TABLE_NAME);
+    TableSection demuxTable = samplesheet.getTableSection(BCLCONVERT_DEMUX_TABLE_NAME);
     TableSection otherTable = samplesheet.getTableSection(otherSectionName);
 
     Map<String, String> values = new HashMap<>();
@@ -807,16 +807,15 @@ public class SampleSheetUtils {
       for (String fieldName : s.getFieldNames()) {
 
         switch (fieldName.toLowerCase().trim()) {
+          case Sample.LANE_FIELD_NAME:
+          case Sample.SAMPLE_ID_FIELD_NAME:
+          case Sample.PROJECT_FIELD_NAME:
+            break;
 
-        case Sample.LANE_FIELD_NAME:
-        case Sample.SAMPLE_ID_FIELD_NAME:
-        case Sample.PROJECT_FIELD_NAME:
-          break;
-
-        default:
-          fieldsToAdd.add(fieldName);
-          values.put(key + '\t' + fieldName, s.get(fieldName));
-          break;
+          default:
+            fieldsToAdd.add(fieldName);
+            values.put(key + '\t' + fieldName, s.get(fieldName));
+            break;
         }
       }
     }
@@ -857,18 +856,18 @@ public class SampleSheetUtils {
 
   /**
    * Replace underscores by dashes in sample ids.
+   *
    * @param samplesheet the samplesheet to modify
    * @throws KenetreException if no section demultiplexing found in samplesheet
    */
-  public static void replaceUnderscoresByDashesInSampleIds(
-      SampleSheet samplesheet) throws KenetreException {
+  public static void replaceUnderscoresByDashesInSampleIds(SampleSheet samplesheet)
+      throws KenetreException {
 
     requireNonNull(samplesheet);
 
     if (!(samplesheet.containsSection(BCL2FASTQ_DEMUX_TABLE_NAME)
         || samplesheet.containsSection(BCLCONVERT_DEMUX_TABLE_NAME))) {
-      throw new KenetreException(
-          "No section demultiplexing found in samplesheet");
+      throw new KenetreException("No section demultiplexing found in samplesheet");
     }
 
     TableSection demuxTable = samplesheet.getDemuxSection();
@@ -879,11 +878,11 @@ public class SampleSheetUtils {
         s.setSampleId(s.getSampleId().replace('_', '-'));
       }
     }
-
   }
 
   /**
    * Fix common issues with column names.
+   *
    * @param sampleSheet the samplesheet to fix
    */
   public static void fixColumnNames(SampleSheet sampleSheet) {
@@ -899,12 +898,18 @@ public class SampleSheetUtils {
 
     for (String fieldName : demuxTable.getSamplesFieldNames()) {
 
-      for (String f : Arrays.asList(LANE_FIELD_NAME, SAMPLE_ID_FIELD_NAME,
-          SAMPLE_NAME_FIELD_NAME, DESCRIPTION_FIELD_NAME, PROJECT_FIELD_NAME,
-          INDEX1_FIELD_NAME, INDEX2_FIELD_NAME, SAMPLE_REF_FIELD_NAME)) {
+      for (String f :
+          Arrays.asList(
+              LANE_FIELD_NAME,
+              SAMPLE_ID_FIELD_NAME,
+              SAMPLE_NAME_FIELD_NAME,
+              DESCRIPTION_FIELD_NAME,
+              PROJECT_FIELD_NAME,
+              INDEX1_FIELD_NAME,
+              INDEX2_FIELD_NAME,
+              SAMPLE_REF_FIELD_NAME)) {
 
-        if (!f.equals(fieldName)
-            && f.toLowerCase().equals(fieldName.toLowerCase())) {
+        if (!f.equals(fieldName) && f.toLowerCase().equals(fieldName.toLowerCase())) {
           demuxTable.renameField(fieldName, f);
         }
       }
@@ -914,11 +919,11 @@ public class SampleSheetUtils {
         demuxTable.renameField(fieldName, Sample.INDEX1_FIELD_NAME);
       }
     }
-
   }
 
   /**
    * Serialize a sample sheet.
+   *
    * @param sampleSheet the sample sheet to serialize
    * @return a String with a serialized sample sheet.
    */
@@ -929,6 +934,7 @@ public class SampleSheetUtils {
 
   /**
    * Deserialize a sample sheet.
+   *
    * @param s String to deserialize
    * @return a SampleSheet object.
    * @throws IOException if an error occurs while deserializing
@@ -942,10 +948,6 @@ public class SampleSheetUtils {
   // Constructor
   //
 
-  /**
-   * Private constructor.
-   */
-  private SampleSheetUtils() {
-  }
-
+  /** Private constructor. */
+  private SampleSheetUtils() {}
 }

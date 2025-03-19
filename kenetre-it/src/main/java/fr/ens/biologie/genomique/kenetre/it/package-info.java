@@ -24,6 +24,7 @@
 
 /**
  * This package contains classes for integrative tests.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */

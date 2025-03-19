@@ -1,5 +1,8 @@
 package fr.ens.biologie.genomique.kenetre.nanopore.samplesheet.io;
 
+import com.google.common.math.DoubleMath;
+import fr.ens.biologie.genomique.kenetre.KenetreException;
+import fr.ens.biologie.genomique.kenetre.nanopore.samplesheet.SampleSheet;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -10,7 +13,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -19,18 +21,13 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.google.common.math.DoubleMath;
-
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-import fr.ens.biologie.genomique.kenetre.nanopore.samplesheet.SampleSheet;
-
 /**
  * This class reads a Nanopore sample sheet file in XLSX format.
+ *
  * @since 0.20
  * @author Laurent Jourdren
  */
-public class SampleSheetXLSXReader extends AbstractSampleSheetReader
-    implements AutoCloseable {
+public class SampleSheetXLSXReader extends AbstractSampleSheetReader implements AutoCloseable {
 
   private final InputStream is;
 
@@ -69,7 +66,6 @@ public class SampleSheetXLSXReader extends AbstractSampleSheetReader
         parser.parseLine(fields, row.getRowNum() + 1);
       }
       fields.clear();
-
     }
 
     wb.close();
@@ -89,6 +85,7 @@ public class SampleSheetXLSXReader extends AbstractSampleSheetReader
 
   /**
    * Parse the content of a cell.
+   *
    * @param cell cell to parse
    * @return a String with the cell content
    */
@@ -107,6 +104,7 @@ public class SampleSheetXLSXReader extends AbstractSampleSheetReader
 
   /**
    * Test if all the elements of a list are empty.
+   *
    * @param list the list to test
    * @return true if all the elements of the list are empty
    */
@@ -131,6 +129,7 @@ public class SampleSheetXLSXReader extends AbstractSampleSheetReader
 
   /**
    * Public constructor.
+   *
    * @param is InputStream to use
    */
   public SampleSheetXLSXReader(final InputStream is) {
@@ -144,6 +143,7 @@ public class SampleSheetXLSXReader extends AbstractSampleSheetReader
 
   /**
    * Public constructor.
+   *
    * @param file File to use
    * @throws FileNotFoundException if the file does not exists
    */
@@ -154,8 +154,7 @@ public class SampleSheetXLSXReader extends AbstractSampleSheetReader
     }
 
     if (!file.isFile()) {
-      throw new FileNotFoundException(
-          "File not found: " + file.getAbsolutePath());
+      throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
     }
 
     this.is = new FileInputStream(file);
@@ -163,6 +162,7 @@ public class SampleSheetXLSXReader extends AbstractSampleSheetReader
 
   /**
    * Public constructor.
+   *
    * @param file file to open
    * @throws IOException if an error occurs while openning the file
    */
@@ -181,13 +181,12 @@ public class SampleSheetXLSXReader extends AbstractSampleSheetReader
 
   /**
    * Public constructor.
+   *
    * @param filename Filename to use
    * @throws FileNotFoundException if the file does not exists
    */
-  public SampleSheetXLSXReader(final String filename)
-      throws FileNotFoundException {
+  public SampleSheetXLSXReader(final String filename) throws FileNotFoundException {
 
     this(new File(filename));
   }
-
 }

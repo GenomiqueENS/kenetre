@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
@@ -38,6 +37,7 @@ public class QualityMetrics {
 
     /**
      * Get the lane.
+     *
      * @return the lane
      */
     public int getLane() {
@@ -46,6 +46,7 @@ public class QualityMetrics {
 
     /**
      * Get the sample ID.
+     *
      * @return the sample ID
      */
     public String getSampleID() {
@@ -54,6 +55,7 @@ public class QualityMetrics {
 
     /**
      * Get the index.
+     *
      * @return the index
      */
     public String getIndex() {
@@ -62,6 +64,7 @@ public class QualityMetrics {
 
     /**
      * Get the index2.
+     *
      * @return the index2
      */
     public String getIndex2() {
@@ -70,6 +73,7 @@ public class QualityMetrics {
 
     /**
      * Get the read number
+     *
      * @return the read number
      */
     public int getReadNumber() {
@@ -78,6 +82,7 @@ public class QualityMetrics {
 
     /**
      * Get the yield
+     *
      * @return the yield
      */
     public long getYield() {
@@ -86,6 +91,7 @@ public class QualityMetrics {
 
     /**
      * Get the Q30 yield
+     *
      * @return the Q30 yield
      */
     public long getYieldQ30() {
@@ -94,6 +100,7 @@ public class QualityMetrics {
 
     /**
      * Get the quality score sum.
+     *
      * @return the quality score sum
      */
     public long getQualityScoreSum() {
@@ -102,6 +109,7 @@ public class QualityMetrics {
 
     /**
      * Get the mean quality score passing filter.
+     *
      * @return the mean quality score passing filter.
      */
     public double getMeanQualityScorePF() {
@@ -110,6 +118,7 @@ public class QualityMetrics {
 
     /**
      * Get the Q30 percent.
+     *
      * @return the Q30 percent
      */
     public double getQ30Percent() {
@@ -130,11 +139,9 @@ public class QualityMetrics {
       this.yield = parseLong(record, "Yield", -1);
       this.yieldQ30 = parseLong(record, "YieldQ30", -1);
       this.qualityScoreSum = parseLong(record, "QualityScoreSum", -1);
-      this.meanQualityScorePF =
-          parseDouble(record, "Mean Quality Score (PF)", Double.NaN);
+      this.meanQualityScorePF = parseDouble(record, "Mean Quality Score (PF)", Double.NaN);
       this.q30Percent = parseDouble(record, "% Q30", Double.NaN);
     }
-
   }
 
   public List<Entry> entries() {
@@ -148,6 +155,7 @@ public class QualityMetrics {
 
   /**
    * Public constructor.
+   *
    * @param file input file
    * @throws IOException if an error occurs while reading the input file
    */
@@ -158,6 +166,7 @@ public class QualityMetrics {
 
   /**
    * Public constructor.
+   *
    * @param in input stream
    * @throws IOException if an error occurs while reading the input file
    */
@@ -167,13 +176,18 @@ public class QualityMetrics {
 
     try (Reader reader = new InputStreamReader(in)) {
 
-      for (CSVRecord record : CSVFormat.RFC4180.builder()
-          .setIgnoreEmptyLines(true).setHeader().setSkipHeaderRecord(true)
-          .setSkipHeaderRecord(true).build().parse(reader)) {
+      for (CSVRecord record :
+          CSVFormat.RFC4180
+              .builder()
+              .setIgnoreEmptyLines(true)
+              .setHeader()
+              .setSkipHeaderRecord(true)
+              .setSkipHeaderRecord(true)
+              .build()
+              .parse(reader)) {
 
         this.entries.add(new Entry(record));
       }
     }
   }
-
 }

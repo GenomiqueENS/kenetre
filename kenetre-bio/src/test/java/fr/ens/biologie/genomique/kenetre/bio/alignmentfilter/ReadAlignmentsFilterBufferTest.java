@@ -28,22 +28,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
+import fr.ens.biologie.genomique.kenetre.bio.SAMUtils;
+import htsjdk.samtools.SAMLineParser;
+import htsjdk.samtools.SAMRecord;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
-import fr.ens.biologie.genomique.kenetre.bio.SAMUtils;
-import fr.ens.biologie.genomique.kenetre.bio.alignmentfilter.QualityReadAlignmentFilter;
-import fr.ens.biologie.genomique.kenetre.bio.alignmentfilter.ReadAlignmentFilterBuffer;
-import htsjdk.samtools.SAMLineParser;
-import htsjdk.samtools.SAMRecord;
-
 /**
- * This class is a JUnit test class to test the class
- * ReadAlignmentsFilterBuffer.java.
+ * This class is a JUnit test class to test the class ReadAlignmentsFilterBuffer.java.
+ *
  * @author Claire Wallon
  */
 public class ReadAlignmentsFilterBufferTest {
@@ -204,8 +200,8 @@ public class ReadAlignmentsFilterBufferTest {
   /**
    * Test method for {fr.ens.biologie.genomique.eoulsan.bio.alignmentsfilters.
    * ReadAlignmentsFilterBuffer#addAlignment(net.sf.samtools.SAMRecord)} and
-   * {fr.ens.biologie.genomique.eoulsan.bio.alignmentsfilters.
-   * ReadAlignmentsFilterBuffer #getFilteredAlignments(boolean)}.
+   * {fr.ens.biologie.genomique.eoulsan.bio.alignmentsfilters. ReadAlignmentsFilterBuffer
+   * #getFilteredAlignments(boolean)}.
    */
   @Test
   public void testAddAlignmentAndGetFilteredAlignments() {
@@ -391,8 +387,7 @@ public class ReadAlignmentsFilterBufferTest {
 
   /**
    * Test method for {fr.ens.biologie.genomique.eoulsan.bio.alignmentsfilters.
-   * ReadAlignmentsFilterBuffer
-   * #ReadAlignmentsFilterBuffer(fr.ens.biologie.genomique.eoulsan
+   * ReadAlignmentsFilterBuffer #ReadAlignmentsFilterBuffer(fr.ens.biologie.genomique.eoulsan
    * .bio.alignmentsfilters.ReadAlignmentsFilter)}.
    */
   @Test
@@ -402,13 +397,11 @@ public class ReadAlignmentsFilterBufferTest {
 
   /**
    * Test method for {fr.ens.biologie.genomique.eoulsan.bio.alignmentsfilters.
-   * ReadAlignmentsFilterBuffer
-   * #ReadAlignmentsFilterBuffer(fr.ens.biologie.genomique.eoulsan
+   * ReadAlignmentsFilterBuffer #ReadAlignmentsFilterBuffer(fr.ens.biologie.genomique.eoulsan
    * .bio.alignmentsfilters.ReadAlignmentsFilter, boolean)}.
    */
   @Test
   public void testReadAlignmentsFilterBufferReadAlignmentsFilterBoolean() {
     // fail("Not yet implemented");
   }
-
 }

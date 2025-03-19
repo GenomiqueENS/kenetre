@@ -26,22 +26,18 @@ package fr.ens.biologie.genomique.kenetre.bio.alignmentfilter;
 
 import static org.junit.Assert.assertEquals;
 
+import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
+import fr.ens.biologie.genomique.kenetre.bio.SAMUtils;
+import htsjdk.samtools.SAMLineParser;
+import htsjdk.samtools.SAMRecord;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
-import fr.ens.biologie.genomique.kenetre.bio.SAMUtils;
-import fr.ens.biologie.genomique.kenetre.bio.alignmentfilter.ReadAlignmentFilter;
-import fr.ens.biologie.genomique.kenetre.bio.alignmentfilter.SecondaryAlignmentRemoveFlagReadAlignmentFilter;
-import htsjdk.samtools.SAMLineParser;
-import htsjdk.samtools.SAMRecord;
-
 /**
- * This class is a JUnit test class to test the class
- * SecondaryAlignmentRemoveReadAlignmentsFilter.
+ * This class is a JUnit test class to test the class SecondaryAlignmentRemoveReadAlignmentsFilter.
+ *
  * @author Laurent Jourdren
  * @since 2.1
  */
@@ -104,8 +100,7 @@ public class SecondaryAlignmentRemoveReadAlignmentsFilterTest {
 
   /**
    * Test method for {fr.ens.biologie.genomique.eoulsan.bio.alignmentsfilters.
-   * RemoveUnmappedReadAlignmentsFilter#filterReadAlignments(java.util.List,
-   * boolean)}.
+   * RemoveUnmappedReadAlignmentsFilter#filterReadAlignments(java.util.List, boolean)}.
    */
   @Test
   public void testFilterReadAlignments() {

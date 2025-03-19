@@ -24,13 +24,13 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.io;
 
+import fr.ens.biologie.genomique.kenetre.bio.Sequence;
 import java.io.Closeable;
 import java.io.IOException;
 
-import fr.ens.biologie.genomique.kenetre.bio.Sequence;
-
 /**
  * This interface define methods to implements for a SequenceWriter.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -38,9 +38,9 @@ public interface SequenceWriter extends Closeable {
 
   /**
    * Write the current entry.
+   *
    * @param sequence the sequence to write
    * @throws IOException if an error occurs while writing data
    */
   void write(Sequence sequence) throws IOException;
-
 }

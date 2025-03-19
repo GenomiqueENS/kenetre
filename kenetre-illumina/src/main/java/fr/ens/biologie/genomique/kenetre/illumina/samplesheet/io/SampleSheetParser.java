@@ -1,9 +1,8 @@
 package fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io;
 
+import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheet;
 import java.io.IOException;
 import java.util.List;
-
-import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheet;
 
 public interface SampleSheetParser {
 

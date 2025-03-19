@@ -9,8 +9,8 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * This class define a metadata for bio entries objects like GFFEntry or
- * BedEntry.
+ * This class define a metadata for bio entries objects like GFFEntry or BedEntry.
+ *
  * @author Laurent Jourdren
  * @since 2.3
  */
@@ -20,6 +20,7 @@ public final class EntryMetadata {
 
   /**
    * Add metadata entry value.
+   *
    * @param key name of key of the metadata entry
    * @param value The value
    * @return true if the value is correctly added to the metadata
@@ -46,6 +47,7 @@ public final class EntryMetadata {
 
   /**
    * Add metadata entries values. Stop at first entry that fail to be added.
+   *
    * @param metadata the metadata entries to add
    * @return true if all the entries are correctly added to the metadata
    */
@@ -60,6 +62,7 @@ public final class EntryMetadata {
 
   /**
    * Add metadata entries values. Stop at first entry that fail to be added.
+   *
    * @param entries the entries to add
    * @return true if all the entries are correctly added to the metadata
    */
@@ -80,7 +83,6 @@ public final class EntryMetadata {
         if (!add(e.getKey(), v)) {
           return false;
         }
-
       }
     }
 
@@ -89,6 +91,7 @@ public final class EntryMetadata {
 
   /**
    * test if a metadata key exists.
+   *
    * @param key key name of the metadata
    * @return true if the entry in the meta data exists
    */
@@ -99,9 +102,9 @@ public final class EntryMetadata {
 
   /**
    * Get the metadata values for a key.
+   *
    * @param key name of the metadata entry
-   * @return the values of the attribute or null if the metadata name does not
-   *         exists
+   * @return the values of the attribute or null if the metadata name does not exists
    */
   public List<String> get(final String key) {
 
@@ -112,11 +115,11 @@ public final class EntryMetadata {
     }
 
     return Collections.unmodifiableList(list);
-
   }
 
   /**
    * Get metadata keys names.
+   *
    * @return the metadata keys names
    */
   public Set<String> keySet() {
@@ -126,6 +129,7 @@ public final class EntryMetadata {
 
   /**
    * Get all the metadata entries.
+   *
    * @return a map with all the metadata entries
    */
   public Map<String, List<String>> entries() {
@@ -135,6 +139,7 @@ public final class EntryMetadata {
 
   /**
    * Remove a metadata entry.
+   *
    * @param key key of the metadata entry to remove
    * @return true if the entry is removed
    */
@@ -143,9 +148,7 @@ public final class EntryMetadata {
     return this.map.remove(key) != null;
   }
 
-  /**
-   * Clear the metadata of the entry.
-   */
+  /** Clear the metadata of the entry. */
   public void clear() {
 
     this.map.clear();
@@ -187,14 +190,12 @@ public final class EntryMetadata {
   // Constructor
   //
 
-  /**
-   * Public constructor.
-   */
-  public EntryMetadata() {
-  }
+  /** Public constructor. */
+  public EntryMetadata() {}
 
   /**
    * Public constructor.
+   *
    * @param metadata metadata entries to add to the new object
    */
   public EntryMetadata(final EntryMetadata metadata) {
@@ -203,5 +204,4 @@ public final class EntryMetadata {
 
     add(metadata);
   }
-
 }

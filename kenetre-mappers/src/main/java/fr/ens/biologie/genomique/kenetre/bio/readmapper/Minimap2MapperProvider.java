@@ -24,16 +24,16 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.readmapper;
 
+import com.google.common.collect.Lists;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
 /**
  * This class define a wrapper on the Minimap2 mapper.
+ *
  * @since 2.1
  * @author Laurent Jourdren
  */
@@ -73,14 +73,12 @@ public class Minimap2MapperProvider extends AbstractMapperProvider {
       final String execPath;
 
       synchronized (SYNC) {
-        execPath =
-            mapperInstance.getExecutor().install(MAPPER_STANDARD_EXECUTABLE);
+        execPath = mapperInstance.getExecutor().install(MAPPER_STANDARD_EXECUTABLE);
       }
 
       final List<String> cmd = Lists.newArrayList(execPath, "--version");
 
-      final String s =
-          MapperUtils.executeToString(mapperInstance.getExecutor(), cmd);
+      final String s = MapperUtils.executeToString(mapperInstance.getExecutor(), cmd);
       final String[] lines = s.split("\n");
       if (lines.length == 0) {
         return null;
@@ -105,8 +103,7 @@ public class Minimap2MapperProvider extends AbstractMapperProvider {
   }
 
   @Override
-  public List<String> getIndexerExecutables(
-      final MapperInstance mapperInstance) {
+  public List<String> getIndexerExecutables(final MapperInstance mapperInstance) {
     return Collections.singletonList(MAPPER_STANDARD_EXECUTABLE);
   }
 
@@ -116,8 +113,10 @@ public class Minimap2MapperProvider extends AbstractMapperProvider {
   }
 
   @Override
-  public List<String> getIndexerCommand(final File indexerFile,
-      final File genomeFile, final List<String> indexerArguments,
+  public List<String> getIndexerCommand(
+      final File indexerFile,
+      final File genomeFile,
+      final List<String> indexerArguments,
       final int threads) {
 
     List<String> cmd = new ArrayList<>();
@@ -136,8 +135,9 @@ public class Minimap2MapperProvider extends AbstractMapperProvider {
   }
 
   @Override
-  public MapperProcess mapSE(final EntryMapping mapping, final File inputFile,
-      final File errorFile, final File logFile) throws IOException {
+  public MapperProcess mapSE(
+      final EntryMapping mapping, final File inputFile, final File errorFile, final File logFile)
+      throws IOException {
 
     final String minimap2Path;
 
@@ -145,8 +145,13 @@ public class Minimap2MapperProvider extends AbstractMapperProvider {
       minimap2Path = mapping.getExecutor().install(MAPPER_STANDARD_EXECUTABLE);
     }
 
-    return new MapperProcess(mapping.getName(), mapping.getExecutor(),
-        mapping.getTemporaryDirectory(), errorFile, false, inputFile) {
+    return new MapperProcess(
+        mapping.getName(),
+        mapping.getExecutor(),
+        mapping.getTemporaryDirectory(),
+        errorFile,
+        false,
+        inputFile) {
 
       @Override
       protected List<List<String>> createCommandLines() {
@@ -158,20 +163,22 @@ public class Minimap2MapperProvider extends AbstractMapperProvider {
         cmd.add("-t");
         cmd.add("" + mapping.getThreadNumber());
         cmd.addAll(mapping.getMapperArguments());
-        cmd.add(mapping.getIndexDirectory().getAbsolutePath()
-            + "/" + INDEX_FILENAME);
+        cmd.add(mapping.getIndexDirectory().getAbsolutePath() + "/" + INDEX_FILENAME);
 
         cmd.add(getNamedPipeFile1().getAbsolutePath());
 
         return Collections.singletonList(cmd);
       }
-
     };
   }
 
   @Override
-  public MapperProcess mapPE(final EntryMapping mapping, final File inputFile1,
-      final File inputFile2, final File errorFile, final File logFile)
+  public MapperProcess mapPE(
+      final EntryMapping mapping,
+      final File inputFile1,
+      final File inputFile2,
+      final File errorFile,
+      final File logFile)
       throws IOException {
     final String minimap2Path;
 
@@ -179,8 +186,13 @@ public class Minimap2MapperProvider extends AbstractMapperProvider {
       minimap2Path = mapping.getExecutor().install(MAPPER_STANDARD_EXECUTABLE);
     }
 
-    return new MapperProcess(mapping.getName(), mapping.getExecutor(),
-        mapping.getTemporaryDirectory(), errorFile, false, inputFile1,
+    return new MapperProcess(
+        mapping.getName(),
+        mapping.getExecutor(),
+        mapping.getTemporaryDirectory(),
+        errorFile,
+        false,
+        inputFile1,
         inputFile2) {
 
       @Override
@@ -193,16 +205,13 @@ public class Minimap2MapperProvider extends AbstractMapperProvider {
         cmd.add("-t");
         cmd.add("" + mapping.getThreadNumber());
         cmd.addAll(mapping.getMapperArguments());
-        cmd.add(mapping.getIndexDirectory().getAbsolutePath()
-            + "/" + INDEX_FILENAME);
+        cmd.add(mapping.getIndexDirectory().getAbsolutePath() + "/" + INDEX_FILENAME);
 
         cmd.add(getNamedPipeFile1().getAbsolutePath());
         cmd.add(getNamedPipeFile2().getAbsolutePath());
 
         return Collections.singletonList(cmd);
       }
-
     };
   }
-
 }

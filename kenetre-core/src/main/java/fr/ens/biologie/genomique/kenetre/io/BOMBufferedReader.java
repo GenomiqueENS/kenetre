@@ -14,8 +14,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * This class define a Buffered reader that reader the BOM character at the
- * beginning of the file if exists.
+ * This class define a Buffered reader that reader the BOM character at the beginning of the file if
+ * exists.
+ *
  * @author Laurent Jourdren
  * @since 0.24
  */
@@ -42,6 +43,7 @@ public class BOMBufferedReader extends BufferedReader {
 
   /**
    * Public constructor.
+   *
    * @param is InputStream to use
    */
   public BOMBufferedReader(final InputStream is) {
@@ -51,6 +53,7 @@ public class BOMBufferedReader extends BufferedReader {
 
   /**
    * Public constructor.
+   *
    * @param file File to use
    * @throws IOException if the file does not exists
    */
@@ -61,6 +64,7 @@ public class BOMBufferedReader extends BufferedReader {
 
   /**
    * Public constructor.
+   *
    * @param path File to use
    * @throws IOException if the file does not exists
    */
@@ -71,6 +75,7 @@ public class BOMBufferedReader extends BufferedReader {
 
   /**
    * Public constructor.
+   *
    * @param filename File to use
    * @throws IOException if an error occurs while reading the file
    */
@@ -81,11 +86,11 @@ public class BOMBufferedReader extends BufferedReader {
 
   /**
    * Public constructor.
+   *
    * @param in Reader to use
    */
   public BOMBufferedReader(Reader in) {
 
     super(in);
   }
-
 }

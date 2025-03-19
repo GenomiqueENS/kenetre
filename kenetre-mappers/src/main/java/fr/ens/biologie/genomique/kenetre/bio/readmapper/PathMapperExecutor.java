@@ -26,20 +26,18 @@ package fr.ens.biologie.genomique.kenetre.bio.readmapper;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
+import fr.ens.biologie.genomique.kenetre.bio.readmapper.BundledMapperExecutor.ProcessResult;
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.MoreObjects;
-
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-import fr.ens.biologie.genomique.kenetre.bio.readmapper.BundledMapperExecutor.ProcessResult;
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-
 /**
- * This class define a mapper executor that executes process found in the PATH
- * of the system.
+ * This class define a mapper executor that executes process found in the PATH of the system.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -73,10 +71,14 @@ public class PathMapperExecutor implements MapperExecutor {
   }
 
   @Override
-  public Result execute(final List<String> command,
-      final File executionDirectory, final boolean stdout,
-      final File stdErrFile, final boolean redirectStderr,
-      final File... fileUsed) throws IOException {
+  public Result execute(
+      final List<String> command,
+      final File executionDirectory,
+      final boolean stdout,
+      final File stdErrFile,
+      final boolean redirectStderr,
+      final File... fileUsed)
+      throws IOException {
 
     ProcessBuilder builder = new ProcessBuilder(command);
     builder.redirectErrorStream(redirectStderr);
@@ -92,8 +94,7 @@ public class PathMapperExecutor implements MapperExecutor {
       builder.directory(executionDirectory);
     }
 
-    this.logger
-        .info("Process command: " + Joiner.on(' ').join(builder.command()));
+    this.logger.info("Process command: " + Joiner.on(' ').join(builder.command()));
     this.logger.info("Process directory: " + builder.directory());
 
     return new ProcessResult(builder.start());
@@ -115,6 +116,7 @@ public class PathMapperExecutor implements MapperExecutor {
 
   /**
    * Constructor.
+   *
    * @param logger the logger to use
    */
   PathMapperExecutor(GenericLogger logger) {
@@ -122,5 +124,4 @@ public class PathMapperExecutor implements MapperExecutor {
     requireNonNull(logger, "logger argument cannot be null");
     this.logger = logger;
   }
-
 }

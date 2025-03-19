@@ -28,11 +28,11 @@ import fr.ens.biologie.genomique.kenetre.util.ServiceNameLoader;
 
 /**
  * This class define a service to retrieve an ExpressionCounter.
+ *
  * @since 1.2
  * @author Claire Wallon
  */
-public class ExpressionCounterService
-    extends ServiceNameLoader<ExpressionCounter> {
+public class ExpressionCounterService extends ServiceNameLoader<ExpressionCounter> {
 
   private static ExpressionCounterService service;
 
@@ -42,6 +42,7 @@ public class ExpressionCounterService
 
   /**
    * Retrieve the singleton static instance of ExpressionCounterService.
+   *
    * @return A ExpressionCounterService instance
    */
   public static ExpressionCounterService getInstance() {
@@ -51,11 +52,11 @@ public class ExpressionCounterService
 
   /**
    * Retrieve the singleton static instance of ExpressionCounterService.
+   *
    * @param forceNewInstance force the usage of a new instance
    * @return A ExpressionCounterService instance
    */
-  public static synchronized ExpressionCounterService getInstance(
-      boolean forceNewInstance) {
+  public static synchronized ExpressionCounterService getInstance(boolean forceNewInstance) {
 
     if (forceNewInstance || service == null) {
       service = new ExpressionCounterService();
@@ -84,12 +85,9 @@ public class ExpressionCounterService
   // Constructor
   //
 
-  /**
-   * Private constructor.
-   */
+  /** Private constructor. */
   private ExpressionCounterService() {
 
     super(ExpressionCounter.class);
   }
-
 }

@@ -24,16 +24,16 @@
 
 package fr.ens.biologie.genomique.kenetre.bio;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-
 /**
  * This class allow the easily get fields of Illumina reads ids.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -42,26 +42,28 @@ public final class IlluminaReadId {
   private static final Pattern PATTERN_1 =
       Pattern.compile("^([a-zA-Z0-9\\-\\_]+):(\\d+):(\\d+):(\\d+):(\\d+)$");
 
-  private static final Pattern PATTERN_2 = Pattern
-      .compile("^([a-zA-Z0-9\\-\\_]+):(\\d+):(\\d+):(\\d+):(\\d+)/(\\d)$");
+  private static final Pattern PATTERN_2 =
+      Pattern.compile("^([a-zA-Z0-9\\-\\_]+):(\\d+):(\\d+):(\\d+):(\\d+)/(\\d)$");
 
-  private static final Pattern PATTERN_1_4 = Pattern.compile(
-      "^([a-zA-Z0-9\\-\\_]+):(\\d+):(\\d+):(\\d+):(\\d+)#([0ATGC]+)/(\\d)$");
+  private static final Pattern PATTERN_1_4 =
+      Pattern.compile("^([a-zA-Z0-9\\-\\_]+):(\\d+):(\\d+):(\\d+):(\\d+)#([0ATGC]+)/(\\d)$");
 
-  private static final Pattern PATTERN_1_8 = Pattern.compile(
-      "^([a-zA-Z0-9\\-\\_]+):(\\d+):([a-zA-Z0-9]+):(\\d+):(\\d+):(\\d+):(\\d+) "
-          + "(\\d+):([YN]):(\\d+):([NATGC\\+]*)$");
+  private static final Pattern PATTERN_1_8 =
+      Pattern.compile(
+          "^([a-zA-Z0-9\\-\\_]+):(\\d+):([a-zA-Z0-9]+):(\\d+):(\\d+):(\\d+):(\\d+) "
+              + "(\\d+):([YN]):(\\d+):([NATGC\\+]*)$");
 
-  private static final Pattern PATTERN_3 = Pattern.compile(
-      "^([a-zA-Z0-9\\-\\_]+):(\\d+):([a-zA-Z0-9]+):(\\d+):(\\d+):(\\d+):(\\d+) "
-          + "(\\d+):([YN]):(\\d+):(\\d)$");
+  private static final Pattern PATTERN_3 =
+      Pattern.compile(
+          "^([a-zA-Z0-9\\-\\_]+):(\\d+):([a-zA-Z0-9]+):(\\d+):(\\d+):(\\d+):(\\d+) "
+              + "(\\d+):([YN]):(\\d+):(\\d)$");
 
-  private static final Pattern PATTERN_SRA = Pattern.compile(
-      "^[a-zA-Z0-9\\.]+ ([a-zA-Z0-9\\-\\_]+):(\\d+):([a-zA-Z0-9]+):(\\d+):(\\d+):(\\d+):(\\d+) "
-          + ".*$");
+  private static final Pattern PATTERN_SRA =
+      Pattern.compile(
+          "^[a-zA-Z0-9\\.]+ ([a-zA-Z0-9\\-\\_]+):(\\d+):([a-zA-Z0-9]+):(\\d+):(\\d+):(\\d+):(\\d+) "
+              + ".*$");
 
-  private static final Pattern SEQUENCE_INDEX_SPLITTER_PATTERN =
-      Pattern.compile("\\+");
+  private static final Pattern SEQUENCE_INDEX_SPLITTER_PATTERN = Pattern.compile("\\+");
 
   private static final String NO_SEQUENCE_INDEX = "0";
 
@@ -85,6 +87,7 @@ public final class IlluminaReadId {
 
   /**
    * Get instrument id.
+   *
    * @return a String with the instrument id
    */
   public final String getInstrumentId() {
@@ -93,6 +96,7 @@ public final class IlluminaReadId {
 
   /**
    * Get Run id.
+   *
    * @return the run id or -1 if there is no run id
    */
   public final int getRunId() {
@@ -101,6 +105,7 @@ public final class IlluminaReadId {
 
   /**
    * Get the flow cell id.
+   *
    * @return the flow cell id as a string or null if there is no flow cell id
    */
   public final String getFlowCellId() {
@@ -109,6 +114,7 @@ public final class IlluminaReadId {
 
   /**
    * Get the flowcell lane.
+   *
    * @return the flowcell lane
    */
   public final int getFlowCellLane() {
@@ -117,6 +123,7 @@ public final class IlluminaReadId {
 
   /**
    * Get the tile number within the flowcell lane.
+   *
    * @return the tile number within the flowcell lane
    */
   public final int getTileNumberInFlowCellLane() {
@@ -125,6 +132,7 @@ public final class IlluminaReadId {
 
   /**
    * Get 'x'-coordinate of the cluster within the tile.
+   *
    * @return the 'x'-coordinate of the cluster within the tile
    */
   public final int getXClusterCoordinateInTile() {
@@ -133,6 +141,7 @@ public final class IlluminaReadId {
 
   /**
    * Get 'y'-coordinate of the cluster within the tile.
+   *
    * @return the 'y'-coordinate of the cluster within the tile
    */
   public final int getYClusterCoordinateInTile() {
@@ -141,6 +150,7 @@ public final class IlluminaReadId {
 
   /**
    * Get the sequence index for a multiplexed sample.
+   *
    * @return the sequence index for a multiplexed sample, "0" for no indexing
    */
   public final String getSequenceIndex() {
@@ -149,6 +159,7 @@ public final class IlluminaReadId {
 
   /**
    * Get the sequence index for a multiplexed sample.
+   *
    * @return the sequence index for a multiplexed sample, "0" for no indexing
    */
   public final List<String> getSequenceIndexList() {
@@ -157,14 +168,14 @@ public final class IlluminaReadId {
       return Collections.emptyList();
     }
 
-    return Collections.unmodifiableList(Arrays
-        .asList(SEQUENCE_INDEX_SPLITTER_PATTERN.split(this.sequenceIndex)));
+    return Collections.unmodifiableList(
+        Arrays.asList(SEQUENCE_INDEX_SPLITTER_PATTERN.split(this.sequenceIndex)));
   }
 
   /**
    * Get the member of a pair.
-   * @return the the member of a pair, /1 or /2 (paired-end or mate-pair reads
-   *         only)
+   *
+   * @return the the member of a pair, /1 or /2 (paired-end or mate-pair reads only)
    */
   public final int getPairMember() {
     return this.pairMember;
@@ -172,6 +183,7 @@ public final class IlluminaReadId {
 
   /**
    * Test if the read is filtered.
+   *
    * @return true if the read is filtered
    */
   public final boolean isFiltered() {
@@ -180,6 +192,7 @@ public final class IlluminaReadId {
 
   /**
    * Get the value of the control number.
+   *
    * @return the control number or -1 if there is no control number
    */
   public final int getControlNumber() {
@@ -192,6 +205,7 @@ public final class IlluminaReadId {
 
   /**
    * Test if instrument id field exists.
+   *
    * @return true if instrument id field exists
    */
   public final boolean isInstrumentIdField() {
@@ -200,12 +214,12 @@ public final class IlluminaReadId {
 
   /**
    * Test if the Run id field exists.
+   *
    * @return true if the Run id field exists
    */
   public final boolean isRunIdField() {
 
-    if (this.pattern == PATTERN_1_4
-        || this.pattern == PATTERN_2 || this.pattern == PATTERN_1) {
+    if (this.pattern == PATTERN_1_4 || this.pattern == PATTERN_2 || this.pattern == PATTERN_1) {
       return false;
     }
 
@@ -214,12 +228,12 @@ public final class IlluminaReadId {
 
   /**
    * Test if the flow cell id field exist.
+   *
    * @return true if the flow cell id field exist
    */
   public final boolean isFlowCellIdField() {
 
-    if (this.pattern == PATTERN_1_4
-        || this.pattern == PATTERN_2 || this.pattern == PATTERN_1) {
+    if (this.pattern == PATTERN_1_4 || this.pattern == PATTERN_2 || this.pattern == PATTERN_1) {
       return false;
     }
 
@@ -228,6 +242,7 @@ public final class IlluminaReadId {
 
   /**
    * Test if the flowcell lane field exists.
+   *
    * @return true if the flowcell lane field exists
    */
   public final boolean isFlowCellLaneField() {
@@ -236,6 +251,7 @@ public final class IlluminaReadId {
 
   /**
    * Test if the tile number within the flowcell lane field exists.
+   *
    * @return true if the tile number within the flowcell lane field exists
    */
   public final boolean isTileNumberInFlowCellLaneField() {
@@ -244,8 +260,8 @@ public final class IlluminaReadId {
 
   /**
    * Test if 'x'-coordinate of the cluster within the tile field exists.
-   * @return true if the the 'x'-coordinate of the cluster within the tile field
-   *         exists
+   *
+   * @return true if the the 'x'-coordinate of the cluster within the tile field exists
    */
   public final boolean isXClusterCoordinateInTileField() {
     return true;
@@ -253,6 +269,7 @@ public final class IlluminaReadId {
 
   /**
    * Test if the 'y'-coordinate of the cluster within the tile exists.
+   *
    * @return true if the 'y'-coordinate of the cluster within the tile exists
    */
   public final boolean isYClusterCoordinateInTileField() {
@@ -261,12 +278,14 @@ public final class IlluminaReadId {
 
   /**
    * Test if the sequence index for a multiplexed sample exist.
+   *
    * @return true if the sequence index for a multiplexed sample exist
    */
   public final boolean isSequenceIndexField() {
 
     if (this.pattern == PATTERN_3
-        || this.pattern == PATTERN_2 || this.pattern == PATTERN_1
+        || this.pattern == PATTERN_2
+        || this.pattern == PATTERN_1
         || this.pattern == PATTERN_SRA) {
       return false;
     }
@@ -276,6 +295,7 @@ public final class IlluminaReadId {
 
   /**
    * Test if the member of a pair field exists.
+   *
    * @return true if the member of a pair field exists
    */
   public final boolean isPairMemberField() {
@@ -289,12 +309,14 @@ public final class IlluminaReadId {
 
   /**
    * Test if the read filtered field exists.
+   *
    * @return true if the read filtered field exist
    */
   public final boolean isFilteredField() {
 
     if (this.pattern == PATTERN_1_4
-        || this.pattern == PATTERN_2 || this.pattern == PATTERN_1
+        || this.pattern == PATTERN_2
+        || this.pattern == PATTERN_1
         || this.pattern == PATTERN_SRA) {
       return false;
     }
@@ -304,12 +326,14 @@ public final class IlluminaReadId {
 
   /**
    * Test if the control number field exists.
+   *
    * @return true if the control number field exists
    */
   public final boolean isControlNumberField() {
 
     if (this.pattern == PATTERN_1_4
-        || this.pattern == PATTERN_2 || this.pattern == PATTERN_1
+        || this.pattern == PATTERN_2
+        || this.pattern == PATTERN_1
         || this.pattern == PATTERN_SRA) {
       return false;
     }
@@ -321,8 +345,7 @@ public final class IlluminaReadId {
   // Other method
   //
 
-  private static Pattern findPattern(final String readId)
-      throws KenetreException {
+  private static Pattern findPattern(final String readId) throws KenetreException {
 
     if (PATTERN_1_8.matcher(readId).lookingAt()) {
       return PATTERN_1_8;
@@ -353,6 +376,7 @@ public final class IlluminaReadId {
 
   /**
    * Parse an Illumina id string in a Sequence object.
+   *
    * @param sequence sequence witch name must be parsed
    * @throws KenetreException if the id is not an Illumina id
    */
@@ -367,6 +391,7 @@ public final class IlluminaReadId {
 
   /**
    * Parse an Illumina id string.
+   *
    * @param readId String with the Illumina id
    * @throws KenetreException if the id is not an Illumina id
    */
@@ -478,6 +503,7 @@ public final class IlluminaReadId {
 
   /**
    * Public constructor.
+   *
    * @param readId String with Illumina id to parse
    * @throws KenetreException if the id is not an Illumina id
    */
@@ -493,6 +519,7 @@ public final class IlluminaReadId {
 
   /**
    * Public constructor.
+   *
    * @param sequence sequence witch name must be parsed
    * @throws KenetreException if the id is not an Illumina id
    */
@@ -511,5 +538,4 @@ public final class IlluminaReadId {
     this.pattern = findPattern(readId);
     parse(readId);
   }
-
 }

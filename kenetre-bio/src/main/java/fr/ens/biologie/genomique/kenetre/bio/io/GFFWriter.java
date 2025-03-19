@@ -26,6 +26,8 @@ package fr.ens.biologie.genomique.kenetre.bio.io;
 
 import static fr.ens.biologie.genomique.kenetre.bio.io.BioCharsets.GFF_CHARSET;
 
+import fr.ens.biologie.genomique.kenetre.bio.GFFEntry;
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -34,11 +36,9 @@ import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
-import fr.ens.biologie.genomique.kenetre.bio.GFFEntry;
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-
 /**
  * This class define a GFF3 writer.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -56,8 +56,7 @@ public class GFFWriter implements Closeable {
       sb.append("##gff-version 3\n");
     }
 
-    for (Map.Entry<String, List<String>> e : entry.getMetadata().entries()
-        .entrySet()) {
+    for (Map.Entry<String, List<String>> e : entry.getMetadata().entries().entrySet()) {
 
       for (String v : e.getValue()) {
         sb.append("##");
@@ -73,6 +72,7 @@ public class GFFWriter implements Closeable {
 
   /**
    * Write the current entry.
+   *
    * @param entry entry to write
    * @throws IOException if an error occurs while writing data
    */
@@ -96,6 +96,7 @@ public class GFFWriter implements Closeable {
 
   /**
    * Close the writer.
+   *
    * @throws IOException if an error occurs while closing the writer
    */
   @Override
@@ -110,6 +111,7 @@ public class GFFWriter implements Closeable {
 
   /**
    * Get the format of the data to write.
+   *
    * @return true if the data to write is in GFF format
    */
   protected boolean isGFF3Format() {
@@ -119,6 +121,7 @@ public class GFFWriter implements Closeable {
 
   /**
    * Set the format of the data to write.
+   *
    * @param gffFormat true if the data to write is in GFF3 format
    */
   protected void setGFF3Format(final boolean gffFormat) {
@@ -132,6 +135,7 @@ public class GFFWriter implements Closeable {
 
   /**
    * Public constructor.
+   *
    * @param writer Writer to use
    */
   public GFFWriter(final Writer writer) {
@@ -145,6 +149,7 @@ public class GFFWriter implements Closeable {
 
   /**
    * Public constructor.
+   *
    * @param os OutputStream to use
    */
   public GFFWriter(final OutputStream os) {
@@ -154,6 +159,7 @@ public class GFFWriter implements Closeable {
 
   /**
    * Public constructor.
+   *
    * @param outputFile file to use
    * @throws IOException if an error occurs while creating the file
    */
@@ -164,12 +170,12 @@ public class GFFWriter implements Closeable {
 
   /**
    * Public constructor.
+   *
    * @param outputFilename name of the file to use
    * @throws IOException if an error occurs while creating the file
    */
   public GFFWriter(final String outputFilename) throws IOException {
 
-    this.writer =
-        FileUtils.createFastBufferedWriter(outputFilename, GFF_CHARSET);
+    this.writer = FileUtils.createFastBufferedWriter(outputFilename, GFF_CHARSET);
   }
 }

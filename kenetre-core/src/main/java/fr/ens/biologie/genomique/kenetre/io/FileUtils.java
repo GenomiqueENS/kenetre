@@ -26,6 +26,7 @@ package fr.ens.biologie.genomique.kenetre.io;
 
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.util.StringUtils;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -58,10 +59,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import fr.ens.biologie.genomique.kenetre.util.StringUtils;
-
 /**
  * This class define useful method to handle files.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -74,6 +74,7 @@ public class FileUtils {
 
   /**
    * Simple FilenameFilter to filter Paths with their prefix.
+   *
    * @author Laurent Jourdren
    */
   public static final class PrefixFilenameFilter implements FilenameFilter {
@@ -105,6 +106,7 @@ public class FileUtils {
 
     /**
      * Public constructor.
+     *
      * @param prefix the prefix for the filter
      */
     public PrefixFilenameFilter(final String prefix) {
@@ -114,11 +116,11 @@ public class FileUtils {
 
     /**
      * Public constructor.
+     *
      * @param prefix the prefix for the filter
      * @param allowCompressedFile allow files with a compressed extension
      */
-    public PrefixFilenameFilter(final String prefix,
-        final boolean allowCompressedFile) {
+    public PrefixFilenameFilter(final String prefix, final boolean allowCompressedFile) {
 
       if (prefix == null) {
         throw new NullPointerException("The prefix is null");
@@ -131,6 +133,7 @@ public class FileUtils {
 
   /**
    * Simple FilenameFilter to filter Paths with their suffix.
+   *
    * @author Laurent Jourdren
    */
   public static final class SuffixFilenameFilter implements FilenameFilter {
@@ -162,6 +165,7 @@ public class FileUtils {
 
     /**
      * Public constructor.
+     *
      * @param suffix the suffix for the filter
      */
     public SuffixFilenameFilter(final String suffix) {
@@ -171,11 +175,11 @@ public class FileUtils {
 
     /**
      * Public constructor.
+     *
      * @param suffix the suffix for the filter
      * @param allowCompressedFile allow files with a compressed extension
      */
-    public SuffixFilenameFilter(final String suffix,
-        final boolean allowCompressedFile) {
+    public SuffixFilenameFilter(final String suffix, final boolean allowCompressedFile) {
 
       if (suffix == null) {
         throw new NullPointerException("The suffix is null");
@@ -188,12 +192,12 @@ public class FileUtils {
 
   /**
    * Utility method to create a fast InputStream from a file.
+   *
    * @param filename name of the file to read
    * @return an InputStream
    * @throws FileNotFoundException if the file is not found
    */
-  public static InputStream createInputStream(final String filename)
-      throws FileNotFoundException {
+  public static InputStream createInputStream(final String filename) throws FileNotFoundException {
 
     if (filename == null) {
       throw new NullPointerException("The filename is null.");
@@ -204,12 +208,12 @@ public class FileUtils {
 
   /**
    * Utility method to create a fast InputStream from a file.
+   *
    * @param file File to read
    * @return an InputStream
    * @throws FileNotFoundException if the file is not found
    */
-  public static InputStream createInputStream(final File file)
-      throws FileNotFoundException {
+  public static InputStream createInputStream(final File file) throws FileNotFoundException {
 
     if (file == null) {
       throw new NullPointerException("The file is null.");
@@ -232,12 +236,12 @@ public class FileUtils {
 
   /**
    * Utility method to create a fast OutputStream from a file.
+   *
    * @param filename Name of the file to read
    * @return an OutputStream
    * @throws IOException if the file is not found
    */
-  public static OutputStream createOutputStream(final String filename)
-      throws IOException {
+  public static OutputStream createOutputStream(final String filename) throws IOException {
 
     if (filename == null) {
       throw new NullPointerException("The filename is null.");
@@ -248,12 +252,12 @@ public class FileUtils {
 
   /**
    * Utility method to create a fast OutputStream from a file.
+   *
    * @param file File to read
    * @return an InputStream
    * @throws IOException if the file is not found
    */
-  public static OutputStream createOutputStream(final File file)
-      throws IOException {
+  public static OutputStream createOutputStream(final File file) throws IOException {
 
     if (file == null) {
       throw new NullPointerException("The file is null.");
@@ -261,8 +265,7 @@ public class FileUtils {
 
     if (file.isFile()) {
       if (!file.delete()) {
-        throw new IOException(
-            "Can not remove existing file: " + file.getAbsolutePath());
+        throw new IOException("Can not remove existing file: " + file.getAbsolutePath());
       }
     }
 
@@ -278,6 +281,7 @@ public class FileUtils {
 
   /**
    * Utility method to create fast BufferedReader.
+   *
    * @param filename Name of the file to read
    * @return a BufferedReader
    * @throws FileNotFoundException if the file is not found
@@ -290,13 +294,14 @@ public class FileUtils {
 
   /**
    * Utility method to create fast BufferedReader.
+   *
    * @param filename Name of the file to read
    * @param charset Charset to use
    * @return a BufferedReader
    * @throws FileNotFoundException if the file is not found
    */
-  public static BufferedReader createBufferedReader(final String filename,
-      final Charset charset) throws FileNotFoundException {
+  public static BufferedReader createBufferedReader(final String filename, final Charset charset)
+      throws FileNotFoundException {
 
     if (filename == null) {
       throw new NullPointerException("The filename is null");
@@ -307,25 +312,26 @@ public class FileUtils {
 
   /**
    * Utility method to create fast BufferedReader.
+   *
    * @param file File to read
    * @return a BufferedReader
    * @throws FileNotFoundException if the file is not found
    */
-  public static BufferedReader createBufferedReader(final File file)
-      throws FileNotFoundException {
+  public static BufferedReader createBufferedReader(final File file) throws FileNotFoundException {
 
     return createBufferedReader(file, null);
   }
 
   /**
    * Utility method to create fast BufferedReader.
+   *
    * @param file File to read
    * @param charset Charset to use
    * @return a BufferedReader
    * @throws FileNotFoundException if the file is not found
    */
-  public static BufferedReader createBufferedReader(final File file,
-      final Charset charset) throws FileNotFoundException {
+  public static BufferedReader createBufferedReader(final File file, final Charset charset)
+      throws FileNotFoundException {
 
     final InputStream is = createInputStream(file);
 
@@ -333,12 +339,12 @@ public class FileUtils {
       return new BufferedReader(new InputStreamReader(is, charset));
     }
 
-    return new BufferedReader(
-        new InputStreamReader(is, Charset.defaultCharset()));
+    return new BufferedReader(new InputStreamReader(is, Charset.defaultCharset()));
   }
 
   /**
    * Utility method to create fast BufferedReader.
+   *
    * @param is InputStream to read
    * @return a BufferedReader
    */
@@ -349,12 +355,12 @@ public class FileUtils {
 
   /**
    * Utility method to create fast BufferedReader.
+   *
    * @param is InputStream to read
    * @param charset Charset to use
    * @return a BufferedReader
    */
-  public static BufferedReader createBufferedReader(final InputStream is,
-      final Charset charset) {
+  public static BufferedReader createBufferedReader(final InputStream is, final Charset charset) {
 
     if (is == null) {
       throw new NullPointerException("The input stream is null");
@@ -364,13 +370,12 @@ public class FileUtils {
       return new BufferedReader(new InputStreamReader(is, charset));
     }
 
-    return new BufferedReader(
-        new InputStreamReader(is, Charset.defaultCharset()));
+    return new BufferedReader(new InputStreamReader(is, Charset.defaultCharset()));
   }
 
   /**
-   * Utility method to create fast BufferedWriter. Warning the buffer is not
-   * safe-thread.
+   * Utility method to create fast BufferedWriter. Warning the buffer is not safe-thread.
+   *
    * @param filename Name of the file to write
    * @param charset Charset to use
    * @return a BufferedWriter
@@ -387,34 +392,34 @@ public class FileUtils {
   }
 
   /**
-   * Utility method to create fast BufferedWriter. Warning the buffer is not
-   * safe-thread.
+   * Utility method to create fast BufferedWriter. Warning the buffer is not safe-thread.
+   *
    * @param filename Name of the file to write
    * @return a BufferedWriter
    * @throws IOException if the file is not found
    */
-  public static UnSynchronizedBufferedWriter createFastBufferedWriter(
-      final String filename) throws IOException {
+  public static UnSynchronizedBufferedWriter createFastBufferedWriter(final String filename)
+      throws IOException {
 
     return createFastBufferedWriter(filename, null);
   }
 
   /**
-   * Utility method to create fast BufferedWriter. Warning the buffer is not
-   * safe-thread.
+   * Utility method to create fast BufferedWriter. Warning the buffer is not safe-thread.
+   *
    * @param file File to write
    * @return a BufferedWriter
    * @throws IOException if the file is not found
    */
-  public static UnSynchronizedBufferedWriter createFastBufferedWriter(
-      final File file) throws IOException {
+  public static UnSynchronizedBufferedWriter createFastBufferedWriter(final File file)
+      throws IOException {
 
     return createFastBufferedWriter(file, null);
   }
 
   /**
-   * Utility method to create fast BufferedWriter. Warning the buffer is not
-   * safe-thread.
+   * Utility method to create fast BufferedWriter. Warning the buffer is not safe-thread.
+   *
    * @param file File to write
    * @param charset Charset to use
    * @return a BufferedWriter
@@ -425,25 +430,24 @@ public class FileUtils {
 
     final OutputStream os = createOutputStream(file);
 
-    return new UnSynchronizedBufferedWriter(new OutputStreamWriter(os,
-        charset != null ? charset : Charset.defaultCharset()));
+    return new UnSynchronizedBufferedWriter(
+        new OutputStreamWriter(os, charset != null ? charset : Charset.defaultCharset()));
   }
 
   /**
-   * Utility method to create fast BufferedWriter. Warning the buffer is not
-   * safe-thread.
+   * Utility method to create fast BufferedWriter. Warning the buffer is not safe-thread.
+   *
    * @param os OutputStream to write
    * @return a BufferedWriter
    */
-  public static UnSynchronizedBufferedWriter createFastBufferedWriter(
-      final OutputStream os) {
+  public static UnSynchronizedBufferedWriter createFastBufferedWriter(final OutputStream os) {
 
     return createFastBufferedWriter(os, null);
   }
 
   /**
-   * Utility method to create fast BufferedWriter. Warning the buffer is not
-   * safe-thread.
+   * Utility method to create fast BufferedWriter. Warning the buffer is not safe-thread.
+   *
    * @param os OutputStream to write
    * @param charset the charset to use
    * @return a BufferedWriter
@@ -455,19 +459,20 @@ public class FileUtils {
       throw new NullPointerException("The output stream is null");
     }
 
-    return new UnSynchronizedBufferedWriter(new OutputStreamWriter(os,
-        charset != null ? charset : Charset.defaultCharset()));
+    return new UnSynchronizedBufferedWriter(
+        new OutputStreamWriter(os, charset != null ? charset : Charset.defaultCharset()));
   }
 
   /**
-   * Utility method to create fast BufferedWriter. Warning the buffer is not
-   * safe-thread. The created file use default encoding.
+   * Utility method to create fast BufferedWriter. Warning the buffer is not safe-thread. The
+   * created file use default encoding.
+   *
    * @param file File to write
    * @return a BufferedWriter
    * @throws IOException if an error occurs while creating the Writer
    */
-  public static UnSynchronizedBufferedWriter createFastBufferedGZipWriter(
-      final File file) throws IOException {
+  public static UnSynchronizedBufferedWriter createFastBufferedGZipWriter(final File file)
+      throws IOException {
 
     if (file == null) {
       return null;
@@ -476,44 +481,41 @@ public class FileUtils {
     // Remove file if exists
     if (file.exists()) {
       if (!file.delete()) {
-        throw new IOException(
-            "Can not remove existing file: " + file.getAbsolutePath());
+        throw new IOException("Can not remove existing file: " + file.getAbsolutePath());
       }
     }
 
     final FileOutputStream outFile = new FileOutputStream(file);
     final FileChannel outChannel = outFile.getChannel();
 
-    final OutputStream gzos = CompressionType
-        .createGZipOutputStream(Channels.newOutputStream(outChannel));
+    final OutputStream gzos =
+        CompressionType.createGZipOutputStream(Channels.newOutputStream(outChannel));
 
-    return new UnSynchronizedBufferedWriter(
-        new OutputStreamWriter(gzos, Charset.defaultCharset()));
+    return new UnSynchronizedBufferedWriter(new OutputStreamWriter(gzos, Charset.defaultCharset()));
   }
 
   /**
-   * Utility method to create fast BufferedWriter. Warning the buffer is not
-   * safe-thread.
+   * Utility method to create fast BufferedWriter. Warning the buffer is not safe-thread.
+   *
    * @param filename Name of the file to write
    * @return a BufferedWriter
    * @throws IOException if the file is not found
    */
-  public static BufferedWriter createBufferedWriter(final String filename)
-      throws IOException {
+  public static BufferedWriter createBufferedWriter(final String filename) throws IOException {
 
     return createBufferedWriter(filename, null);
   }
 
   /**
-   * Utility method to create fast BufferedWriter. Warning the buffer is not
-   * safe-thread.
+   * Utility method to create fast BufferedWriter. Warning the buffer is not safe-thread.
+   *
    * @param filename Name of the file to write
    * @param charset Charset to use
    * @return a BufferedWriter
    * @throws IOException if the file is not found
    */
-  public static BufferedWriter createBufferedWriter(final String filename,
-      final Charset charset) throws IOException {
+  public static BufferedWriter createBufferedWriter(final String filename, final Charset charset)
+      throws IOException {
 
     if (filename == null) {
       throw new NullPointerException("The filename is null");
@@ -523,38 +525,37 @@ public class FileUtils {
   }
 
   /**
-   * Utility method to create fast BufferedWriter. Warning the buffer is not
-   * safe-thread.
+   * Utility method to create fast BufferedWriter. Warning the buffer is not safe-thread.
+   *
    * @param file File to write
    * @return a BufferedWriter
    * @throws IOException if the file is not found
    */
-  public static BufferedWriter createBufferedWriter(final File file)
-      throws IOException {
+  public static BufferedWriter createBufferedWriter(final File file) throws IOException {
 
     return createBufferedWriter(file, null);
   }
 
   /**
-   * Utility method to create fast BufferedWriter. Warning the buffer is not
-   * safe-thread.
+   * Utility method to create fast BufferedWriter. Warning the buffer is not safe-thread.
+   *
    * @param file File to write
    * @param charset Charset to use
    * @return a BufferedWriter
    * @throws IOException if the file is not found
    */
-  public static BufferedWriter createBufferedWriter(final File file,
-      final Charset charset) throws IOException {
+  public static BufferedWriter createBufferedWriter(final File file, final Charset charset)
+      throws IOException {
 
     final OutputStream os = createOutputStream(file);
 
-    return new BufferedWriter(new OutputStreamWriter(os,
-        charset != null ? charset : Charset.defaultCharset()));
+    return new BufferedWriter(
+        new OutputStreamWriter(os, charset != null ? charset : Charset.defaultCharset()));
   }
 
   /**
-   * Utility method to create fast BufferedWriter. Warning the buffer is not
-   * safe-thread.
+   * Utility method to create fast BufferedWriter. Warning the buffer is not safe-thread.
+   *
    * @param os OutputStream to write
    * @return a BufferedWriter
    */
@@ -564,32 +565,31 @@ public class FileUtils {
   }
 
   /**
-   * Utility method to create fast BufferedWriter. Warning the buffer is not
-   * safe-thread.
+   * Utility method to create fast BufferedWriter. Warning the buffer is not safe-thread.
+   *
    * @param os OutputStream to write
    * @param charset Charset to use
    * @return a BufferedWriter
    */
-  public static BufferedWriter createBufferedWriter(final OutputStream os,
-      final Charset charset) {
+  public static BufferedWriter createBufferedWriter(final OutputStream os, final Charset charset) {
 
     if (os == null) {
       throw new NullPointerException("The output stream is null");
     }
 
-    return new BufferedWriter(new OutputStreamWriter(os,
-        charset != null ? charset : Charset.defaultCharset()));
+    return new BufferedWriter(
+        new OutputStreamWriter(os, charset != null ? charset : Charset.defaultCharset()));
   }
 
   /**
-   * Utility method to create fast BufferedWriter. Warning the buffer is not
-   * safe-thread. The created file use default encoding.
+   * Utility method to create fast BufferedWriter. Warning the buffer is not safe-thread. The
+   * created file use default encoding.
+   *
    * @param file File to write
    * @return a BufferedWriter
    * @throws IOException if an error occurs while creating the Writer
    */
-  public static BufferedWriter createBufferedGZipWriter(final File file)
-      throws IOException {
+  public static BufferedWriter createBufferedGZipWriter(final File file) throws IOException {
 
     if (file == null) {
       return null;
@@ -598,29 +598,27 @@ public class FileUtils {
     // Remove file if exists
     if (file.exists()) {
       if (!file.delete()) {
-        throw new IOException(
-            "Can not remove existing file: " + file.getAbsolutePath());
+        throw new IOException("Can not remove existing file: " + file.getAbsolutePath());
       }
     }
 
     final FileOutputStream outFile = new FileOutputStream(file);
     final FileChannel outChannel = outFile.getChannel();
 
-    final OutputStream gzos = CompressionType
-        .createGZipOutputStream(Channels.newOutputStream(outChannel));
+    final OutputStream gzos =
+        CompressionType.createGZipOutputStream(Channels.newOutputStream(outChannel));
 
-    return new BufferedWriter(
-        new OutputStreamWriter(gzos, Charset.defaultCharset()));
+    return new BufferedWriter(new OutputStreamWriter(gzos, Charset.defaultCharset()));
   }
 
   /**
    * Utility method to create fast ObjectOutput.
+   *
    * @param file File to write
    * @return a ObjectOutput
    * @throws IOException if an error occurs while creating the Writer
    */
-  public static ObjectOutputStream createObjectOutputWriter(final File file)
-      throws IOException {
+  public static ObjectOutputStream createObjectOutputWriter(final File file) throws IOException {
 
     if (file == null) {
       return null;
@@ -629,8 +627,7 @@ public class FileUtils {
     // Remove file if exists
     if (file.exists()) {
       if (!file.delete()) {
-        throw new IOException(
-            "Can not remove existing file: " + file.getAbsolutePath());
+        throw new IOException("Can not remove existing file: " + file.getAbsolutePath());
       }
     }
 
@@ -642,12 +639,12 @@ public class FileUtils {
 
   /**
    * Utility method to create fast ObjectInputStream.
+   *
    * @param file File to read
    * @return a ObjectInputStream
    * @throws IOException if an error occurs while creating the reader
    */
-  public static ObjectInputStream createObjectInputReader(final File file)
-      throws IOException {
+  public static ObjectInputStream createObjectInputReader(final File file) throws IOException {
 
     if (file == null) {
       return null;
@@ -661,13 +658,13 @@ public class FileUtils {
 
   /**
    * Copy bytes from an InputStream to an OutputStream.
+   *
    * @param input the InputStream to read from
    * @param output the OutputStream to write to
    * @return the number of bytes copied
    * @throws IOException In case of an I/O problem
    */
-  public static long copy(final InputStream input, final OutputStream output)
-      throws IOException {
+  public static long copy(final InputStream input, final OutputStream output) throws IOException {
     byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
     long count = 0;
     int n = 0;
@@ -683,15 +680,14 @@ public class FileUtils {
   }
 
   /**
-   * Copy bytes from an InputStream to an OutputStream without closing the
-   * outputStream.
+   * Copy bytes from an InputStream to an OutputStream without closing the outputStream.
+   *
    * @param input the InputStream to read from
    * @param output the OutputStream to write to
    * @return the number of bytes copied
    * @throws IOException In case of an I/O problem
    */
-  public static long append(final InputStream input, final OutputStream output)
-      throws IOException {
+  public static long append(final InputStream input, final OutputStream output) throws IOException {
     byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
     long count = 0;
     int n = 0;
@@ -707,27 +703,28 @@ public class FileUtils {
 
   /**
    * Copy a file.
+   *
    * @param srcFile File to copy
    * @param destFile Destination file
    * @return true if the copy is successful
    * @throws IOException if an error occurs while copying file
    */
-  public static boolean copyFile(final File srcFile, final File destFile)
-      throws IOException {
+  public static boolean copyFile(final File srcFile, final File destFile) throws IOException {
 
     return copyFile(srcFile, destFile, false);
   }
 
   /**
    * Copy a file.
+   *
    * @param srcFile File to copy
    * @param destFile Destination file
    * @param overwrite overwrite existing file
    * @return true if the copy is successful
    * @throws IOException if an error occurs while copying file
    */
-  public static boolean copyFile(final File srcFile, final File destFile,
-      final boolean overwrite) throws IOException {
+  public static boolean copyFile(final File srcFile, final File destFile, final boolean overwrite)
+      throws IOException {
 
     if (srcFile == null) {
       throw new NullPointerException("Input file is null");
@@ -760,15 +757,12 @@ public class FileUtils {
       }
 
       if (!myDestFile.delete()) {
-        throw new IOException(
-            "Can not remove existing file: " + myDestFile.getAbsolutePath());
+        throw new IOException("Can not remove existing file: " + myDestFile.getAbsolutePath());
       }
-
     }
 
     try (FileChannel inChannel = new FileInputStream(srcFile).getChannel();
-        FileChannel outChannel =
-            new FileOutputStream(myDestFile).getChannel()) {
+        FileChannel outChannel = new FileOutputStream(myDestFile).getChannel()) {
       inChannel.transferTo(0, inChannel.size(), outChannel);
     }
 
@@ -777,66 +771,72 @@ public class FileUtils {
 
   /**
    * Copy a file.
+   *
    * @param srcFile File to copy
    * @param destFile Destination file
    * @return true if the move is successful
    * @throws IOException if an error occurs while copying file
    */
-  public static boolean moveFile(final File srcFile, final File destFile)
-      throws IOException {
+  public static boolean moveFile(final File srcFile, final File destFile) throws IOException {
 
     return moveFile(srcFile, destFile, true);
   }
 
   /**
    * Copy a file.
+   *
    * @param srcFile File to copy
    * @param destFile Destination file
    * @param overwrite overwrite existing file
    * @return true if the move is successful
    * @throws IOException if an error occurs while copying file
    */
-  public static boolean moveFile(final File srcFile, final File destFile,
-      final boolean overwrite) throws IOException {
+  public static boolean moveFile(final File srcFile, final File destFile, final boolean overwrite)
+      throws IOException {
 
     return copyFile(srcFile, destFile, overwrite) && srcFile.delete();
   }
 
   /**
    * Create a zip archive with the content of a directory.
+   *
    * @param directory directory to compress
    * @param zipFile output file
    * @throws IOException if an error occurs while compressing data
    */
-  public static void createZip(final File directory, final File zipFile)
-      throws IOException {
+  public static void createZip(final File directory, final File zipFile) throws IOException {
     createZip(directory, zipFile, false);
   }
 
   /**
    * Create a zip archive with the content of a directory.
+   *
    * @param directory directory to compress
    * @param zipFile output file
    * @param store compress or store the files to add to the ZIP file
    * @throws IOException if an error occurs while compressing data
    */
-  public static void createZip(final File directory, final File zipFile,
-      final boolean store) throws IOException {
+  public static void createZip(final File directory, final File zipFile, final boolean store)
+      throws IOException {
 
     createZip(directory, null, zipFile, store);
   }
 
   /**
    * Create a zip archive with the content of a directory.
+   *
    * @param directory directory to compress
    * @param rootFilesToStore root files to store
    * @param zipFile output file
    * @param store compress or store the files to add to the ZIP file
    * @throws IOException if an error occurs while compressing data
    */
-  public static void createZip(final File directory,
-      final Collection<File> rootFilesToStore, final File zipFile,
-      final boolean store) throws IOException {
+  public static void createZip(
+      final File directory,
+      final Collection<File> rootFilesToStore,
+      final File zipFile,
+      final boolean store)
+      throws IOException {
 
     if (directory == null) {
       throw new IOException("Input directory is null");
@@ -850,8 +850,7 @@ public class FileUtils {
       throw new IOException("Output file is null");
     }
 
-    final ZipOutputStream out =
-        new ZipOutputStream(new FileOutputStream(zipFile));
+    final ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFile));
 
     zipFolder(directory, "", rootFilesToStore, out, store);
 
@@ -860,20 +859,23 @@ public class FileUtils {
 
   /**
    * Add a directory to a ZipOutputStream.
+   *
    * @param directory directory to add to the ZIP file
    * @param path path of the directory in the ZIP file
    * @param out ZipOutputStream stream
    * @param store compress or store the files to add to the ZIP file
    * @throws IOException if en error occurs while creating the ZIP archive
    */
-  public static void zipFolder(final File directory, final String path,
-      final ZipOutputStream out, boolean store) throws IOException {
+  public static void zipFolder(
+      final File directory, final String path, final ZipOutputStream out, boolean store)
+      throws IOException {
 
     zipFolder(directory, path, null, out, store);
   }
 
   /**
    * Add a directory to a ZipOutputStream.
+   *
    * @param directory directory to add to the ZIP file
    * @param path path of the directory in the ZIP file
    * @param rootFilesToStore root files to store
@@ -881,9 +883,13 @@ public class FileUtils {
    * @param store compress or store the files to add to the ZIP file
    * @throws IOException if en error occurs while creating the ZIP archive
    */
-  public static void zipFolder(final File directory, final String path,
-      final Collection<File> rootFilesToStore, final ZipOutputStream out,
-      boolean store) throws IOException {
+  public static void zipFolder(
+      final File directory,
+      final String path,
+      final Collection<File> rootFilesToStore,
+      final ZipOutputStream out,
+      boolean store)
+      throws IOException {
 
     if (directory == null) {
       throw new IOException("Input directory is null");
@@ -906,13 +912,15 @@ public class FileUtils {
     }
 
     // Get the list of files to add
-    final File[] filesToAdd = directory.listFiles(file -> {
-      if (rootFilesToStore == null) {
-        return file.isFile();
-      } else {
-        return rootFilesToStore.contains(file) && file.isFile();
-      }
-    });
+    final File[] filesToAdd =
+        directory.listFiles(
+            file -> {
+              if (rootFilesToStore == null) {
+                return file.isFile();
+              } else {
+                return rootFilesToStore.contains(file) && file.isFile();
+              }
+            });
 
     // Add the files
     if (filesToAdd != null) {
@@ -927,10 +935,9 @@ public class FileUtils {
 
           // Compute checksum for storage
           final FileInputStream fi = new FileInputStream(f);
-          CheckedInputStream originCheck = new CheckedInputStream(
-              new BufferedInputStream(fi, DEFAULT_BUFFER_SIZE), new CRC32());
-          while (originCheck.read(data, 0, DEFAULT_BUFFER_SIZE) != -1) {
-          }
+          CheckedInputStream originCheck =
+              new CheckedInputStream(new BufferedInputStream(fi, DEFAULT_BUFFER_SIZE), new CRC32());
+          while (originCheck.read(data, 0, DEFAULT_BUFFER_SIZE) != -1) {}
           fi.close();
 
           ze.setMethod(ZipEntry.STORED);
@@ -956,14 +963,15 @@ public class FileUtils {
     }
 
     // Get the list of directories to add
-    final File[] directoriesToAdd = directory.listFiles(file -> {
-
-      if (rootFilesToStore == null) {
-        return file.isDirectory();
-      } else {
-        return rootFilesToStore.contains(file) && file.isDirectory();
-      }
-    });
+    final File[] directoriesToAdd =
+        directory.listFiles(
+            file -> {
+              if (rootFilesToStore == null) {
+                return file.isDirectory();
+              } else {
+                return rootFilesToStore.contains(file) && file.isDirectory();
+              }
+            });
 
     // Add directories
     if (directoriesToAdd != null) {
@@ -971,17 +979,16 @@ public class FileUtils {
         zipFolder(dir, path + dir.getName() + File.separator, null, out, store);
       }
     }
-
   }
 
   /**
    * Unzip a zip file in a directory.
+   *
    * @param is input stream of the zip file
    * @param outputDirectory output directory
    * @throws IOException if an error occurs while unzipping the file
    */
-  public static void unzip(final InputStream is, final File outputDirectory)
-      throws IOException {
+  public static void unzip(final InputStream is, final File outputDirectory) throws IOException {
 
     if (is == null) {
       throw new IOException("The inputStream is null");
@@ -992,8 +999,7 @@ public class FileUtils {
     }
 
     if (!(outputDirectory.exists() && outputDirectory.isDirectory())) {
-      throw new IOException(
-          "The output directory is invalid (" + outputDirectory + ")");
+      throw new IOException("The output directory is invalid (" + outputDirectory + ")");
     }
 
     BufferedOutputStream dest = null;
@@ -1003,8 +1009,7 @@ public class FileUtils {
 
     while ((entry = zis.getNextEntry()) != null) {
 
-      final File newFile =
-          new File(outputDirectory + File.separator + entry.getName());
+      final File newFile = new File(outputDirectory + File.separator + entry.getName());
 
       if (entry.isDirectory()) {
 
@@ -1036,19 +1041,18 @@ public class FileUtils {
         dest.flush();
         dest.close();
       }
-
     }
     zis.close();
   }
 
   /**
    * Unzip a zip file in a directory.
+   *
    * @param zipFile The zip file
    * @param outputDirectory The output directory
    * @throws IOException if an issue occurs while unzipping the file
    */
-  public static void unzip(final File zipFile, final File outputDirectory)
-      throws IOException {
+  public static void unzip(final File zipFile, final File outputDirectory) throws IOException {
 
     if (zipFile == null) {
       throw new IOException("The zip file is null");
@@ -1063,29 +1067,28 @@ public class FileUtils {
 
   /**
    * Get the files of a directory.
+   *
    * @param directory Directory to list files
    * @param extension extension of the file
    * @return an array of File objects
    */
-  public static File[] listFilesByExtension(final File directory,
-      final String extension) {
+  public static File[] listFilesByExtension(final File directory, final String extension) {
 
     if (directory == null || extension == null) {
       return null;
     }
 
     return directory.listFiles((arg0, arg1) -> arg1.endsWith(extension));
-
   }
 
   /**
    * Remove a list of files.
+   *
    * @param filesToRemove An array with the files to remove
    * @param recursive true if the remove must be recursive
    * @return true if the file removing is successful
    */
-  public static boolean removeFiles(final File[] filesToRemove,
-      final boolean recursive) {
+  public static boolean removeFiles(final File[] filesToRemove, final boolean recursive) {
 
     if (filesToRemove == null) {
       return false;
@@ -1113,6 +1116,7 @@ public class FileUtils {
 
   /**
    * Get the prefix of a list of files.
+   *
    * @param files Files that we wants the prefix
    * @return the prefix of the files
    */
@@ -1130,6 +1134,7 @@ public class FileUtils {
 
   /**
    * Get the prefix of a list of files.
+   *
    * @param files Files that we wants the prefix
    * @return the prefix of the files
    */
@@ -1162,7 +1167,6 @@ public class FileUtils {
         prefix = sb.toString();
         sb.setLength(0);
       }
-
     }
 
     return prefix;
@@ -1170,6 +1174,7 @@ public class FileUtils {
 
   /**
    * Delete a directory and its content. It is not a recursive method.
+   *
    * @param directory Directory to remove
    * @return false if one of the files can't be removed
    */
@@ -1191,12 +1196,12 @@ public class FileUtils {
 
   /**
    * Concat a list of files
+   *
    * @param files files to concat
    * @param outputFile output file
    * @throws IOException if an error occurs while read or writing data
    */
-  public static void concat(final List<File> files, final File outputFile)
-      throws IOException {
+  public static void concat(final List<File> files, final File outputFile) throws IOException {
 
     if (files == null) {
       throw new NullPointerException("Files to concat is null");
@@ -1217,7 +1222,6 @@ public class FileUtils {
       while ((line = reader.readLine()) != null) {
         writer.write(line + "\n");
       }
-
     }
 
     writer.close();
@@ -1225,19 +1229,20 @@ public class FileUtils {
 
   /**
    * Create a new temporary file.
+   *
    * @param prefix Prefix of the temporary file
    * @param suffix suffix of the temporary file
    * @return the new temporary file
    * @throws IOException if there is an error creating the temporary directory
    */
-  public static File createTempFile(final String prefix, final String suffix)
-      throws IOException {
+  public static File createTempFile(final String prefix, final String suffix) throws IOException {
 
     return createTempFile(null, prefix, suffix);
   }
 
   /**
    * Create a file in the temporary directory.
+   *
    * @param filename The filename to create
    * @return The new File
    */
@@ -1248,14 +1253,15 @@ public class FileUtils {
 
   /**
    * Create a new temporary file.
+   *
    * @param directory parent directory of the temporary file to create
    * @param prefix Prefix of the temporary file
    * @param suffix suffix of the temporary file
    * @return the new temporary file
    * @throws IOException if there is an error creating the temporary directory
    */
-  public static File createTempFile(final File directory, final String prefix,
-      final String suffix) throws IOException {
+  public static File createTempFile(final File directory, final String prefix, final String suffix)
+      throws IOException {
 
     final File myDir;
     final String myPrefix;
@@ -1286,19 +1292,19 @@ public class FileUtils {
     do {
       attemptCount++;
       if (attemptCount > maxAttempts) {
-        throw new IOException("The highly improbable has occurred! Failed to "
-            + "create a unique temporary directory after " + maxAttempts
-            + " attempts.");
+        throw new IOException(
+            "The highly improbable has occurred! Failed to "
+                + "create a unique temporary directory after "
+                + maxAttempts
+                + " attempts.");
       }
 
-      final String filename =
-          myPrefix + UUID.randomUUID().toString() + mySuffix;
+      final String filename = myPrefix + UUID.randomUUID().toString() + mySuffix;
       tempFile = new File(myDir, filename);
     } while (tempFile.exists());
 
     if (!tempFile.createNewFile()) {
-      throw new IOException(
-          "Failed to create temp file named " + tempFile.getAbsolutePath());
+      throw new IOException("Failed to create temp file named " + tempFile.getAbsolutePath());
     }
 
     return tempFile;
@@ -1306,6 +1312,7 @@ public class FileUtils {
 
   /**
    * Create a new temporary directory.
+   *
    * @return the new directory
    * @throws IOException if there is an error creating the temporary directory
    */
@@ -1316,6 +1323,7 @@ public class FileUtils {
 
   /**
    * Create a new temporary directory.
+   *
    * @param prefix prefix of the temporary directory
    * @return the new directory
    * @throws IOException if there is an error creating the temporary directory
@@ -1327,25 +1335,26 @@ public class FileUtils {
 
   /**
    * Create a new temporary directory.
+   *
    * @param parentDirectory parent directory for the temporary directory
    * @return the new directory
    * @throws IOException if there is an error creating the temporary directory
    */
-  public static File createTempDir(final File parentDirectory)
-      throws IOException {
+  public static File createTempDir(final File parentDirectory) throws IOException {
 
     return createTempDir(parentDirectory, null);
   }
 
   /**
    * Create a new temporary directory.
+   *
    * @param parentDirectory parent directory for the temporary directory
    * @param prefix Prefix of the directory name
    * @return the new directory
    * @throws IOException if there is an error creating the temporary directory
    */
-  public static File createTempDir(final File parentDirectory,
-      final String prefix) throws IOException {
+  public static File createTempDir(final File parentDirectory, final String prefix)
+      throws IOException {
 
     final File myTempParentDir;
     final String myPrefix;
@@ -1368,9 +1377,11 @@ public class FileUtils {
     do {
       attemptCount++;
       if (attemptCount > maxAttempts) {
-        throw new IOException("The highly improbable has occurred! Failed to "
-            + "create a unique temporary directory after " + maxAttempts
-            + " attempts.");
+        throw new IOException(
+            "The highly improbable has occurred! Failed to "
+                + "create a unique temporary directory after "
+                + maxAttempts
+                + " attempts.");
       }
 
       String dirName = myPrefix + UUID.randomUUID().toString();
@@ -1381,13 +1392,12 @@ public class FileUtils {
       return newTempDir;
     }
 
-    throw new IOException(
-        "Failed to create temp dir named " + newTempDir.getAbsolutePath());
-
+    throw new IOException("Failed to create temp dir named " + newTempDir.getAbsolutePath());
   }
 
   /**
    * Recursively delete file or directory
+   *
    * @param fileOrDir the file or dir to delete
    * @return true if all files are successfully deleted
    */
@@ -1411,90 +1421,95 @@ public class FileUtils {
 
   /**
    * Check if a file exists
+   *
    * @param file File to test
    * @param msgFileType message for the description of the file
    * @throws IOException if the file doesn't exists
    */
-  public static void checkExistingFile(final File file,
-      final String msgFileType) throws IOException {
+  public static void checkExistingFile(final File file, final String msgFileType)
+      throws IOException {
 
     if (msgFileType == null) {
-      throw new NullPointerException(
-          "Message file type for check isn't defined");
+      throw new NullPointerException("Message file type for check isn't defined");
     }
 
     if (file == null) {
-      throw new NullPointerException("The "
-          + msgFileType + " is not defined. Please check and define "
-          + msgFileType + " path and/or files.");
+      throw new NullPointerException(
+          "The "
+              + msgFileType
+              + " is not defined. Please check and define "
+              + msgFileType
+              + " path and/or files.");
     }
 
     if (!file.exists()) {
-      throw new IOException(
-          "The " + msgFileType + " does not exists: " + file.getAbsolutePath());
+      throw new IOException("The " + msgFileType + " does not exists: " + file.getAbsolutePath());
     }
   }
 
   /**
    * Check if a directory exists
+   *
    * @param directory directory to test
    * @param msgFileType message for the description of the file
    * @throws IOException if the file doesn't exists
    */
-  public static void checkExistingDirectoryFile(final File directory,
-      final String msgFileType) throws IOException {
+  public static void checkExistingDirectoryFile(final File directory, final String msgFileType)
+      throws IOException {
 
     checkExistingFile(directory, msgFileType);
     if (!directory.isDirectory()) {
-      throw new IOException("The "
-          + msgFileType + " is not a directory: "
-          + directory.getAbsolutePath());
+      throw new IOException(
+          "The " + msgFileType + " is not a directory: " + directory.getAbsolutePath());
     }
   }
 
   /**
    * Check if a file exists
+   *
    * @param file File to test
    * @param msgFileType message for the description of the file
    * @throws IOException if the file doesn't exists
    */
-  public static void checkExistingStandardFile(final File file,
-      final String msgFileType) throws IOException {
+  public static void checkExistingStandardFile(final File file, final String msgFileType)
+      throws IOException {
 
     checkExistingFile(file, msgFileType);
     if (!file.isFile()) {
-      throw new IOException("The "
-          + msgFileType + " is  not a standard file: "
-          + file.getAbsolutePath());
+      throw new IOException(
+          "The " + msgFileType + " is  not a standard file: " + file.getAbsolutePath());
     }
   }
 
   /**
    * Check if a file exists
+   *
    * @param file File to test
    * @param msgFileType message for the description of the file
    * @throws IOException if the file doesn't exists
    */
-  public static void checkExistingStandardFileOrDirectory(final File file,
-      final String msgFileType) throws IOException {
+  public static void checkExistingStandardFileOrDirectory(final File file, final String msgFileType)
+      throws IOException {
 
     checkExistingDirectoryFile(file, msgFileType);
     if (!file.isFile() && !file.isDirectory()) {
-      throw new IOException("The "
-          + msgFileType + " is  not a standard file or a directory: "
-          + file.getAbsolutePath());
+      throw new IOException(
+          "The "
+              + msgFileType
+              + " is  not a standard file or a directory: "
+              + file.getAbsolutePath());
     }
   }
 
   /**
    * Test if two stream are equals
+   *
    * @param a First stream to compare
    * @param b Second stream to compare
    * @return true if the two stream are equals
    * @throws IOException if an error occurs while reading the streams
    */
-  public static boolean compareFile(final InputStream a, final InputStream b)
-      throws IOException {
+  public static boolean compareFile(final InputStream a, final InputStream b) throws IOException {
 
     if (a == null && b == null) {
       return true;
@@ -1519,7 +1534,6 @@ public class FileUtils {
       if (ca == -1) {
         end = true;
       }
-
     }
 
     a.close();
@@ -1530,26 +1544,27 @@ public class FileUtils {
 
   /**
    * Test if two stream are equals
+   *
    * @param filenameA First filename to compare
    * @param filenameB Second filename to compare
    * @return true if the two stream are equals
    * @throws IOException if an error occurs while reading the streams
    */
-  public static boolean compareFile(final String filenameA,
-      final String filenameB) throws IOException {
+  public static boolean compareFile(final String filenameA, final String filenameB)
+      throws IOException {
 
     return compareFile(new File(filenameA), new File(filenameB));
   }
 
   /**
    * Test if two stream are equals
+   *
    * @param fileA First filename to compare
    * @param fileB Second filename to compare
    * @return true if the two stream are equals
    * @throws IOException if an error occurs while reading the streams
    */
-  public static boolean compareFile(final File fileA, final File fileB)
-      throws IOException {
+  public static boolean compareFile(final File fileA, final File fileB) throws IOException {
 
     try (InputStream isa = new FileInputStream(fileA);
         InputStream isb = new FileInputStream(fileB)) {
@@ -1560,6 +1575,7 @@ public class FileUtils {
 
   /**
    * Compute MD5 sum of a file.
+   *
    * @param file the input file
    * @return a string with the MD5 sum
    * @throws IOException In case of an I/O problem or digest error
@@ -1575,12 +1591,12 @@ public class FileUtils {
 
   /**
    * Compute MD5 sum of a file.
+   *
    * @param inputStream the InputStream to read from
    * @return a string with the MD5 sum
    * @throws IOException In case of an I/O problem or digest error
    */
-  public static String computeMD5Sum(final InputStream inputStream)
-      throws IOException {
+  public static String computeMD5Sum(final InputStream inputStream) throws IOException {
 
     requireNonNull(inputStream, "inputStream argument cannot be null");
 
@@ -1608,6 +1624,7 @@ public class FileUtils {
 
   /**
    * Relativize a path from a base path.
+   *
    * @param path path to relativize
    * @param base base path (must be a directory)
    * @return a File object with the relative path
@@ -1663,6 +1680,7 @@ public class FileUtils {
 
   /**
    * Create a File object from a list of the node of the file path.
+   *
    * @param pathNodes the list of the nodes of the path
    * @return a new File object with the requested path
    */
@@ -1683,6 +1701,7 @@ public class FileUtils {
 
   /**
    * Create a named pipe.
+   *
    * @param file path of the named pipe
    * @throws IOException if an error occurs while creating the named pipe
    */
@@ -1696,8 +1715,7 @@ public class FileUtils {
       throw new IOException("Named pipe to create already exists: " + file);
     }
 
-    final Process process =
-        new ProcessBuilder("mkfifo", file.getAbsolutePath()).start();
+    final Process process = new ProcessBuilder("mkfifo", file.getAbsolutePath()).start();
 
     int exitCode;
     try {
@@ -1710,11 +1728,11 @@ public class FileUtils {
     } catch (InterruptedException e) {
       throw new IOException("Unable to create named pipe: " + file, e);
     }
-
   }
 
   /**
    * Check if an executable is in the PATH.
+   *
    * @param executableName the name of the executable
    * @return true if an executable is in the PATH
    */
@@ -1765,5 +1783,4 @@ public class FileUtils {
 
     return false;
   }
-
 }

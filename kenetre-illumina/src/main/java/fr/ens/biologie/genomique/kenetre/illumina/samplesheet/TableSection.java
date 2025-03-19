@@ -8,6 +8,7 @@ import java.util.Objects;
 
 /**
  * This class define a table section of a samplesheet.
+ *
  * @author Laurent Jourdren
  * @since 3.0
  */
@@ -18,6 +19,7 @@ public class TableSection implements Iterable<Sample> {
 
   /**
    * Add a sample.
+   *
    * @return the new sample
    */
   public Sample addSample() {
@@ -36,6 +38,7 @@ public class TableSection implements Iterable<Sample> {
 
   /**
    * Get the samples fields names.
+   *
    * @return the samples fields names
    */
   public List<String> getSamplesFieldNames() {
@@ -57,6 +60,7 @@ public class TableSection implements Iterable<Sample> {
 
   /**
    * Test if the sample field exists.
+   *
    * @param fieldName the name of the field name to test
    * @return true if the sample field exists
    */
@@ -71,6 +75,7 @@ public class TableSection implements Iterable<Sample> {
 
   /**
    * Test if the table section contains a lane field.
+   *
    * @return true if the table section contains a lane field.
    */
   public boolean isLaneSampleField() {
@@ -80,6 +85,7 @@ public class TableSection implements Iterable<Sample> {
 
   /**
    * Test if the table section contains a sample Id.
+   *
    * @return true if the table section contains a sample Id.
    */
   public boolean isSampleIdSampleField() {
@@ -89,6 +95,7 @@ public class TableSection implements Iterable<Sample> {
 
   /**
    * Test if the table section contains a sample name field.
+   *
    * @return true if the table section contains a sample name field.
    */
   public boolean isSampleNameSampleField() {
@@ -98,6 +105,7 @@ public class TableSection implements Iterable<Sample> {
 
   /**
    * Test if the table section contains a description field.
+   *
    * @return true if the table section contains a description field.
    */
   public boolean isDescriptionSampleField() {
@@ -107,6 +115,7 @@ public class TableSection implements Iterable<Sample> {
 
   /**
    * Test if the table section contains a project field.
+   *
    * @return true if the table section contains a project field.
    */
   public boolean isProjectSampleField() {
@@ -116,6 +125,7 @@ public class TableSection implements Iterable<Sample> {
 
   /**
    * Test if the table section contains an index1 field.
+   *
    * @return true if the table section contains an index1 field.
    */
   public boolean isIndex1SampleField() {
@@ -125,6 +135,7 @@ public class TableSection implements Iterable<Sample> {
 
   /**
    * Test if the table section contains an index2 field.
+   *
    * @return true if the table section contains an index2 field.
    */
   public boolean isIndex2SampleField() {
@@ -134,9 +145,9 @@ public class TableSection implements Iterable<Sample> {
 
   /**
    * Get all the samples of a lane.
+   *
    * @param lane the lane of the samples
-   * @return a list of the samples in the lane in the same order as the
-   *         samplesheet
+   * @return a list of the samples in the lane in the same order as the samplesheet
    */
   public List<Sample> getSampleInLane(final int lane) {
 
@@ -157,6 +168,7 @@ public class TableSection implements Iterable<Sample> {
 
   /**
    * Get the samples of the samplesheet.
+   *
    * @return a list of samples
    */
   public List<Sample> getSamples() {
@@ -166,6 +178,7 @@ public class TableSection implements Iterable<Sample> {
 
   /**
    * Get the number of samples.
+   *
    * @return the number of samples
    */
   public int size() {
@@ -174,6 +187,7 @@ public class TableSection implements Iterable<Sample> {
 
   /**
    * Test if the table is empty.
+   *
    * @return true if the table is empty
    */
   public boolean isEmpty() {
@@ -183,6 +197,7 @@ public class TableSection implements Iterable<Sample> {
 
   /**
    * Get the samplesheet of the sample.
+   *
    * @return a SampleSheet object
    */
   public SampleSheet getSampleSheet() {
@@ -192,6 +207,7 @@ public class TableSection implements Iterable<Sample> {
 
   /**
    * Remove value.
+   *
    * @param fieldName field to remove
    */
   public void removeField(final String fieldName) {
@@ -203,11 +219,11 @@ public class TableSection implements Iterable<Sample> {
 
   /**
    * Rename a field
+   *
    * @param oldFieldName old name of the field
    * @param newFieldName new name of the field
    */
-  public void renameField(final String oldFieldName,
-      final String newFieldName) {
+  public void renameField(final String oldFieldName, final String newFieldName) {
 
     for (Sample s : getSamples()) {
       s.rename(oldFieldName, newFieldName);
@@ -223,5 +239,4 @@ public class TableSection implements Iterable<Sample> {
     Objects.requireNonNull(samplesheet);
     this.samplesheet = samplesheet;
   }
-
 }

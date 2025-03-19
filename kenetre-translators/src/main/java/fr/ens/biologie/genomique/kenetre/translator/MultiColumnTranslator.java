@@ -24,6 +24,7 @@
 
 package fr.ens.biologie.genomique.kenetre.translator;
 
+import fr.ens.biologie.genomique.kenetre.KenetreRuntimeException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,11 +32,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fr.ens.biologie.genomique.kenetre.KenetreRuntimeException;
-
 /**
- * This class implements a translator for multicolumn annotation. The first
- * column is the identifier.
+ * This class implements a translator for multicolumn annotation. The first column is the
+ * identifier.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
@@ -45,8 +45,9 @@ public class MultiColumnTranslator extends AbstractTranslator {
   private List<String> fieldNames;
 
   /**
-   * Add data to the translator. The first value of the array data is the unique
-   * id for the translator.
+   * Add data to the translator. The first value of the array data is the unique id for the
+   * translator.
+   *
    * @param rowData data to add
    */
   public void addRow(final List<String> rowData) {
@@ -61,8 +62,9 @@ public class MultiColumnTranslator extends AbstractTranslator {
   }
 
   /**
-   * Add data to the translator. The first value of the array data is the unique
-   * id for the translator.
+   * Add data to the translator. The first value of the array data is the unique id for the
+   * translator.
+   *
    * @param rowData data to add
    */
   public void addRow(final String... rowData) {
@@ -76,6 +78,7 @@ public class MultiColumnTranslator extends AbstractTranslator {
 
   /**
    * Add data to the translator.
+   *
    * @param id id for the translator.
    * @param rowData data to add
    */
@@ -105,6 +108,7 @@ public class MultiColumnTranslator extends AbstractTranslator {
 
   /**
    * Get an ordered list of the annotations fields
+   *
    * @return an ordered list of the annotations fields.
    */
   @Override
@@ -114,11 +118,11 @@ public class MultiColumnTranslator extends AbstractTranslator {
       return null;
     }
     return Collections.unmodifiableList(this.fieldNames);
-
   }
 
   /**
    * Get an annotation for an feature
+   *
    * @param id Identifier of the feature
    * @param fieldName Field to get
    * @return A String with the request annotation of the Feature
@@ -146,9 +150,7 @@ public class MultiColumnTranslator extends AbstractTranslator {
     return map.get(field);
   }
 
-  /**
-   * Clear the descriptions of the features.
-   */
+  /** Clear the descriptions of the features. */
   public void clear() {
 
     this.annotations.clear();
@@ -171,6 +173,7 @@ public class MultiColumnTranslator extends AbstractTranslator {
 
   /**
    * Get the available identifiers by the translator if possible.
+   *
    * @return a array of string with the identifiers
    */
   @Override
@@ -185,6 +188,7 @@ public class MultiColumnTranslator extends AbstractTranslator {
 
   /**
    * Public constructor.
+   *
    * @param fieldNames Field names of the annotation
    */
   public MultiColumnTranslator(final List<String> fieldNames) {
@@ -194,25 +198,23 @@ public class MultiColumnTranslator extends AbstractTranslator {
 
   /**
    * Public constructor.
+   *
    * @param fieldNames Field names of the annotation
-   * @param fieldNamesWithId false if the first element of the fieldname array
-   *          is the key for the translator (must be ignored)
+   * @param fieldNamesWithId false if the first element of the fieldname array is the key for the
+   *     translator (must be ignored)
    */
-  public MultiColumnTranslator(final List<String> fieldNames,
-      final boolean fieldNamesWithId) {
+  public MultiColumnTranslator(final List<String> fieldNames, final boolean fieldNamesWithId) {
 
     if (fieldNames == null) {
       throw new NullPointerException("fieldnames is null");
     }
 
     if (fieldNamesWithId && fieldNames.size() < 2) {
-      throw new KenetreRuntimeException(
-          "fieldNames must have at least 2 fields");
+      throw new KenetreRuntimeException("fieldNames must have at least 2 fields");
     }
 
     if (!fieldNamesWithId && fieldNames.size() < 1) {
-      throw new KenetreRuntimeException(
-          "fieldNames must have at least one fields");
+      throw new KenetreRuntimeException("fieldNames must have at least one fields");
     }
 
     if (fieldNamesWithId) {
@@ -228,5 +230,4 @@ public class MultiColumnTranslator extends AbstractTranslator {
 
     this(Arrays.asList(fieldNames));
   }
-
 }

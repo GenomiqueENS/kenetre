@@ -30,6 +30,7 @@ import java.util.Collection;
 
 /**
  * This interface define methods to compare files.
+ *
  * @since 2.0
  * @author Sandrine Perrin
  */
@@ -37,22 +38,24 @@ public interface Comparator {
 
   /**
    * Return collector name.
+   *
    * @return collector name.
    */
   String getName();
 
   /**
    * Compare two files no ordered, check if they are the same contents.
+   *
    * @param pathA the path to the first file, used like reference.
    * @param pathB the path to the second file,
    * @return boolean true if files are same.
    * @throws IOException if an error occurs while comparing the files.
    */
-  boolean compareFiles(final String pathA, final String pathB)
-      throws IOException;
+  boolean compareFiles(final String pathA, final String pathB) throws IOException;
 
   /**
    * Compare two files no ordered, check if they are the same contents.
+   *
    * @param fileA the path to the first file, used like reference.
    * @param fileB the path to the second file,
    * @return boolean true if files are same.
@@ -62,37 +65,39 @@ public interface Comparator {
 
   /**
    * Compare two files no ordered, check if they are the same contents.
+   *
    * @param isA the path to the first file, used like reference.
    * @param isB the path to the second file,
    * @return true if file are equals
    * @throws IOException if an error occurs while comparing the files.
    */
-  boolean compareFiles(final InputStream isA, final InputStream isB)
-      throws IOException;
+  boolean compareFiles(final InputStream isA, final InputStream isB) throws IOException;
 
   /**
    * Return all extensions treated by comparator files.
+   *
    * @return list extensions.
    */
   Collection<String> getExtensions();
 
   /**
    * Return number elements compared by comparator.
+   *
    * @return number elements compared
    */
   int getNumberElementsCompared();
 
   /**
    * Return line which fail comparison between to file from tested file.
+   *
    * @return line which fail comparison between to file from tested file
    */
   String getCauseFailComparison();
 
   /**
-   * Set line which fail comparison between to file from tested file, it can
-   * compile few lines
+   * Set line which fail comparison between to file from tested file, it can compile few lines
+   *
    * @param line line that cause the comparison fail
    */
   void setCauseFailComparison(final String line);
-
 }

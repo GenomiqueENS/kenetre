@@ -13,5 +13,4 @@ public class DenseExpressionMatrixTest extends AbstractExpressionMatrixTest {
 
     return new DenseExpressionMatrix(defaultValue);
   }
-
 }

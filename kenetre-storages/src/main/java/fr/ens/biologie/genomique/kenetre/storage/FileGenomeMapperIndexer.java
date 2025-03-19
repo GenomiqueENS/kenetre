@@ -26,18 +26,18 @@ package fr.ens.biologie.genomique.kenetre.storage;
 
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
+import fr.ens.biologie.genomique.kenetre.bio.readmapper.MapperInstance;
+import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
-import fr.ens.biologie.genomique.kenetre.bio.readmapper.MapperInstance;
-import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-
 /**
  * This class define a genome mapper indexer.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -54,32 +54,35 @@ public class FileGenomeMapperIndexer {
 
   /**
    * Create an archived genome index.
+   *
    * @param genomePath genome to index
    * @param genomeDescription description of the genome
    * @param mapperIndexFile output genome index archive
    * @throws IOException if an error occurs while creating the genome
    */
-  public void createIndex(final File genomePath,
-      final GenomeDescription genomeDescription, final File mapperIndexFile)
+  public void createIndex(
+      final File genomePath, final GenomeDescription genomeDescription, final File mapperIndexFile)
       throws IOException {
 
     requireNonNull(genomePath);
     requireNonNull(genomePath);
 
-    createIndex(new FileDataPath(genomePath), genomeDescription,
-        new FileDataPath(mapperIndexFile));
+    createIndex(new FileDataPath(genomePath), genomeDescription, new FileDataPath(mapperIndexFile));
   }
 
   /**
    * Create an archived genome index.
+   *
    * @param genomeDataFile genome to index
    * @param genomeDescription description of the genome
    * @param mapperIndexDataFile output genome index archive
    * @throws IOException if an error occurs while creating the genome
    */
-  protected void createIndex(final DataPath genomeDataFile,
+  protected void createIndex(
+      final DataPath genomeDataFile,
       final GenomeDescription genomeDescription,
-      final DataPath mapperIndexDataFile) throws IOException {
+      final DataPath mapperIndexDataFile)
+      throws IOException {
 
     requireNonNull(genomeDataFile);
     requireNonNull(genomeDescription);
@@ -95,8 +98,9 @@ public class FileGenomeMapperIndexer {
     if (this.storage == null) {
       precomputedIndexDataFile = null;
     } else {
-      precomputedIndexDataFile = this.storage.getDataPath(this.mapperInstance,
-          genomeDescription, this.additionalDescription);
+      precomputedIndexDataFile =
+          this.storage.getDataPath(
+              this.mapperInstance, genomeDescription, this.additionalDescription);
     }
 
     // If no index storage or if the index does not already exists compute it
@@ -109,47 +113,52 @@ public class FileGenomeMapperIndexer {
 
       // Save mapper index in storage
       if (this.storage != null) {
-        this.storage.put(this.mapperInstance, genomeDescription,
-            this.additionalDescription, mapperIndexDataFile);
+        this.storage.put(
+            this.mapperInstance,
+            genomeDescription,
+            this.additionalDescription,
+            mapperIndexDataFile);
       }
     } else {
 
       this.logger.info(
           "Mapper index found, no need to recompute it (mapper index file: "
-              + precomputedIndexDataFile + ")");
+              + precomputedIndexDataFile
+              + ")");
 
-      this.logger
-          .info("Copy or create a symbolic link for the mapper index file "
-              + "(Created file or symbolic link: " + mapperIndexDataFile + ")");
+      this.logger.info(
+          "Copy or create a symbolic link for the mapper index file "
+              + "(Created file or symbolic link: "
+              + mapperIndexDataFile
+              + ")");
 
       // Else download it
       precomputedIndexDataFile.symlinkOrCopy(mapperIndexDataFile);
     }
-
   }
 
   /**
    * This this method that really launch index computation.
+   *
    * @param genome the path to the genome
    * @param mapperIndex the path to the output archive index
    * @throws IOException if an error occurs while computing index
    */
-  private void computeIndex(final DataPath genome, final DataPath mapperIndex)
-      throws IOException {
+  private void computeIndex(final DataPath genome, final DataPath mapperIndex) throws IOException {
 
     File outputFile = mapperIndex.toFile();
     if (outputFile == null) {
       outputFile =
-          File.createTempFile(this.mapperInstance.getName() + "-index-archive-",
-              ".zip", this.temporaryDirectory);
+          File.createTempFile(
+              this.mapperInstance.getName() + "-index-archive-", ".zip", this.temporaryDirectory);
     }
 
     if (genome.toFile() != null) {
-      this.mapperInstance.makeArchiveIndex(genome.toFile(), outputFile,
-          this.indexerArguments, this.threads);
+      this.mapperInstance.makeArchiveIndex(
+          genome.toFile(), outputFile, this.indexerArguments, this.threads);
     } else {
-      this.mapperInstance.makeArchiveIndex(genome.open(), outputFile,
-          this.indexerArguments, this.threads);
+      this.mapperInstance.makeArchiveIndex(
+          genome.open(), outputFile, this.indexerArguments, this.threads);
     }
 
     this.logger.info("mapperIndexDataFile: " + mapperIndex);
@@ -159,10 +168,9 @@ public class FileGenomeMapperIndexer {
       new FileDataPath(outputFile).copy(mapperIndex);
 
       if (!outputFile.delete()) {
-        this.logger.error("Unable to delete temporary "
-            + this.mapperInstance.getName() + " archive index.");
+        this.logger.error(
+            "Unable to delete temporary " + this.mapperInstance.getName() + " archive index.");
       }
-
     }
   }
 
@@ -172,6 +180,7 @@ public class FileGenomeMapperIndexer {
 
   /**
    * Public constructor.
+   *
    * @param mapperInstance Mapper to use for the index generator
    * @param additionalArguments additional indexer arguments
    * @param additionalDescription additional indexer arguments description
@@ -180,10 +189,13 @@ public class FileGenomeMapperIndexer {
    * @param temporaryDirectory temporary directory for the indexer
    * @param logger the logger
    */
-  public FileGenomeMapperIndexer(final MapperInstance mapperInstance,
+  public FileGenomeMapperIndexer(
+      final MapperInstance mapperInstance,
       final String additionalArguments,
-      final Map<String, String> additionalDescription, final int threads,
-      GenomeIndexStorage storage, File temporaryDirectory,
+      final Map<String, String> additionalDescription,
+      final int threads,
+      GenomeIndexStorage storage,
+      File temporaryDirectory,
       GenericLogger logger) {
 
     requireNonNull(mapperInstance, "Mapper is null");
@@ -206,7 +218,8 @@ public class FileGenomeMapperIndexer {
     // Set indexer additional arguments of the indexer
     this.indexerArguments =
         additionalArguments == null || additionalArguments.trim().isEmpty()
-            ? "" : additionalArguments;
+            ? ""
+            : additionalArguments;
 
     // Set the threads number
     this.threads = threads;
@@ -215,11 +228,12 @@ public class FileGenomeMapperIndexer {
     this.additionalDescription = new LinkedHashMap<>(additionalDescription);
 
     // Set the temporary directory
-    this.temporaryDirectory = temporaryDirectory != null
-        ? temporaryDirectory : new File(System.getProperty("java.io.tmpdir"));
+    this.temporaryDirectory =
+        temporaryDirectory != null
+            ? temporaryDirectory
+            : new File(System.getProperty("java.io.tmpdir"));
 
     // Set the logger
     this.logger = logger == null ? new DummyLogger() : logger;
   }
-
 }

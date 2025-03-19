@@ -2,8 +2,8 @@
  *                 Aozan development code
  *
  * This code may be freely distributed and modified under the
- * terms of the GNU General Public License version 3 or later 
- * and CeCILL. This should be distributed with the code. If you 
+ * terms of the GNU General Public License version 3 or later
+ * and CeCILL. This should be distributed with the code. If you
  * do not have a copy, see:
  *
  *      http://www.gnu.org/licenses/gpl-3.0-standalone.html
@@ -23,6 +23,7 @@
 
 package fr.ens.biologie.genomique.kenetre.illumina.interop;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.ByteBuffer;
@@ -32,11 +33,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-
 /**
- * This class define a specified iterator for reading the binary file:
- * ErrorMetricsOut.bin.
+ * This class define a specified iterator for reading the binary file: ErrorMetricsOut.bin.
+ *
  * @author Sandrine Perrin
  * @since 1.1
  */
@@ -50,6 +49,7 @@ public class ErrorMetricsReader extends AbstractBinaryFileReader<ErrorMetric> {
 
   /**
    * Get the file name treated.
+   *
    * @return file name
    */
   @Override
@@ -66,22 +66,21 @@ public class ErrorMetricsReader extends AbstractBinaryFileReader<ErrorMetric> {
   protected int getExpectedRecordSize(int version) {
 
     switch (version) {
-    case 3:
-      return 30;
+      case 3:
+        return 30;
 
-    case 4:
-      return 12;
+      case 4:
+        return 12;
 
-    case 5:
-      return 16;
+      case 5:
+        return 16;
 
-    case 6:
-      return 12 + 4 * this.adapterSequences.size();
+      case 6:
+        return 12 + 4 * this.adapterSequences.size();
 
-    default:
-      throw new IllegalArgumentException();
+      default:
+        throw new IllegalArgumentException();
     }
-
   }
 
   @Override
@@ -111,8 +110,8 @@ public class ErrorMetricsReader extends AbstractBinaryFileReader<ErrorMetric> {
   }
 
   @Override
-  protected void readMetricRecord(final List<ErrorMetric> collection,
-      final ByteBuffer bb, final int version) {
+  protected void readMetricRecord(
+      final List<ErrorMetric> collection, final ByteBuffer bb, final int version) {
 
     collection.add(new ErrorMetric(version, this.adapterSequences, bb));
   }
@@ -123,14 +122,12 @@ public class ErrorMetricsReader extends AbstractBinaryFileReader<ErrorMetric> {
 
   /**
    * Constructor.
+   *
    * @param dirPath path of the directory while the binary is located
-   * @throws KenetreException it occurs if size record or version aren't the
-   *           same that expected
+   * @throws KenetreException it occurs if size record or version aren't the same that expected
    * @throws FileNotFoundException if the binary cannot be found
    */
-
-  public ErrorMetricsReader(final File dirPath)
-      throws FileNotFoundException, KenetreException {
+  public ErrorMetricsReader(final File dirPath) throws FileNotFoundException, KenetreException {
 
     super(dirPath);
 
@@ -138,5 +135,4 @@ public class ErrorMetricsReader extends AbstractBinaryFileReader<ErrorMetric> {
       throw new FileNotFoundException();
     }
   }
-
 }

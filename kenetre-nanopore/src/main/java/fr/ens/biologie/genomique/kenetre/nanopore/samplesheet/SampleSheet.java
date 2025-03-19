@@ -2,6 +2,7 @@ package fr.ens.biologie.genomique.kenetre.nanopore.samplesheet;
 
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -12,10 +13,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-
 /**
  * This class define a sample sheet for Nanopore software.
+ *
  * @since 0.20
  * @author Laurent Jourdren
  */
@@ -33,12 +33,13 @@ public class SampleSheet {
   private final Map<String, Barcode> barcodes = new LinkedHashMap<>();
 
   private enum BarcodeType {
-    TEST_SAMPLE, POSITIVE_CONTROL, NEGATIVE_CONTROL, NO_TEMPLATE_CONTROL
+    TEST_SAMPLE,
+    POSITIVE_CONTROL,
+    NEGATIVE_CONTROL,
+    NO_TEMPLATE_CONTROL
   }
 
-  /**
-   * This subclass define a barcode.
-   */
+  /** This subclass define a barcode. */
   public static class Barcode {
 
     private final String barcode;
@@ -54,6 +55,7 @@ public class SampleSheet {
 
     /**
      * Get the barcode.
+     *
      * @return the barcode
      */
     public String getBarcode() {
@@ -63,6 +65,7 @@ public class SampleSheet {
 
     /**
      * Get the internal barcode.
+     *
      * @return the internal barcode
      */
     public String getInternalBarcode() {
@@ -72,6 +75,7 @@ public class SampleSheet {
 
     /**
      * Get the external barcode.
+     *
      * @return the external barcode
      */
     public String getExternalBarcode() {
@@ -81,6 +85,7 @@ public class SampleSheet {
 
     /**
      * Get the alias.
+     *
      * @return the alias
      */
     public String getAlias() {
@@ -90,6 +95,7 @@ public class SampleSheet {
 
     /**
      * Get the type of barcode sample.
+     *
      * @return the type of barcode sample
      */
     public BarcodeType getType() {
@@ -99,6 +105,7 @@ public class SampleSheet {
 
     /**
      * Get the description of the sample.
+     *
      * @return the description of the sample
      */
     public String getDescription() {
@@ -112,6 +119,7 @@ public class SampleSheet {
 
     /**
      * Set the barcode type.
+     *
      * @param type the barcode type to set
      */
     public void setType(BarcodeType type) {
@@ -123,6 +131,7 @@ public class SampleSheet {
 
     /**
      * Set the barcode type.
+     *
      * @param type the barcode type to set
      */
     public void setType(String type) {
@@ -138,6 +147,7 @@ public class SampleSheet {
 
     /**
      * Set the description.
+     *
      * @param description the description to set
      */
     public void setDescripton(String description) {
@@ -152,6 +162,7 @@ public class SampleSheet {
     //
     /**
      * Check if barcode use a dual barcoding.
+     *
      * @return true if barcode use a dual barcoding
      */
     public boolean isDualBarcoding() {
@@ -161,6 +172,7 @@ public class SampleSheet {
 
     /**
      * Rename the alias.
+     *
      * @param newAlias the new alias for the barcode
      */
     public void renameAlias(String newAlias) {
@@ -192,17 +204,15 @@ public class SampleSheet {
     @Override
     public int hashCode() {
 
-      return Objects.hash(this.barcode, this.internalBarcode,
-          this.externalBarcode, this.alias, this.type);
+      return Objects.hash(
+          this.barcode, this.internalBarcode, this.externalBarcode, this.alias, this.type);
     }
 
     @Override
     public boolean equals(Object o) {
 
-      if (this == o)
-        return true;
-      if (!(o instanceof Barcode))
-        return false;
+      if (this == o) return true;
+      if (!(o instanceof Barcode)) return false;
       Barcode other = (Barcode) o;
 
       return Objects.equals(this.barcode, other.barcode)
@@ -216,9 +226,18 @@ public class SampleSheet {
     @Override
     public String toString() {
       return "Barcode [barcode="
-          + barcode + ", internalBarcode=" + internalBarcode
-          + ", externalBarcode=" + externalBarcode + ", alias=" + alias
-          + ", type=" + type + ", description=" + description + "]";
+          + barcode
+          + ", internalBarcode="
+          + internalBarcode
+          + ", externalBarcode="
+          + externalBarcode
+          + ", alias="
+          + alias
+          + ", type="
+          + type
+          + ", description="
+          + description
+          + "]";
     }
 
     //
@@ -247,8 +266,7 @@ public class SampleSheet {
       this.alias = alias;
     }
 
-    private Barcode(String internalBarcode, String externalBarcode,
-        String alias) {
+    private Barcode(String internalBarcode, String externalBarcode, String alias) {
 
       requireNonNull(internalBarcode);
       requireNonNull(externalBarcode);
@@ -259,13 +277,11 @@ public class SampleSheet {
       alias = alias.trim();
 
       if (!checkBarcodeName("internal", internalBarcode)) {
-        throw new IllegalArgumentException(
-            "Invalid internal barcode: " + internalBarcode);
+        throw new IllegalArgumentException("Invalid internal barcode: " + internalBarcode);
       }
 
       if (!checkBarcodeName("external", externalBarcode)) {
-        throw new IllegalArgumentException(
-            "Invalid external barcode: " + externalBarcode);
+        throw new IllegalArgumentException("Invalid external barcode: " + externalBarcode);
       }
 
       if (!checkAlias(alias)) {
@@ -277,7 +293,6 @@ public class SampleSheet {
       this.externalBarcode = externalBarcode;
       this.alias = alias;
     }
-
   }
 
   //
@@ -286,6 +301,7 @@ public class SampleSheet {
 
   /**
    * Get the protocol run Id.
+   *
    * @return the protocol run Id.
    */
   public String getProtocolRunId() {
@@ -294,6 +310,7 @@ public class SampleSheet {
 
   /**
    * Get the flow cell Id.
+   *
    * @return the flow cell Id
    */
   public String getFlowCellId() {
@@ -302,6 +319,7 @@ public class SampleSheet {
 
   /**
    * Get the position Id.
+   *
    * @return the position Id
    */
   public String getPositionId() {
@@ -310,6 +328,7 @@ public class SampleSheet {
 
   /**
    * Get the sample Id.
+   *
    * @return the sample Id
    */
   public String getSampleId() {
@@ -325,6 +344,7 @@ public class SampleSheet {
 
   /**
    * Get the flow cell product code.
+   *
    * @return the flowCellProductCode
    */
   public String getFlowCellProductCode() {
@@ -333,6 +353,7 @@ public class SampleSheet {
 
   /**
    * Get the kit.
+   *
    * @return the kit
    */
   public String getKit() {
@@ -341,6 +362,7 @@ public class SampleSheet {
 
   /**
    * Test is dual barcoding enabled.
+   *
    * @return true if dual barcoding is enabled
    */
   public boolean isDualBarcoding() {
@@ -354,6 +376,7 @@ public class SampleSheet {
 
   /**
    * Get other field.
+   *
    * @param fieldName field name
    * @return the value for the field
    */
@@ -364,6 +387,7 @@ public class SampleSheet {
 
   /**
    * Get other field names.
+   *
    * @return a set with the other field names
    */
   public Set<String> getOtherFieldNames() {
@@ -377,6 +401,7 @@ public class SampleSheet {
 
   /**
    * Set the protocol run id.
+   *
    * @param protocolRunId the protocol run id to set
    */
   public void setProtocolRunId(String protocolRunId) {
@@ -386,8 +411,7 @@ public class SampleSheet {
     try {
       UUID.fromString(protocolRunId);
     } catch (IllegalArgumentException exception) {
-      throw new IllegalArgumentException(
-          "protocolRunId argument is not a valid UUID");
+      throw new IllegalArgumentException("protocolRunId argument is not a valid UUID");
     }
 
     this.protocolRunId = protocolRunId;
@@ -395,6 +419,7 @@ public class SampleSheet {
 
   /**
    * Set the flow cell id.
+   *
    * @param flowCellId the flowCellId to set
    */
   public void setFlowCellId(String flowCellId) {
@@ -403,6 +428,7 @@ public class SampleSheet {
 
   /**
    * Set the position id.
+   *
    * @param positionId the positionId to set
    */
   public void setPositionId(String positionId) {
@@ -411,6 +437,7 @@ public class SampleSheet {
 
   /**
    * Set the sample Id.
+   *
    * @param sampleId the sampleId to set
    */
   public void setSampleId(String sampleId) {
@@ -419,20 +446,21 @@ public class SampleSheet {
 
   /**
    * Set the experiment id.
+   *
    * @param experimentId the experimentId to set
    */
   public void setExperimentId(String experimentId) {
 
     requireNonNull(experimentId);
     if (experimentId.isBlank()) {
-      throw new IllegalArgumentException(
-          "experimentId argument cannot be empty");
+      throw new IllegalArgumentException("experimentId argument cannot be empty");
     }
     this.experimentId = experimentId;
   }
 
   /**
    * Set the flow cell product code.
+   *
    * @param flowCellProductCode the flowCellProductCode to set
    */
   public void setFlowCellProductCode(String flowCellProductCode) {
@@ -442,6 +470,7 @@ public class SampleSheet {
 
   /**
    * Set the kit.
+   *
    * @param kit the kit to set
    */
   public void setKit(String kit) {
@@ -459,6 +488,7 @@ public class SampleSheet {
 
   /**
    * Set the sequencing kit.
+   *
    * @param sequencingKit the sequencing kit
    */
   public void setSequencingKit(String sequencingKit) {
@@ -468,6 +498,7 @@ public class SampleSheet {
 
   /**
    * Set the expansionKit.
+   *
    * @param expansionKit the expension kit
    */
   public void addExpansionKit(String expansionKit) {
@@ -477,6 +508,7 @@ public class SampleSheet {
 
   /**
    * Set other field.
+   *
    * @param key field name
    * @param value field value
    */
@@ -488,9 +520,7 @@ public class SampleSheet {
     this.otherFields.put(key, value);
   }
 
-  /**
-   * Remove other fields.
-   */
+  /** Remove other fields. */
   public void removeOtherFields() {
 
     this.otherFields.clear();
@@ -502,6 +532,7 @@ public class SampleSheet {
 
   /**
    * Test if a barcode exists in the sample sheet.
+   *
    * @return true if a barcode exists in the sample sheet
    */
   public boolean isBarcode() {
@@ -511,16 +542,17 @@ public class SampleSheet {
 
   /**
    * Get the barcodes of the sample sheet.
+   *
    * @return the barcodes of the sample sheet
    */
   public List<Barcode> getBarcodes() {
 
-    return Collections
-        .unmodifiableList(new ArrayList<>(this.barcodes.values()));
+    return Collections.unmodifiableList(new ArrayList<>(this.barcodes.values()));
   }
 
   /**
    * Test if a barcode exists.
+   *
    * @param barcode the name of the barcode
    * @return a barcode object
    */
@@ -532,6 +564,7 @@ public class SampleSheet {
 
   /**
    * Get a barcode object from the name of the barcode.
+   *
    * @param barcode the name of the barcode
    * @return a barcode object
    */
@@ -543,21 +576,21 @@ public class SampleSheet {
 
   /**
    * Test if a barcode exists.
+   *
    * @param internalBarcode the name of the internal barcode
    * @param internalBarcode the name of the external barcode
    * @return a barcode object
    */
-  public boolean containsBarcode(String internalBarcode,
-      String externalBarcode) {
+  public boolean containsBarcode(String internalBarcode, String externalBarcode) {
 
     requireNonNull(internalBarcode);
     requireNonNull(externalBarcode);
-    return this.barcodes
-        .containsKey(createKey(internalBarcode, externalBarcode));
+    return this.barcodes.containsKey(createKey(internalBarcode, externalBarcode));
   }
 
   /**
    * Get a barcode object from the names of the internal and external barcodes.
+   *
    * @param internalBarcode the name of the internal barcode
    * @param internalBarcode the name of the external barcode
    * @return a barcode object
@@ -571,6 +604,7 @@ public class SampleSheet {
 
   /**
    * Add a new barcode.
+   *
    * @param barcode the barcode to add
    * @param alias alias of the barcode
    * @return the added barcode
@@ -579,16 +613,14 @@ public class SampleSheet {
 
     Barcode b = new Barcode(barcode, alias);
     if (this.barcodes.containsKey(b.getKey())) {
-      throw new IllegalArgumentException(
-          "Barcode already exists in sample sheet: " + barcode);
+      throw new IllegalArgumentException("Barcode already exists in sample sheet: " + barcode);
     }
 
     if (!this.barcodes.isEmpty()) {
       Barcode first = this.barcodes.values().iterator().next();
       if (first.isDualBarcoding()) {
         throw new IllegalArgumentException(
-            "Cannot add a single barcode to a dual barcode sample sheet: "
-                + barcode);
+            "Cannot add a single barcode to a dual barcode sample sheet: " + barcode);
       }
     }
 
@@ -599,19 +631,18 @@ public class SampleSheet {
 
   /**
    * Add a new barcode.
+   *
    * @param internalBarcode the internal barcode to add
    * @param externalBarcode the external barcode to add
    * @param alias alias of the barcode
    * @return the added barcode
    */
-  public Barcode addBarcode(String internalBarcode, String externalBarcode,
-      String alias) {
+  public Barcode addBarcode(String internalBarcode, String externalBarcode, String alias) {
 
     Barcode b = new Barcode(internalBarcode, externalBarcode, alias);
     if (this.barcodes.containsKey(b.getKey())) {
       throw new IllegalArgumentException(
-          "Barcode already exists in sample sheet: "
-              + internalBarcode + " + " + externalBarcode);
+          "Barcode already exists in sample sheet: " + internalBarcode + " + " + externalBarcode);
     }
 
     if (!this.barcodes.isEmpty()) {
@@ -619,7 +650,9 @@ public class SampleSheet {
       if (!first.isDualBarcoding()) {
         throw new IllegalArgumentException(
             "Cannot add a dual barcode to a single barcode sample sheet: "
-                + internalBarcode + " + " + externalBarcode);
+                + internalBarcode
+                + " + "
+                + externalBarcode);
       }
     }
 
@@ -630,6 +663,7 @@ public class SampleSheet {
 
   /**
    * Remove a barcode.
+   *
    * @param barcode the barcode object to remove
    * @return true if the barcode have been removed
    */
@@ -641,6 +675,7 @@ public class SampleSheet {
 
   /**
    * Remove a barcode.
+   *
    * @param barcode the name of the barcode to remove
    * @return true if the barcode have been removed
    */
@@ -652,6 +687,7 @@ public class SampleSheet {
 
   /**
    * Remove a barcode.
+   *
    * @param internalBarcode the internal barcode of the barcode to remove
    * @param externalBarcode the external barcode of the barcode to remove
    * @return true if the barcode have been removed
@@ -663,9 +699,7 @@ public class SampleSheet {
     this.barcodes.remove(createKey(internalBarcode, externalBarcode));
   }
 
-  /**
-   * Remove barcode descriptions.
-   */
+  /** Remove barcode descriptions. */
   public void removeBarcodeDescription() {
 
     for (Barcode b : this.barcodes.values()) {
@@ -679,6 +713,7 @@ public class SampleSheet {
 
   /**
    * Check if protocol run Id exists.
+   *
    * @return true if protocol run Id exists
    */
   public boolean isProtocolRunIdField() {
@@ -688,6 +723,7 @@ public class SampleSheet {
 
   /**
    * Check if flow cell Id exists.
+   *
    * @return true if flow cell Id exists
    */
   public boolean isFlowCellIdField() {
@@ -697,6 +733,7 @@ public class SampleSheet {
 
   /**
    * Check if position Id exists.
+   *
    * @return true if position Id exists
    */
   public boolean isPositionIdField() {
@@ -706,6 +743,7 @@ public class SampleSheet {
 
   /**
    * Check if sample Id exists.
+   *
    * @return true if sample Id exists
    */
   public boolean isSampleId() {
@@ -715,6 +753,7 @@ public class SampleSheet {
 
   /**
    * Test if a type field exists.
+   *
    * @return true if a type field exists
    */
   public boolean isTypeField() {
@@ -724,7 +763,6 @@ public class SampleSheet {
       if (b.getType() != null) {
         return true;
       }
-
     }
 
     return false;
@@ -732,6 +770,7 @@ public class SampleSheet {
 
   /**
    * Test if a description field exists.
+   *
    * @return true if a description field exists
    */
   public boolean isDescriptionField() {
@@ -741,7 +780,6 @@ public class SampleSheet {
       if (b.getDescription() != null) {
         return true;
       }
-
     }
 
     return false;
@@ -753,6 +791,7 @@ public class SampleSheet {
 
   /**
    * Validate the the sample sheet.
+   *
    * @throws KenetreException if the sample sheet is not valid
    */
   public void validate() throws KenetreException {
@@ -761,8 +800,7 @@ public class SampleSheet {
       throw new KenetreException("Experiment Id is missing or empty.");
     }
 
-    if (this.flowCellProductCode == null
-        || this.flowCellProductCode.isBlank()) {
+    if (this.flowCellProductCode == null || this.flowCellProductCode.isBlank()) {
       throw new KenetreException("Flow cell product code is missing or empty.");
     }
 
@@ -772,25 +810,26 @@ public class SampleSheet {
 
     if ((this.flowCellId == null || this.flowCellId.isBlank())
         && (this.positionId == null || this.positionId.isBlank())) {
-      throw new KenetreException(
-          "Flow cell Id or position Id is missing or empty.");
+      throw new KenetreException("Flow cell Id or position Id is missing or empty.");
     }
 
     if (checkDuplicateAliases() != null) {
       throw new KenetreException("Duplicate alias: " + checkDuplicateAliases());
     }
-
   }
 
   /**
    * Test if the sample sheet is valid
+   *
    * @return true if the sample sheet is valid
    */
   public boolean isValid() {
 
     return this.experimentId != null
-        && !this.experimentId.isBlank() && this.flowCellProductCode != null
-        && !this.flowCellProductCode.isBlank() && this.kit != null
+        && !this.experimentId.isBlank()
+        && this.flowCellProductCode != null
+        && !this.flowCellProductCode.isBlank()
+        && this.kit != null
         && !this.kit.isBlank()
         && ((this.flowCellId != null && !this.flowCellId.isBlank())
             || (this.positionId != null && !this.positionId.isBlank()))
@@ -801,8 +840,7 @@ public class SampleSheet {
 
     requireNonNull(flowCellProductCode);
     if (flowCellProductCode.isBlank()) {
-      throw new IllegalArgumentException(
-          "flowCellProductCode argument cannot be empty");
+      throw new IllegalArgumentException("flowCellProductCode argument cannot be empty");
     }
 
     return flowCellProductCode.trim().toUpperCase();
@@ -812,13 +850,11 @@ public class SampleSheet {
 
     requireNonNull(sequencingKit);
     if (sequencingKit.trim().contains(" ")) {
-      throw new IllegalArgumentException(
-          "Invalid sequencing kit: " + sequencingKit);
+      throw new IllegalArgumentException("Invalid sequencing kit: " + sequencingKit);
     }
 
     if (!sequencingKit.trim().startsWith("SQK-")) {
-      throw new IllegalArgumentException(
-          "Invalid kit argument: " + sequencingKit);
+      throw new IllegalArgumentException("Invalid kit argument: " + sequencingKit);
     }
 
     return sequencingKit.trim().toUpperCase();
@@ -828,12 +864,10 @@ public class SampleSheet {
 
     requireNonNull(expansionKit);
     if (expansionKit.trim().contains(" ")) {
-      throw new IllegalArgumentException(
-          "Invalid expansion kit: " + expansionKit);
+      throw new IllegalArgumentException("Invalid expansion kit: " + expansionKit);
     }
     if (!expansionKit.startsWith("EXP-")) {
-      throw new IllegalArgumentException(
-          "Invalid kit argument: " + expansionKit);
+      throw new IllegalArgumentException("Invalid kit argument: " + expansionKit);
     }
 
     return expansionKit.trim().toUpperCase();
@@ -899,7 +933,6 @@ public class SampleSheet {
         sb.append(',');
         sb.append("description");
       }
-
     }
 
     String commonFields = commonFieldsToCSV();
@@ -987,7 +1020,6 @@ public class SampleSheet {
     }
 
     return sb.toString();
-
   }
 
   private static boolean checkBarcodeName(String prefix, String s) {
@@ -1019,7 +1051,6 @@ public class SampleSheet {
     requireNonNull(alias);
 
     return alias.matches("^[0-9a-zA-Z-_]+$") && alias.length() <= 40;
-
   }
 
   private static String createKey(String barcode) {
@@ -1029,14 +1060,12 @@ public class SampleSheet {
     return barcode.toLowerCase().trim();
   }
 
-  private static String createKey(String internalBarcode,
-      String externalBarcode) {
+  private static String createKey(String internalBarcode, String externalBarcode) {
 
     requireNonNull(internalBarcode);
     requireNonNull(externalBarcode);
 
-    return internalBarcode.toLowerCase().trim()
-        + '\t' + externalBarcode.toLowerCase().trim();
+    return internalBarcode.toLowerCase().trim() + '\t' + externalBarcode.toLowerCase().trim();
   }
 
   private String checkDuplicateAliases() {
@@ -1059,6 +1088,7 @@ public class SampleSheet {
 
   /**
    * Quote only string containing comma
+   *
    * @param String string to process
    */
   private static String quoteStringWithComma(final String s) {
@@ -1081,18 +1111,22 @@ public class SampleSheet {
   @Override
   public int hashCode() {
 
-    return Objects.hash(this.protocolRunId, this.flowCellId, this.positionId,
-        this.sampleId, this.experimentId, this.flowCellProductCode, this.kit,
+    return Objects.hash(
+        this.protocolRunId,
+        this.flowCellId,
+        this.positionId,
+        this.sampleId,
+        this.experimentId,
+        this.flowCellProductCode,
+        this.kit,
         this.barcodes);
   }
 
   @Override
   public boolean equals(Object o) {
 
-    if (this == o)
-      return true;
-    if (!(o instanceof SampleSheet))
-      return false;
+    if (this == o) return true;
+    if (!(o instanceof SampleSheet)) return false;
     SampleSheet other = (SampleSheet) o;
 
     return Objects.equals(this.protocolRunId, other.protocolRunId)
@@ -1108,10 +1142,21 @@ public class SampleSheet {
   @Override
   public String toString() {
     return "SampleSheet [protocolRunId="
-        + protocolRunId + ", flowCellId=" + flowCellId + ", positionId="
-        + positionId + ", sampleId=" + sampleId + ", experimentId="
-        + experimentId + ", flowCellProductCode=" + flowCellProductCode
-        + ", kit=" + kit + ", barcodes=" + barcodes + "]";
+        + protocolRunId
+        + ", flowCellId="
+        + flowCellId
+        + ", positionId="
+        + positionId
+        + ", sampleId="
+        + sampleId
+        + ", experimentId="
+        + experimentId
+        + ", flowCellProductCode="
+        + flowCellProductCode
+        + ", kit="
+        + kit
+        + ", barcodes="
+        + barcodes
+        + "]";
   }
-
 }

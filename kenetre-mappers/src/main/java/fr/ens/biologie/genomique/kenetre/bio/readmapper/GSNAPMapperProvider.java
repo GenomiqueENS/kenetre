@@ -24,6 +24,8 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.readmapper;
 
+import com.google.common.collect.Lists;
+import fr.ens.biologie.genomique.kenetre.bio.FastqFormat;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,12 +33,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
-import fr.ens.biologie.genomique.kenetre.bio.FastqFormat;
-
 /**
  * This class define a wrapper on the GSNAP mapper.
+ *
  * @since 1.2
  * @author Claire Wallon
  */
@@ -83,14 +82,13 @@ public class GSNAPMapperProvider extends AbstractMapperProvider {
       final String gsnapPath;
 
       synchronized (SYNC) {
-        gsnapPath = mapperInstance.getExecutor()
-            .install(flavoredBinary(mapperInstance.getFlavor()));
+        gsnapPath =
+            mapperInstance.getExecutor().install(flavoredBinary(mapperInstance.getFlavor()));
       }
 
       final List<String> cmd = Lists.newArrayList(gsnapPath, " --version");
 
-      final String s =
-          MapperUtils.executeToString(mapperInstance.getExecutor(), cmd);
+      final String s = MapperUtils.executeToString(mapperInstance.getExecutor(), cmd);
 
       final String[] lines = s.split("\n");
 
@@ -112,8 +110,7 @@ public class GSNAPMapperProvider extends AbstractMapperProvider {
   }
 
   @Override
-  public List<String> getIndexerExecutables(
-      final MapperInstance mapperInstance) {
+  public List<String> getIndexerExecutables(final MapperInstance mapperInstance) {
 
     return Arrays.asList(INDEXER_EXECUTABLES);
   }
@@ -127,25 +124,24 @@ public class GSNAPMapperProvider extends AbstractMapperProvider {
   public boolean checkIfFlavorExists(final MapperInstance mapperInstance) {
 
     switch (mapperInstance.getFlavor().trim().toLowerCase()) {
+      case GSNAP_MAPPER_EXECUTABLE:
+      case GMAP_MAPPER_EXECUTABLE:
+        return true;
 
-    case GSNAP_MAPPER_EXECUTABLE:
-    case GMAP_MAPPER_EXECUTABLE:
-      return true;
-
-    default:
-      return false;
-
+      default:
+        return false;
     }
   }
 
   @Override
-  public List<String> getIndexerCommand(final File indexerFile,
-      final File genomeFile, final List<String> indexerArguments,
+  public List<String> getIndexerCommand(
+      final File indexerFile,
+      final File genomeFile,
+      final List<String> indexerArguments,
       final int threads) {
 
     List<String> cmd = new ArrayList<>();
-    final String binariesDirectory =
-        indexerFile.getParentFile().getAbsolutePath();
+    final String binariesDirectory = indexerFile.getParentFile().getAbsolutePath();
     final String genomeDirectory = genomeFile.getParentFile().getAbsolutePath();
 
     cmd.add(indexerFile.getAbsolutePath());
@@ -162,6 +158,7 @@ public class GSNAPMapperProvider extends AbstractMapperProvider {
 
   /**
    * Get the name of the flavored binary.
+   *
    * @return the flavored binary name
    */
   private String flavoredBinary(final String flavor) {
@@ -170,47 +167,65 @@ public class GSNAPMapperProvider extends AbstractMapperProvider {
       return GMAP_MAPPER_EXECUTABLE;
     }
     return GSNAP_MAPPER_EXECUTABLE;
-
   }
 
   @Override
-  public MapperProcess mapSE(final EntryMapping mapping, final File inputFile,
-      final File errorFile, final File logFile) throws IOException {
+  public MapperProcess mapSE(
+      final EntryMapping mapping, final File inputFile, final File errorFile, final File logFile)
+      throws IOException {
 
     final String gsnapPath;
 
     synchronized (SYNC) {
-      gsnapPath =
-          mapping.getExecutor().install(flavoredBinary(mapping.getFlavor()));
+      gsnapPath = mapping.getExecutor().install(flavoredBinary(mapping.getFlavor()));
     }
 
-    return createMapperProcessSE(mapping, gsnapPath,
-        getGSNAPQualityArgument(mapping.getFastqFormat()), inputFile,
+    return createMapperProcessSE(
+        mapping,
+        gsnapPath,
+        getGSNAPQualityArgument(mapping.getFastqFormat()),
+        inputFile,
         errorFile);
   }
 
   @Override
-  public MapperProcess mapPE(final EntryMapping mapping, final File inputFile1,
-      final File inputFile2, final File errorFile, final File logFile)
+  public MapperProcess mapPE(
+      final EntryMapping mapping,
+      final File inputFile1,
+      final File inputFile2,
+      final File errorFile,
+      final File logFile)
       throws IOException {
     final String gsnapPath;
 
     synchronized (SYNC) {
-      gsnapPath =
-          mapping.getExecutor().install(flavoredBinary(mapping.getFlavor()));
+      gsnapPath = mapping.getExecutor().install(flavoredBinary(mapping.getFlavor()));
     }
 
-    return createMapperProcessPE(mapping, gsnapPath,
-        getGSNAPQualityArgument(mapping.getFastqFormat()), inputFile1,
-        inputFile2, errorFile);
+    return createMapperProcessPE(
+        mapping,
+        gsnapPath,
+        getGSNAPQualityArgument(mapping.getFastqFormat()),
+        inputFile1,
+        inputFile2,
+        errorFile);
   }
 
-  private MapperProcess createMapperProcessSE(final EntryMapping mapping,
-      final String gsnapPath, final String fastqFormat, final File inputFile,
-      final File errorFile) throws IOException {
+  private MapperProcess createMapperProcessSE(
+      final EntryMapping mapping,
+      final String gsnapPath,
+      final String fastqFormat,
+      final File inputFile,
+      final File errorFile)
+      throws IOException {
 
-    return new MapperProcess(mapping.getName(), mapping.getExecutor(),
-        mapping.getTemporaryDirectory(), errorFile, false, inputFile) {
+    return new MapperProcess(
+        mapping.getName(),
+        mapping.getExecutor(),
+        mapping.getTemporaryDirectory(),
+        errorFile,
+        false,
+        inputFile) {
 
       @Override
       protected List<List<String>> createCommandLines() {
@@ -219,8 +234,7 @@ public class GSNAPMapperProvider extends AbstractMapperProvider {
         final List<String> cmd = new ArrayList<>();
         cmd.add(gsnapPath);
 
-        if (GSNAP_MAPPER_EXECUTABLE
-            .equals(flavoredBinary(mapping.getFlavor()))) {
+        if (GSNAP_MAPPER_EXECUTABLE.equals(flavoredBinary(mapping.getFlavor()))) {
           cmd.add("-A");
           cmd.add("sam");
         } else {
@@ -243,16 +257,25 @@ public class GSNAPMapperProvider extends AbstractMapperProvider {
 
         return Collections.singletonList(cmd);
       }
-
     };
   }
 
-  private MapperProcess createMapperProcessPE(final EntryMapping mapping,
-      final String gsnapPath, final String fastqFormat, final File inputFile1,
-      final File inputFile2, final File errorFile) throws IOException {
+  private MapperProcess createMapperProcessPE(
+      final EntryMapping mapping,
+      final String gsnapPath,
+      final String fastqFormat,
+      final File inputFile1,
+      final File inputFile2,
+      final File errorFile)
+      throws IOException {
 
-    return new MapperProcess(mapping.getName(), mapping.getExecutor(),
-        mapping.getTemporaryDirectory(), errorFile, true, inputFile1,
+    return new MapperProcess(
+        mapping.getName(),
+        mapping.getExecutor(),
+        mapping.getTemporaryDirectory(),
+        errorFile,
+        true,
+        inputFile1,
         inputFile2) {
 
       @Override
@@ -262,8 +285,7 @@ public class GSNAPMapperProvider extends AbstractMapperProvider {
         final List<String> cmd = new ArrayList<>();
         cmd.add(gsnapPath);
 
-        if (GSNAP_MAPPER_EXECUTABLE
-            .equals(flavoredBinary(mapping.getFlavor()))) {
+        if (GSNAP_MAPPER_EXECUTABLE.equals(flavoredBinary(mapping.getFlavor()))) {
           cmd.add("-A");
           cmd.add("sam");
         } else {
@@ -287,28 +309,24 @@ public class GSNAPMapperProvider extends AbstractMapperProvider {
 
         return Collections.singletonList(cmd);
       }
-
     };
   }
 
-  private static String getGSNAPQualityArgument(final FastqFormat format)
-      throws IOException {
+  private static String getGSNAPQualityArgument(final FastqFormat format) throws IOException {
 
     switch (format) {
+      case FASTQ_ILLUMINA:
+        return "--quality-protocol=illumina";
 
-    case FASTQ_ILLUMINA:
-      return "--quality-protocol=illumina";
+      case FASTQ_ILLUMINA_1_5:
+        return "--quality-protocol=illumina";
 
-    case FASTQ_ILLUMINA_1_5:
-      return "--quality-protocol=illumina";
+      case FASTQ_SOLEXA:
+        throw new IOException("GSNAP not handle the Solexa FASTQ format.");
 
-    case FASTQ_SOLEXA:
-      throw new IOException("GSNAP not handle the Solexa FASTQ format.");
-
-    case FASTQ_SANGER:
-    default:
-      return "--quality-protocol=sanger";
+      case FASTQ_SANGER:
+      default:
+        return "--quality-protocol=sanger";
     }
   }
-
 }

@@ -1,11 +1,11 @@
 package fr.ens.biologie.genomique.kenetre.bio.readfilter;
 
 import com.google.common.base.Splitter;
-
 import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
 
 /**
  * This class define a read filter that reverse reads marked as "polyT"
+ *
  * @since 2.4
  * @author Laurent Jourdren
  */
@@ -42,5 +42,4 @@ public class ReversePolyTReadFilter extends AbstractReadFilter {
 
     return true;
   }
-
 }

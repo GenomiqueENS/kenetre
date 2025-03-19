@@ -6,6 +6,7 @@ import org.apache.commons.csv.CSVRecord;
 
 /**
  * This class define some utility methods for parsing CSV files.
+ *
  * @author Laurent Jourdren
  * @since 0.3
  */
@@ -13,13 +14,13 @@ public class CSVUtils {
 
   /**
    * Parse int field.
+   *
    * @param record record to parse
    * @param fieldName field name
    * @param defaultValue default value
    * @return parsing result
    */
-  public static int parseInt(CSVRecord record, String fieldName,
-      int defaultValue) {
+  public static int parseInt(CSVRecord record, String fieldName, int defaultValue) {
 
     requireNonNull(record);
     requireNonNull(fieldName);
@@ -43,13 +44,13 @@ public class CSVUtils {
 
   /**
    * Parse long field.
+   *
    * @param record record to parse
    * @param fieldName field name
    * @param defaultValue default value
    * @return parsing result
    */
-  public static long parseLong(CSVRecord record, String fieldName,
-      long defaultValue) {
+  public static long parseLong(CSVRecord record, String fieldName, long defaultValue) {
 
     requireNonNull(record);
     requireNonNull(fieldName);
@@ -73,13 +74,13 @@ public class CSVUtils {
 
   /**
    * Parse double field.
+   *
    * @param record record to parse
    * @param fieldName field name
    * @param defaultValue default value
    * @return parsing result
    */
-  public static double parseDouble(CSVRecord record, String fieldName,
-      double defaultValue) {
+  public static double parseDouble(CSVRecord record, String fieldName, double defaultValue) {
 
     requireNonNull(record);
     requireNonNull(fieldName);
@@ -103,13 +104,13 @@ public class CSVUtils {
 
   /**
    * Parse String field.
+   *
    * @param record record to parse
    * @param fieldName field name
    * @param defaultValue default value
    * @return parsing result
    */
-  public static String parseString(CSVRecord record, String fieldName,
-      String defaultValue) {
+  public static String parseString(CSVRecord record, String fieldName, String defaultValue) {
 
     requireNonNull(record);
     requireNonNull(fieldName);
@@ -126,5 +127,4 @@ public class CSVUtils {
 
     return value;
   }
-
 }

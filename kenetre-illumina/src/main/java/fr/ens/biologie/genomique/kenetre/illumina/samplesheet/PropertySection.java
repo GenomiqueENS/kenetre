@@ -2,26 +2,26 @@ package fr.ens.biologie.genomique.kenetre.illumina.samplesheet;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
-
 /**
  * This class define a property section of a samplesheet.
+ *
  * @author Laurent Jourdren
  * @since 3.0
  */
 public class PropertySection {
 
-  private final Multimap<String, String> properties =
-      LinkedListMultimap.create();
+  private final Multimap<String, String> properties = LinkedListMultimap.create();
 
   /**
    * Test if the property section contains a key.
+   *
    * @param key the key for the metadata
    * @return true if the key exists
    */
@@ -32,6 +32,7 @@ public class PropertySection {
 
   /**
    * Get property value.
+   *
    * @param key the key for the metadata
    * @return the value of the metadata
    */
@@ -42,6 +43,7 @@ public class PropertySection {
 
   /**
    * Get property value.
+   *
    * @param key the key for the metadata
    * @param defaultValue default value
    * @return the value of the metadata
@@ -61,6 +63,7 @@ public class PropertySection {
 
   /**
    * Get an integer property value.
+   *
    * @param key the key for the metadata
    * @param defaultValue default value
    * @return the value of the metadata
@@ -74,6 +77,7 @@ public class PropertySection {
 
   /**
    * Get an integer property value.
+   *
    * @param key the key for the metadata
    * @return the value of the metadata
    */
@@ -88,6 +92,7 @@ public class PropertySection {
 
   /**
    * Set a property.
+   *
    * @param key key of the property
    * @param value value of the property
    */
@@ -107,6 +112,7 @@ public class PropertySection {
 
   /**
    * Remove a property.
+   *
    * @param key name of the property
    */
   public void remove(String key) {
@@ -120,6 +126,7 @@ public class PropertySection {
 
   /**
    * Get the names of the properties.
+   *
    * @return a set with the names of the properties
    */
   public Set<String> keySet() {
@@ -129,6 +136,7 @@ public class PropertySection {
 
   /**
    * Get the names and values of the properties.
+   *
    * @return a set with the names and values of the properties
    */
   public Collection<Map.Entry<String, String>> entrySet() {
@@ -136,9 +144,7 @@ public class PropertySection {
     return this.properties.entries();
   }
 
-  /**
-   * Clear the properties.
-   */
+  /** Clear the properties. */
   public void clear() {
 
     this.clear();
@@ -146,6 +152,7 @@ public class PropertySection {
 
   /**
    * Get the number of properties in the section.
+   *
    * @return the number of properties in the section
    */
   public int size() {
@@ -154,6 +161,7 @@ public class PropertySection {
 
   /**
    * Test if the section is empty.
+   *
    * @return true if the section is empty
    */
   public boolean isEmpty() {
@@ -166,5 +174,4 @@ public class PropertySection {
 
     return this.properties.toString();
   }
-
 }

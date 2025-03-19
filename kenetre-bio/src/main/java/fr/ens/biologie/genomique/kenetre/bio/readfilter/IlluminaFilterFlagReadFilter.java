@@ -29,8 +29,8 @@ import fr.ens.biologie.genomique.kenetre.bio.IlluminaReadId;
 import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
 
 /**
- * This class define a read filter that remove all the reads that not pass the
- * Illumina filter.
+ * This class define a read filter that remove all the reads that not pass the Illumina filter.
+ *
  * @since 1.1
  * @author Laurent Jourdren
  */
@@ -84,5 +84,4 @@ public class IlluminaFilterFlagReadFilter extends AbstractReadFilter {
 
     return this.getClass().getSimpleName() + "{}";
   }
-
 }

@@ -4,12 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
-import fr.ens.biologie.genomique.kenetre.bio.readfilter.CropTrimmerReadFilter;
-import fr.ens.biologie.genomique.kenetre.bio.readfilter.ReadFilter;
+import org.junit.Test;
 
 public class CropTrimmerReadFilterTest {
   @Test
@@ -25,6 +22,5 @@ public class CropTrimmerReadFilterTest {
     assertEquals("AGGGG", read.getSequence());
     assertEquals("xwxwx", read.getQuality());
     assertFalse(filter.accept(null));
-
   }
 }

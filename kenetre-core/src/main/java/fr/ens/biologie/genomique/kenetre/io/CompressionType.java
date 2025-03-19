@@ -26,6 +26,8 @@ package fr.ens.biologie.genomique.kenetre.io;
 
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.util.StringUtils;
+import fr.ens.biologie.genomique.kenetre.util.SystemUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -40,18 +42,17 @@ import java.util.Objects;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import fr.ens.biologie.genomique.kenetre.util.StringUtils;
-import fr.ens.biologie.genomique.kenetre.util.SystemUtils;
-
 /**
- * This enum allow to create InputStreams and OutputStream for Gzip and Bzip2
- * according environment (local or hadoop mode).
+ * This enum allow to create InputStreams and OutputStream for Gzip and Bzip2 according environment
+ * (local or hadoop mode).
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
 public enum CompressionType {
-
-  GZIP("gzip", ".gz"), BZIP2("bzip2", ".bz2"), NONE("", "");
+  GZIP("gzip", ".gz"),
+  BZIP2("bzip2", ".bz2"),
+  NONE("", "");
 
   private final String contentEncoding;
   private final String extension;
@@ -62,6 +63,7 @@ public enum CompressionType {
 
   /**
    * Get the content encoding for this type
+   *
    * @return a String with the content type
    */
   public String getContentEncoding() {
@@ -71,6 +73,7 @@ public enum CompressionType {
 
   /**
    * Get the extension for this type
+   *
    * @return a String with the extension
    */
   public String getExtension() {
@@ -80,6 +83,7 @@ public enum CompressionType {
 
   /**
    * Test if a file is compressed.
+   *
    * @return true if the file is compressed
    */
   public boolean isCompressed() {
@@ -93,64 +97,58 @@ public enum CompressionType {
 
   /**
    * Get the compression input stream required by a content encoding
+   *
    * @param is the input stream
    * @return an input stream
    * @throws IOException if an error occurs while creating the input stream
    */
-  public InputStream createInputStream(final InputStream is)
-      throws IOException {
+  public InputStream createInputStream(final InputStream is) throws IOException {
 
     if (is == null) {
       return null;
     }
 
     switch (this) {
+      case GZIP:
+        return createGZipInputStream(is);
 
-    case GZIP:
-      return createGZipInputStream(is);
+      case BZIP2:
+        return createBZip2InputStream(is);
 
-    case BZIP2:
-      return createBZip2InputStream(is);
+      case NONE:
+        return is;
 
-    case NONE:
-      return is;
-
-    default:
-      return null;
-
+      default:
+        return null;
     }
-
   }
 
   /**
    * Get the compression output stream required by a content encoding.
+   *
    * @param os the output stream
    * @return an output stream
    * @throws IOException if an error occurs while creating the input stream
    */
-  public OutputStream createOutputStream(final OutputStream os)
-      throws IOException {
+  public OutputStream createOutputStream(final OutputStream os) throws IOException {
 
     if (os == null) {
       return null;
     }
 
     switch (this) {
+      case GZIP:
+        return createGZipOutputStream(os);
 
-    case GZIP:
-      return createGZipOutputStream(os);
+      case BZIP2:
+        return createBZip2OutputStream(os);
 
-    case BZIP2:
-      return createBZip2OutputStream(os);
+      case NONE:
+        return os;
 
-    case NONE:
-      return os;
-
-    default:
-      return null;
-
+      default:
+        return null;
     }
-
   }
 
   //
@@ -159,11 +157,11 @@ public enum CompressionType {
 
   /**
    * Get a compression type from the content encoding.
+   *
    * @param contentType the contentType to search
    * @return the requested CompressionType
    */
-  public static CompressionType getCompressionTypeByContentEncoding(
-      final String contentType) {
+  public static CompressionType getCompressionTypeByContentEncoding(final String contentType) {
 
     if (contentType == null) {
       return null;
@@ -180,11 +178,11 @@ public enum CompressionType {
 
   /**
    * Get a compression type from an extension.
+   *
    * @param extension the extension of the file
    * @return the requested CompressionType
    */
-  public static CompressionType getCompressionTypeByExtension(
-      final String extension) {
+  public static CompressionType getCompressionTypeByExtension(final String extension) {
 
     if (extension == null) {
       return null;
@@ -201,11 +199,11 @@ public enum CompressionType {
 
   /**
    * Get a compression type from a filename
+   *
    * @param filename the name of the file
    * @return the requested CompressionType
    */
-  public static CompressionType getCompressionTypeByFilename(
-      final String filename) {
+  public static CompressionType getCompressionTypeByFilename(final String filename) {
 
     if (filename == null) {
       return null;
@@ -216,6 +214,7 @@ public enum CompressionType {
 
   /**
    * Get a compression type from a filename
+   *
    * @param file the file
    * @return the requested CompressionType
    */
@@ -230,6 +229,7 @@ public enum CompressionType {
 
   /**
    * Get a compression type from a filename
+   *
    * @param file the file
    * @return the requested CompressionType
    */
@@ -244,24 +244,24 @@ public enum CompressionType {
 
   /**
    * Create a GZip input stream.
+   *
    * @param is the input stream to uncompress
    * @return a uncompressed input stream
    * @throws IOException if an error occurs while creating the input stream
    */
-  public static InputStream createGZipInputStream(final InputStream is)
-      throws IOException {
+  public static InputStream createGZipInputStream(final InputStream is) throws IOException {
 
     return new GZIPInputStream(is);
   }
 
   /**
    * Create a BZip2 input stream.
+   *
    * @param is the input stream to uncompress
    * @return a uncompressed input stream
    * @throws IOException if an error occurs while creating the input stream
    */
-  public static InputStream createBZip2InputStream(final InputStream is)
-      throws IOException {
+  public static InputStream createBZip2InputStream(final InputStream is) throws IOException {
 
     if (SystemUtils.isClass(
         "org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream")) {
@@ -272,8 +272,7 @@ public enum CompressionType {
       return createBZip2InputStreamWithHadoopLib(is);
     }
 
-    throw new IOException(
-        "Unable to find a class to create a BZip2InputStream.");
+    throw new IOException("Unable to find a class to create a BZip2InputStream.");
   }
 
   //
@@ -282,24 +281,24 @@ public enum CompressionType {
 
   /**
    * Create a GZip output stream.
+   *
    * @param os the output stream to compress
    * @return a compressed output stream
    * @throws IOException if an error occurs while creating the output stream
    */
-  public static OutputStream createGZipOutputStream(final OutputStream os)
-      throws IOException {
+  public static OutputStream createGZipOutputStream(final OutputStream os) throws IOException {
 
     return new GZIPOutputStream(os);
   }
 
   /**
    * Create a BZip2 output stream.
+   *
    * @param os the output stream to compress
    * @return a compressed output stream
    * @throws IOException if an error occurs while creating the output stream
    */
-  public static OutputStream createBZip2OutputStream(final OutputStream os)
-      throws IOException {
+  public static OutputStream createBZip2OutputStream(final OutputStream os) throws IOException {
 
     if (SystemUtils.isClass(
         "org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream")) {
@@ -310,8 +309,7 @@ public enum CompressionType {
       return createBZip2OutputStreamWithHadoopLib(os);
     }
 
-    throw new IOException(
-        "Unable to find a class to create a BZip2InputStream.");
+    throw new IOException("Unable to find a class to create a BZip2InputStream.");
   }
 
   //
@@ -320,9 +318,10 @@ public enum CompressionType {
 
   /**
    * Remove the compression extension to a string if exists.
+   *
    * @param s String to process
-   * @return the String without the compression extension or the original String
-   *         id the String does not ends with a compression extension
+   * @return the String without the compression extension or the original String id the String does
+   *     not ends with a compression extension
    */
   public static String removeCompressionExtension(final String s) {
 
@@ -351,27 +350,34 @@ public enum CompressionType {
 
   /**
    * Create a bzip2 input stream.
+   *
    * @param is input stream
    * @return an uncompressed input stream
    * @throws IOException if an error occurs while creating the input stream
    */
-  private static InputStream createBZip2InputStreamWithHadoopLib(
-      final InputStream is) throws IOException {
+  private static InputStream createBZip2InputStreamWithHadoopLib(final InputStream is)
+      throws IOException {
 
     Objects.requireNonNull(is);
 
     try {
-      Object instance = SystemUtils.class.getClassLoader()
-          .loadClass("org.apache.hadoop.io.compress.BZip2Codec").newInstance();
+      Object instance =
+          SystemUtils.class
+              .getClassLoader()
+              .loadClass("org.apache.hadoop.io.compress.BZip2Codec")
+              .newInstance();
 
-      Method m =
-          instance.getClass().getMethod("createInputStream", InputStream.class);
+      Method m = instance.getClass().getMethod("createInputStream", InputStream.class);
 
       return (InputStream) m.invoke(instance, is);
 
-    } catch (InstantiationException | IllegalAccessException
-        | ClassNotFoundException | NoSuchMethodException | SecurityException
-        | IllegalArgumentException | InvocationTargetException e) {
+    } catch (InstantiationException
+        | IllegalAccessException
+        | ClassNotFoundException
+        | NoSuchMethodException
+        | SecurityException
+        | IllegalArgumentException
+        | InvocationTargetException e) {
 
       return null;
     }
@@ -379,27 +385,34 @@ public enum CompressionType {
 
   /**
    * Create a bzip2 output stream.
+   *
    * @param os the output stream to compress
    * @return a compressed output stream
    * @throws IOException if an error occurs while creating the output stream
    */
-  private static OutputStream createBZip2OutputStreamWithHadoopLib(
-      final OutputStream os) throws IOException {
+  private static OutputStream createBZip2OutputStreamWithHadoopLib(final OutputStream os)
+      throws IOException {
 
     Objects.requireNonNull(os);
 
     try {
-      Object instance = SystemUtils.class.getClassLoader()
-          .loadClass("org.apache.hadoop.io.compress.BZip2Codec").newInstance();
+      Object instance =
+          SystemUtils.class
+              .getClassLoader()
+              .loadClass("org.apache.hadoop.io.compress.BZip2Codec")
+              .newInstance();
 
-      Method m = instance.getClass().getMethod("createOutputStream",
-          OutputStream.class);
+      Method m = instance.getClass().getMethod("createOutputStream", OutputStream.class);
 
       return (OutputStream) m.invoke(instance, os);
 
-    } catch (InstantiationException | IllegalAccessException
-        | ClassNotFoundException | NoSuchMethodException | SecurityException
-        | IllegalArgumentException | InvocationTargetException e) {
+    } catch (InstantiationException
+        | IllegalAccessException
+        | ClassNotFoundException
+        | NoSuchMethodException
+        | SecurityException
+        | IllegalArgumentException
+        | InvocationTargetException e) {
 
       return null;
     }
@@ -407,27 +420,34 @@ public enum CompressionType {
 
   /**
    * Create a bzip2 input stream.
+   *
    * @param is input stream
    * @return an uncompressed input stream
    * @throws IOException if an error occurs while creating the input stream
    */
-  private static InputStream createBZip2InputStreamWithCommonCompress(
-      final InputStream is) throws IOException {
+  private static InputStream createBZip2InputStreamWithCommonCompress(final InputStream is)
+      throws IOException {
 
     Objects.requireNonNull(is);
 
     try {
 
-      Constructor<?> c = SystemUtils.class.getClassLoader().loadClass(
-          "org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream")
-          .getConstructor(InputStream.class);
+      Constructor<?> c =
+          SystemUtils.class
+              .getClassLoader()
+              .loadClass("org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream")
+              .getConstructor(InputStream.class);
       c.setAccessible(true);
 
       return (InputStream) c.newInstance(new Object[] {is});
 
-    } catch (InstantiationException | IllegalAccessException
-        | ClassNotFoundException | NoSuchMethodException | SecurityException
-        | IllegalArgumentException | InvocationTargetException e) {
+    } catch (InstantiationException
+        | IllegalAccessException
+        | ClassNotFoundException
+        | NoSuchMethodException
+        | SecurityException
+        | IllegalArgumentException
+        | InvocationTargetException e) {
 
       return null;
     }
@@ -435,27 +455,35 @@ public enum CompressionType {
 
   /**
    * Create a bzip2 output stream.
+   *
    * @param os the output stream to compress
    * @return a compressed output stream
    * @throws IOException if an error occurs while creating the output stream
    */
-  private static OutputStream createBZip2OutputStreamWithCommonCompress(
-      final OutputStream os) throws IOException {
+  private static OutputStream createBZip2OutputStreamWithCommonCompress(final OutputStream os)
+      throws IOException {
 
     Objects.requireNonNull(os);
 
     try {
 
-      Constructor<?> c = SystemUtils.class.getClassLoader().loadClass(
-          "org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream")
-          .getConstructor(OutputStream.class);
+      Constructor<?> c =
+          SystemUtils.class
+              .getClassLoader()
+              .loadClass(
+                  "org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream")
+              .getConstructor(OutputStream.class);
       c.setAccessible(true);
 
       return (OutputStream) c.newInstance(new Object[] {os});
 
-    } catch (InstantiationException | IllegalAccessException
-        | ClassNotFoundException | NoSuchMethodException | SecurityException
-        | IllegalArgumentException | InvocationTargetException e) {
+    } catch (InstantiationException
+        | IllegalAccessException
+        | ClassNotFoundException
+        | NoSuchMethodException
+        | SecurityException
+        | IllegalArgumentException
+        | InvocationTargetException e) {
 
       return null;
     }
@@ -467,6 +495,7 @@ public enum CompressionType {
 
   /**
    * Create an uncompressed InputStream for a file.
+   *
    * @param path file to read
    * @return an uncompressed InputStream
    * @throws IOException if error occurs while creating the InputStream
@@ -480,6 +509,7 @@ public enum CompressionType {
 
   /**
    * Create an uncompressed InputStream for a file.
+   *
    * @param file file to read
    * @return an uncompressed InputStream
    * @throws IOException if error occurs while creating the InputStream
@@ -491,8 +521,7 @@ public enum CompressionType {
     CompressionType ct = getCompressionTypeByFile(file);
 
     if (ct == null) {
-      throw new IOException(
-          "Unable to determine compression of the file: " + file);
+      throw new IOException("Unable to determine compression of the file: " + file);
     }
 
     return ct.createInputStream(new FileInputStream(file));
@@ -500,6 +529,7 @@ public enum CompressionType {
 
   /**
    * Create a compressed OutputStream for a file.
+   *
    * @param path file to write
    * @return an compressed OutputStream
    * @throws IOException if error occurs while creating the OutputStream
@@ -513,6 +543,7 @@ public enum CompressionType {
 
   /**
    * Create a compressed OutputStream for a file.
+   *
    * @param file file to write
    * @return an compressed OutputStream
    * @throws IOException if error occurs while creating the OutputStream
@@ -524,8 +555,7 @@ public enum CompressionType {
     CompressionType ct = getCompressionTypeByFile(file);
 
     if (ct == null) {
-      throw new IOException(
-          "Unable to determine compression of the file: " + file);
+      throw new IOException("Unable to determine compression of the file: " + file);
     }
 
     return ct.createOutputStream(new FileOutputStream(file));
@@ -537,6 +567,7 @@ public enum CompressionType {
 
   /**
    * Constructor.
+   *
    * @param contentEncoding content encoding of the compression
    * @param extension extension for the compression
    */
@@ -545,5 +576,4 @@ public enum CompressionType {
     this.contentEncoding = contentEncoding;
     this.extension = extension;
   }
-
 }

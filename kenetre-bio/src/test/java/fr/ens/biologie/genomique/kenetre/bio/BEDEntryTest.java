@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.Test;
 
 @SuppressWarnings("deprecation")
@@ -130,8 +129,7 @@ public class BEDEntryTest {
     e.setThickEnd(200);
     assertEquals(101, e.getThickLength());
 
-    String s =
-        "chr1\t11873\t14409\tuc001aaa.3\t0\t+\t1000\t2001\t0\t3\t354,109,1189,\t0,739,1347,";
+    String s = "chr1\t11873\t14409\tuc001aaa.3\t0\t+\t1000\t2001\t0\t3\t354,109,1189,\t0,739,1347,";
 
     e.parse(s, 12);
     assertEquals(1001, e.getThickLength());
@@ -222,7 +220,6 @@ public class BEDEntryTest {
       assertTrue(true);
     }
     assertEquals(5555, e.getStart());
-
   }
 
   @Test
@@ -278,7 +275,6 @@ public class BEDEntryTest {
     } catch (IllegalArgumentException exp) {
       assertTrue(true);
     }
-
   }
 
   @Test
@@ -308,7 +304,6 @@ public class BEDEntryTest {
     } catch (IllegalArgumentException exp) {
       assertTrue(true);
     }
-
   }
 
   @Test
@@ -413,7 +408,6 @@ public class BEDEntryTest {
       assertTrue(true);
     }
     assertEquals("0", e.getRgbItem());
-
   }
 
   @Test
@@ -540,7 +534,8 @@ public class BEDEntryTest {
     e.parse(s, 12);
     assertEquals(s, e.toBED(12));
 
-    s = "chr2\t21873\t24409\tuc002aaa.3\t0\t-\t21873\t21873\t0,155,200\t3\t1354,1109,11189,\t0,739,1347,";
+    s =
+        "chr2\t21873\t24409\tuc002aaa.3\t0\t-\t21873\t21873\t0,155,200\t3\t1354,1109,11189,\t0,739,1347,";
     e.parse(s, 12);
     assertEquals(s, e.toBED(12));
   }
@@ -680,7 +675,6 @@ public class BEDEntryTest {
     } catch (BadBioEntryException exp) {
       assertTrue(true);
     }
-
   }
 
   @Test
@@ -739,16 +733,18 @@ public class BEDEntryTest {
 
     e.addMetaDataEntry("browser", "position chr7:127471196-127495720");
     e.addMetaDataEntry("browser", "hide all");
-    e.addMetaDataEntry("track",
+    e.addMetaDataEntry(
+        "track",
         "name=\"ItemRGBDemo\" description=\"Item RGB demonstration\" visibility=2 itemRgb=\"On\"");
 
     assertEquals(2, e.getMetadataKeyNames().size());
-    assertEquals(new HashSet<>(Arrays.asList("browser", "track")),
-        e.getMetadataKeyNames());
-    assertEquals(Arrays.asList("position chr7:127471196-127495720", "hide all"),
+    assertEquals(new HashSet<>(Arrays.asList("browser", "track")), e.getMetadataKeyNames());
+    assertEquals(
+        Arrays.asList("position chr7:127471196-127495720", "hide all"),
         e.getMetadataEntryValues("browser"));
-    assertEquals(Collections.singletonList(
-        "name=\"ItemRGBDemo\" description=\"Item RGB demonstration\" visibility=2 itemRgb=\"On\""),
+    assertEquals(
+        Collections.singletonList(
+            "name=\"ItemRGBDemo\" description=\"Item RGB demonstration\" visibility=2 itemRgb=\"On\""),
         e.getMetadataEntryValues("track"));
   }
 
@@ -777,7 +773,6 @@ public class BEDEntryTest {
     assertFalse(e.getMetadataKeyNames().contains("key0"));
     assertTrue(e.getMetadataKeyNames().contains("key1"));
     assertTrue(e.getMetadataKeyNames().contains("key2"));
-
   }
 
   @Test
@@ -789,14 +784,14 @@ public class BEDEntryTest {
 
     e.addBlock(100, 250);
     assertEquals(
-        Collections.singletonList(new GenomicInterval("chr1", 100, 250, '.')),
-        e.getBlocks());
+        Collections.singletonList(new GenomicInterval("chr1", 100, 250, '.')), e.getBlocks());
 
     e.addBlock(300, 500);
     assertEquals(2, e.getBlockCount());
-    assertEquals(asList(new GenomicInterval("chr1", 100, 250, '.'),
-        new GenomicInterval("chr1", 300, 500, '.')), e.getBlocks());
-
+    assertEquals(
+        asList(
+            new GenomicInterval("chr1", 100, 250, '.'), new GenomicInterval("chr1", 300, 500, '.')),
+        e.getBlocks());
   }
 
   @Test
@@ -813,7 +808,6 @@ public class BEDEntryTest {
     assertEquals(emptySet(), e.getMetadataKeyNames());
     assertTrue(e.addMetaDataEntry("key1", "value1"));
     assertEquals(Collections.singleton("key1"), e.getMetadataKeyNames());
-
   }
 
   @Test
@@ -848,14 +842,11 @@ public class BEDEntryTest {
     e.addMetaDataEntry("key1", "value1");
     assertEquals(Collections.singleton("key1"), e.getMetadataKeyNames());
     e.addMetaDataEntry("key2", "value2");
-    assertEquals(new HashSet<>(asList("key1", "key2")),
-        e.getMetadataKeyNames());
+    assertEquals(new HashSet<>(asList("key1", "key2")), e.getMetadataKeyNames());
     assertFalse(e.removeMetaDataEntry("key3"));
-    assertEquals(new HashSet<>(asList("key1", "key2")),
-        e.getMetadataKeyNames());
+    assertEquals(new HashSet<>(asList("key1", "key2")), e.getMetadataKeyNames());
     assertFalse(e.removeMetaDataEntry(null));
-    assertEquals(new HashSet<>(asList("key1", "key2")),
-        e.getMetadataKeyNames());
+    assertEquals(new HashSet<>(asList("key1", "key2")), e.getMetadataKeyNames());
     assertTrue(e.removeMetaDataEntry("key1"));
     assertEquals(Collections.singleton("key2"), e.getMetadataKeyNames());
   }
@@ -940,5 +931,4 @@ public class BEDEntryTest {
     e1.setChromosomeName("value");
     assertNotEquals(e1.hashCode(), e2.hashCode());
   }
-
 }

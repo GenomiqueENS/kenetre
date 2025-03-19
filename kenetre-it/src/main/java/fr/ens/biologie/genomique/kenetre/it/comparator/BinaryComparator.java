@@ -24,16 +24,15 @@
 
 package fr.ens.biologie.genomique.kenetre.it.comparator;
 
+import com.google.common.collect.Sets;
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
-import com.google.common.collect.Sets;
-
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-
 /**
  * This class allow to compare two binary files.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -42,14 +41,12 @@ public class BinaryComparator extends AbstractComparator {
   private static final String COMPARATOR_NAME = "BinaryComparator";
 
   // Only file corresponding to the report step log
-  private static final Collection<String> EXTENSIONS =
-      Sets.newHashSet(".bai", "ebwt");
+  private static final Collection<String> EXTENSIONS = Sets.newHashSet(".bai", "ebwt");
 
   private int numberElementsCompared;
 
   @Override
-  public boolean compareFiles(final InputStream isA, final InputStream isB)
-      throws IOException {
+  public boolean compareFiles(final InputStream isA, final InputStream isB) throws IOException {
 
     if (isA == null || isB == null) {
       throw new IOException("Comparison invalid, input stream null");
@@ -75,5 +72,4 @@ public class BinaryComparator extends AbstractComparator {
   public String getName() {
     return COMPARATOR_NAME;
   }
-
 }

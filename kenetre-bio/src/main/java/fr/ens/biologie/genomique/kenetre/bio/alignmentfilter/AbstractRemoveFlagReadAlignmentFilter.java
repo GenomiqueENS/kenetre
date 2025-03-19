@@ -24,19 +24,18 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.alignmentfilter;
 
+import htsjdk.samtools.SAMRecord;
 import java.util.ArrayList;
 import java.util.List;
 
-import htsjdk.samtools.SAMRecord;
-
 /**
  * This alignment filter remove all the unmapped alignments.
+ *
  * @since 2.1
  * @author Laurent Jourdren
  * @author Claire Wallon
  */
-public abstract class AbstractRemoveFlagReadAlignmentFilter
-    extends AbstractReadAlignmentFilter {
+public abstract class AbstractRemoveFlagReadAlignmentFilter extends AbstractReadAlignmentFilter {
 
   public static final String FILTER_NAME = "removetest";
 
@@ -80,8 +79,7 @@ public abstract class AbstractRemoveFlagReadAlignmentFilter
 
     // paired-end mode
     else {
-      for (int counterRecord = 0; counterRecord < records.size()
-          - 1; counterRecord += 2) {
+      for (int counterRecord = 0; counterRecord < records.size() - 1; counterRecord += 2) {
 
         // storage in 'result' of records that do not pass the filter
         if (isFlagEnabled(records.get(counterRecord).getFlags())
@@ -111,6 +109,7 @@ public abstract class AbstractRemoveFlagReadAlignmentFilter
 
   /**
    * Protected constructor.
+   *
    * @param flagValue the value of the flag to filter
    */
   protected AbstractRemoveFlagReadAlignmentFilter(final int flagValue) {

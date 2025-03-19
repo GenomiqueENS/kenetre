@@ -28,6 +28,7 @@ import java.util.List;
 
 /**
  * This class define a storage using File API.
+ *
  * @since 2.6
  * @author Laurent Jourdren
  */
@@ -51,11 +52,11 @@ public class FileStorage extends AbstractFileStorage {
 
   /**
    * Constructor.
+   *
    * @param rootPath root of the storage
    * @param extensions extension of the files
    */
   public FileStorage(String rootPath, List<String> extensions) {
     super(rootPath, extensions);
   }
-
 }

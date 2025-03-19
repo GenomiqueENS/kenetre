@@ -2,8 +2,8 @@
  *                  Aozan development code
  *
  * This code may be freely distributed and modified under the
- * terms of the GNU General Public License version 3 or later 
- * and CeCILL. This should be distributed with the code. If you 
+ * terms of the GNU General Public License version 3 or later
+ * and CeCILL. This should be distributed with the code. If you
  * do not have a copy, see:
  *
  *      http://www.gnu.org/licenses/gpl-3.0-standalone.html
@@ -31,23 +31,23 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * This internal class save a record from ErrorMetricsOut.bin file,
- * corresponding of the description of the EXPECTED_VERSION. An record contains
- * data per tile per cycle per lane. Each record create an object
- * IlluminaErrorMetrics.______________________________________________________
- * byte 0: file version number (3)____________________________________________
- * byte 1: length of each record______________________________________________
- * bytes (N * 30 + 2) - (N *30 + 11): record:_________________________________
- * __2 bytes: lane number (uint16)____________________________________________
- * __2 bytes: tile number (uint16)____________________________________________
- * __2 bytes: cycle number (uint16)___________________________________________
- * __4 bytes: error rate (float)______________________________________________
- * __4 bytes: number of perfect countReads (uint32)___________________________
- * __4 bytes: number of countReads with 1 error (uint32)______________________
- * __4 bytes: number of countReads with 2 errors (uint32)_____________________
- * __4 bytes: number of countReads with 3 errors (uint32)_____________________
- * __4 bytes: number of countReads with 4 errors (uint32)_____________________
- * Where N is the record index________________________________________________
+ * This internal class save a record from ErrorMetricsOut.bin file, corresponding of the description
+ * of the EXPECTED_VERSION. An record contains data per tile per cycle per lane. Each record create
+ * an object IlluminaErrorMetrics.______________________________________________________ byte 0:
+ * file version number (3)____________________________________________ byte 1: length of each
+ * record______________________________________________ bytes (N * 30 + 2) - (N *30 + 11):
+ * record:_________________________________ __2 bytes: lane number
+ * (uint16)____________________________________________ __2 bytes: tile number
+ * (uint16)____________________________________________ __2 bytes: cycle number
+ * (uint16)___________________________________________ __4 bytes: error rate
+ * (float)______________________________________________ __4 bytes: number of perfect countReads
+ * (uint32)___________________________ __4 bytes: number of countReads with 1 error
+ * (uint32)______________________ __4 bytes: number of countReads with 2 errors
+ * (uint32)_____________________ __4 bytes: number of countReads with 3 errors
+ * (uint32)_____________________ __4 bytes: number of countReads with 4 errors
+ * (uint32)_____________________ Where N is the record
+ * index________________________________________________
+ *
  * @author Sandrine Perrin
  * @since Aozan 1.1
  */
@@ -88,6 +88,7 @@ public class ErrorMetric extends Metric {
 
   /**
    * Get the number lane.
+   *
    * @return the lane number
    */
   public int getLaneNumber() {
@@ -96,6 +97,7 @@ public class ErrorMetric extends Metric {
 
   /**
    * Get the number tile.
+   *
    * @return the tile number
    */
   public long getTileNumber() {
@@ -104,6 +106,7 @@ public class ErrorMetric extends Metric {
 
   /**
    * Get the number cycle of this record.
+   *
    * @return number cycle
    */
   public int getCycleNumber() {
@@ -112,6 +115,7 @@ public class ErrorMetric extends Metric {
 
   /**
    * Get the rate error of this record.
+   *
    * @return rate error
    */
   public float getErrorRate() {
@@ -120,6 +124,7 @@ public class ErrorMetric extends Metric {
 
   /**
    * Get the number perfect countReads for this record.
+   *
    * @return number perfect countReads
    */
   public int getNumberPerfectReads() {
@@ -128,6 +133,7 @@ public class ErrorMetric extends Metric {
 
   /**
    * Gets the number reads one error.
+   *
    * @return the number reads one error
    */
   public int getNumberReadsOneError() {
@@ -136,6 +142,7 @@ public class ErrorMetric extends Metric {
 
   /**
    * Gets the number reads two errors.
+   *
    * @return the number reads two errors
    */
   public int getNumberReadsTwoErrors() {
@@ -144,6 +151,7 @@ public class ErrorMetric extends Metric {
 
   /**
    * Gets the number reads three errors.
+   *
    * @return the number reads three errors
    */
   public int getNumberReadsThreeErrors() {
@@ -152,6 +160,7 @@ public class ErrorMetric extends Metric {
 
   /**
    * Gets the number reads four errors.
+   *
    * @return the number reads four errors
    */
   public int getNumberReadsFourErrors() {
@@ -160,6 +169,7 @@ public class ErrorMetric extends Metric {
 
   /**
    * Get the Phix adapter rate.
+   *
    * @return the Phix adapter rate
    */
   public float getPhiXAdapterRate() {
@@ -168,6 +178,7 @@ public class ErrorMetric extends Metric {
 
   /**
    * Get the number of adapters.
+   *
    * @return the number of adapters
    */
   public int adapterCount() {
@@ -177,6 +188,7 @@ public class ErrorMetric extends Metric {
 
   /**
    * Get an adapter sequence.
+   *
    * @param adapterIndex the index of the adapter
    * @return the requested adapter sequence
    */
@@ -187,6 +199,7 @@ public class ErrorMetric extends Metric {
 
   /**
    * Get an adapter rate.
+   *
    * @param adapterIndex the index of the adapter
    * @return the requested adapter rate
    */
@@ -202,22 +215,24 @@ public class ErrorMetric extends Metric {
   @Override
   public List<String> fieldNames() {
 
-    return Arrays.asList("Lane", "Tile", "Cycle", "ErrorRate",
-        "PhiXAdapterRate");
+    return Arrays.asList("Lane", "Tile", "Cycle", "ErrorRate", "PhiXAdapterRate");
   }
 
   @Override
   public List<Class<?>> fieldTypes() {
 
-    return Arrays.asList(Integer.class, Integer.class, Integer.class,
-        Float.class, Float.class);
+    return Arrays.asList(Integer.class, Integer.class, Integer.class, Float.class, Float.class);
   }
 
   @Override
   public List<Number> values() {
 
-    return Arrays.asList(getLaneNumber(), getTileNumber(), getCycleNumber(),
-        getErrorRate(), this.fractionOfReadAdapterTrimmed);
+    return Arrays.asList(
+        getLaneNumber(),
+        getTileNumber(),
+        getCycleNumber(),
+        getErrorRate(),
+        this.fractionOfReadAdapterTrimmed);
   }
 
   //
@@ -226,10 +241,16 @@ public class ErrorMetric extends Metric {
 
   @Override
   public String toString() {
-    return String.format("%s\t%s\t%s\t%.2f\t%s\t%s\t%s\t%s\t%s",
-        this.laneNumber, this.tileNumber, this.cycleNumber, this.errorRate,
-        this.numberPerfectReads, this.numberReadsOneError,
-        this.numberReadsTwoErrors, this.numberReadsThreeErrors,
+    return String.format(
+        "%s\t%s\t%s\t%.2f\t%s\t%s\t%s\t%s\t%s",
+        this.laneNumber,
+        this.tileNumber,
+        this.cycleNumber,
+        this.errorRate,
+        this.numberPerfectReads,
+        this.numberReadsOneError,
+        this.numberReadsTwoErrors,
+        this.numberReadsThreeErrors,
         this.numberReadsFourErrors);
   }
 
@@ -239,10 +260,10 @@ public class ErrorMetric extends Metric {
 
   /**
    * Constructor. One record countReads on the ByteBuffer.
+   *
    * @param bb ByteBuffer who read one record
    */
-  ErrorMetric(final int version, final List<String> adapterSequences,
-      final ByteBuffer bb) {
+  ErrorMetric(final int version, final List<String> adapterSequences, final ByteBuffer bb) {
 
     super.name = "Error";
     super.version = version;
@@ -254,61 +275,58 @@ public class ErrorMetric extends Metric {
     this.errorRate = bb.getFloat();
 
     switch (version) {
+      case 3:
+        this.numberPerfectReads = bb.getInt();
 
-    case 3:
-      this.numberPerfectReads = bb.getInt();
+        this.numberReadsOneError = bb.getInt();
+        this.numberReadsTwoErrors = bb.getInt();
+        this.numberReadsThreeErrors = bb.getInt();
+        this.numberReadsFourErrors = bb.getInt();
+        this.fractionOfReadAdapterTrimmed = Float.NaN;
+        this.fractionOfReadAdapterTrimmedArray = null;
+        this.adapterSequences = null;
+        break;
 
-      this.numberReadsOneError = bb.getInt();
-      this.numberReadsTwoErrors = bb.getInt();
-      this.numberReadsThreeErrors = bb.getInt();
-      this.numberReadsFourErrors = bb.getInt();
-      this.fractionOfReadAdapterTrimmed = Float.NaN;
-      this.fractionOfReadAdapterTrimmedArray = null;
-      this.adapterSequences = null;
-      break;
+      case 4:
+        this.numberPerfectReads = -1;
+        this.numberReadsOneError = -1;
+        this.numberReadsTwoErrors = -1;
+        this.numberReadsThreeErrors = -1;
+        this.numberReadsFourErrors = -1;
+        this.fractionOfReadAdapterTrimmed = Float.NaN;
+        this.fractionOfReadAdapterTrimmedArray = null;
+        this.adapterSequences = null;
+        break;
 
-    case 4:
-      this.numberPerfectReads = -1;
-      this.numberReadsOneError = -1;
-      this.numberReadsTwoErrors = -1;
-      this.numberReadsThreeErrors = -1;
-      this.numberReadsFourErrors = -1;
-      this.fractionOfReadAdapterTrimmed = Float.NaN;
-      this.fractionOfReadAdapterTrimmedArray = null;
-      this.adapterSequences = null;
-      break;
+      case 5:
+        this.numberPerfectReads = -1;
+        this.numberReadsOneError = -1;
+        this.numberReadsTwoErrors = -1;
+        this.numberReadsThreeErrors = -1;
+        this.numberReadsFourErrors = -1;
+        this.fractionOfReadAdapterTrimmed = bb.getFloat();
+        this.fractionOfReadAdapterTrimmedArray = null;
+        this.adapterSequences = null;
+        break;
 
-    case 5:
-      this.numberPerfectReads = -1;
-      this.numberReadsOneError = -1;
-      this.numberReadsTwoErrors = -1;
-      this.numberReadsThreeErrors = -1;
-      this.numberReadsFourErrors = -1;
-      this.fractionOfReadAdapterTrimmed = bb.getFloat();
-      this.fractionOfReadAdapterTrimmedArray = null;
-      this.adapterSequences = null;
-      break;
+      case 6:
+        this.numberPerfectReads = -1;
+        this.numberReadsOneError = -1;
+        this.numberReadsTwoErrors = -1;
+        this.numberReadsThreeErrors = -1;
+        this.numberReadsFourErrors = -1;
+        this.fractionOfReadAdapterTrimmed = Float.NaN;
+        this.adapterSequences = adapterSequences;
+        int numAdapter = adapterSequences.size();
+        this.fractionOfReadAdapterTrimmedArray = new float[numAdapter];
 
-    case 6:
-      this.numberPerfectReads = -1;
-      this.numberReadsOneError = -1;
-      this.numberReadsTwoErrors = -1;
-      this.numberReadsThreeErrors = -1;
-      this.numberReadsFourErrors = -1;
-      this.fractionOfReadAdapterTrimmed = Float.NaN;
-      this.adapterSequences = adapterSequences;
-      int numAdapter = adapterSequences.size();
-      this.fractionOfReadAdapterTrimmedArray = new float[numAdapter];
+        for (int i = 0; i < numAdapter; i++) {
+          this.fractionOfReadAdapterTrimmedArray[i] = bb.getFloat();
+        }
+        break;
 
-      for (int i = 0; i < numAdapter; i++) {
-        this.fractionOfReadAdapterTrimmedArray[i] = bb.getFloat();
-      }
-      break;
-
-    default:
-      throw new IllegalStateException("Unknown version: " + version);
+      default:
+        throw new IllegalStateException("Unknown version: " + version);
     }
-
   }
-
 }

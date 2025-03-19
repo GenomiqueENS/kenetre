@@ -24,14 +24,14 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.alignmentfilter;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
+import htsjdk.samtools.SAMRecord;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-import htsjdk.samtools.SAMRecord;
-
 /**
  * This class define a filter based on the quality of an alignment (SAM format).
+ *
  * @since 1.2
  * @author Claire Wallon
  */
@@ -72,14 +72,11 @@ public class QualityReadAlignmentFilter extends AbstractReadAlignmentFilter {
 
     // paired-end mode
     else {
-      for (int counterRecord = 0; counterRecord < records.size()
-          - 1; counterRecord += 2) {
+      for (int counterRecord = 0; counterRecord < records.size() - 1; counterRecord += 2) {
 
         // storage in 'result' of records that do not pass the quality filter
-        if (records.get(counterRecord)
-            .getMappingQuality() < this.qualityThreshold
-            || records.get(counterRecord + 1)
-                .getMappingQuality() < this.qualityThreshold) {
+        if (records.get(counterRecord).getMappingQuality() < this.qualityThreshold
+            || records.get(counterRecord + 1).getMappingQuality() < this.qualityThreshold) {
 
           // records are stored 2 by 2 because of the paired-end mode
           this.result.add(records.get(counterRecord));
@@ -94,8 +91,7 @@ public class QualityReadAlignmentFilter extends AbstractReadAlignmentFilter {
   }
 
   @Override
-  public void setParameter(final String key, final String value)
-      throws KenetreException {
+  public void setParameter(final String key, final String value) throws KenetreException {
 
     if (key == null || value == null) {
       return;
@@ -110,8 +106,7 @@ public class QualityReadAlignmentFilter extends AbstractReadAlignmentFilter {
       }
 
       if (this.qualityThreshold < 0 || this.qualityThreshold > 255) {
-        throw new KenetreException(
-            "Invalid qualityThreshold: " + this.qualityThreshold);
+        throw new KenetreException("Invalid qualityThreshold: " + this.qualityThreshold);
       }
     } else {
       throw new KenetreException(
@@ -123,8 +118,8 @@ public class QualityReadAlignmentFilter extends AbstractReadAlignmentFilter {
   public void init() {
 
     if (this.qualityThreshold < 0) {
-      throw new IllegalArgumentException("Quality threshold is not set for "
-          + getName() + " alignments filter.");
+      throw new IllegalArgumentException(
+          "Quality threshold is not set for " + getName() + " alignments filter.");
     }
   }
 
@@ -132,8 +127,10 @@ public class QualityReadAlignmentFilter extends AbstractReadAlignmentFilter {
   public String toString() {
 
     return this.getClass().getSimpleName()
-        + "{name=" + getName() + ", qualityThreshold=" + this.qualityThreshold
+        + "{name="
+        + getName()
+        + ", qualityThreshold="
+        + this.qualityThreshold
         + "}";
   }
-
 }

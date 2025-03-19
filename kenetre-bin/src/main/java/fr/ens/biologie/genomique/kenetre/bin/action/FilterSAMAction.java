@@ -2,20 +2,6 @@ package fr.ens.biologie.genomique.kenetre.bin.action;
 
 import static org.apache.commons.cli.Option.builder;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.bio.SAMComparator;
 import fr.ens.biologie.genomique.kenetre.bio.alignmentfilter.MultiReadAlignmentFilterBuilder;
@@ -31,9 +17,22 @@ import htsjdk.samtools.SAMRecordIterator;
 import htsjdk.samtools.SamInputResource;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 /**
  * This program allow to filter SAM files.
+ *
  * @author Laurent Jourdren
  * @since 0.29
  */
@@ -70,15 +69,13 @@ public class FilterSAMAction implements Action {
     try {
 
       // Parse command line and create filter
-      MultiReadAlignmentFilterBuilder filterBuilder =
-          new MultiReadAlignmentFilterBuilder();
+      MultiReadAlignmentFilterBuilder filterBuilder = new MultiReadAlignmentFilterBuilder();
       filterBuilder.addParameters(parseOptions(arguments));
       ReadAlignmentFilter filter = filterBuilder.getAlignmentFilter();
 
       Reporter reporter = new LocalReporter();
 
-      filterFile(this.inputFile, this.outputFile, reporter, filter,
-          this.tmpDir);
+      filterFile(this.inputFile, this.outputFile, reporter, filter, this.tmpDir);
 
       if (this.printStats) {
         System.err.println(reporter);
@@ -87,7 +84,6 @@ public class FilterSAMAction implements Action {
     } catch (KenetreException | IOException e) {
       error("Error: " + e.getMessage());
     }
-
   }
 
   //
@@ -96,6 +92,7 @@ public class FilterSAMAction implements Action {
 
   /**
    * Create options for command line
+   *
    * @return an Options object
    */
   @SuppressWarnings("static-access")
@@ -104,14 +101,19 @@ public class FilterSAMAction implements Action {
     // create Options object
     final Options options = new Options();
 
-    options.addOption(builder("i").longOpt("input").hasArg().argName("file")
-        .desc("single read input").build());
+    options.addOption(
+        builder("i").longOpt("input").hasArg().argName("file").desc("single read input").build());
 
-    options.addOption(builder("o").longOpt("output").hasArg().argName("file")
-        .desc("single read output").build());
+    options.addOption(
+        builder("o").longOpt("output").hasArg().argName("file").desc("single read output").build());
 
-    options.addOption(builder("T").longOpt("tmpdir").hasArg().argName("dire")
-        .desc("temporary directory").build());
+    options.addOption(
+        builder("T")
+            .longOpt("tmpdir")
+            .hasArg()
+            .argName("dire")
+            .desc("temporary directory")
+            .build());
 
     options.addOption("s", "stdin", false, "stdin input");
     options.addOption("t", "stdout", false, "stdout output");
@@ -133,8 +135,7 @@ public class FilterSAMAction implements Action {
     try {
 
       // parse the command line arguments
-      final CommandLine line =
-          parser.parse(options, arguments.toArray(new String[0]), true);
+      final CommandLine line = parser.parse(options, arguments.toArray(new String[0]), true);
 
       // Help option
       if (line.hasOption("help")) {
@@ -192,6 +193,7 @@ public class FilterSAMAction implements Action {
 
   /**
    * Show command line help.
+   *
    * @param options Options of the software
    */
   private static void help(final Options options) {
@@ -215,6 +217,7 @@ public class FilterSAMAction implements Action {
 
   /**
    * Filter a file in single-end mode or paired-end mode.
+   *
    * @param inFile input file
    * @param outFile output file
    * @param reporter reporter to use
@@ -222,9 +225,13 @@ public class FilterSAMAction implements Action {
    * @param tmpDir temporary directory
    * @throws IOException if an error occurs while filtering data
    */
-  private static void filterFile(final File inFile, final File outFile,
-      final Reporter reporter, final ReadAlignmentFilter filter,
-      final File tmpDir) throws IOException {
+  private static void filterFile(
+      final File inFile,
+      final File outFile,
+      final Reporter reporter,
+      final ReadAlignmentFilter filter,
+      final File tmpDir)
+      throws IOException {
 
     final List<SAMRecord> records = new ArrayList<>();
     int counterInput = 0;
@@ -233,16 +240,15 @@ public class FilterSAMAction implements Action {
     boolean pairedEnd = false;
 
     // Creation of a buffer object to store alignments with the same read name
-    final ReadAlignmentFilterBuffer rafb =
-        new ReadAlignmentFilterBuffer(filter);
+    final ReadAlignmentFilterBuffer rafb = new ReadAlignmentFilterBuffer(filter);
 
     // Get reader
-    final SamReader inputSam =
-        SamReaderFactory.makeDefault().open(SamInputResource.of(inFile));
+    final SamReader inputSam = SamReaderFactory.makeDefault().open(SamInputResource.of(inFile));
 
     // Get Writer
     final SAMFileWriter outputSam =
-        new SAMFileWriterFactory().setTempDirectory(tmpDir)
+        new SAMFileWriterFactory()
+            .setTempDirectory(tmpDir)
             .makeSAMWriter(inputSam.getFileHeader(), false, outFile);
 
     final SAMRecordIterator it = inputSam.iterator();
@@ -287,7 +293,6 @@ public class FilterSAMAction implements Action {
 
         rafb.addAlignment(samRecord);
       }
-
     }
 
     // treatment of the last record
@@ -308,28 +313,22 @@ public class FilterSAMAction implements Action {
       int nbInput = counterInput / 2;
       int nbOutput = counterOutput / 2;
       reporter.incrCounter(COUNTER_GROUP, "input alignments", nbInput);
-      reporter.incrCounter(COUNTER_GROUP, "output filtered alignments",
-          nbOutput);
-      reporter.incrCounter(COUNTER_GROUP, "alignments in invalid sam format",
-          counterInvalid / 2);
-      reporter.incrCounter(COUNTER_GROUP, "alignments rejected by filters",
-          nbInput - nbOutput);
+      reporter.incrCounter(COUNTER_GROUP, "output filtered alignments", nbOutput);
+      reporter.incrCounter(COUNTER_GROUP, "alignments in invalid sam format", counterInvalid / 2);
+      reporter.incrCounter(COUNTER_GROUP, "alignments rejected by filters", nbInput - nbOutput);
     }
 
     // single-end mode
     else {
       reporter.incrCounter(COUNTER_GROUP, "input alignments", counterInput);
-      reporter.incrCounter(COUNTER_GROUP, "output filtered alignments",
-          counterOutput);
-      reporter.incrCounter(COUNTER_GROUP, "alignments in invalid sam format",
-          counterInvalid);
-      reporter.incrCounter(COUNTER_GROUP, "alignments rejected by filters",
-          counterInput - counterOutput);
+      reporter.incrCounter(COUNTER_GROUP, "output filtered alignments", counterOutput);
+      reporter.incrCounter(COUNTER_GROUP, "alignments in invalid sam format", counterInvalid);
+      reporter.incrCounter(
+          COUNTER_GROUP, "alignments rejected by filters", counterInput - counterOutput);
     }
 
     // Close files
     inputSam.close();
     outputSam.close();
   }
-
 }

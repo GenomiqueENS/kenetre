@@ -1,4 +1,3 @@
-
 /*
  *                  Eoulsan development code
  *
@@ -29,6 +28,7 @@ import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
 
 /**
  * This interface define an genome description storage.
+ *
  * @since 2.6
  * @author Laurent Jourdren
  */
@@ -36,17 +36,17 @@ public interface GenomeDescStorage {
 
   /**
    * Get the genome description that corresponds to a genome DataFile
+   *
    * @param genomePath genome file
-   * @return a GenomeDescription object or null if the genome description has
-   *         not yet been computed
+   * @return a GenomeDescription object or null if the genome description has not yet been computed
    */
   GenomeDescription get(final String genomePath);
 
   /**
    * Put the genome description in the storage.
+   *
    * @param genomePath genome file
    * @param genomeDesc genome description object
    */
   void put(final String genomePath, final GenomeDescription genomeDesc);
-
 }

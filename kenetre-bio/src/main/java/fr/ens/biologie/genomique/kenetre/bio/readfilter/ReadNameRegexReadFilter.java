@@ -24,15 +24,14 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.readfilter;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
+import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
-
 /**
- * This class define a read filter that filter reads with a regex on of the name
- * of the read.
+ * This class define a read filter that filter reads with a regex on of the name of the read.
+ *
  * @since 1.2
  * @author Laurent Jourdren
  */
@@ -54,8 +53,7 @@ public class ReadNameRegexReadFilter extends AbstractReadFilter {
   }
 
   @Override
-  public void setParameter(final String key, final String value)
-      throws KenetreException {
+  public void setParameter(final String key, final String value) throws KenetreException {
 
     if (key == null || value == null) {
       return;
@@ -66,8 +64,8 @@ public class ReadNameRegexReadFilter extends AbstractReadFilter {
       try {
         this.forbiddenPattern = Pattern.compile(value);
       } catch (PatternSyntaxException e) {
-        throw new KenetreException("Invalid forbidden regex expression in "
-            + getName() + " read filter: " + value);
+        throw new KenetreException(
+            "Invalid forbidden regex expression in " + getName() + " read filter: " + value);
       }
 
     } else if ("allowed.regex".equals(key.trim())) {
@@ -75,13 +73,12 @@ public class ReadNameRegexReadFilter extends AbstractReadFilter {
       try {
         this.allowedPattern = Pattern.compile(value);
       } catch (PatternSyntaxException e) {
-        throw new KenetreException("Invalid forbidden regex expression in "
-            + getName() + " read filter: " + value);
+        throw new KenetreException(
+            "Invalid forbidden regex expression in " + getName() + " read filter: " + value);
       }
 
     } else {
-      throw new KenetreException(
-          "Unknown parameter for " + getName() + " read filter: " + key);
+      throw new KenetreException("Unknown parameter for " + getName() + " read filter: " + key);
     }
   }
 
@@ -97,17 +94,14 @@ public class ReadNameRegexReadFilter extends AbstractReadFilter {
       return false;
     }
 
-    if (this.allowedPattern != null
-        && !this.allowedPattern.matcher(name).find()) {
+    if (this.allowedPattern != null && !this.allowedPattern.matcher(name).find()) {
       return false;
     }
 
-    if (this.forbiddenPattern != null
-        && this.forbiddenPattern.matcher(name).find()) {
+    if (this.forbiddenPattern != null && this.forbiddenPattern.matcher(name).find()) {
       return false;
     }
 
     return true;
   }
-
 }

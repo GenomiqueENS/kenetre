@@ -27,12 +27,9 @@ package fr.ens.biologie.genomique.kenetre.bio.readfilter;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
-import fr.ens.biologie.genomique.kenetre.bio.readfilter.IlluminaFilterFlagReadFilter;
-import fr.ens.biologie.genomique.kenetre.bio.readfilter.ReadFilter;
+import org.junit.Test;
 
 public class IlluminaFilterFlagReadFilterTest {
 
@@ -50,25 +47,28 @@ public class IlluminaFilterFlagReadFilterTest {
     assertTrue(filter.accept(read));
 
     // Good id
-    read = new ReadSequence("AEGIR:25:B0866ABXX:8:1101:1193:2125 1:N:0:CGATGT",
-        "CCGAAGCAGAAGTCTAGAGGCGGGGACTGAAGCAGAAGACAGGAGAAGTGT",
-        "@?@DDDD?CBFFDEHCF<FHGGHFB##########################");
+    read =
+        new ReadSequence(
+            "AEGIR:25:B0866ABXX:8:1101:1193:2125 1:N:0:CGATGT",
+            "CCGAAGCAGAAGTCTAGAGGCGGGGACTGAAGCAGAAGACAGGAGAAGTGT",
+            "@?@DDDD?CBFFDEHCF<FHGGHFB##########################");
 
     assertTrue(filter.accept(read));
 
     // Bad id
-    read = new ReadSequence("AEGIR:25:B0866ABXX:8:1101:1176:2126 1:Y:0:CGATGT",
-        "TGGAGNCAGGAGTCTGGGGGGGGGGGGGGTGGTGCAAAACTGGGGGGACGC",
-        "###################################################");
+    read =
+        new ReadSequence(
+            "AEGIR:25:B0866ABXX:8:1101:1176:2126 1:Y:0:CGATGT",
+            "TGGAGNCAGGAGTCTGGGGGGGGGGGGGGTGGTGCAAAACTGGGGGGACGC",
+            "###################################################");
     assertFalse(filter.accept(read));
 
     // Read without the filter flag
-    read = new ReadSequence(
-        "SRR1577083.1 HWI-ST1160:266:D0H3RACXX:6:1315:4634:59858 length=50",
-        "TGGAGNCAGGAGTCTGGGGGGGGGGGGGGTGGTGCAAAACTGGGGGGACGC",
-        "###################################################");
+    read =
+        new ReadSequence(
+            "SRR1577083.1 HWI-ST1160:266:D0H3RACXX:6:1315:4634:59858 length=50",
+            "TGGAGNCAGGAGTCTGGGGGGGGGGGGGGTGGTGCAAAACTGGGGGGACGC",
+            "###################################################");
     assertTrue(filter.accept(read));
-
   }
-
 }

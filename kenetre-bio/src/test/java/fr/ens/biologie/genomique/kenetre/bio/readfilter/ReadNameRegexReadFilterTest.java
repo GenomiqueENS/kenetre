@@ -27,12 +27,9 @@ package fr.ens.biologie.genomique.kenetre.bio.readfilter;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
-import fr.ens.biologie.genomique.kenetre.bio.readfilter.ReadFilter;
-import fr.ens.biologie.genomique.kenetre.bio.readfilter.ReadNameRegexReadFilter;
+import org.junit.Test;
 
 public class ReadNameRegexReadFilterTest {
 
@@ -46,11 +43,13 @@ public class ReadNameRegexReadFilterTest {
     // Null case
     assertFalse(filter.accept(null));
 
-    final String[] ids = {"AEGIR:25:B0866ABXX:8:1101:1193:2125",
-        "TOTO:25:B0866ABXX:8:1101:1176:2126",
-        "TOTO:25:B0866ABXX:8:1101:1111:4444",
-        "TOTO:25:B0866ABXX:7:2202:1176:2126",
-        "TOTO:25:B0866ABXX:7:1101:2222:3333"};
+    final String[] ids = {
+      "AEGIR:25:B0866ABXX:8:1101:1193:2125",
+      "TOTO:25:B0866ABXX:8:1101:1176:2126",
+      "TOTO:25:B0866ABXX:8:1101:1111:4444",
+      "TOTO:25:B0866ABXX:7:2202:1176:2126",
+      "TOTO:25:B0866ABXX:7:1101:2222:3333"
+    };
 
     // Not illumina id case
     ReadSequence read = new ReadSequence("read1", "ATG", "wxy");
@@ -102,7 +101,5 @@ public class ReadNameRegexReadFilterTest {
     assertTrue(filter.accept(new ReadSequence(ids[2], "", "")));
     assertFalse(filter.accept(new ReadSequence(ids[3], "", "")));
     assertTrue(filter.accept(new ReadSequence(ids[4], "", "")));
-
   }
-
 }

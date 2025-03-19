@@ -1,18 +1,18 @@
 package fr.ens.biologie.genomique.kenetre.bin.action;
 
+import fr.ens.biologie.genomique.kenetre.bin.Main;
+import fr.ens.biologie.genomique.kenetre.bio.BadBioEntryException;
+import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
+import fr.ens.biologie.genomique.kenetre.io.CompressionType;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import fr.ens.biologie.genomique.kenetre.bin.Main;
-import fr.ens.biologie.genomique.kenetre.bio.BadBioEntryException;
-import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
-import fr.ens.biologie.genomique.kenetre.io.CompressionType;
-
 /**
  * This program allow to create UCSC TSV chromosome files.
+ *
  * @author Laurent Jourdren
  * @since 33
  */
@@ -45,28 +45,24 @@ public class GenomeToTSVAction implements Action {
     Path outputTSVFile = Paths.get(arguments.get(1));
 
     if (!Files.isRegularFile(inputGenomeFile)) {
-      System.err
-          .println("input FASTA file does not exists: " + inputGenomeFile);
+      System.err.println("input FASTA file does not exists: " + inputGenomeFile);
       System.exit(1);
     }
 
     if (Files.isRegularFile(outputTSVFile)) {
-      System.err
-          .println("output TSV file already exists exists: " + outputTSVFile);
+      System.err.println("output TSV file already exists exists: " + outputTSVFile);
       System.exit(1);
     }
 
     try {
-      GenomeDescription desc = GenomeDescription.createGenomeDescFromFasta(
-          CompressionType.open(inputGenomeFile),
-          inputGenomeFile.toFile().getName());
+      GenomeDescription desc =
+          GenomeDescription.createGenomeDescFromFasta(
+              CompressionType.open(inputGenomeFile), inputGenomeFile.toFile().getName());
 
       desc.saveTSV(outputTSVFile.toFile());
 
     } catch (BadBioEntryException | IOException e) {
       Main.errorExit(e, "Error occurs while processing files.");
     }
-
   }
-
 }

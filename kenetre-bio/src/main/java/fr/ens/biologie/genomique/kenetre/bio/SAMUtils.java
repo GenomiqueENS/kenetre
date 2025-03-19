@@ -26,15 +26,6 @@ package fr.ens.biologie.genomique.kenetre.bio;
 
 import static fr.ens.biologie.genomique.kenetre.bio.StrandUsage.REVERSE;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import htsjdk.samtools.CigarElement;
 import htsjdk.samtools.SAMFileHeader;
 import htsjdk.samtools.SAMRecord;
@@ -44,9 +35,18 @@ import htsjdk.samtools.SAMTextHeaderCodec;
 import htsjdk.samtools.SamInputResource;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * This class define utility methods for SAM objects
+ *
  * @since 1.2
  * @author Laurent Jourdren
  */
@@ -54,12 +54,12 @@ public class SAMUtils {
 
   /**
    * Read the SAM header of a SAM file.
+   *
    * @param file file to read
    * @return a String with the SAM header
    * @throws FileNotFoundException if the file cannot be found
    */
-  public static String readSAMHeader(final File file)
-      throws FileNotFoundException {
+  public static String readSAMHeader(final File file) throws FileNotFoundException {
 
     if (file == null) {
       throw new NullPointerException("The file is null");
@@ -70,6 +70,7 @@ public class SAMUtils {
 
   /**
    * Read the SAM header of a SAM file.
+   *
    * @param is input stream
    * @return a String with the SAM header
    */
@@ -80,8 +81,7 @@ public class SAMUtils {
     }
 
     // Read SAM file header
-    final SamReader reader =
-        SamReaderFactory.makeDefault().open(SamInputResource.of(is));
+    final SamReader reader = SamReaderFactory.makeDefault().open(SamInputResource.of(is));
     final SAMFileHeader header = reader.getFileHeader();
 
     // Close reader
@@ -95,13 +95,14 @@ public class SAMUtils {
 
   /**
    * Create a GenomeDescription object from a SAM header.
+   *
    * @param file SAM file witch header must be read
-   * @return a new GenomeDescription object with the name and chromosomes length
-   *         defined in the SAM header
+   * @return a new GenomeDescription object with the name and chromosomes length defined in the SAM
+   *     header
    * @throws FileNotFoundException if the file cannot be found
    */
-  public static GenomeDescription createGenomeDescriptionFromSAM(
-      final File file) throws FileNotFoundException {
+  public static GenomeDescription createGenomeDescriptionFromSAM(final File file)
+      throws FileNotFoundException {
 
     if (file == null) {
       throw new NullPointerException("The file is null");
@@ -112,24 +113,24 @@ public class SAMUtils {
 
   /**
    * Create a GenomeDescription object from a SAM header.
+   *
    * @param is InputStream of the SAM file witch header must be read
-   * @return a new GenomeDescription object with the name and chromosomes length
-   *         defined in the SAM header
+   * @return a new GenomeDescription object with the name and chromosomes length defined in the SAM
+   *     header
    */
-  public static GenomeDescription createGenomeDescriptionFromSAM(
-      final InputStream is) {
+  public static GenomeDescription createGenomeDescriptionFromSAM(final InputStream is) {
 
     return createGenomeDescriptionFromSAM(readSAMHeader(is));
   }
 
   /**
    * Create a GenomeDescription object from a SAM header.
+   *
    * @param header SAM header in a String
-   * @return a new GenomeDescription object with the name and chromosomes length
-   *         defined in the SAM header
+   * @return a new GenomeDescription object with the name and chromosomes length defined in the SAM
+   *     header
    */
-  public static GenomeDescription createGenomeDescriptionFromSAM(
-      final String header) {
+  public static GenomeDescription createGenomeDescriptionFromSAM(final String header) {
 
     if (header == null) {
       return null;
@@ -150,7 +151,6 @@ public class SAMUtils {
       if (fields.length == 2) {
         desc.addSequence(fields[0], Integer.parseInt(fields[1]));
       }
-
     }
 
     return desc;
@@ -158,12 +158,12 @@ public class SAMUtils {
 
   /**
    * Create a GenomeDescription object from a SAMFileHeader object.
+   *
    * @param header SAM header object
-   * @return a new GenomeDescription object with the name and chromosomes length
-   *         defined in the SAM header
+   * @return a new GenomeDescription object with the name and chromosomes length defined in the SAM
+   *     header
    */
-  public static GenomeDescription createGenomeDescriptionFromSAM(
-      final SAMFileHeader header) {
+  public static GenomeDescription createGenomeDescriptionFromSAM(final SAMFileHeader header) {
 
     if (header == null) {
       return null;
@@ -175,8 +175,7 @@ public class SAMUtils {
       return desc;
     }
 
-    for (SAMSequenceRecord seq : header.getSequenceDictionary()
-        .getSequences()) {
+    for (SAMSequenceRecord seq : header.getSequenceDictionary().getSequences()) {
       desc.addSequence(seq.getSequenceName(), seq.getSequenceLength());
     }
 
@@ -185,12 +184,12 @@ public class SAMUtils {
 
   /**
    * Create a GenomeDescription object from a SAMFileHeader object.
+   *
    * @param samRecord header SAM header object
-   * @return a new GenomeDescription object with the name and chromosomes length
-   *         defined in the SAM header
+   * @return a new GenomeDescription object with the name and chromosomes length defined in the SAM
+   *     header
    */
-  public static GenomeDescription createGenomeDescriptionFromSAM(
-      final SAMRecord samRecord) {
+  public static GenomeDescription createGenomeDescriptionFromSAM(final SAMRecord samRecord) {
 
     if (samRecord == null) {
       return null;
@@ -201,9 +200,10 @@ public class SAMUtils {
 
   /**
    * Convert a GenomeDescription object to a SAMSequenceDictionary object.
+   *
    * @param genomeDescription genomeDescription object to convert
-   * @return a new SAMSequenceDictionary object with chromosomes name and size
-   *         from the GenomeDescription object
+   * @return a new SAMSequenceDictionary object with chromosomes name and size from the
+   *     GenomeDescription object
    */
   public static SAMSequenceDictionary newSAMSequenceDictionary(
       final GenomeDescription genomeDescription) {
@@ -217,8 +217,8 @@ public class SAMUtils {
     for (String sequenceName : genomeDescription.getSequencesNames()) {
 
       final SAMSequenceRecord sequenceRecord =
-          new SAMSequenceRecord(sequenceName,
-              (int) genomeDescription.getSequenceLength(sequenceName));
+          new SAMSequenceRecord(
+              sequenceName, (int) genomeDescription.getSequenceLength(sequenceName));
       sequences.add(sequenceRecord);
     }
 
@@ -227,12 +227,12 @@ public class SAMUtils {
 
   /**
    * Convert a GenomeDescription object to a SAMFileHeader object.
+   *
    * @param genomeDescription genomeDescription object to convert
-   * @return a new SAMFileHeader object with chromosomes name and size from the
-   *         GenomeDescription object
+   * @return a new SAMFileHeader object with chromosomes name and size from the GenomeDescription
+   *     object
    */
-  public static SAMFileHeader newSAMFileHeader(
-      final GenomeDescription genomeDescription) {
+  public static SAMFileHeader newSAMFileHeader(final GenomeDescription genomeDescription) {
 
     final SAMFileHeader header = new SAMFileHeader();
 
@@ -242,8 +242,9 @@ public class SAMUtils {
   }
 
   /**
-   * Add intervals of a SAM record that are alignment matches (thanks to the
-   * CIGAR code, paftools algorithm).
+   * Add intervals of a SAM record that are alignment matches (thanks to the CIGAR code, paftools
+   * algorithm).
+   *
    * @param record the SAM record to treat.
    * @return a BED entry.
    */
@@ -253,19 +254,19 @@ public class SAMUtils {
   }
 
   /**
-   * Add intervals of a SAM record that are alignment matches (thanks to the
-   * CIGAR code, paftools algorithm).
+   * Add intervals of a SAM record that are alignment matches (thanks to the CIGAR code, paftools
+   * algorithm).
+   *
    * @param record the SAM record to treat
    * @param metadata the metadata of the BED entry
    * @return a BED entry.
    */
-  public static BEDEntry parseIntervalsToBEDEntry(final SAMRecord record,
-      final EntryMetadata metadata) {
+  public static BEDEntry parseIntervalsToBEDEntry(
+      final SAMRecord record, final EntryMetadata metadata) {
 
     Objects.requireNonNull(record, "record argument canot be null");
 
-    BEDEntry result =
-        metadata == null ? new BEDEntry() : new BEDEntry(metadata);
+    BEDEntry result = metadata == null ? new BEDEntry() : new BEDEntry(metadata);
 
     result.setChromosomeName(record.getReferenceName());
     result.setStart(record.getAlignmentStart());
@@ -286,14 +287,15 @@ public class SAMUtils {
   }
 
   /**
-   * Add intervals of a SAM record that are alignment matches (thanks to the
-   * CIGAR code, paftools algorithm).
+   * Add intervals of a SAM record that are alignment matches (thanks to the CIGAR code, paftools
+   * algorithm).
+   *
    * @param record the SAM record to treat.
    * @param stranded strand usage
    * @return the list of intervals of the SAM record.
    */
-  public static List<GenomicInterval> parseIntervals(final SAMRecord record,
-      final StrandUsage stranded) {
+  public static List<GenomicInterval> parseIntervals(
+      final SAMRecord record, final StrandUsage stranded) {
 
     Objects.requireNonNull(record, "record argument canot be null");
     Objects.requireNonNull(stranded, "stranded argument canot be null");
@@ -310,8 +312,9 @@ public class SAMUtils {
   }
 
   /**
-   * Add intervals of a SAM record that are alignment matches (thanks to the
-   * CIGAR code, paftools algorithm).
+   * Add intervals of a SAM record that are alignment matches (thanks to the CIGAR code, paftools
+   * algorithm).
+   *
    * @param record the SAM record to treat.
    * @return the list of intervals of the SAM record.
    */
@@ -319,19 +322,18 @@ public class SAMUtils {
 
     Objects.requireNonNull(record, "record argument canot be null");
 
-    return parseIntervals(record,
-        record.getReadNegativeStrandFlag() ? '-' : '+');
+    return parseIntervals(record, record.getReadNegativeStrandFlag() ? '-' : '+');
   }
 
   /**
-   * Add intervals of a SAM record that are alignment matches (thanks to the
-   * CIGAR code, paftools algorithm).
+   * Add intervals of a SAM record that are alignment matches (thanks to the CIGAR code, paftools
+   * algorithm).
+   *
    * @param record the SAM record to treat.
    * @param strand strand for the output intervals
    * @return the list of intervals of the SAM record.
    */
-  public static List<GenomicInterval> parseIntervals(final SAMRecord record,
-      char strand) {
+  public static List<GenomicInterval> parseIntervals(final SAMRecord record, char strand) {
 
     Objects.requireNonNull(record, "record argument canot be null");
 
@@ -348,34 +350,30 @@ public class SAMUtils {
 
       switch (e.getOperator()) {
 
-      // Bases in block
-      case M:
-      case EQ:
-      case X:
-      case D:
-        end += e.getLength();
-        break;
+        // Bases in block
+        case M:
+        case EQ:
+        case X:
+        case D:
+          end += e.getLength();
+          break;
 
-      // BaseNot in block
-      case N:
-        // Add previous block to the list
-        result.add(
-            new GenomicInterval(record.getReferenceName(), start, end, strand));
-        end += e.getLength();
-        start = end;
-        break;
+        // BaseNot in block
+        case N:
+          // Add previous block to the list
+          result.add(new GenomicInterval(record.getReferenceName(), start, end, strand));
+          end += e.getLength();
+          start = end;
+          break;
 
-      default:
-        break;
+        default:
+          break;
       }
-
     }
 
     // Add the last block to the list
-    result.add(
-        new GenomicInterval(record.getReferenceName(), start, end, strand));
+    result.add(new GenomicInterval(record.getReferenceName(), start, end, strand));
 
     return result;
   }
-
 }

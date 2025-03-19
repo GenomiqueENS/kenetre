@@ -3,6 +3,9 @@ package fr.ens.biologie.genomique.kenetre.illumina.io;
 import static java.nio.charset.Charset.defaultCharset;
 import static org.junit.Assert.assertEquals;
 
+import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheet;
+import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetCSVReader;
+import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetCSVWriter;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -10,21 +13,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.Test;
-
-import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheet;
-import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetCSVReader;
-import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetCSVWriter;
 
 public class SampleSheetWriterTest {
 
   private static final String[] filesToTest = {
-      "Sample Sheet Template Covid.csv", "SampleSheet_v2_template.csv",
-      "illumina-dragen-covid-pipeline-sample-sheet-template-nextseq.csv",
-      "illumina-dragen-covidseq-test-v1.2-sample-sheet-template-nextseq.20201001.csv",
-      "illumina-dragen-covidseq-test-v1.3-sample-sheet-template-nextseq.20201001.csv",
-      "illumina-dragen-covidseq-test-v1.3-sample-sheet-template-novaseq.20201001.csv"};
+    "Sample Sheet Template Covid.csv",
+    "SampleSheet_v2_template.csv",
+    "illumina-dragen-covid-pipeline-sample-sheet-template-nextseq.csv",
+    "illumina-dragen-covidseq-test-v1.2-sample-sheet-template-nextseq.20201001.csv",
+    "illumina-dragen-covidseq-test-v1.3-sample-sheet-template-nextseq.20201001.csv",
+    "illumina-dragen-covidseq-test-v1.3-sample-sheet-template-novaseq.20201001.csv"
+  };
 
   @Test
   public void testReadWriteCSV() throws IOException {
@@ -36,13 +36,11 @@ public class SampleSheetWriterTest {
     testFile("SampleSheet_FSE_PQ.csv", false);
   }
 
-  private void testFile(String filename, boolean addMissingCommas)
-      throws IOException {
+  private void testFile(String filename, boolean addMissingCommas) throws IOException {
 
     List<String> inputLines = readFile(loadRessource(filename));
 
-    SampleSheetCSVReader reader =
-        new SampleSheetCSVReader(loadRessource(filename));
+    SampleSheetCSVReader reader = new SampleSheetCSVReader(loadRessource(filename));
     SampleSheet samplesheet = reader.read();
     reader.close();
 
@@ -81,8 +79,8 @@ public class SampleSheetWriterTest {
     return result;
   }
 
-  private List<String> writeFile(SampleSheet samplesheet,
-      boolean addMissingCommas) throws IOException {
+  private List<String> writeFile(SampleSheet samplesheet, boolean addMissingCommas)
+      throws IOException {
 
     final String s;
 
@@ -104,5 +102,4 @@ public class SampleSheetWriterTest {
 
     return result;
   }
-
 }

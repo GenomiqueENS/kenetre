@@ -26,6 +26,9 @@ package fr.ens.biologie.genomique.kenetre.bio;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.Splitter;
+import fr.ens.biologie.genomique.kenetre.util.GuavaCompatibility;
+import fr.ens.biologie.genomique.kenetre.util.StringUtils;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -34,13 +37,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import com.google.common.base.Splitter;
-
-import fr.ens.biologie.genomique.kenetre.util.GuavaCompatibility;
-import fr.ens.biologie.genomique.kenetre.util.StringUtils;
-
 /**
  * This class defines a GFF Entry.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -66,6 +65,7 @@ public class GFFEntry {
 
   /**
    * Get the metadata.
+   *
    * @return the metadata of the entry
    */
   public final EntryMetadata getMetadata() {
@@ -75,6 +75,7 @@ public class GFFEntry {
 
   /**
    * Get the id.
+   *
    * @return always -1 as this method is deprecated
    */
   @Deprecated
@@ -84,6 +85,7 @@ public class GFFEntry {
 
   /**
    * Get the seqId.
+   *
    * @return the seqId
    */
   public final String getSeqId() {
@@ -92,6 +94,7 @@ public class GFFEntry {
 
   /**
    * Get the source.
+   *
    * @return The source
    */
   public final String getSource() {
@@ -100,6 +103,7 @@ public class GFFEntry {
 
   /**
    * Get the type.
+   *
    * @return the type
    */
   public final String getType() {
@@ -108,6 +112,7 @@ public class GFFEntry {
 
   /**
    * Get the start position.
+   *
    * @return the start position
    */
   public final int getStart() {
@@ -116,6 +121,7 @@ public class GFFEntry {
 
   /**
    * Get the end position.
+   *
    * @return the end position
    */
   public final int getEnd() {
@@ -124,6 +130,7 @@ public class GFFEntry {
 
   /**
    * Get the length of the feature.
+   *
    * @return the end position
    */
   public final int getLength() {
@@ -132,6 +139,7 @@ public class GFFEntry {
 
   /**
    * Get the score.
+   *
    * @return the score
    */
   public final double getScore() {
@@ -140,6 +148,7 @@ public class GFFEntry {
 
   /**
    * Get the strand.
+   *
    * @return the strand
    */
   public final char getStrand() {
@@ -148,6 +157,7 @@ public class GFFEntry {
 
   /**
    * Get the phase.
+   *
    * @return the phase
    */
   public final int getPhase() {
@@ -156,6 +166,7 @@ public class GFFEntry {
 
   /**
    * Get metadata keys names.
+   *
    * @return the metadata keys names
    */
   @Deprecated
@@ -166,6 +177,7 @@ public class GFFEntry {
 
   /**
    * Get attributes names.
+   *
    * @return the attributes names
    */
   public final Set<String> getAttributesNames() {
@@ -175,6 +187,7 @@ public class GFFEntry {
 
   /**
    * test if a metadata key exists.
+   *
    * @param key key name of the metadata
    * @return true if the entry in the meta data exists
    */
@@ -186,6 +199,7 @@ public class GFFEntry {
 
   /**
    * test if an attribute exists.
+   *
    * @param attributeName name of the attribute
    * @return true if the attribute exits
    */
@@ -196,9 +210,9 @@ public class GFFEntry {
 
   /**
    * Get the metadata values for a key.
+   *
    * @param key name of the metadata entry
-   * @return the values of the attribute or null if the metadata name does not
-   *         exists
+   * @return the values of the attribute or null if the metadata name does not exists
    */
   @Deprecated
   public final List<String> getMetadataEntryValues(final String key) {
@@ -208,9 +222,9 @@ public class GFFEntry {
 
   /**
    * Get attribute value.
+   *
    * @param attributeName name of the attribute
-   * @return the value of the attribute or null if the attribute name does not
-   *         exists
+   * @return the value of the attribute or null if the attribute name does not exists
    */
   public final String getAttributeValue(final String attributeName) {
 
@@ -223,14 +237,15 @@ public class GFFEntry {
 
   /**
    * Set the id. Do nothing as this method is deprecated.
+   *
    * @param id the id of the entry
    */
   @Deprecated
-  public final void setId(final int id) {
-  }
+  public final void setId(final int id) {}
 
   /**
    * Set the seqId.
+   *
    * @param seqId the sequence id of the entry
    */
   public final void setSeqId(final String seqId) {
@@ -244,6 +259,7 @@ public class GFFEntry {
 
   /**
    * Set the source of the entry.
+   *
    * @param source the source of the entry
    */
   public final void setSource(final String source) {
@@ -257,6 +273,7 @@ public class GFFEntry {
 
   /**
    * Set the type of the entry.
+   *
    * @param type the type of the entry
    */
   public final void setType(final String type) {
@@ -270,6 +287,7 @@ public class GFFEntry {
 
   /**
    * Set the start position of the entry.
+   *
    * @param start the start position
    */
   public final void setStart(final int start) {
@@ -283,6 +301,7 @@ public class GFFEntry {
 
   /**
    * Set the end of the position.
+   *
    * @param end the end position
    */
   public final void setEnd(final int end) {
@@ -296,6 +315,7 @@ public class GFFEntry {
 
   /**
    * Set the score of the position.
+   *
    * @param score the score of the position
    */
   public final void setScore(final double score) {
@@ -304,26 +324,26 @@ public class GFFEntry {
 
   /**
    * Set the strand of the position.
+   *
    * @param strand the strand of the position
    */
   public final void setStrand(final char strand) {
 
     switch (strand) {
-
-    case '.':
-    case '+':
-    case '-':
-    case '?':
-      this.strand = strand;
-      break;
-    default:
-      this.strand = '.';
+      case '.':
+      case '+':
+      case '-':
+      case '?':
+        this.strand = strand;
+        break;
+      default:
+        this.strand = '.';
     }
-
   }
 
   /**
    * Set the phase of the entry.
+   *
    * @param phase the phase
    */
   public final void setPhase(final int phase) {
@@ -337,6 +357,7 @@ public class GFFEntry {
 
   /**
    * Add metadata entry value.
+   *
    * @param key name of key of the metadata entry
    * @param value The value
    * @return true if the value is correctly added to the metadata
@@ -349,25 +370,24 @@ public class GFFEntry {
 
   /**
    * Add metadata entries values. Stop at first entry that fail to be added.
+   *
    * @param entries the entries to add
    * @return true if all the entries are correctly added to the metadata
    */
   @Deprecated
-  public final boolean addMetaDataEntries(
-      final Map<String, List<String>> entries) {
+  public final boolean addMetaDataEntries(final Map<String, List<String>> entries) {
 
     return this.metadata.add(entries);
   }
 
   /**
    * Get attribute value.
+   *
    * @param attributeName name of the attribute
    * @param value The value
-   * @return true if the value is correctly added to the attributes of the entry
-   *         exists
+   * @return true if the value is correctly added to the attributes of the entry exists
    */
-  public final boolean setAttributeValue(final String attributeName,
-      final String value) {
+  public final boolean setAttributeValue(final String attributeName, final String value) {
 
     if (attributeName == null || value == null) {
       return false;
@@ -380,6 +400,7 @@ public class GFFEntry {
 
   /**
    * Remove a metadata entry.
+   *
    * @param key key of the metadata entry to remove
    * @return true if the entry is removed
    */
@@ -391,6 +412,7 @@ public class GFFEntry {
 
   /**
    * Remove an attribute.
+   *
    * @param attributeName attribute to remove
    * @return true if the attribute is removed
    */
@@ -401,6 +423,7 @@ public class GFFEntry {
 
   /**
    * Set the values of the entry from the values of another entry.
+   *
    * @param entry entry to set
    */
   public final void set(GFFEntry entry) {
@@ -422,9 +445,7 @@ public class GFFEntry {
   // Other methods
   //
 
-  /**
-   * Clear the entry.
-   */
+  /** Clear the entry. */
   public final void clear() {
 
     this.seqId = "";
@@ -438,9 +459,7 @@ public class GFFEntry {
     this.attributes.clear();
   }
 
-  /**
-   * Clear metadata of the entry.
-   */
+  /** Clear metadata of the entry. */
   @Deprecated
   public final void clearMetaData() {
 
@@ -453,6 +472,7 @@ public class GFFEntry {
 
   /**
    * Test if the entry is valid.
+   *
    * @return true if the entry is valid
    */
   public final boolean isValidEntry() {
@@ -463,6 +483,7 @@ public class GFFEntry {
 
   /**
    * Test if the start and end position values are valid.
+   *
    * @return true if the positions are valid
    */
   public final boolean isValidStartAndEnd() {
@@ -480,6 +501,7 @@ public class GFFEntry {
 
   /**
    * Test if the strand is valid.
+   *
    * @return true if the strand is valid
    */
   public final boolean isValidStrand() {
@@ -490,6 +512,7 @@ public class GFFEntry {
 
   /**
    * Test if the phase is valid.
+   *
    * @return true if the phase is valid
    */
   public final boolean isValidPhase() {
@@ -531,6 +554,7 @@ public class GFFEntry {
 
   /**
    * Parse the first fields of a GFF/GTF string.
+   *
    * @param s the string to parse
    * @return the last non parsed field
    * @throws BadBioEntryException if an error occurs while parsing the string
@@ -541,13 +565,12 @@ public class GFFEntry {
       throw new NullPointerException("String to parse is null");
     }
 
-    List<String> fields =
-        GuavaCompatibility.splitToList(Splitter.on('\t').trimResults(), s);
+    List<String> fields = GuavaCompatibility.splitToList(Splitter.on('\t').trimResults(), s);
 
     if (fields.size() != 9) {
 
-      throw new BadBioEntryException("Error in GFF parsing line ("
-          + s.split("\t").length + " fields, 9 attempted)", s);
+      throw new BadBioEntryException(
+          "Error in GFF parsing line (" + s.split("\t").length + " fields, 9 attempted)", s);
     }
 
     setSeqId(fields.get(0));
@@ -566,6 +589,7 @@ public class GFFEntry {
 
   /**
    * Parse the attribute field in GFF3 format.
+   *
    * @param attributesField the attribute field
    */
   private void parseGFF3Attributes(final String attributesField) {
@@ -595,6 +619,7 @@ public class GFFEntry {
 
   /**
    * Parse the attribute field in GTF format.
+   *
    * @param attributesField the attribute field
    */
   private void parseGTFAttributes(final String attributesField) {
@@ -622,8 +647,7 @@ public class GFFEntry {
       }
 
       final String key = f.substring(0, indexEquals).trim();
-      final String value = StringUtils
-          .unDoubleQuotes(f.substring(indexEquals + 1).trim()).trim();
+      final String value = StringUtils.unDoubleQuotes(f.substring(indexEquals + 1).trim()).trim();
 
       if (getAttributesNames().contains(key)) {
         setAttributeValue(key, getAttributeValue(key) + ',' + value);
@@ -634,8 +658,8 @@ public class GFFEntry {
   }
 
   /**
-   * Parse a GFF entry. This method is deprecated, use <code>parseGFF3()</code>
-   * instead.
+   * Parse a GFF entry. This method is deprecated, use <code>parseGFF3()</code> instead.
+   *
    * @param s String to parse
    * @throws BadBioEntryException if an error occurs while parsing the string
    * @deprecated
@@ -648,6 +672,7 @@ public class GFFEntry {
 
   /**
    * Parse a GFF3 entry.
+   *
    * @param s String to parse
    * @throws BadBioEntryException if an error occurs while parsing the string
    */
@@ -659,6 +684,7 @@ public class GFFEntry {
 
   /**
    * Parse a GTF entry.
+   *
    * @param s String to parse
    * @throws BadBioEntryException if an error occurs while parsing the string
    */
@@ -670,6 +696,7 @@ public class GFFEntry {
 
   /**
    * Convert the attributes to a GFF3 string.
+   *
    * @return a the attribute in the GFF3 format
    */
   private String attributesToGFF3String() {
@@ -700,6 +727,7 @@ public class GFFEntry {
 
   /**
    * Convert the attributes to a GTF string.
+   *
    * @return a the attribute in the GTF format
    */
   private String attributesToGTFString() {
@@ -738,6 +766,7 @@ public class GFFEntry {
 
   /**
    * Override toString().
+   *
    * @return the GFF entry in GFF3 format
    */
   public String toGFF3() {
@@ -747,17 +776,27 @@ public class GFFEntry {
     final String type = getType();
 
     return ("".equals(seqId) ? "." : StringUtils.protectGFF(seqId))
-        + '\t' + ("".equals(source) ? "." : StringUtils.protectGFF(source))
-        + '\t' + ("".equals(type) ? "." : StringUtils.protectGFF(type)) + '\t'
-        + (getStart() == -1 ? "." : getStart()) + '\t'
-        + (getEnd() == -1 ? "." : getEnd()) + '\t'
-        + (Double.isNaN(getScore()) ? "." : getScore()) + '\t' + getStrand()
-        + '\t' + (getPhase() == -1 ? "." : getPhase()) + '\t'
+        + '\t'
+        + ("".equals(source) ? "." : StringUtils.protectGFF(source))
+        + '\t'
+        + ("".equals(type) ? "." : StringUtils.protectGFF(type))
+        + '\t'
+        + (getStart() == -1 ? "." : getStart())
+        + '\t'
+        + (getEnd() == -1 ? "." : getEnd())
+        + '\t'
+        + (Double.isNaN(getScore()) ? "." : getScore())
+        + '\t'
+        + getStrand()
+        + '\t'
+        + (getPhase() == -1 ? "." : getPhase())
+        + '\t'
         + attributesToGFF3String();
   }
 
   /**
    * Override toString().
+   *
    * @return the GFF entry in GTF format
    */
   public String toGTF() {
@@ -767,12 +806,21 @@ public class GFFEntry {
     final String type = getType();
 
     return ("".equals(seqId) ? "." : StringUtils.protectGFF(seqId))
-        + '\t' + ("".equals(source) ? "." : StringUtils.protectGFF(source))
-        + '\t' + ("".equals(type) ? "." : StringUtils.protectGFF(type)) + '\t'
-        + (getStart() == -1 ? "." : getStart()) + '\t'
-        + (getEnd() == -1 ? "." : getEnd()) + '\t'
-        + (Double.isNaN(getScore()) ? "." : getScore()) + '\t' + getStrand()
-        + '\t' + (getPhase() == -1 ? "." : getPhase()) + '\t'
+        + '\t'
+        + ("".equals(source) ? "." : StringUtils.protectGFF(source))
+        + '\t'
+        + ("".equals(type) ? "." : StringUtils.protectGFF(type))
+        + '\t'
+        + (getStart() == -1 ? "." : getStart())
+        + '\t'
+        + (getEnd() == -1 ? "." : getEnd())
+        + '\t'
+        + (Double.isNaN(getScore()) ? "." : getScore())
+        + '\t'
+        + getStrand()
+        + '\t'
+        + (getPhase() == -1 ? "." : getPhase())
+        + '\t'
         + attributesToGTFString();
   }
 
@@ -782,6 +830,7 @@ public class GFFEntry {
 
   /**
    * Override toString().
+   *
    * @return the GFF entry in GFF3 format
    */
   @Override
@@ -793,8 +842,16 @@ public class GFFEntry {
   @Override
   public int hashCode() {
 
-    return Objects.hash(this.metadata, this.seqId, this.source, this.type,
-        this.start, this.end, this.score, this.strand, this.phase,
+    return Objects.hash(
+        this.metadata,
+        this.seqId,
+        this.source,
+        this.type,
+        this.start,
+        this.end,
+        this.score,
+        this.strand,
+        this.phase,
         this.attributes);
   }
 
@@ -814,9 +871,12 @@ public class GFFEntry {
     return Objects.equals(this.metadata, that.metadata)
         && Objects.equals(this.seqId, that.seqId)
         && Objects.equals(this.source, that.source)
-        && Objects.equals(this.type, that.type) && this.start == that.start
-        && this.end == that.end && Objects.equals(this.score, that.score)
-        && this.strand == that.strand && this.phase == that.phase
+        && Objects.equals(this.type, that.type)
+        && this.start == that.start
+        && this.end == that.end
+        && Objects.equals(this.score, that.score)
+        && this.strand == that.strand
+        && this.phase == that.phase
         && Objects.equals(this.attributes, that.attributes);
   }
 
@@ -824,9 +884,7 @@ public class GFFEntry {
   // Constructor
   //
 
-  /**
-   * Public constructor.
-   */
+  /** Public constructor. */
   public GFFEntry() {
 
     this(new EntryMetadata());
@@ -834,6 +892,7 @@ public class GFFEntry {
 
   /**
    * Public constructor.
+   *
    * @param metadata GFF entry metadata
    */
   public GFFEntry(EntryMetadata metadata) {
@@ -843,5 +902,4 @@ public class GFFEntry {
     this.metadata = metadata;
     clear();
   }
-
 }

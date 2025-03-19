@@ -24,16 +24,16 @@
 
 package fr.ens.biologie.genomique.kenetre.util;
 
+import com.google.common.collect.Lists;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.Lists;
-
 /**
  * This class define a local reporter.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -42,8 +42,7 @@ public class LocalReporter implements Reporter {
   private final Map<String, Map<String, Long>> map = new HashMap<>();
 
   @Override
-  public void incrCounter(final String counterGroup, final String counter,
-      final long amount) {
+  public void incrCounter(final String counterGroup, final String counter, final long amount) {
 
     if (counterGroup == null || counter == null || amount <= 0) {
       return;
@@ -70,12 +69,12 @@ public class LocalReporter implements Reporter {
 
   /**
    * Set the value of a counter.
+   *
    * @param counterGroup group of the counter
    * @param counter the counter to increment
    * @param value value of the counter
    */
-  public void setCounter(final String counterGroup, final String counter,
-      final long value) {
+  public void setCounter(final String counterGroup, final String counter, final long value) {
 
     if (counterGroup == null || counter == null || value <= 0) {
       return;
@@ -129,9 +128,7 @@ public class LocalReporter implements Reporter {
     return Collections.unmodifiableSet(this.map.get(group).keySet());
   }
 
-  /**
-   * Clear all the counters in the reporter.
-   */
+  /** Clear all the counters in the reporter. */
   public void clear() {
 
     this.map.clear();
@@ -139,12 +136,12 @@ public class LocalReporter implements Reporter {
 
   /**
    * Get the values of the counter of a group.
+   *
    * @param counterGroup counter group
    * @param header header before counter values
    * @return a string with all the values of counter of the counter group
    */
-  public String countersValuesToString(final String counterGroup,
-      final String header) {
+  public String countersValuesToString(final String counterGroup, final String header) {
 
     final StringBuilder sb = new StringBuilder();
 
@@ -187,5 +184,4 @@ public class LocalReporter implements Reporter {
 
     return sb.toString();
   }
-
 }

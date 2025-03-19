@@ -29,12 +29,12 @@ import java.util.Objects;
 
 /**
  * This class define a genomic interval.
+ *
  * @since 1.2
  * @author Laurent Jourdren
  * @author Claire Wallon
  */
-public class GenomicInterval
-    implements Serializable, Comparable<GenomicInterval> {
+public class GenomicInterval implements Serializable, Comparable<GenomicInterval> {
 
   private static final long serialVersionUID = 1974207984076778441L;
 
@@ -49,6 +49,7 @@ public class GenomicInterval
 
   /**
    * Get the chromosome of the genomic interval.
+   *
    * @return the chromosome of the genomic interval
    */
   public String getChromosome() {
@@ -58,6 +59,7 @@ public class GenomicInterval
 
   /**
    * Get the start position of the genomic interval.
+   *
    * @return the start position of the genomic interval
    */
   public int getStart() {
@@ -67,6 +69,7 @@ public class GenomicInterval
 
   /**
    * Get the end position of the genomic interval.
+   *
    * @return the end position of the genomic interval
    */
   public int getEnd() {
@@ -76,6 +79,7 @@ public class GenomicInterval
 
   /**
    * Get the strand of the genomic interval.
+   *
    * @return a char with the strand of the genomic interval
    */
   public char getStrand() {
@@ -85,6 +89,7 @@ public class GenomicInterval
 
   /**
    * Get the length of the genomic interval.
+   *
    * @return the length of the genomic interval
    */
   public int getLength() {
@@ -94,18 +99,19 @@ public class GenomicInterval
 
   /**
    * Test if a sequence is in the genomic interval.
+   *
    * @param start start position of the sequence
    * @param end end position of the sequence
    * @return true if the sequence is in the genomic interval
    */
   public final boolean include(final int start, final int end) {
 
-    return Math.min(start, end) >= this.start
-        && Math.max(start, end) <= this.end;
+    return Math.min(start, end) >= this.start && Math.max(start, end) <= this.end;
   }
 
   /**
    * Test if a sequence and the genomic interval have an intersection.
+   *
    * @param start start position of the sequence
    * @param end end position of the sequence
    * @return true if the sequence and the genomic interval have an intersection
@@ -122,6 +128,7 @@ public class GenomicInterval
 
   /**
    * Test if two genomic intervals have an intersection.
+   *
    * @param interval the genomic interval to compare
    * @return true if the two genomic intervals have an intersection
    */
@@ -131,8 +138,7 @@ public class GenomicInterval
       return false;
     }
 
-    if (this.strand != interval.strand
-        && this.strand != '.' && interval.strand != '.') {
+    if (this.strand != interval.strand && this.strand != '.' && interval.strand != '.') {
       return false;
     }
 
@@ -141,6 +147,7 @@ public class GenomicInterval
 
   /**
    * Get the intersection length.
+   *
    * @param start start position of a sequence
    * @param end end position of a sequence
    * @return the length of the intersection
@@ -152,11 +159,13 @@ public class GenomicInterval
     }
 
     return Math.min(this.end, Math.max(start, end))
-        - Math.max(this.start, Math.min(start, end)) + 1;
+        - Math.max(this.start, Math.min(start, end))
+        + 1;
   }
 
   /**
    * Get the intersection length.
+   *
    * @param interval the genomic interval to compare
    * @return the length of the intersection
    */
@@ -207,9 +216,9 @@ public class GenomicInterval
     final GenomicInterval that = (GenomicInterval) o;
 
     return Objects.equals(this.chromosome, that.chromosome)
-        && this.start == that.start && this.end == that.end
+        && this.start == that.start
+        && this.end == that.end
         && this.strand == that.strand;
-
   }
 
   @Override
@@ -220,14 +229,22 @@ public class GenomicInterval
 
   /**
    * Override toString()
+   *
    * @return a String with the start and end position of the ORF
    */
   @Override
   public String toString() {
 
     return this.getClass().getSimpleName()
-        + "{" + this.chromosome + " [" + this.start + "-" + this.end + "]"
-        + this.strand + "}";
+        + "{"
+        + this.chromosome
+        + " ["
+        + this.start
+        + "-"
+        + this.end
+        + "]"
+        + this.strand
+        + "}";
   }
 
   //
@@ -236,26 +253,25 @@ public class GenomicInterval
 
   /**
    * Public constructor.
+   *
    * @param chromosome Chromosome of the genomic interval
    * @param start Start position of the genomic interval
    * @param end End position of the genomic interval
    * @param strand the strand of the genomic interval
    */
-  public GenomicInterval(final String chromosome, final int start,
-      final int end, final char strand) {
+  public GenomicInterval(
+      final String chromosome, final int start, final int end, final char strand) {
 
     if (chromosome == null) {
       throw new NullPointerException("The chromosome value is null");
     }
 
     if (start < 1) {
-      throw new IllegalArgumentException(
-          "Start position is lower than 1: " + start);
+      throw new IllegalArgumentException("Start position is lower than 1: " + start);
     }
 
     if (end < start) {
-      throw new IllegalArgumentException(
-          "Start position is greater than end: " + end);
+      throw new IllegalArgumentException("Start position is greater than end: " + end);
     }
 
     if (strand != '+' && strand != '-' && strand != '.') {
@@ -270,6 +286,7 @@ public class GenomicInterval
 
   /**
    * Public constructor
+   *
    * @param gffEntry GFF entry
    */
   public GenomicInterval(final GFFEntry gffEntry) {
@@ -279,14 +296,16 @@ public class GenomicInterval
 
   /**
    * Public constructor
+   *
    * @param gffEntry GFF entry
    * @param saveStrandInfo save the strand information
    */
-  public GenomicInterval(final GFFEntry gffEntry,
-      final boolean saveStrandInfo) {
+  public GenomicInterval(final GFFEntry gffEntry, final boolean saveStrandInfo) {
 
-    this(gffEntry.getSeqId(), gffEntry.getStart(), gffEntry.getEnd(),
+    this(
+        gffEntry.getSeqId(),
+        gffEntry.getStart(),
+        gffEntry.getEnd(),
         saveStrandInfo ? gffEntry.getStrand() : '.');
   }
-
 }

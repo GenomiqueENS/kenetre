@@ -26,17 +26,16 @@ package fr.ens.biologie.genomique.kenetre.bio.alignmentfilter;
 
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
+import fr.ens.biologie.genomique.kenetre.util.ReporterIncrementer;
+import htsjdk.samtools.SAMRecord;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.ens.biologie.genomique.kenetre.util.ReporterIncrementer;
-import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-import htsjdk.samtools.SAMRecord;
-
 /**
- * This class define an alignments filter that calls successively a list of
- * alignments filters.
+ * This class define an alignments filter that calls successively a list of alignments filters.
+ *
  * @since 1.1
  * @author Laurent Jourdren
  * @author Claire Wallon
@@ -72,13 +71,13 @@ public class MultiReadAlignmentFilter implements ReadAlignmentFilter {
       if (diff > 0 && this.incrementer != null) {
         // paired-end mode
         if (pairedEnd) {
-          this.incrementer.incrCounter(this.counterGroup,
-              "alignments rejected by " + af.getName() + " filter", diff / 2);
+          this.incrementer.incrCounter(
+              this.counterGroup, "alignments rejected by " + af.getName() + " filter", diff / 2);
         }
         // single-end mode
         else {
-          this.incrementer.incrCounter(this.counterGroup,
-              "alignments rejected by " + af.getName() + " filter", diff);
+          this.incrementer.incrCounter(
+              this.counterGroup, "alignments rejected by " + af.getName() + " filter", diff);
         }
       }
 
@@ -90,6 +89,7 @@ public class MultiReadAlignmentFilter implements ReadAlignmentFilter {
 
   /**
    * Add a filter to the multi filter.
+   *
    * @param filter filter to add
    */
   public void addFilter(final ReadAlignmentFilter filter) {
@@ -97,7 +97,6 @@ public class MultiReadAlignmentFilter implements ReadAlignmentFilter {
     if (filter != null) {
       this.list.add(filter);
     }
-
   }
 
   @Override
@@ -131,11 +130,11 @@ public class MultiReadAlignmentFilter implements ReadAlignmentFilter {
   }
 
   @Override
-  public void init() {
-  }
+  public void init() {}
 
   /**
    * Get the name of the filters.
+   *
    * @return a list with the names of the filters
    */
   public List<String> getFilterNames() {
@@ -152,17 +151,20 @@ public class MultiReadAlignmentFilter implements ReadAlignmentFilter {
   public String toString() {
 
     return this.getClass().getSimpleName()
-        + "{incrementer=" + this.incrementer + ",counterGroup="
-        + this.counterGroup + " , list=" + this.list + "}";
+        + "{incrementer="
+        + this.incrementer
+        + ",counterGroup="
+        + this.counterGroup
+        + " , list="
+        + this.list
+        + "}";
   }
 
   //
   // Constructors
   //
 
-  /**
-   * Public constructor.
-   */
+  /** Public constructor. */
   public MultiReadAlignmentFilter() {
 
     this(null, null);
@@ -170,11 +172,12 @@ public class MultiReadAlignmentFilter implements ReadAlignmentFilter {
 
   /**
    * Public constructor.
+   *
    * @param incrementer incrementer to use
    * @param counterGroup counter group for the incrementer
    */
-  public MultiReadAlignmentFilter(final ReporterIncrementer incrementer,
-      final String counterGroup) {
+  public MultiReadAlignmentFilter(
+      final ReporterIncrementer incrementer, final String counterGroup) {
 
     this.incrementer = incrementer;
     this.counterGroup = counterGroup;
@@ -182,6 +185,7 @@ public class MultiReadAlignmentFilter implements ReadAlignmentFilter {
 
   /**
    * Public constructor.
+   *
    * @param filters filters to add
    */
   public MultiReadAlignmentFilter(final List<ReadAlignmentFilter> filters) {
@@ -191,12 +195,15 @@ public class MultiReadAlignmentFilter implements ReadAlignmentFilter {
 
   /**
    * Public constructor.
+   *
    * @param incrementer incrementer to use
    * @param counterGroup counter group for the incrementer
    * @param filters filters to add
    */
-  public MultiReadAlignmentFilter(final ReporterIncrementer incrementer,
-      final String counterGroup, final List<ReadAlignmentFilter> filters) {
+  public MultiReadAlignmentFilter(
+      final ReporterIncrementer incrementer,
+      final String counterGroup,
+      final List<ReadAlignmentFilter> filters) {
 
     this.incrementer = incrementer;
     this.counterGroup = counterGroup;
@@ -208,5 +215,4 @@ public class MultiReadAlignmentFilter implements ReadAlignmentFilter {
       }
     }
   }
-
 }

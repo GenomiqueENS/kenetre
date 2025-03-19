@@ -24,16 +24,15 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.readmapper;
 
+import fr.ens.biologie.genomique.kenetre.bio.FastqFormat;
+import fr.ens.biologie.genomique.kenetre.util.Version;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import fr.ens.biologie.genomique.kenetre.bio.FastqFormat;
-import fr.ens.biologie.genomique.kenetre.util.Version;
-
 /**
- * This class define a wrapper on the Bowtie mapper. Includes only specific
- * methods of bowtie2
+ * This class define a wrapper on the Bowtie mapper. Includes only specific methods of bowtie2
+ *
  * @since 1.2
  * @author Laurent Jourdren
  */
@@ -64,24 +63,28 @@ public class Bowtie2MapperProvider extends AbstractBowtieMapperProvider {
   @Override
   protected String getExtensionIndexFile(final EntryMapping mapping) {
 
-    return EXTENSION_INDEX_FILE
-        + (isLongIndexFlavor(mapping, FIRST_FLAVORED_VERSION) ? "l" : "");
+    return EXTENSION_INDEX_FILE + (isLongIndexFlavor(mapping, FIRST_FLAVORED_VERSION) ? "l" : "");
   }
 
   @Override
-  public List<String> getIndexerExecutables(
-      final MapperInstance mapperInstance) {
+  public List<String> getIndexerExecutables(final MapperInstance mapperInstance) {
 
     return Collections.singletonList(
-        flavoredBinary(mapperInstance.getVersion(), mapperInstance.getFlavor(),
-            INDEXER_EXECUTABLE, FIRST_FLAVORED_VERSION));
+        flavoredBinary(
+            mapperInstance.getVersion(),
+            mapperInstance.getFlavor(),
+            INDEXER_EXECUTABLE,
+            FIRST_FLAVORED_VERSION));
   }
 
   @Override
   public String getMapperExecutableName(final MapperInstance mapperInstance) {
 
-    return flavoredBinary(mapperInstance.getVersion(),
-        mapperInstance.getFlavor(), MAPPER_EXECUTABLE, FIRST_FLAVORED_VERSION);
+    return flavoredBinary(
+        mapperInstance.getVersion(),
+        mapperInstance.getFlavor(),
+        MAPPER_EXECUTABLE,
+        FIRST_FLAVORED_VERSION);
   }
 
   @Override
@@ -89,30 +92,27 @@ public class Bowtie2MapperProvider extends AbstractBowtieMapperProvider {
     return DEFAULT_ARGUMENTS;
   }
 
-  protected static String getBowtieQualityArgument(final FastqFormat format)
-      throws Exception {
+  protected static String getBowtieQualityArgument(final FastqFormat format) throws Exception {
 
     switch (format) {
+      case FASTQ_SOLEXA:
+        // TODO BOWTIE do not support solexa quality scores
+        // return "--solexa-quals";
+        throw new Exception("Format " + format.getName() + " not available with bowtie2");
 
-    case FASTQ_SOLEXA:
-      // TODO BOWTIE do not support solexa quality scores
-      // return "--solexa-quals";
-      throw new Exception(
-          "Format " + format.getName() + " not available with bowtie2");
+      case FASTQ_ILLUMINA:
+      case FASTQ_ILLUMINA_1_5:
+        return "--phred64";
 
-    case FASTQ_ILLUMINA:
-    case FASTQ_ILLUMINA_1_5:
-      return "--phred64";
-
-    case FASTQ_SANGER:
-    default:
-      return "--phred33";
+      case FASTQ_SANGER:
+      default:
+        return "--phred33";
     }
   }
 
   @Override
-  protected List<String> createCommonArgs(final EntryMapping mapping,
-      final String bowtiePath, final String index) {
+  protected List<String> createCommonArgs(
+      final EntryMapping mapping, final String bowtiePath, final String index) {
 
     final List<String> result = new ArrayList<>();
 
@@ -145,5 +145,4 @@ public class Bowtie2MapperProvider extends AbstractBowtieMapperProvider {
 
     return result;
   }
-
 }

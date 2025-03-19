@@ -1,6 +1,5 @@
 package fr.ens.biologie.genomique.kenetre.bio;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -9,6 +8,7 @@ import java.util.Objects;
 
 /**
  * This class define an abstract expression matrix.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -69,7 +69,6 @@ public abstract class AbstractMatrix<E> implements Matrix<E> {
       this.columnName = columnName;
       this.value = value;
     }
-
   }
 
   @Override
@@ -111,8 +110,9 @@ public abstract class AbstractMatrix<E> implements Matrix<E> {
 
             this.columnName = this.columnIterator.next();
 
-            Entry<E> result = new BasicEntry<>(this.rowName, this.columnName,
-                getValue(this.rowName, this.columnName));
+            Entry<E> result =
+                new BasicEntry<>(
+                    this.rowName, this.columnName, getValue(this.rowName, this.columnName));
 
             if (!this.columnIterator.hasNext() && rowNames.hasNext()) {
               this.rowName = rowNames.next();
@@ -306,5 +306,4 @@ public abstract class AbstractMatrix<E> implements Matrix<E> {
 
     return sb.toString();
   }
-
 }

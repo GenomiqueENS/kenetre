@@ -6,36 +6,31 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import fr.ens.biologie.genomique.kenetre.nanopore.samplesheet.SampleSheet;
+import fr.ens.biologie.genomique.kenetre.nanopore.samplesheet.SampleSheet.Barcode;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
-
 import org.junit.Assert;
 import org.junit.Test;
 
-import fr.ens.biologie.genomique.kenetre.nanopore.samplesheet.SampleSheet;
-import fr.ens.biologie.genomique.kenetre.nanopore.samplesheet.SampleSheet.Barcode;
-
 public class SampleSheetCVSReaderWriterTest {
 
-  private static final String SAMPLE_SHEET_NO_BARCODE_FILENAME =
-      "sample_sheet_no_barcode.csv";
+  private static final String SAMPLE_SHEET_NO_BARCODE_FILENAME = "sample_sheet_no_barcode.csv";
 
-  private static final String SAMPLE_SHEET_BARCODES_FILENAME =
-      "sample_sheet_barcodes.csv";
+  private static final String SAMPLE_SHEET_BARCODES_FILENAME = "sample_sheet_barcodes.csv";
 
   @Test
   public void testNoBarcode() throws IOException {
 
-    try (SampleSheetReader reader = new SampleSheetCSVReader(
-        loadRessource(SAMPLE_SHEET_NO_BARCODE_FILENAME))) {
+    try (SampleSheetReader reader =
+        new SampleSheetCSVReader(loadRessource(SAMPLE_SHEET_NO_BARCODE_FILENAME))) {
 
       SampleSheet s = reader.read();
 
       Assert.assertFalse(s.isBarcode());
-      Assert.assertEquals("7cf95983-53f5-463d-9502-7847a7c42474",
-          s.getProtocolRunId());
+      Assert.assertEquals("7cf95983-53f5-463d-9502-7847a7c42474", s.getProtocolRunId());
       Assert.assertEquals("MN17734", s.getPositionId());
       Assert.assertEquals("FAT94559", s.getFlowCellId());
       Assert.assertEquals("no_sample", s.getSampleId());
@@ -50,8 +45,8 @@ public class SampleSheetCVSReaderWriterTest {
   @Test
   public void testBarcode() throws IOException {
 
-    try (SampleSheetReader reader = new SampleSheetCSVReader(
-        loadRessource(SAMPLE_SHEET_BARCODES_FILENAME))) {
+    try (SampleSheetReader reader =
+        new SampleSheetCSVReader(loadRessource(SAMPLE_SHEET_BARCODES_FILENAME))) {
 
       SampleSheet s = reader.read();
 
@@ -89,9 +84,8 @@ public class SampleSheetCVSReaderWriterTest {
     SampleSheet inputSamplesheet;
     SampleSheet outputSamplesheet;
 
-    try (
-        SampleSheetReader reader = new SampleSheetCSVReader(
-            loadRessource(SAMPLE_SHEET_BARCODES_FILENAME));
+    try (SampleSheetReader reader =
+            new SampleSheetCSVReader(loadRessource(SAMPLE_SHEET_BARCODES_FILENAME));
         SampleSheetWriter writer = new SampleSheetCSVWriter(tmpFile)) {
 
       inputSamplesheet = reader.read();
@@ -115,5 +109,4 @@ public class SampleSheetCVSReaderWriterTest {
 
     return this.getClass().getResourceAsStream("/samplesheets/" + filename);
   }
-
 }

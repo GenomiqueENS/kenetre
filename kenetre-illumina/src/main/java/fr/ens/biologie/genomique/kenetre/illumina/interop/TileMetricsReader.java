@@ -2,8 +2,8 @@
  *                 Aozan development code
  *
  * This code may be freely distributed and modified under the
- * terms of the GNU General Public License version 3 or later 
- * and CeCILL. This should be distributed with the code. If you 
+ * terms of the GNU General Public License version 3 or later
+ * and CeCILL. This should be distributed with the code. If you
  * do not have a copy, see:
  *
  *      http://www.gnu.org/licenses/gpl-3.0-standalone.html
@@ -23,6 +23,7 @@
 
 package fr.ens.biologie.genomique.kenetre.illumina.interop;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -32,11 +33,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-
 /**
- * This class define a specified iterator for reading the binary file:
- * TileMetricsOut.bin.
+ * This class define a specified iterator for reading the binary file: TileMetricsOut.bin.
+ *
  * @author Sandrine Perrin
  * @since 1.1
  */
@@ -61,14 +60,14 @@ public class TileMetricsReader extends AbstractBinaryFileReader<TileMetric> {
   protected int getExpectedRecordSize(int version) {
 
     switch (version) {
-    case 2:
-      return 10;
+      case 2:
+        return 10;
 
-    case 3:
-      return 15;
+      case 3:
+        return 15;
 
-    default:
-      throw new IllegalArgumentException();
+      default:
+        throw new IllegalArgumentException();
     }
   }
 
@@ -87,26 +86,24 @@ public class TileMetricsReader extends AbstractBinaryFileReader<TileMetric> {
   }
 
   @Override
-  protected void readMetricRecord(List<TileMetric> collection, ByteBuffer bb,
-      int version) {
+  protected void readMetricRecord(List<TileMetric> collection, ByteBuffer bb, int version) {
 
     int laneNumber = -1;
     long tileNumber = -1;
 
     switch (version) {
+      case 2:
+        laneNumber = Short.toUnsignedInt(bb.getShort()); // uShortToInt(bb);
+        tileNumber = Short.toUnsignedInt(bb.getShort());
+        break;
 
-    case 2:
-      laneNumber = Short.toUnsignedInt(bb.getShort()); // uShortToInt(bb);
-      tileNumber = Short.toUnsignedInt(bb.getShort());
-      break;
+      case 3:
+        laneNumber = uShortToInt(bb);
+        tileNumber = uIntToLong(bb);
+        break;
 
-    case 3:
-      laneNumber = uShortToInt(bb);
-      tileNumber = uIntToLong(bb);
-      break;
-
-    default:
-      throw new IllegalArgumentException();
+      default:
+        throw new IllegalArgumentException();
     }
 
     TileMetric tile;
@@ -122,17 +119,16 @@ public class TileMetricsReader extends AbstractBinaryFileReader<TileMetric> {
     }
 
     switch (version) {
+      case 2:
+        tile.parseV2(bb);
+        break;
 
-    case 2:
-      tile.parseV2(bb);
-      break;
+      case 3:
+        tile.parseV3(bb, this.density);
+        break;
 
-    case 3:
-      tile.parseV3(bb, this.density);
-      break;
-
-    default:
-      throw new IllegalArgumentException();
+      default:
+        throw new IllegalArgumentException();
     }
   }
 
@@ -143,5 +139,4 @@ public class TileMetricsReader extends AbstractBinaryFileReader<TileMetric> {
   public TileMetricsReader(final File dirPath) throws KenetreException {
     super(dirPath);
   }
-
 }

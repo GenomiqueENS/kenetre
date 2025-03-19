@@ -27,6 +27,10 @@ package fr.ens.biologie.genomique.kenetre.bio.readmapper;
 import static java.nio.charset.Charset.defaultCharset;
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.bio.readmapper.MapperExecutor.Result;
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
+import fr.ens.biologie.genomique.kenetre.util.Reporter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
@@ -37,13 +41,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import fr.ens.biologie.genomique.kenetre.bio.readmapper.MapperExecutor.Result;
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-import fr.ens.biologie.genomique.kenetre.util.Reporter;
-
 /**
  * This class contains utility methods for the package.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -51,13 +51,14 @@ public class MapperUtils {
 
   /**
    * Execute a command and get its output.
+   *
    * @param executor the mapper executor
    * @param command the command to execute
    * @return a string with the output
    * @throws IOException if an error occurs while executing the command
    */
-  public static String executeToString(final MapperExecutor executor,
-      final List<String> command) throws IOException {
+  public static String executeToString(final MapperExecutor executor, final List<String> command)
+      throws IOException {
 
     requireNonNull(executor, "executor argument cannot be null");
     requireNonNull(command, "command argument cannot be null");
@@ -82,6 +83,7 @@ public class MapperUtils {
 
   /**
    * Get the index path.
+   *
    * @param mapperName mapper name
    * @param indexDirectory index directory
    * @param extension extension of the index
@@ -89,27 +91,37 @@ public class MapperUtils {
    * @return the index path
    * @throws IOException if cannot get the path of the index
    */
-  public static File getIndexPath(final String mapperName,
-      final File indexDirectory, final String extension,
-      final int extensionLength) throws IOException {
+  public static File getIndexPath(
+      final String mapperName,
+      final File indexDirectory,
+      final String extension,
+      final int extensionLength)
+      throws IOException {
 
     requireNonNull(mapperName, "mapperName argument cannot be null");
     requireNonNull(indexDirectory, "indexDirectory argument cannot be null");
     requireNonNull(extension, "extension argument cannot be null");
 
-    final File[] indexFiles =
-        FileUtils.listFilesByExtension(indexDirectory, extension);
+    final File[] indexFiles = FileUtils.listFilesByExtension(indexDirectory, extension);
 
     if (indexFiles == null || indexFiles.length == 0) {
-      throw new IOException("Unable to get index file for "
-          + mapperName + " with \"" + extension + "\" extension in directory: "
-          + indexDirectory);
+      throw new IOException(
+          "Unable to get index file for "
+              + mapperName
+              + " with \""
+              + extension
+              + "\" extension in directory: "
+              + indexDirectory);
     }
 
     if (indexFiles.length > 1) {
-      throw new IOException("More than one index file for "
-          + mapperName + " with \"" + extension + "\" extension in directory: "
-          + indexDirectory);
+      throw new IOException(
+          "More than one index file for "
+              + mapperName
+              + " with \""
+              + extension
+              + "\" extension in directory: "
+              + indexDirectory);
     }
 
     // Get the path to the index
@@ -120,6 +132,7 @@ public class MapperUtils {
 
   /**
    * Convert a string that contains a list of arguments to a list of strings.
+   *
    * @param s the string to convert
    * @return a list of string
    */
@@ -146,30 +159,34 @@ public class MapperUtils {
 
   /**
    * This method write SAM output from a mapper in a file.
+   *
    * @param in mapper output as an inputStream
    * @param samOutputFile output SAM file
-   * @throws IOException if an error occurs while reading or writing mapper
-   *           output
+   * @throws IOException if an error occurs while reading or writing mapper output
    */
-  public static final void writeMapperOutputToFile(InputStream in,
-      File samOutputFile) throws IOException {
+  public static final void writeMapperOutputToFile(InputStream in, File samOutputFile)
+      throws IOException {
 
     writeMapperOutputToFile(in, samOutputFile, null, null, null);
   }
 
   /**
    * This method write SAM output from a mapper in a file.
+   *
    * @param in mapper output as an inputStream
    * @param samOutputFile output SAM file
    * @param reporter optional reporter for statistic
    * @param counterGroup counter group if a report has been defined
    * @param logger optional logger for log statistics
-   * @throws IOException if an error occurs while reading or writing mapper
-   *           output
+   * @throws IOException if an error occurs while reading or writing mapper output
    */
-  public static final void writeMapperOutputToFile(InputStream in,
-      File samOutputFile, Reporter reporter, String counterGroup,
-      GenericLogger logger) throws IOException {
+  public static final void writeMapperOutputToFile(
+      InputStream in,
+      File samOutputFile,
+      Reporter reporter,
+      String counterGroup,
+      GenericLogger logger)
+      throws IOException {
 
     requireNonNull(in);
     requireNonNull(samOutputFile);
@@ -178,9 +195,7 @@ public class MapperUtils {
     }
 
     int entriesParsed = 0;
-    try (
-        BufferedReader readerResults =
-            new BufferedReader(new InputStreamReader(in));
+    try (BufferedReader readerResults = new BufferedReader(new InputStreamReader(in));
         FileWriter writer = new FileWriter(samOutputFile, defaultCharset())) {
 
       String line;
@@ -206,5 +221,4 @@ public class MapperUtils {
       logger.info(entriesParsed + " entries parsed in output file");
     }
   }
-
 }

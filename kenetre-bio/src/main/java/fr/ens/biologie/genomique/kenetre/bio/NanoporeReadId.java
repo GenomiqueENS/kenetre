@@ -1,20 +1,21 @@
 package fr.ens.biologie.genomique.kenetre.bio;
 
-import java.util.Iterator;
-
 import com.google.common.base.Splitter;
-
 import fr.ens.biologie.genomique.kenetre.KenetreException;
+import java.util.Iterator;
 
 /**
  * This class allow the easily get fields of Nanopore reads ids.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
 public class NanoporeReadId {
 
   public enum SequenceType {
-    TEMPLATE, COMPLEMENT, CONSENSUS
+    TEMPLATE,
+    COMPLEMENT,
+    CONSENSUS
   }
 
   private final Splitter spaceSplitter = Splitter.on(' ').omitEmptyStrings();
@@ -33,6 +34,7 @@ public class NanoporeReadId {
 
   /**
    * Get the read id.
+   *
    * @return the read id
    */
   public String getReadId() {
@@ -62,6 +64,7 @@ public class NanoporeReadId {
 
   /**
    * Get the run id.
+   *
    * @return the run id
    */
   public String getRunId() {
@@ -70,6 +73,7 @@ public class NanoporeReadId {
 
   /**
    * Get the read number.
+   *
    * @return the read
    */
   public int getReadNumber() {
@@ -78,6 +82,7 @@ public class NanoporeReadId {
 
   /**
    * Get the channel of the read.
+   *
    * @return the channel of the read
    */
   public int getChannel() {
@@ -86,6 +91,7 @@ public class NanoporeReadId {
 
   /**
    * Get the start time.
+   *
    * @return the start time
    */
   public String getStartTime() {
@@ -94,6 +100,7 @@ public class NanoporeReadId {
 
   /**
    * Get the barcode
+   *
    * @return the barcode
    */
   public String getBarcode() {
@@ -102,6 +109,7 @@ public class NanoporeReadId {
 
   /**
    * Test if the run is barcoded.
+   *
    * @return true if the run is barcoded
    */
   public boolean isBarcoded() {
@@ -115,6 +123,7 @@ public class NanoporeReadId {
 
   /**
    * Parse a Nanopore id string.
+   *
    * @param readId String with the Nanoore id
    */
   public void parse(String readId) {
@@ -155,34 +164,31 @@ public class NanoporeReadId {
         String value = it.next();
 
         switch (key) {
-        case "runid":
-          this.runId = value;
-          break;
+          case "runid":
+            this.runId = value;
+            break;
 
-        case "read":
-          this.readNumber = Integer.parseInt(value);
-          break;
+          case "read":
+            this.readNumber = Integer.parseInt(value);
+            break;
 
-        case "ch":
-          this.channel = Integer.parseInt(value);
-          break;
+          case "ch":
+            this.channel = Integer.parseInt(value);
+            break;
 
-        case "start_time":
-          this.startTime = value;
-          break;
+          case "start_time":
+            this.startTime = value;
+            break;
 
-        case "barcode":
-          this.barcode = value;
-          break;
+          case "barcode":
+            this.barcode = value;
+            break;
 
-        default:
-          break;
+          default:
+            break;
         }
-
       }
-
     }
-
   }
 
   //
@@ -191,6 +197,7 @@ public class NanoporeReadId {
 
   /**
    * Public constructor.
+   *
    * @param readId String with Nanopore id to parse
    * @throws KenetreException if the id is not an Nanopore id
    */
@@ -205,6 +212,7 @@ public class NanoporeReadId {
 
   /**
    * Public constructor.
+   *
    * @param sequence sequence witch name must be parsed
    * @throws KenetreException if the id is not an Illumina id
    */
@@ -222,5 +230,4 @@ public class NanoporeReadId {
 
     parse(readId);
   }
-
 }

@@ -2,8 +2,8 @@
  *                  Aozan development code
  *
  * This code may be freely distributed and modified under the
- * terms of the GNU General Public License version 3 or later 
- * and CeCILL. This should be distributed with the code. If you 
+ * terms of the GNU General Public License version 3 or later
+ * and CeCILL. This should be distributed with the code. If you
  * do not have a copy, see:
  *
  *      http://www.gnu.org/licenses/gpl-3.0-standalone.html
@@ -32,19 +32,19 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * This internal class save a record from ExtractionMetricsOut.bin file,
- * corresponding of the description of the EXPECTED_VERSION. An record contains
- * data per tile per cycle per lane. Each record create an object_____________
- * byte 0: file version number (2)____________________________________________
- * byte 1: length of each record______________________________________________
- * bytes (N * 38 + 2) - (N *38 + 39): record:_________________________________
- * __2 bytes: lane number (uint16)____________________________________________
- * __2 bytes: tile number (uint16)____________________________________________
- * __2 bytes: cycle number (uint16)___________________________________________
- * __4 x 4 bytes: fwhm scores (float) for channel [A, C, G, T] respectively___
- * __2 x 4 bytes: intensities (uint16) for channel [A, C, G, T] respectively__
- * __8 bytes: date/time of CIF creation_______________________________________
- * Where N is the record index________________________________________________
+ * This internal class save a record from ExtractionMetricsOut.bin file, corresponding of the
+ * description of the EXPECTED_VERSION. An record contains data per tile per cycle per lane. Each
+ * record create an object_____________ byte 0: file version number
+ * (2)____________________________________________ byte 1: length of each
+ * record______________________________________________ bytes (N * 38 + 2) - (N *38 + 39):
+ * record:_________________________________ __2 bytes: lane number
+ * (uint16)____________________________________________ __2 bytes: tile number
+ * (uint16)____________________________________________ __2 bytes: cycle number
+ * (uint16)___________________________________________ __4 x 4 bytes: fwhm scores (float) for
+ * channel [A, C, G, T] respectively___ __2 x 4 bytes: intensities (uint16) for channel [A, C, G, T]
+ * respectively__ __8 bytes: date/time of CIF creation_______________________________________ Where
+ * N is the record index________________________________________________
+ *
  * @author Sandrine Perrin
  * @since Aozan 1.1
  */
@@ -61,6 +61,7 @@ public class ExtractionMetric extends Metric {
 
   /**
    * Get the number lane.
+   *
    * @return the lane number
    */
   public int getLaneNumber() {
@@ -69,6 +70,7 @@ public class ExtractionMetric extends Metric {
 
   /**
    * Get the number tile.
+   *
    * @return the tile number
    */
   public long getTileNumber() {
@@ -77,6 +79,7 @@ public class ExtractionMetric extends Metric {
 
   /**
    * Get the time stamp.
+   *
    * @return the time stamp
    */
   public long getTimestamp() {
@@ -85,6 +88,7 @@ public class ExtractionMetric extends Metric {
 
   /**
    * Get the number cycle of this record.
+   *
    * @return number cycle
    */
   public int getCycleNumber() {
@@ -92,8 +96,8 @@ public class ExtractionMetric extends Metric {
   }
 
   /**
-   * Get a float array with the fwhm (full width at half maximum) scores of each
-   * base (A, C, G, T).
+   * Get a float array with the fwhm (full width at half maximum) scores of each base (A, C, G, T).
+   *
    * @return float array with the fwhm scores of each channel
    */
   public float[] getFwhm() {
@@ -102,6 +106,7 @@ public class ExtractionMetric extends Metric {
 
   /**
    * Get a integer array with the raw intensities of each base (A, C, G, T).
+   *
    * @return float array with the raw intensities of each channel
    */
   public int[] getIntensities() {
@@ -110,6 +115,7 @@ public class ExtractionMetric extends Metric {
 
   /**
    * Get the average of the four intensities (one per channel) for this record.
+   *
    * @return average of the four intensities (one per channel)
    */
   public int getAverageIntensities() {
@@ -132,13 +138,20 @@ public class ExtractionMetric extends Metric {
 
     if (this.channelCount == 4) {
       result.addAll(
-          Arrays.asList("MaxIntensity_A", "MaxIntensity_C", "MaxIntensity_G",
-              "MaxIntensity_T", "Focus_A", "Focus_C", "Focus_G", "Focus_T"));
+          Arrays.asList(
+              "MaxIntensity_A",
+              "MaxIntensity_C",
+              "MaxIntensity_G",
+              "MaxIntensity_T",
+              "Focus_A",
+              "Focus_C",
+              "Focus_G",
+              "Focus_T"));
       return result;
     }
 
-    result.addAll(Arrays.asList("MaxIntensity_Red", "MaxIntensity_Green",
-        "Focus_Red", "Focus_Green"));
+    result.addAll(
+        Arrays.asList("MaxIntensity_Red", "MaxIntensity_Green", "Focus_Red", "Focus_Green"));
 
     return result;
   }
@@ -147,15 +160,19 @@ public class ExtractionMetric extends Metric {
   public List<Number> values() {
 
     ArrayList<Number> result = new ArrayList<>();
-    result.addAll(Arrays.asList(getLaneNumber(), getTileNumber(),
-        getCycleNumber(), getTimestamp()));
+    result.addAll(
+        Arrays.asList(getLaneNumber(), getTileNumber(), getCycleNumber(), getTimestamp()));
 
     int channelCount = this.channelCount;
 
     if (channelCount == 4) {
-      channelCount = (this.intensities[2] == 0
-          && this.intensities[3] == 0 && this.fwhm[2] == 0 && this.fwhm[3] == 0)
-              ? 2 : 4;
+      channelCount =
+          (this.intensities[2] == 0
+                  && this.intensities[3] == 0
+                  && this.fwhm[2] == 0
+                  && this.fwhm[3] == 0)
+              ? 2
+              : 4;
     }
 
     for (int i = 0; i < channelCount; i++) {
@@ -173,15 +190,18 @@ public class ExtractionMetric extends Metric {
   public List<Class<?>> fieldTypes() {
 
     ArrayList<Class<?>> result = new ArrayList<>();
-    result.addAll(
-        Arrays.asList(Integer.class, Integer.class, Integer.class, long.class));
+    result.addAll(Arrays.asList(Integer.class, Integer.class, Integer.class, long.class));
 
     int channelCount = this.channelCount;
 
     if (channelCount == 4) {
-      channelCount = (this.intensities[2] == 0
-          && this.intensities[3] == 0 && this.fwhm[2] == 0 && this.fwhm[3] == 0)
-              ? 2 : 4;
+      channelCount =
+          (this.intensities[2] == 0
+                  && this.intensities[3] == 0
+                  && this.fwhm[2] == 0
+                  && this.fwhm[3] == 0)
+              ? 2
+              : 4;
     }
 
     for (int i = 0; i < channelCount; i++) {
@@ -201,10 +221,10 @@ public class ExtractionMetric extends Metric {
 
   /**
    * Constructor. One record countReads on the ByteBuffer.
+   *
    * @param bb ByteBuffer who read one record
    */
-  ExtractionMetric(final int version, final int channelCount,
-      final ByteBuffer bb) {
+  ExtractionMetric(final int version, final int channelCount, final ByteBuffer bb) {
 
     this.laneNumber = uShortToInt(bb);
     this.tileNumber = version == 3 ? uIntToLong(bb) : uShortToInt(bb);
@@ -237,15 +257,13 @@ public class ExtractionMetric extends Metric {
 
       this.timestamp = -1;
     } else {
-      throw new IllegalStateException(
-          "Unknow version for  Extraction metric:" + version);
+      throw new IllegalStateException("Unknow version for  Extraction metric:" + version);
     }
   }
 
   public static String byteArrayToHex(byte[] a) {
     StringBuilder sb = new StringBuilder(a.length * 2);
-    for (byte b : a)
-      sb.append(String.format("%02x", b));
+    for (byte b : a) sb.append(String.format("%02x", b));
     return sb.toString();
   }
 
@@ -258,5 +276,4 @@ public class ExtractionMetric extends Metric {
 
     return sb.toString();
   }
-
 }

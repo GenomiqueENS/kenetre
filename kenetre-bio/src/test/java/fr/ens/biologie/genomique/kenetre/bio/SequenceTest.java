@@ -296,7 +296,6 @@ public class SequenceTest {
 
     s1.setSequence(null);
     assertNull(s1.subSequence(1, 4));
-
   }
 
   @Test
@@ -367,7 +366,6 @@ public class SequenceTest {
 
     s = new Sequence("toto", "AATTTTGGTT");
     assertEquals(3, s.countSequence("TT"));
-
   }
 
   @Test
@@ -434,8 +432,7 @@ public class SequenceTest {
     assertNull(Sequence.complement(null, Alphabets.AMBIGUOUS_DNA_ALPHABET));
     assertNull(Sequence.complement("ATGC", null));
 
-    assertEquals("GCAT",
-        Sequence.complement("CGTA", Alphabets.AMBIGUOUS_DNA_ALPHABET));
+    assertEquals("GCAT", Sequence.complement("CGTA", Alphabets.AMBIGUOUS_DNA_ALPHABET));
   }
 
   @Test
@@ -453,12 +450,10 @@ public class SequenceTest {
   @Test
   public void testReverseComplementString() {
 
-    assertNull(
-        Sequence.reverseComplement(null, Alphabets.AMBIGUOUS_DNA_ALPHABET));
+    assertNull(Sequence.reverseComplement(null, Alphabets.AMBIGUOUS_DNA_ALPHABET));
     assertNull(Sequence.reverseComplement("ATGC", null));
 
-    assertEquals("GCAT",
-        Sequence.reverseComplement("ATGC", Alphabets.AMBIGUOUS_DNA_ALPHABET));
+    assertEquals("GCAT", Sequence.reverseComplement("ATGC", Alphabets.AMBIGUOUS_DNA_ALPHABET));
   }
 
   @Test
@@ -470,7 +465,6 @@ public class SequenceTest {
     assertEquals(">\nATGC", s.toFasta());
     s = new Sequence("toto", null);
     assertEquals(">toto\n", s.toFasta());
-
   }
 
   @Test
@@ -618,7 +612,5 @@ public class SequenceTest {
     assertEquals(
         "Sequence{name=toto, description=desc, alphabet=AmbiguousDNA, sequence=ATGC}",
         s.toString());
-
   }
-
 }

@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
-
 import org.junit.Test;
 
 public class AbstractTranslatorTest {
@@ -19,8 +18,7 @@ public class AbstractTranslatorTest {
   private static final String[] ARRAY_ROW_FOUR = {"D", "4", "D4", "0"};
   private static final String[] ARRAY_ROW_FIVE = {"E", "4", "D4"};
   private static final String[] ARRAY_IDS = {"A", "B", "C", "D", "E"};
-  private final MultiColumnTranslator transl =
-      new MultiColumnTranslator(ARRAY_FIELD);
+  private final MultiColumnTranslator transl = new MultiColumnTranslator(ARRAY_FIELD);
 
   @Test
   public void testNewTrans() {
@@ -90,7 +88,6 @@ public class AbstractTranslatorTest {
     for (String id : ARRAY_IDS) {
       assertTrue(ids.contains(id));
     }
-
   }
 
   @Test
@@ -119,7 +116,6 @@ public class AbstractTranslatorTest {
 
       assertTrue(true);
     }
-
   }
 
   @Test
@@ -129,7 +125,6 @@ public class AbstractTranslatorTest {
     assertEquals("1", transl.translateField("A", "Col2"));
     assertNull(transl.translateField("Col2", "A"));
     assertNull(transl.translateField("", ""));
-
   }
 
   @Test
@@ -141,5 +136,4 @@ public class AbstractTranslatorTest {
     transl.addRow(ARRAY_ROW_FIVE);
     assertNull(transl.getLinkInfo("A", "Col2"));
   }
-
 }

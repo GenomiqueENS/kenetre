@@ -26,11 +26,14 @@ package fr.ens.biologie.genomique.kenetre.bio;
 
 /**
  * This enum defines the strand usage for the expression Counters.
+ *
  * @since 1.2
  * @author Laurent Jourdren
  */
 public enum StrandUsage {
-  YES("yes", true), NO("no", false), REVERSE("reverse", true);
+  YES("yes", true),
+  NO("no", false),
+  REVERSE("reverse", true);
 
   private final String name;
   private final boolean saveStrandInfo;
@@ -41,6 +44,7 @@ public enum StrandUsage {
 
   /**
    * Get the name of strand usage
+   *
    * @return a string with the name of the strand usage
    */
   public String getName() {
@@ -50,6 +54,7 @@ public enum StrandUsage {
 
   /**
    * Test if strand information must be saved
+   *
    * @return true if strand information must be saved
    */
   public boolean isSaveStrandInfo() {
@@ -63,6 +68,7 @@ public enum StrandUsage {
 
   /**
    * Get the StrandUsage from its name.
+   *
    * @param name name of the strand usage
    * @return a StrandUsage or null if no StrandUsage found for the name
    */
@@ -90,6 +96,7 @@ public enum StrandUsage {
 
   /**
    * Constructor.
+   *
    * @param name name of the strand usage
    * @param saveStrandInfo true if strand information must be saved
    */
@@ -98,5 +105,4 @@ public enum StrandUsage {
     this.name = name;
     this.saveStrandInfo = saveStrandInfo;
   }
-
 }

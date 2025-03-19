@@ -32,8 +32,9 @@ import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
 import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
 
 /**
- * This class define an abstract ReadFilter that allow simple Pair-end and
- * Mate-pair filter handling.
+ * This class define an abstract ReadFilter that allow simple Pair-end and Mate-pair filter
+ * handling.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -61,15 +62,11 @@ public abstract class AbstractReadFilter implements ReadFilter {
   }
 
   @Override
-  public void setParameter(final String key, final String value)
-      throws KenetreException {
+  public void setParameter(final String key, final String value) throws KenetreException {
 
-    throw new KenetreException(
-        "Unknown parameter for " + getName() + " read filter: " + key);
+    throw new KenetreException("Unknown parameter for " + getName() + " read filter: " + key);
   }
 
   @Override
-  public void init() throws KenetreException {
-  }
-
+  public void init() throws KenetreException {}
 }

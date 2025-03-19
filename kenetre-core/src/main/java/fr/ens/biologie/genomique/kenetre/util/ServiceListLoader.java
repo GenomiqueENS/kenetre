@@ -24,6 +24,7 @@
 
 package fr.ens.biologie.genomique.kenetre.util;
 
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,10 +33,9 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-
 /**
  * This class allow to load the list of available resources for a service
+ *
  * @since 1.2
  * @author Laurent Jourdren
  */
@@ -54,6 +54,7 @@ public class ServiceListLoader {
 
     /**
      * Get the URL of the file of the entry.
+     *
      * @return the URL of the file of the etry
      */
     public URL getUrl() {
@@ -63,6 +64,7 @@ public class ServiceListLoader {
 
     /**
      * Get line number of the entry.
+     *
      * @return the line number of the entry
      */
     public int getLineNumber() {
@@ -72,6 +74,7 @@ public class ServiceListLoader {
 
     /**
      * Get he value of the entry.
+     *
      * @return the value of the entry
      */
     public String getValue() {
@@ -83,12 +86,17 @@ public class ServiceListLoader {
     public String toString() {
 
       return this.getClass().getSimpleName()
-          + "{url=" + this.url + ", lineNumber=" + this.lineNumber + ", value="
+          + "{url="
+          + this.url
+          + ", lineNumber="
+          + this.lineNumber
+          + ", value="
           + this.value;
     }
 
     /**
      * Private constructor.
+     *
      * @param url URL
      * @param lineNumber line number
      * @param value value
@@ -99,11 +107,11 @@ public class ServiceListLoader {
       this.lineNumber = lineNumber;
       this.value = value;
     }
-
   }
 
   /**
    * Get the list of available services.
+   *
    * @return a list with the entries of the available services
    * @throws IOException if an error occurs while reading the list of services
    */
@@ -130,12 +138,12 @@ public class ServiceListLoader {
 
   /**
    * Parse a resource list.
+   *
    * @param url URL of the resource list
    * @param result the result object
    * @throws IOException if an error occurs while reading the list
    */
-  private void parse(final URL url, final List<Entry> result)
-      throws IOException {
+  private void parse(final URL url, final List<Entry> result) throws IOException {
 
     final InputStream is = url.openStream();
     BufferedReader reader = FileUtils.createBufferedReader(is);
@@ -163,6 +171,7 @@ public class ServiceListLoader {
 
   /**
    * Get the list of available services.
+   *
    * @param serviceName name of the service
    * @return a list with the elements of the files related to the service
    * @throws IOException if an error occurs while reading the resources
@@ -173,13 +182,14 @@ public class ServiceListLoader {
 
   /**
    * Get the list of available services.
+   *
    * @param serviceName name of the service
    * @param loader ClassLoader to use to read resources
    * @return a list with the elements of the files related to the service
    * @throws IOException if an error occurs while reading the resources
    */
-  public static List<String> load(final String serviceName,
-      final ClassLoader loader) throws IOException {
+  public static List<String> load(final String serviceName, final ClassLoader loader)
+      throws IOException {
 
     final List<Entry> entries = loadEntries(serviceName, loader);
     final List<String> result = new ArrayList<>(entries.size());
@@ -193,24 +203,25 @@ public class ServiceListLoader {
 
   /**
    * Get the list of available services.
+   *
    * @param serviceName name of the service
    * @return a list with the entries of the files related to the service
    * @throws IOException if an error occurs while reading the resources
    */
-  public static List<Entry> loadEntries(final String serviceName)
-      throws IOException {
+  public static List<Entry> loadEntries(final String serviceName) throws IOException {
     return loadEntries(serviceName, null);
   }
 
   /**
    * Get the list of available services.
+   *
    * @param serviceName name of the service
    * @param loader ClassLoader to use to read resources
    * @return a list with the entries of the files related to the service
    * @throws IOException if an error occurs while reading the resources
    */
-  public static List<Entry> loadEntries(final String serviceName,
-      final ClassLoader loader) throws IOException {
+  public static List<Entry> loadEntries(final String serviceName, final ClassLoader loader)
+      throws IOException {
 
     return new ServiceListLoader(serviceName, loader).getServiceEntries();
   }
@@ -221,11 +232,11 @@ public class ServiceListLoader {
 
   /**
    * Public constructor.
+   *
    * @param serviceName name of the service
    * @param loader class loader to use to load resource files
    */
-  private ServiceListLoader(final String serviceName,
-      final ClassLoader loader) {
+  private ServiceListLoader(final String serviceName, final ClassLoader loader) {
 
     if (serviceName == null) {
       throw new NullPointerException("The service name is null");
@@ -235,5 +246,4 @@ public class ServiceListLoader {
 
     this.serviceName = serviceName;
   }
-
 }

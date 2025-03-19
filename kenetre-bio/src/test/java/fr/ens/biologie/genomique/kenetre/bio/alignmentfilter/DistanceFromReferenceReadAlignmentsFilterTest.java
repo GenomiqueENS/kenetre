@@ -29,32 +29,33 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
 import fr.ens.biologie.genomique.kenetre.bio.SAMUtils;
-import fr.ens.biologie.genomique.kenetre.bio.alignmentfilter.DistanceFromReferenceReadAlignmentFilter;
 import htsjdk.samtools.SAMLineParser;
 import htsjdk.samtools.SAMRecord;
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * This class is a JUnit test class to test the class
  * DistanceFromReferenceReadAlignmentsFilter.java.
+ *
  * @author Claire Wallon
  */
 public class DistanceFromReferenceReadAlignmentsFilterTest {
 
   private String recordSE1, recordSE2, recordSE3;
-  private String recordPE1, recordPE2, recordPE3, recordPE4, recordPE5,
-      recordPE6;
+  private String recordPE1, recordPE2, recordPE3, recordPE4, recordPE5, recordPE6;
   private SAMRecord samRecordSE1, samRecordSE2, samRecordSE3;
-  private SAMRecord samRecordPE1, samRecordPE2, samRecordPE3, samRecordPE4,
-      samRecordPE5, samRecordPE6;
+  private SAMRecord samRecordPE1,
+      samRecordPE2,
+      samRecordPE3,
+      samRecordPE4,
+      samRecordPE5,
+      samRecordPE6;
   private List<SAMRecord> records;
   private DistanceFromReferenceReadAlignmentFilter filter;
 
@@ -251,7 +252,5 @@ public class DistanceFromReferenceReadAlignmentsFilterTest {
     assertEquals(6, this.records.size());
     this.filter.filterReadAlignments(this.records);
     assertEquals(2, this.records.size());
-
   }
-
 }

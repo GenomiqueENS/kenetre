@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This abstract class implements basic methods to get several field or several
- * annotations.
+ * This abstract class implements basic methods to get several field or several annotations.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
@@ -40,6 +40,7 @@ public abstract class AbstractTranslator implements Translator {
 
   /**
    * Get the default field.
+   *
    * @return default field
    */
   @Override
@@ -60,6 +61,7 @@ public abstract class AbstractTranslator implements Translator {
 
   /**
    * Set the default field.
+   *
    * @param field The field to set
    */
   @Override
@@ -74,6 +76,7 @@ public abstract class AbstractTranslator implements Translator {
 
   /**
    * Get a translation for a feature
+   *
    * @param id Identifier of the feature
    * @return An array with the annotation of the Feature
    */
@@ -96,6 +99,7 @@ public abstract class AbstractTranslator implements Translator {
 
   /**
    * Get all the annotations for features
+   *
    * @param ids Identifiers of the features
    * @return An array with the annotation of the Feature
    */
@@ -117,6 +121,7 @@ public abstract class AbstractTranslator implements Translator {
 
   /**
    * Get translations for features
+   *
    * @param ids Identifiers of the features
    * @return An array with the annotation of the Feature
    */
@@ -128,13 +133,13 @@ public abstract class AbstractTranslator implements Translator {
 
   /**
    * Get translations for features
+   *
    * @param ids Identifiers of the features
    * @param field the field to get
    * @return An array with the annotation of the Feature
    */
   @Override
-  public List<String> translateField(final List<String> ids,
-      final String field) {
+  public List<String> translateField(final List<String> ids, final String field) {
 
     if (ids == null) {
       throw new NullPointerException("ids argument can't be null.");
@@ -162,6 +167,7 @@ public abstract class AbstractTranslator implements Translator {
 
   /**
    * Get a translation for a feature. The field is the default field.
+   *
    * @param id Identifier of the feature
    * @return An array with the annotation of the Feature
    */
@@ -173,6 +179,7 @@ public abstract class AbstractTranslator implements Translator {
 
   /**
    * Test if the field exists.
+   *
    * @param field Field to test
    * @return true if the field exists
    */
@@ -200,6 +207,7 @@ public abstract class AbstractTranslator implements Translator {
 
   /**
    * Test if the link information is available for the field
+   *
    * @param field Field to test
    * @return true if link information is available
    */
@@ -211,6 +219,7 @@ public abstract class AbstractTranslator implements Translator {
 
   /**
    * Get link information.
+   *
    * @param translatedId Translated id
    * @param field field of the id
    * @return a link for the translated id
@@ -223,17 +232,16 @@ public abstract class AbstractTranslator implements Translator {
 
   /**
    * Get links information.
+   *
    * @param translatedIds Translated ids
    * @param field field of the id
    * @return a array of links for the translated ids
    */
   @Override
-  public List<String> getLinkInfo(final List<String> translatedIds,
-      final String field) {
+  public List<String> getLinkInfo(final List<String> translatedIds, final String field) {
 
     if (translatedIds == null || field == null) {
-      throw new NullPointerException(
-          "translatedIds and field arguments can't be null.");
+      throw new NullPointerException("translatedIds and field arguments can't be null.");
     }
 
     // final String[] result = new String[translatedIds.length];
@@ -248,6 +256,7 @@ public abstract class AbstractTranslator implements Translator {
 
   /**
    * Get the reverse translator for this translator.
+   *
    * @return a reverse translator
    */
   @Override
@@ -258,6 +267,7 @@ public abstract class AbstractTranslator implements Translator {
 
   /**
    * Get the available identifiers by the translator if possible.
+   *
    * @return a array of string with the identifiers
    */
   @Override
@@ -265,5 +275,4 @@ public abstract class AbstractTranslator implements Translator {
 
     return null;
   }
-
 }

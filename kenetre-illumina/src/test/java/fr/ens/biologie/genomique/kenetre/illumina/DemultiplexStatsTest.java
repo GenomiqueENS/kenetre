@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-
 import org.junit.Test;
 
 public class DemultiplexStatsTest {
@@ -13,8 +12,8 @@ public class DemultiplexStatsTest {
   @Test
   public void testV12() throws IOException {
 
-    InputStream in = RunInfoTest.class.getClassLoader()
-        .getResourceAsStream("Demultiplex_Stats-1.2.0.csv");
+    InputStream in =
+        RunInfoTest.class.getClassLoader().getResourceAsStream("Demultiplex_Stats-1.2.0.csv");
 
     DemultiplexStats ds = new DemultiplexStats(in);
 
@@ -55,14 +54,13 @@ public class DemultiplexStatsTest {
     assertEquals(Double.NaN, e.getPerfectIndexreadsPercent(), 0.1);
     assertEquals(Double.NaN, e.getOneMismatchIndexReadPercent(), 0.1);
     assertEquals(Double.NaN, e.getTwoMismatchIndexReadPercent(), 0.1);
-
   }
 
   @Test
   public void testV14() throws IOException {
 
-    InputStream in = RunInfoTest.class.getClassLoader()
-        .getResourceAsStream("Demultiplex_Stats-1.4.1.csv");
+    InputStream in =
+        RunInfoTest.class.getClassLoader().getResourceAsStream("Demultiplex_Stats-1.4.1.csv");
 
     DemultiplexStats ds = new DemultiplexStats(in);
 
@@ -103,8 +101,5 @@ public class DemultiplexStatsTest {
     assertEquals(1.0, e.getPerfectIndexreadsPercent(), 0.1);
     assertEquals(0.0, e.getOneMismatchIndexReadPercent(), 0.1);
     assertEquals(0.0, e.getTwoMismatchIndexReadPercent(), 0.1);
-
-    
   }
-
 }

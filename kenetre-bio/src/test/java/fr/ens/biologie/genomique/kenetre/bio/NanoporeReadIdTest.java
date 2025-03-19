@@ -6,10 +6,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.junit.Test;
-
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.bio.NanoporeReadId.SequenceType;
+import org.junit.Test;
 
 public class NanoporeReadIdTest {
 
@@ -17,9 +16,10 @@ public class NanoporeReadIdTest {
   public void testParse() throws KenetreException {
 
     NanoporeReadId nrid =
-        new NanoporeReadId("e122e34a-80bf-4fd6-bdbf-d1d3cb44f3bd_t "
-            + "runid=dacde12d52d5856ad2b13a3eea62711f4189e4bb "
-            + "read=1 ch=104 start_time=2017-02-10T10:39:42Z barcode=barcode03");
+        new NanoporeReadId(
+            "e122e34a-80bf-4fd6-bdbf-d1d3cb44f3bd_t "
+                + "runid=dacde12d52d5856ad2b13a3eea62711f4189e4bb "
+                + "read=1 ch=104 start_time=2017-02-10T10:39:42Z barcode=barcode03");
 
     assertEquals("e122e34a-80bf-4fd6-bdbf-d1d3cb44f3bd_t", nrid.getReadId());
     assertEquals(SequenceType.TEMPLATE, nrid.getSequenceType());
@@ -30,23 +30,28 @@ public class NanoporeReadIdTest {
     assertEquals("barcode03", nrid.getBarcode());
     assertTrue(nrid.isBarcoded());
 
-    nrid = new NanoporeReadId("e122e34a-80bf-4fd6-bdbf-d1d3cb44f3bd_c "
-        + "runid=dacde12d52d5856ad2b13a3eea62711f4189e4bb "
-        + "read=1 ch=104 start_time=2017-02-10T10:39:42Z barcode=barcode03");
+    nrid =
+        new NanoporeReadId(
+            "e122e34a-80bf-4fd6-bdbf-d1d3cb44f3bd_c "
+                + "runid=dacde12d52d5856ad2b13a3eea62711f4189e4bb "
+                + "read=1 ch=104 start_time=2017-02-10T10:39:42Z barcode=barcode03");
 
     assertEquals("e122e34a-80bf-4fd6-bdbf-d1d3cb44f3bd_c", nrid.getReadId());
     assertEquals(SequenceType.COMPLEMENT, nrid.getSequenceType());
 
-    nrid = new NanoporeReadId("e122e34a-80bf-4fd6-bdbf-d1d3cb44f3bd "
-        + "runid=dacde12d52d5856ad2b13a3eea62711f4189e4bb "
-        + "read=1 ch=104 start_time=2017-02-10T10:39:42Z barcode=barcode03");
+    nrid =
+        new NanoporeReadId(
+            "e122e34a-80bf-4fd6-bdbf-d1d3cb44f3bd "
+                + "runid=dacde12d52d5856ad2b13a3eea62711f4189e4bb "
+                + "read=1 ch=104 start_time=2017-02-10T10:39:42Z barcode=barcode03");
 
     assertEquals("e122e34a-80bf-4fd6-bdbf-d1d3cb44f3bd", nrid.getReadId());
     assertEquals(SequenceType.CONSENSUS, nrid.getSequenceType());
 
-    nrid.parse("c5ab7dea-df8c-4a9e-b31e-58d01c35fe5f "
-        + "runid=e2332b19f68f9529ed158f757dabb37905cae82c "
-        + "read=4597 ch=236 start_time=2017-02-10T22:22:44Z barcode=barcode02");
+    nrid.parse(
+        "c5ab7dea-df8c-4a9e-b31e-58d01c35fe5f "
+            + "runid=e2332b19f68f9529ed158f757dabb37905cae82c "
+            + "read=4597 ch=236 start_time=2017-02-10T22:22:44Z barcode=barcode02");
     assertEquals("c5ab7dea-df8c-4a9e-b31e-58d01c35fe5f", nrid.getReadId());
     assertEquals("e2332b19f68f9529ed158f757dabb37905cae82c", nrid.getRunId());
     assertEquals(4597, nrid.getReadNumber());
@@ -70,7 +75,5 @@ public class NanoporeReadIdTest {
     assertNull(nrid.getStartTime());
     assertNull(nrid.getBarcode());
     assertFalse(nrid.isBarcoded());
-
   }
-
 }

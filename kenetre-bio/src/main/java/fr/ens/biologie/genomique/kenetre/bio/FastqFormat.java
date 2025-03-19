@@ -30,6 +30,7 @@ import static java.lang.Math.pow;
 import static java.lang.Math.round;
 import static java.util.Collections.unmodifiableSet;
 
+import fr.ens.biologie.genomique.kenetre.bio.io.FastqReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -40,30 +41,46 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import fr.ens.biologie.genomique.kenetre.bio.io.FastqReader;
-
 /**
- * This enum define the existing fastq formats. It provide many function to
- * transform a format to another.
+ * This enum define the existing fastq formats. It provide many function to transform a format to
+ * another.
+ *
  * @since 1.1
  * @author Laurent Jourdren
  */
 public enum FastqFormat {
-
-  FASTQ_SANGER("fastq-sanger",
+  FASTQ_SANGER(
+      "fastq-sanger",
       new String[] {"sanger", "fastq-illumina-1.8", "illumina-1.8", "1.8"},
-      "1.8", 0, 93, 40, 33, true),
+      "1.8",
+      0,
+      93,
+      40,
+      33,
+      true),
 
-  FASTQ_SOLEXA("fastq-solexa",
-      new String[] {"solexa", "fastq-solexa-1.0", "solexa-1.0", "1.0"}, "1.0",
-      -5, 62, 40, 64, false),
+  FASTQ_SOLEXA(
+      "fastq-solexa",
+      new String[] {"solexa", "fastq-solexa-1.0", "solexa-1.0", "1.0"},
+      "1.0",
+      -5,
+      62,
+      40,
+      64,
+      false),
 
-  FASTQ_ILLUMINA("fastq-illumina-1.3",
-      new String[] {"fastq-illumina", "illumina", "illumina-1.3", "1.3"}, "1.3",
-      0, 62, 40, 64, true),
+  FASTQ_ILLUMINA(
+      "fastq-illumina-1.3",
+      new String[] {"fastq-illumina", "illumina", "illumina-1.3", "1.3"},
+      "1.3",
+      0,
+      62,
+      40,
+      64,
+      true),
 
-  FASTQ_ILLUMINA_1_5("fastq-illumina-1.5", new String[] {"illumina-1.5", "1.5"},
-      "1.5", 2, 62, 40, 64, true);
+  FASTQ_ILLUMINA_1_5(
+      "fastq-illumina-1.5", new String[] {"illumina-1.5", "1.5"}, "1.5", 2, 62, 40, 64, true);
 
   private final String name;
   private final Set<String> alias;
@@ -81,6 +98,7 @@ public enum FastqFormat {
 
   /**
    * Get the name of the fastq format.
+   *
    * @return the name of the format
    */
   public String getName() {
@@ -89,6 +107,7 @@ public enum FastqFormat {
 
   /**
    * Get the alias for the name of this format.
+   *
    * @return a set of string with the alias names
    */
   public Set<String> getAlias() {
@@ -101,8 +120,9 @@ public enum FastqFormat {
   }
 
   /**
-   * Get the first version of the solexa/illumina tools that can have generated
-   * a file with this format.
+   * Get the first version of the solexa/illumina tools that can have generated a file with this
+   * format.
+   *
    * @return a string with the format version
    */
   public String getIlluminaVersion() {
@@ -112,6 +132,7 @@ public enum FastqFormat {
 
   /**
    * Get the minimal value of the quality score.
+   *
    * @return the minimal value of the quality score
    */
   public int getScoreMin() {
@@ -120,6 +141,7 @@ public enum FastqFormat {
 
   /**
    * Get the maximal value of the quality score.
+   *
    * @return the maximal value of the quality score
    */
   public int getScoreMax() {
@@ -128,6 +150,7 @@ public enum FastqFormat {
 
   /**
    * Get the ASCII offset.
+   *
    * @return the ASCII offset
    */
   public int getAsciiOffset() {
@@ -136,6 +159,7 @@ public enum FastqFormat {
 
   /**
    * Get the maximal expected value of the quality score.
+   *
    * @return the maximal expected value of the quality score
    */
   public int getScoreMaxExpected() {
@@ -144,6 +168,7 @@ public enum FastqFormat {
 
   /**
    * Test if the format use Phred quality score.
+   *
    * @return true if the format Phred quality score
    */
   public boolean isPhredScore() {
@@ -156,6 +181,7 @@ public enum FastqFormat {
 
   /**
    * Get the minimal ASCII character used to represent the quality score.
+   *
    * @return an ASCII character
    */
   public char getCharMin() {
@@ -165,6 +191,7 @@ public enum FastqFormat {
 
   /**
    * Get the maximal ASCII character used to represent the quality score.
+   *
    * @return an ASCII character
    */
   public char getCharMax() {
@@ -174,6 +201,7 @@ public enum FastqFormat {
 
   /**
    * Get the maximal ASCII character used to represent the quality score.
+   *
    * @return an ASCII character
    */
   public char getCharMaxExpected() {
@@ -183,6 +211,7 @@ public enum FastqFormat {
 
   /**
    * Test if a character is valid to represent the quality.
+   *
    * @param c the character to test
    * @return true if the character if valid
    */
@@ -193,9 +222,10 @@ public enum FastqFormat {
 
   /**
    * Test if all the character of a string are valid to represent the quality.
+   *
    * @param s the string to test
-   * @return -1 if all the characters of the string are valid of the value of
-   *         the first invalid character
+   * @return -1 if all the characters of the string are valid of the value of the first invalid
+   *     character
    */
   public int findInvalidChar(final String s) {
 
@@ -218,6 +248,7 @@ public enum FastqFormat {
 
   /**
    * Convert a character to a quality number.
+   *
    * @param character character to convert
    * @return a quality score
    */
@@ -228,6 +259,7 @@ public enum FastqFormat {
 
   /**
    * Convert a character to an error probability.
+   *
    * @param character character to convert
    * @return a quality score
    */
@@ -238,6 +270,7 @@ public enum FastqFormat {
 
   /**
    * Convert a quality score to a probability.
+   *
    * @param score the quality score
    * @return the probability that correspond to the quality score
    */
@@ -252,6 +285,7 @@ public enum FastqFormat {
 
   /**
    * Convert a probability to a quality score.
+   *
    * @param p probability to convert
    * @return a quality score
    */
@@ -265,24 +299,23 @@ public enum FastqFormat {
   }
 
   /**
-   * Convert Solexa quality score to Phred quality score. The formula is taken
-   * from BioPython.
+   * Convert Solexa quality score to Phred quality score. The formula is taken from BioPython.
+   *
    * @param solexaScore the input quality score
    * @return the quality converted to Phred quality score
    */
   public static double convertSolexaScoreToPhredScore(final int solexaScore) {
 
     if (solexaScore < -5) {
-      throw new IllegalArgumentException(
-          "Invalid Solexa quality: " + solexaScore);
+      throw new IllegalArgumentException("Invalid Solexa quality: " + solexaScore);
     }
 
     return 10.0 * log10(pow(10, solexaScore / 10.0) + 1);
   }
 
   /**
-   * Convert Phred quality score to Solexa quality score. The formula is taken
-   * from BioPython.
+   * Convert Phred quality score to Solexa quality score. The formula is taken from BioPython.
+   *
    * @param phredScore the input quality score
    * @return the quality converted to Solexa
    */
@@ -301,6 +334,7 @@ public enum FastqFormat {
 
   /**
    * Convert a quality score string from a format to another.
+   *
    * @param quality quality string to convert
    * @param format output format
    * @return the converted quality string
@@ -322,18 +356,19 @@ public enum FastqFormat {
 
   /**
    * Convert a quality score character from a format to another.
+   *
    * @param character character to convert
    * @param format output format
    * @return the converted character
    */
   public char convertTo(final char character, final FastqFormat format) {
 
-    return (char) (format.asciiOffset
-        + convertScoreTo(getScore(character), format));
+    return (char) (format.asciiOffset + convertScoreTo(getScore(character), format));
   }
 
   /**
    * Convert quality from a format to another.
+   *
    * @param score quality score to transform
    * @param format output format
    * @return a converted quality score
@@ -354,6 +389,7 @@ public enum FastqFormat {
 
   /**
    * Get a format from its name or its alias.
+   *
    * @param name name of the format to get
    * @return the format or null if no format was found
    */
@@ -374,7 +410,6 @@ public enum FastqFormat {
       if (format.alias != null && format.alias.contains(lowerName)) {
         return format;
       }
-
     }
 
     return null;
@@ -382,6 +417,7 @@ public enum FastqFormat {
 
   /**
    * Identify the fastq format used in a Fastq file.
+   *
    * @param is input stream
    * @return The FastqFormat found or null if no format was found
    * @throws IOException if an error occurs while reading the fastq stream
@@ -395,23 +431,23 @@ public enum FastqFormat {
 
   /**
    * Identify the fastq format used in a Fastq file.
+   *
    * @param is input stream
-   * @param maxEntriesToRead maximal entries of the file to read. If this value
-   *          is lower than 1 all the entries of the stream are read
+   * @param maxEntriesToRead maximal entries of the file to read. If this value is lower than 1 all
+   *     the entries of the stream are read
    * @return The FastqFormat found or null if no format was found
    * @throws IOException if an error occurs while reading the fastq stream
    * @throws BadBioEntryException if bad fastq entry is found
    */
-  public static FastqFormat identifyFormat(final InputStream is,
-      final int maxEntriesToRead) throws IOException, BadBioEntryException {
+  public static FastqFormat identifyFormat(final InputStream is, final int maxEntriesToRead)
+      throws IOException, BadBioEntryException {
 
     if (is == null) {
       throw new NullPointerException("The input format is null");
     }
 
     final FastqReader reader = new FastqReader(is);
-    final Set<FastqFormat> formats =
-        new HashSet<>(Arrays.asList(FastqFormat.values()));
+    final Set<FastqFormat> formats = new HashSet<>(Arrays.asList(FastqFormat.values()));
 
     int count = 0;
 
@@ -435,6 +471,7 @@ public enum FastqFormat {
 
   /**
    * Identify the fastq format used in a quality string file.
+   *
    * @param qualityString a string with quality data
    * @return The FastqFormat found or null if no format was found
    */
@@ -444,8 +481,7 @@ public enum FastqFormat {
       return null;
     }
 
-    final Set<FastqFormat> formats =
-        new HashSet<>(Arrays.asList(FastqFormat.values()));
+    final Set<FastqFormat> formats = new HashSet<>(Arrays.asList(FastqFormat.values()));
 
     final int[] range = new int[] {Integer.MAX_VALUE, Integer.MIN_VALUE};
 
@@ -453,8 +489,8 @@ public enum FastqFormat {
     return identifyFormatByHeuristic(formats, range[0], range[1]);
   }
 
-  private static void removeBadFormats(final Set<FastqFormat> formats,
-      final String qualityString, final int[] range) {
+  private static void removeBadFormats(
+      final Set<FastqFormat> formats, final String qualityString, final int[] range) {
 
     Set<FastqFormat> toRemove = null;
 
@@ -489,8 +525,7 @@ public enum FastqFormat {
   }
 
   private static FastqFormat identifyFormatByHeuristic(
-      final Set<FastqFormat> formats, final int lowerChar,
-      final int higherChar) {
+      final Set<FastqFormat> formats, final int lowerChar, final int higherChar) {
 
     if (formats == null) {
       return null;
@@ -509,8 +544,7 @@ public enum FastqFormat {
     // The format is the
     for (FastqFormat f : sortedFormats) {
 
-      if (last != null
-          && last.getCharMin() <= lowerChar && lowerChar < f.getCharMin()) {
+      if (last != null && last.getCharMin() <= lowerChar && lowerChar < f.getCharMin()) {
         return f;
       }
 
@@ -537,6 +571,7 @@ public enum FastqFormat {
 
   /**
    * Constructor.
+   *
    * @param name format name
    * @param alias for the format name
    * @param illuminaVersion illumina version of the format
@@ -546,9 +581,14 @@ public enum FastqFormat {
    * @param asciiOffset ASCII offset
    * @param phredQualityScore Phred quality score
    */
-  FastqFormat(final String name, final String[] alias,
-      final String illuminaVersion, final int scoreMin, final int scoreMax,
-      final int scoreMaxExpected, final int asciiOffset,
+  FastqFormat(
+      final String name,
+      final String[] alias,
+      final String illuminaVersion,
+      final int scoreMin,
+      final int scoreMax,
+      final int scoreMaxExpected,
+      final int asciiOffset,
       final boolean phredQualityScore) {
 
     this.name = name;
@@ -560,5 +600,4 @@ public enum FastqFormat {
     this.asciiOffset = asciiOffset;
     this.phredScore = phredQualityScore;
   }
-
 }

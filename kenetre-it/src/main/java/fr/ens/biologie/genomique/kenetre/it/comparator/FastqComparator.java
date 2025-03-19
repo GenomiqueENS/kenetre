@@ -24,33 +24,31 @@
 
 package fr.ens.biologie.genomique.kenetre.it.comparator;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-
 import com.google.common.collect.Sets;
-
 import fr.ens.biologie.genomique.eoulsan.util.EnhancedBloomFilter;
 import fr.ens.biologie.genomique.kenetre.bio.BadBioEntryException;
 import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
 import fr.ens.biologie.genomique.kenetre.bio.io.FastqReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
 
 /**
  * This class allow compare two FastQ files with use BloomFilter.
+ *
  * @since 2.0
  * @author Sandrine Perrin
  */
 public class FastqComparator extends AbstractComparatorWithBloomFilter {
 
   public static final String COMPARATOR_NAME = "FastqComparator";
-  private static final Collection<String> EXTENSIONS =
-      Sets.newHashSet(".fastq", ".fq");
+  private static final Collection<String> EXTENSIONS = Sets.newHashSet(".fastq", ".fq");
 
   private int numberElementsCompared;
 
   @Override
-  public boolean compareFiles(final EnhancedBloomFilter filter,
-      final InputStream is) throws IOException {
+  public boolean compareFiles(final EnhancedBloomFilter filter, final InputStream is)
+      throws IOException {
 
     final FastqReader fastqReader = new FastqReader(is);
     this.numberElementsCompared = 0;
@@ -70,9 +68,12 @@ public class FastqComparator extends AbstractComparatorWithBloomFilter {
 
     // Check count element is the same between two files
     if (this.numberElementsCompared != filter.getAddedNumberOfElements()) {
-      setCauseFailComparison("Different count elements "
-          + this.numberElementsCompared + " was "
-          + filter.getAddedNumberOfElements() + " expected.");
+      setCauseFailComparison(
+          "Different count elements "
+              + this.numberElementsCompared
+              + " was "
+              + filter.getAddedNumberOfElements()
+              + " expected.");
       return false;
     }
 
@@ -80,11 +81,9 @@ public class FastqComparator extends AbstractComparatorWithBloomFilter {
   }
 
   @Override
-  protected EnhancedBloomFilter buildBloomFilter(final InputStream is)
-      throws IOException {
+  protected EnhancedBloomFilter buildBloomFilter(final InputStream is) throws IOException {
 
-    final EnhancedBloomFilter filter =
-        initBloomFilter(getExpectedNumberOfElements());
+    final EnhancedBloomFilter filter = initBloomFilter(getExpectedNumberOfElements());
 
     final FastqReader fastqReader = new FastqReader(is);
 
@@ -128,8 +127,8 @@ public class FastqComparator extends AbstractComparatorWithBloomFilter {
 
   /**
    * Public constructor
-   * @param useSerializeFile true if it needed to save BloomFilter in file with
-   *          extension '.ser'
+   *
+   * @param useSerializeFile true if it needed to save BloomFilter in file with extension '.ser'
    */
   public FastqComparator(final boolean useSerializeFile) {
     super(useSerializeFile);

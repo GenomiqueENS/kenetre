@@ -23,6 +23,8 @@
  */
 package fr.ens.biologie.genomique.kenetre.it.comparator;
 
+import com.google.common.collect.Sets;
+import fr.ens.biologie.genomique.eoulsan.util.EnhancedBloomFilter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,12 +32,9 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.Collection;
 
-import com.google.common.collect.Sets;
-
-import fr.ens.biologie.genomique.eoulsan.util.EnhancedBloomFilter;
-
 /**
  * This class allow compare two text files with use BloomFilter.
+ *
  * @since 2.0
  * @author Sandrine Perrin
  */
@@ -48,8 +47,8 @@ public class TextComparator extends AbstractComparatorWithBloomFilter {
   private int numberElementsCompared;
 
   @Override
-  public boolean compareFiles(final EnhancedBloomFilter filter,
-      final InputStream is) throws IOException {
+  public boolean compareFiles(final EnhancedBloomFilter filter, final InputStream is)
+      throws IOException {
 
     final BufferedReader reader =
         new BufferedReader(new InputStreamReader(is, Charset.defaultCharset()));
@@ -71,9 +70,12 @@ public class TextComparator extends AbstractComparatorWithBloomFilter {
 
     // Check count element is the same between two files
     if (this.numberElementsCompared != filter.getAddedNumberOfElements()) {
-      setCauseFailComparison("Different count elements "
-          + this.numberElementsCompared + " was "
-          + filter.getAddedNumberOfElements() + " expected.");
+      setCauseFailComparison(
+          "Different count elements "
+              + this.numberElementsCompared
+              + " was "
+              + filter.getAddedNumberOfElements()
+              + " expected.");
       return false;
     }
     return true;
@@ -104,8 +106,8 @@ public class TextComparator extends AbstractComparatorWithBloomFilter {
 
   /**
    * Public constructor
-   * @param useSerializeFile true if it needed to save BloomFilter in file with
-   *          extension '.ser'
+   *
+   * @param useSerializeFile true if it needed to save BloomFilter in file with extension '.ser'
    */
   public TextComparator(final boolean useSerializeFile) {
     super(useSerializeFile);

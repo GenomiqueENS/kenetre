@@ -1,5 +1,19 @@
 package fr.ens.biologie.genomique.kenetre.bin.action;
 
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
+import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.store.FileDataStoreFactory;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.DriveScopes;
+import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.FileList;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -24,113 +38,102 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
-import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.store.FileDataStoreFactory;
-import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.DriveScopes;
-import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.FileList;
-
 /**
  * This class allow to create a dump of files on Google drive.
+ *
  * @author Laurent Jourdren
  * @since 0.28
  */
 public class SGDBGoogleDriveDumpAction implements Action {
 
   private static final String APPLICATION_NAME = "SGDB GDrive Dump";
-  private static final JsonFactory JSON_FACTORY =
-      JacksonFactory.getDefaultInstance();
+  private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
   private static final int MAX_FOLDER_FILE_COUNT = 1000;
   private static final int WAIT_AFTER_CREDENTIALS_IN_MS = 30000;
   private static final int WAIT_AFTER_FAIL_IN_MS = 30000;
 
   /**
-   * Global instance of the scopes required by this quickstart. If modifying
-   * these scopes, delete your previously saved tokens/ folder.
+   * Global instance of the scopes required by this quickstart. If modifying these scopes, delete
+   * your previously saved tokens/ folder.
    */
-  private static final List<String> SCOPES = Arrays
-      .asList(DriveScopes.DRIVE_METADATA_READONLY, DriveScopes.DRIVE_READONLY);
+  private static final List<String> SCOPES =
+      Arrays.asList(DriveScopes.DRIVE_METADATA_READONLY, DriveScopes.DRIVE_READONLY);
 
   private static final String OK_LOG_MESSAGE = "OK";
 
   /**
    * Creates an authorized Credential object.
+   *
    * @param credentialPath credential file
    * @param HTTP_TRANSPORT The network HTTP Transport.
    * @param tokensDirectoryPath token directory path
    * @return An authorized Credential object.
    * @throws IOException If the credentials.json file cannot be found.
    */
-  private static Credential getCredentials(String credentialPath,
-      NetHttpTransport HTTP_TRANSPORT, String tokensDirectoryPath)
+  private static Credential getCredentials(
+      String credentialPath, NetHttpTransport HTTP_TRANSPORT, String tokensDirectoryPath)
       throws IOException {
 
     // Load client secrets.
-    GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
-        new FileReader(credentialPath, StandardCharsets.UTF_8));
+    GoogleClientSecrets clientSecrets =
+        GoogleClientSecrets.load(
+            JSON_FACTORY, new FileReader(credentialPath, StandardCharsets.UTF_8));
 
     // Build flow and trigger user authorization request.
     GoogleAuthorizationCodeFlow flow =
-        new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY,
-            clientSecrets, SCOPES).setDataStoreFactory(
-                new FileDataStoreFactory(new java.io.File(tokensDirectoryPath)))
-                .setAccessType("offline").build();
-    LocalServerReceiver receiver =
-        new LocalServerReceiver.Builder().setPort(8888).build();
+        new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
+            .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(tokensDirectoryPath)))
+            .setAccessType("offline")
+            .build();
+    LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
     return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
   }
 
-  private static void saveFile(Drive service, File driveFile,
-      Path localOutputPath, String outputFilename, String exportMimeType,
+  private static void saveFile(
+      Drive service,
+      File driveFile,
+      Path localOutputPath,
+      String outputFilename,
+      String exportMimeType,
       Map<String, String> exportLinks)
       throws FileNotFoundException, IOException {
 
-    Path localPath = Paths.get(localOutputPath.toString(),
-        Normalizer.normalize(outputFilename, Form.NFC));
+    Path localPath =
+        Paths.get(localOutputPath.toString(), Normalizer.normalize(outputFilename, Form.NFC));
 
     // Check file date, do not overwrite file if there is no change
     // if (localPath.toFile().isFile()) {
     if (Files.isRegularFile(localPath)) {
 
       FileTime localLastModified = Files.getLastModifiedTime(localPath);
-      FileTime driveLastModified = FileTime
-          .from(Instant.parse(driveFile.getModifiedTime().toStringRfc3339()));
+      FileTime driveLastModified =
+          FileTime.from(Instant.parse(driveFile.getModifiedTime().toStringRfc3339()));
 
-      if (ChronoUnit.MILLIS.between(localLastModified.toInstant(),
-          driveLastModified.toInstant()) < 1000) {
+      if (ChronoUnit.MILLIS.between(localLastModified.toInstant(), driveLastModified.toInstant())
+          < 1000) {
         return;
       }
     }
 
     if (exportMimeType != null) {
 
-      try (OutputStream outputStream =
-          new FileOutputStream(localPath.toFile())) {
-        service.files().export(driveFile.getId(), exportMimeType)
+      try (OutputStream outputStream = new FileOutputStream(localPath.toFile())) {
+        service
+            .files()
+            .export(driveFile.getId(), exportMimeType)
             .executeMediaAndDownloadTo(outputStream);
       }
 
     } else {
-      try (OutputStream outputStream =
-          new FileOutputStream(localPath.toFile())) {
-        service.files().get(driveFile.getId())
-            .executeMediaAndDownloadTo(outputStream);
+      try (OutputStream outputStream = new FileOutputStream(localPath.toFile())) {
+        service.files().get(driveFile.getId()).executeMediaAndDownloadTo(outputStream);
       }
     }
 
     // Set last modified time
-    Files.setLastModifiedTime(localPath, FileTime
-        .from(Instant.parse(driveFile.getModifiedTime().toStringRfc3339())));
+    Files.setLastModifiedTime(
+        localPath, FileTime.from(Instant.parse(driveFile.getModifiedTime().toStringRfc3339())));
   }
 
   private static void deleteDirectoryRecursion(Path path) throws IOException {
@@ -145,15 +148,17 @@ public class SGDBGoogleDriveDumpAction implements Action {
   }
 
   @SuppressWarnings("unchecked")
-  private static void saveDirectory(Drive service, String folderId,
-      Path outputPath, Map<String, String> log) throws IOException {
+  private static void saveDirectory(
+      Drive service, String folderId, Path outputPath, Map<String, String> log) throws IOException {
 
-    FileList result = service.files().list()
-        .setQ("\"" + folderId + "\" in parents")
-        .setPageSize(MAX_FOLDER_FILE_COUNT)
-        .setFields(
-            "nextPageToken, files(id, name, mimeType, modifiedTime, exportLinks)")
-        .execute();
+    FileList result =
+        service
+            .files()
+            .list()
+            .setQ("\"" + folderId + "\" in parents")
+            .setPageSize(MAX_FOLDER_FILE_COUNT)
+            .setFields("nextPageToken, files(id, name, mimeType, modifiedTime, exportLinks)")
+            .execute();
     List<File> driveFiles = result.getFiles();
 
     if (driveFiles == null || driveFiles.isEmpty()) {
@@ -178,42 +183,39 @@ public class SGDBGoogleDriveDumpAction implements Action {
         boolean regularFile = true;
 
         switch (driveFile.getMimeType()) {
+          case "application/vnd.google-apps.document":
+            outputFilename = fileName + ".docx";
+            exportMimeType =
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            break;
 
-        case "application/vnd.google-apps.document":
-          outputFilename = fileName + ".docx";
-          exportMimeType =
-              "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-          break;
+          case "application/vnd.google-apps.spreadsheet":
+            outputFilename = fileName + ".xlsx";
+            exportMimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            break;
 
-        case "application/vnd.google-apps.spreadsheet":
-          outputFilename = fileName + ".xlsx";
-          exportMimeType =
-              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-          break;
+          case "application/vnd.google-apps.presentation":
+            outputFilename = fileName + ".pptx";
+            exportMimeType =
+                "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+            break;
 
-        case "application/vnd.google-apps.presentation":
-          outputFilename = fileName + ".pptx";
-          exportMimeType =
-              "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-          break;
+          case "application/vnd.google-apps.folder":
+            outputFilename = fileName;
+            regularFile = false;
+            saveDirectory(service, driveFile.getId(), outputPath.resolve(outputFilename), log);
+            break;
 
-        case "application/vnd.google-apps.folder":
-          outputFilename = fileName;
-          regularFile = false;
-          saveDirectory(service, driveFile.getId(),
-              outputPath.resolve(outputFilename), log);
-          break;
+          // Excluded
+          case "application/vnd.google-apps.form":
+            outputFilename = null;
+            exportMimeType = null;
+            break;
 
-        // Excluded
-        case "application/vnd.google-apps.form":
-          outputFilename = null;
-          exportMimeType = null;
-          break;
-
-        default:
-          outputFilename = fileName;
-          exportMimeType = null;
-          break;
+          default:
+            outputFilename = fileName;
+            exportMimeType = null;
+            break;
         }
 
         // If there is something to save
@@ -231,7 +233,11 @@ public class SGDBGoogleDriveDumpAction implements Action {
             while (!success) {
               try {
                 count++;
-                saveFile(service, driveFile, outputPath, outputFilename,
+                saveFile(
+                    service,
+                    driveFile,
+                    outputPath,
+                    outputFilename,
                     exportMimeType,
                     (Map<String, String>) driveFile.get("exportLinks"));
                 success = true;
@@ -266,7 +272,6 @@ public class SGDBGoogleDriveDumpAction implements Action {
         }
       }
     }
-
   }
 
   //
@@ -320,10 +325,8 @@ public class SGDBGoogleDriveDumpAction implements Action {
     try {
 
       // Build a new authorized API client service.
-      final NetHttpTransport HTTP_TRANSPORT =
-          GoogleNetHttpTransport.newTrustedTransport();
-      Credential credentials =
-          getCredentials(credentialPath, HTTP_TRANSPORT, tokensPath);
+      final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+      Credential credentials = getCredentials(credentialPath, HTTP_TRANSPORT, tokensPath);
 
       // Wait few seconds
       try {
@@ -335,7 +338,8 @@ public class SGDBGoogleDriveDumpAction implements Action {
       // Open service
       Drive service =
           new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credentials)
-              .setApplicationName(APPLICATION_NAME).build();
+              .setApplicationName(APPLICATION_NAME)
+              .build();
 
       Map<String, String> log = new LinkedHashMap<>();
       // Save data
@@ -364,5 +368,4 @@ public class SGDBGoogleDriveDumpAction implements Action {
       System.exit(1);
     }
   }
-
 }

@@ -2,6 +2,7 @@ package fr.ens.biologie.genomique.kenetre.illumina.samplesheet;
 
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.KenetreRuntimeException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,10 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import fr.ens.biologie.genomique.kenetre.KenetreRuntimeException;
-
 /**
  * This class define an Illumina samplesheet.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -48,6 +48,7 @@ public class SampleSheet implements Iterable<Sample> {
 
   /**
    * Get a property section.
+   *
    * @param sectionName section name
    * @return a PropertySection object
    */
@@ -68,6 +69,7 @@ public class SampleSheet implements Iterable<Sample> {
 
   /**
    * Get a table section.
+   *
    * @param sectionName section name
    * @return a PropertySection object
    */
@@ -88,6 +90,7 @@ public class SampleSheet implements Iterable<Sample> {
 
   /**
    * Get the demultiplexing table section.
+   *
    * @return the demultiplexing table section
    */
   public TableSection getDemuxSection() {
@@ -101,6 +104,7 @@ public class SampleSheet implements Iterable<Sample> {
 
   /**
    * Test if a section is a property section.
+   *
    * @param sectionName section name
    * @return true if the section is a property section
    */
@@ -115,6 +119,7 @@ public class SampleSheet implements Iterable<Sample> {
 
   /**
    * Test if a table is a property section.
+   *
    * @param sectionName section name
    * @return true if the section is a property section
    */
@@ -129,6 +134,7 @@ public class SampleSheet implements Iterable<Sample> {
 
   /**
    * Test if a section exists.
+   *
    * @param sectionName section name
    * @return true if the section exists
    */
@@ -138,12 +144,12 @@ public class SampleSheet implements Iterable<Sample> {
       throw new NullPointerException("The section name cannot be null");
     }
 
-    return containsPropertySection(sectionName)
-        || containsTableSection(sectionName);
+    return containsPropertySection(sectionName) || containsTableSection(sectionName);
   }
 
   /**
    * Get a medadata value.
+   *
    * @param sectionName the section name
    * @param key the key name
    * @return the value of the metadata
@@ -170,6 +176,7 @@ public class SampleSheet implements Iterable<Sample> {
 
   /**
    * Get the flow cell Id.
+   *
    * @return the flow cell Id
    */
   public String getFlowCellId() {
@@ -179,6 +186,7 @@ public class SampleSheet implements Iterable<Sample> {
 
   /**
    * Get the version of the samplesheet model.
+   *
    * @return the version of the samplesheet model
    */
   public int getVersion() {
@@ -188,6 +196,7 @@ public class SampleSheet implements Iterable<Sample> {
 
   /**
    * Get the names of sections of the metadata.
+   *
    * @return the names of sections of the metadata
    */
   public List<String> getSections() {
@@ -197,19 +206,18 @@ public class SampleSheet implements Iterable<Sample> {
 
   /**
    * Get a section metadata.
+   *
    * @param sectionName the name of the section name
    * @return the metadata of a section in a Map object
    */
   @Deprecated
-  public Map<String, List<String>> getSectionMetadata(
-      final String sectionName) {
+  public Map<String, List<String>> getSectionMetadata(final String sectionName) {
 
     if (sectionName == null) {
       throw new NullPointerException("section argument cannot be null");
     }
 
-    final Map<String, List<String>> result =
-        new LinkedHashMap<String, List<String>>();
+    final Map<String, List<String>> result = new LinkedHashMap<String, List<String>>();
 
     PropertySection section = this.getPropertySection(sectionName);
 
@@ -230,6 +238,7 @@ public class SampleSheet implements Iterable<Sample> {
 
   /**
    * Add a property section.
+   *
    * @param sectionName name of the section to add
    * @return a PropertySection object
    */
@@ -244,8 +253,7 @@ public class SampleSheet implements Iterable<Sample> {
     }
 
     if (this.sectionOrder.contains(trimmedSectionName)) {
-      throw new IllegalArgumentException(
-          "section already exists: " + sectionName);
+      throw new IllegalArgumentException("section already exists: " + sectionName);
     }
 
     PropertySection result = new PropertySection();
@@ -257,6 +265,7 @@ public class SampleSheet implements Iterable<Sample> {
 
   /**
    * Add a table section.
+   *
    * @param sectionName name of the section to add
    * @return a TableSection object
    */
@@ -271,8 +280,7 @@ public class SampleSheet implements Iterable<Sample> {
     }
 
     if (this.sectionOrder.contains(trimmedSectionName)) {
-      throw new IllegalArgumentException(
-          "section already exists: " + sectionName);
+      throw new IllegalArgumentException("section already exists: " + sectionName);
     }
 
     TableSection result = new TableSection(this);
@@ -288,6 +296,7 @@ public class SampleSheet implements Iterable<Sample> {
 
   /**
    * Remove a section
+   *
    * @param sectionName name of the section to remove
    */
   public void removeSection(String sectionName) {
@@ -301,8 +310,7 @@ public class SampleSheet implements Iterable<Sample> {
     }
 
     if (!this.sectionOrder.contains(trimmedSectionName)) {
-      throw new IllegalArgumentException(
-          "section does not exists: " + sectionName);
+      throw new IllegalArgumentException("section does not exists: " + sectionName);
     }
 
     if (this.propertySections.remove(trimmedSectionName) != null) {
@@ -314,6 +322,7 @@ public class SampleSheet implements Iterable<Sample> {
 
   /**
    * Rename a section.
+   *
    * @param oldName name of the section to rename
    * @param newName new name of the section
    */
@@ -343,8 +352,7 @@ public class SampleSheet implements Iterable<Sample> {
     }
 
     if (this.sectionOrder.contains(trimmedNewSectionName)) {
-      throw new IllegalArgumentException(
-          "new section already exists: " + oldName);
+      throw new IllegalArgumentException("new section already exists: " + oldName);
     }
 
     if (this.propertySections.containsKey(trimmedOldSectionName)) {
@@ -365,13 +373,13 @@ public class SampleSheet implements Iterable<Sample> {
 
   /**
    * Add a metadata of the samplesheet.
+   *
    * @param section the section of the metadata
    * @param key the key of the metadata
    * @param value the value of the metadata
    */
   @Deprecated
-  public void addMetadata(final String section, final String key,
-      final String value) {
+  public void addMetadata(final String section, final String key, final String value) {
 
     if (section == null) {
       throw new NullPointerException("The section name cannot be null");
@@ -392,8 +400,7 @@ public class SampleSheet implements Iterable<Sample> {
     if (!this.propertySections.containsKey(trimmedSection)) {
 
       if (this.sectionOrder.contains(trimmedSection)) {
-        throw new IllegalArgumentException(
-            "Section argument is a table section: " + section);
+        throw new IllegalArgumentException("Section argument is a table section: " + section);
       }
 
       propertySection = addPropertySection(trimmedSection);
@@ -412,6 +419,7 @@ public class SampleSheet implements Iterable<Sample> {
 
   /**
    * Set the flow cell id.
+   *
    * @param flowcellId the flow cell id
    */
   public void setFlowCellId(final String flowcellId) {
@@ -424,8 +432,7 @@ public class SampleSheet implements Iterable<Sample> {
 
     if (this.flowCellId != null && !this.flowCellId.equals(trimmedFlowCellId)) {
       throw new KenetreRuntimeException(
-          "The samplesheet cannot handle two or more flowcell ids: "
-              + flowcellId);
+          "The samplesheet cannot handle two or more flowcell ids: " + flowcellId);
     }
 
     this.flowCellId = flowcellId;
@@ -433,13 +440,13 @@ public class SampleSheet implements Iterable<Sample> {
 
   /**
    * Set the version of the samplesheet model.
+   *
    * @param version the version of the samplesheet model
    */
   public void setVersion(int version) {
 
     if (version < 1 || version > 2) {
-      throw new KenetreRuntimeException(
-          "Unsupported samplesheet version: " + version);
+      throw new KenetreRuntimeException("Unsupported samplesheet version: " + version);
     }
 
     this.version = version;
@@ -464,6 +471,7 @@ public class SampleSheet implements Iterable<Sample> {
 
   /**
    * Get the samples fields names.
+   *
    * @return the samples fields names
    */
   public List<String> getSamplesFieldNames() {
@@ -536,5 +544,4 @@ public class SampleSheet implements Iterable<Sample> {
 
     return getDefaultTableSection().size();
   }
-
 }

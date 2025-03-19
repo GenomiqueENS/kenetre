@@ -26,16 +26,7 @@ package fr.ens.biologie.genomique.kenetre.bio.expressioncounter;
 
 import static fr.ens.biologie.genomique.kenetre.util.StringUtils.join;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.base.Splitter;
-
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.bio.GFFEntry;
 import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
@@ -46,31 +37,35 @@ import fr.ens.biologie.genomique.kenetre.util.GuavaCompatibility;
 import fr.ens.biologie.genomique.kenetre.util.ReporterIncrementer;
 import htsjdk.samtools.SAMFileHeader.SortOrder;
 import htsjdk.samtools.SAMRecord;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class defines a wrapper on the HTSeq-count counter.
+ *
  * @since 1.2
  * @author Claire Wallon
  */
-public class HTSeqCounter extends AbstractExpressionCounter
-    implements Serializable {
+public class HTSeqCounter extends AbstractExpressionCounter implements Serializable {
 
   private static final long serialVersionUID = 4750866178483111062L;
 
   /** Counter name. */
   public static final String COUNTER_NAME = "htseq-count";
 
-  public static final String REMOVE_AMBIGUOUS_CASES_PARAMETER_NAME =
-      "remove.ambiguous.cases";
+  public static final String REMOVE_AMBIGUOUS_CASES_PARAMETER_NAME = "remove.ambiguous.cases";
   public static final String OVERLAP_MODE_PARAMETER_NAME = "overlap.mode";
   public static final String STRANDED_PARAMETER_NAME = "stranded";
   public static final String COUNTER_PARAMETER_NAME = "counter";
   public static final String GENOMIC_TYPE_PARAMETER_NAME = "genomic.type";
   public static final String ATTRIBUTE_ID_PARAMETER_NAME = "attribute.id";
-  public static final String SPLIT_ATTRIBUTE_VALUES_PARAMETER_NAME =
-      "split.attribute.values";
-  public static final String MINIMUM_ALIGNMENT_QUALITY_PARAMETER_NAME =
-      "minimum.alignment.quality";
+  public static final String SPLIT_ATTRIBUTE_VALUES_PARAMETER_NAME = "split.attribute.values";
+  public static final String MINIMUM_ALIGNMENT_QUALITY_PARAMETER_NAME = "minimum.alignment.quality";
   public static final String REMOVE_NON_UNIQUE_ALIGNMENTS_PARAMETER_NAME =
       "remove.non.unique.alignments";
   public static final String REMOVE_SECONDARY_ALIGNMENTS_PARAMETER_NAME =
@@ -100,9 +95,7 @@ public class HTSeqCounter extends AbstractExpressionCounter
   private final GenomicArray<String> features = new GenomicArray<>();
   private boolean initialized;
 
-  /**
-   * Internal class for counters
-   */
+  /** Internal class for counters */
   private static class InternalCounters {
 
     final ReporterIncrementer reporter;
@@ -120,46 +113,54 @@ public class HTSeqCounter extends AbstractExpressionCounter
 
     private void fillReporter(final HTSeqCounter counter) {
 
-      reporter.incrCounter(counterGroup,
+      reporter.incrCounter(
+          counterGroup,
           ExpressionCounterCounter.TOTAL_ALIGNMENTS_COUNTER.counterName(),
           this.input);
 
-      reporter.incrCounter(counterGroup,
+      reporter.incrCounter(
+          counterGroup,
           ExpressionCounterCounter.EMPTY_ALIGNMENTS_COUNTER.counterName(),
           this.empty);
-      reporter.incrCounter(counterGroup,
+      reporter.incrCounter(
+          counterGroup,
           ExpressionCounterCounter.AMBIGUOUS_ALIGNMENTS_COUNTER.counterName(),
           this.ambiguous);
-      reporter.incrCounter(counterGroup,
+      reporter.incrCounter(
+          counterGroup,
           ExpressionCounterCounter.LOW_QUAL_ALIGNMENTS_COUNTER.counterName(),
           this.lowQual);
-      reporter.incrCounter(counterGroup,
+      reporter.incrCounter(
+          counterGroup,
           ExpressionCounterCounter.NOT_ALIGNED_ALIGNMENTS_COUNTER.counterName(),
           this.notAligned);
-      reporter.incrCounter(counterGroup,
+      reporter.incrCounter(
+          counterGroup,
           ExpressionCounterCounter.NOT_UNIQUE_ALIGNMENTS_COUNTER.counterName(),
           this.nonUnique);
-      reporter.incrCounter(counterGroup,
+      reporter.incrCounter(
+          counterGroup,
           ExpressionCounterCounter.MISSING_MATES_COUNTER.counterName(),
           this.missingMate);
 
-      reporter.incrCounter(counterGroup,
+      reporter.incrCounter(
+          counterGroup,
           ExpressionCounterCounter.ELIMINATED_READS_COUNTER.counterName(),
           this.empty
               + (counter.removeAmbiguousCases ? this.ambiguous : 0)
-              + this.lowQual + this.notAligned
+              + this.lowQual
+              + this.notAligned
               + (counter.removeNonUnique ? this.nonUnique : 0)
-              + this.secondaryAlignments + this.supplementaryAlignments
+              + this.secondaryAlignments
+              + this.supplementaryAlignments
               + this.missingMate);
     }
 
-    private InternalCounters(final ReporterIncrementer reporter,
-        final String counterGroup) {
+    private InternalCounters(final ReporterIncrementer reporter, final String counterGroup) {
 
       this.reporter = reporter;
       this.counterGroup = counterGroup;
     }
-
   }
 
   @Override
@@ -175,8 +176,7 @@ public class HTSeqCounter extends AbstractExpressionCounter
   }
 
   @Override
-  public void setParameter(final String key, final String value)
-      throws KenetreException {
+  public void setParameter(final String key, final String value) throws KenetreException {
 
     // Set parameter if common
     if (setCommonParameter(key, value)) {
@@ -184,76 +184,73 @@ public class HTSeqCounter extends AbstractExpressionCounter
     }
 
     switch (key) {
+      case GENOMIC_TYPE_PARAMETER_NAME:
+        this.genomicType = value;
+        break;
 
-    case GENOMIC_TYPE_PARAMETER_NAME:
-      this.genomicType = value;
-      break;
+      case ATTRIBUTE_ID_PARAMETER_NAME:
+        this.attributeId = value;
+        break;
 
-    case ATTRIBUTE_ID_PARAMETER_NAME:
-      this.attributeId = value;
-      break;
+      case STRANDED_PARAMETER_NAME:
+        this.stranded = StrandUsage.getStrandUsageFromName(value);
 
-    case STRANDED_PARAMETER_NAME:
+        if (this.stranded == null) {
+          throw new KenetreException("Unknown strand mode");
+        }
+        break;
 
-      this.stranded = StrandUsage.getStrandUsageFromName(value);
+      case OVERLAP_MODE_PARAMETER_NAME:
+        this.overlapMode = OverlapMode.getOverlapModeFromName(value);
 
-      if (this.stranded == null) {
-        throw new KenetreException("Unknown strand mode");
-      }
-      break;
+        if (this.overlapMode == null) {
+          throw new KenetreException("Unknown overlap mode");
+        }
+        break;
 
-    case OVERLAP_MODE_PARAMETER_NAME:
+      case REMOVE_AMBIGUOUS_CASES_PARAMETER_NAME:
+        this.removeAmbiguousCases = Boolean.parseBoolean(value);
+        break;
 
-      this.overlapMode = OverlapMode.getOverlapModeFromName(value);
+      case SPLIT_ATTRIBUTE_VALUES_PARAMETER_NAME:
+        this.splitAttributeValues = Boolean.parseBoolean(value);
+        break;
 
-      if (this.overlapMode == null) {
-        throw new KenetreException("Unknown overlap mode");
-      }
-      break;
+      case MINIMUM_ALIGNMENT_QUALITY_PARAMETER_NAME:
+        try {
+          this.minimalQuality = Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+          throw new KenetreException("Invalid minimal quality value: " + value);
+        }
+        break;
 
-    case REMOVE_AMBIGUOUS_CASES_PARAMETER_NAME:
-      this.removeAmbiguousCases = Boolean.parseBoolean(value);
-      break;
+      case REMOVE_NON_UNIQUE_ALIGNMENTS_PARAMETER_NAME:
+        this.removeNonUnique = Boolean.parseBoolean(value);
+        break;
 
-    case SPLIT_ATTRIBUTE_VALUES_PARAMETER_NAME:
-      this.splitAttributeValues = Boolean.parseBoolean(value);
-      break;
+      case REMOVE_SECONDARY_ALIGNMENTS_PARAMETER_NAME:
+        this.removeSecondaryAlignments = Boolean.parseBoolean(value);
+        break;
 
-    case MINIMUM_ALIGNMENT_QUALITY_PARAMETER_NAME:
-      try {
-        this.minimalQuality = Integer.parseInt(value);
-      } catch (NumberFormatException e) {
-        throw new KenetreException("Invalid minimal quality value: " + value);
-      }
-      break;
+      case REMOVE_SUPPLEMENTARY_ALIGNMENTS_PARAMETER_NAME:
+        this.removeSupplementaryAlignments = Boolean.parseBoolean(value);
+        break;
 
-    case REMOVE_NON_UNIQUE_ALIGNMENTS_PARAMETER_NAME:
-      this.removeNonUnique = Boolean.parseBoolean(value);
-      break;
+      case REMOVE_NON_ASSIGNED_FEATURES_SAM_TAGS_PARAMETER_NAME:
+        this.removeNonAssignedFeatureSamTags = Boolean.parseBoolean(value);
+        break;
 
-    case REMOVE_SECONDARY_ALIGNMENTS_PARAMETER_NAME:
-      this.removeSecondaryAlignments = Boolean.parseBoolean(value);
-      break;
+      case SAM_TAG_TO_USE_PARAMETER_NAME:
+        this.samTag = value.toUpperCase().trim();
+        if (this.samTag.length() != 2
+            || (this.samTag.charAt(0) < 'X' && this.samTag.charAt(0) > 'Z')
+            || (this.samTag.charAt(1) < 'A' && this.samTag.charAt(1) > 'Z')) {
+          throw new KenetreException("Invalid SAM tag: " + value);
+        }
+        break;
 
-    case REMOVE_SUPPLEMENTARY_ALIGNMENTS_PARAMETER_NAME:
-      this.removeSupplementaryAlignments = Boolean.parseBoolean(value);
-      break;
-
-    case REMOVE_NON_ASSIGNED_FEATURES_SAM_TAGS_PARAMETER_NAME:
-      this.removeNonAssignedFeatureSamTags = Boolean.parseBoolean(value);
-      break;
-
-    case SAM_TAG_TO_USE_PARAMETER_NAME:
-      this.samTag = value.toUpperCase().trim();
-      if (this.samTag.length() != 2
-          || (this.samTag.charAt(0) < 'X' && this.samTag.charAt(0) > 'Z')
-          || (this.samTag.charAt(1) < 'A' && this.samTag.charAt(1) > 'Z')) {
-        throw new KenetreException("Invalid SAM tag: " + value);
-      }
-      break;
-
-    default:
-      throw new KenetreException("Unknown parameter: " + key);
+      default:
+        throw new KenetreException("Unknown parameter: " + key);
     }
   }
 
@@ -278,8 +275,8 @@ public class HTSeqCounter extends AbstractExpressionCounter
   }
 
   @Override
-  public void init(final GenomeDescription desc,
-      final Iterable<GFFEntry> annotations) throws KenetreException {
+  public void init(final GenomeDescription desc, final Iterable<GFFEntry> annotations)
+      throws KenetreException {
 
     if (desc == null) {
       throw new NullPointerException("the desc argument is null");
@@ -290,8 +287,7 @@ public class HTSeqCounter extends AbstractExpressionCounter
     }
 
     if (this.initialized) {
-      throw new IllegalStateException(
-          "the counter has been already initialized");
+      throw new IllegalStateException("the counter has been already initialized");
     }
 
     // Check configuration
@@ -309,19 +305,18 @@ public class HTSeqCounter extends AbstractExpressionCounter
         final String featureId = gff.getAttributeValue(attributeId);
         if (featureId == null) {
 
-          throw new KenetreException("Feature "
-              + this.genomicType + " does not contain a " + attributeId
-              + " attribute");
+          throw new KenetreException(
+              "Feature " + this.genomicType + " does not contain a " + attributeId + " attribute");
         }
 
-        if ((this.stranded == StrandUsage.YES
-            || this.stranded == StrandUsage.REVERSE)
+        if ((this.stranded == StrandUsage.YES || this.stranded == StrandUsage.REVERSE)
             && '.' == gff.getStrand()) {
 
-          throw new KenetreException("Feature "
-              + this.genomicType
-              + " does not have strand information but you are running "
-              + "htseq-count in stranded mode.");
+          throw new KenetreException(
+              "Feature "
+                  + this.genomicType
+                  + " does not have strand information but you are running "
+                  + "htseq-count in stranded mode.");
         }
 
         // Addition to the list of features of a GenomicInterval object
@@ -337,8 +332,7 @@ public class HTSeqCounter extends AbstractExpressionCounter
 
         // Split parent if needed
         for (String f : featureIds) {
-          this.features.addEntry(
-              new GenomicInterval(gff, this.stranded.isSaveStrandInfo()), f);
+          this.features.addEntry(new GenomicInterval(gff, this.stranded.isSaveStrandInfo()), f);
         }
       }
     }
@@ -353,8 +347,10 @@ public class HTSeqCounter extends AbstractExpressionCounter
   }
 
   @Override
-  public Map<String, Integer> count(final Iterable<SAMRecord> samRecords,
-      final ReporterIncrementer reporter, final String counterGroup)
+  public Map<String, Integer> count(
+      final Iterable<SAMRecord> samRecords,
+      final ReporterIncrementer reporter,
+      final String counterGroup)
       throws KenetreException {
 
     if (reporter == null) {
@@ -372,8 +368,7 @@ public class HTSeqCounter extends AbstractExpressionCounter
     SAMRecord sam1 = null, sam2 = null;
     final Map<String, Integer> counts = new HashMap<>();
     final List<GenomicInterval> ivSeq = new ArrayList<>();
-    final InternalCounters internalCounters =
-        new InternalCounters(reporter, counterGroup);
+    final InternalCounters internalCounters = new InternalCounters(reporter, counterGroup);
 
     // Read the SAM file
     for (final SAMRecord samRecord : samRecords) {
@@ -442,13 +437,16 @@ public class HTSeqCounter extends AbstractExpressionCounter
 
   /**
    * Process single-end alignment.
+   *
    * @param samRecord SAM record
    * @param ivSeq genomic intervals
    * @param counters the counters
    * @return false if the alignment has not been processed
    */
-  private boolean processSingleEnd(final SAMRecord samRecord,
-      final List<GenomicInterval> ivSeq, final InternalCounters counters) {
+  private boolean processSingleEnd(
+      final SAMRecord samRecord,
+      final List<GenomicInterval> ivSeq,
+      final InternalCounters counters) {
 
     ivSeq.clear();
 
@@ -460,22 +458,19 @@ public class HTSeqCounter extends AbstractExpressionCounter
     }
 
     // secondary alignment
-    if (this.removeSecondaryAlignments
-        && samRecord.isSecondaryAlignment()) {
+    if (this.removeSecondaryAlignments && samRecord.isSecondaryAlignment()) {
       counters.secondaryAlignments++;
       return false;
     }
 
     // supplementary alignment
-    if (this.removeSupplementaryAlignments
-        && samRecord.getSupplementaryAlignmentFlag()) {
+    if (this.removeSupplementaryAlignments && samRecord.getSupplementaryAlignmentFlag()) {
       counters.supplementaryAlignments++;
       return false;
     }
 
     // multiple alignment
-    if (samRecord.getAttribute("NH") != null
-        && samRecord.getIntegerAttribute("NH") > 1) {
+    if (samRecord.getAttribute("NH") != null && samRecord.getIntegerAttribute("NH") > 1) {
       counters.nonUnique++;
       assignment(samRecord, null, "__alignment_not_unique");
       if (this.removeNonUnique) {
@@ -497,14 +492,18 @@ public class HTSeqCounter extends AbstractExpressionCounter
 
   /**
    * Process paired-end alignment.
+   *
    * @param sam1 first SAM record
    * @param sam2 second SAM record
    * @param ivSeq genomic intervals
    * @param counters the counters
    * @return false if the alignments has not been processed
    */
-  private boolean pairedEnd(final SAMRecord sam1, final SAMRecord sam2,
-      final List<GenomicInterval> ivSeq, final InternalCounters counters) {
+  private boolean pairedEnd(
+      final SAMRecord sam1,
+      final SAMRecord sam2,
+      final List<GenomicInterval> ivSeq,
+      final InternalCounters counters) {
 
     if (!sam1.getReadUnmappedFlag()) {
       ivSeq.addAll(HTSeqUtils.addIntervals(sam1, this.stranded));
@@ -543,8 +542,7 @@ public class HTSeqCounter extends AbstractExpressionCounter
 
     // multiple alignment
     if ((sam1.getAttribute("NH") != null && sam1.getIntegerAttribute("NH") > 1)
-        || (sam2.getAttribute("NH") != null
-            && sam2.getIntegerAttribute("NH") > 1)) {
+        || (sam2.getAttribute("NH") != null && sam2.getIntegerAttribute("NH") > 1)) {
       counters.nonUnique++;
       assignment(sam1, sam2, "__alignment_not_unique");
       if (this.removeNonUnique) {
@@ -565,43 +563,46 @@ public class HTSeqCounter extends AbstractExpressionCounter
 
   /**
    * Update the counts.
+   *
    * @param ivSeq the genomic intervals
    * @param counts the counts
    * @param internalCounters the counters
    * @throws EoulsanException if an error occurs while counting
    */
-  private void updateCounts(final SAMRecord samRecord1,
-      final SAMRecord samRecord2, final List<GenomicInterval> ivSeq,
+  private void updateCounts(
+      final SAMRecord samRecord1,
+      final SAMRecord samRecord2,
+      final List<GenomicInterval> ivSeq,
       final Map<String, Integer> counts,
-      final InternalCounters internalCounters) throws KenetreException {
+      final InternalCounters internalCounters)
+      throws KenetreException {
 
     try {
-      Set<String> fs = HTSeqUtils.featuresOverlapped(ivSeq, this.features,
-          this.overlapMode, this.stranded);
+      Set<String> fs =
+          HTSeqUtils.featuresOverlapped(ivSeq, this.features, this.overlapMode, this.stranded);
 
       switch (fs.size()) {
-      case 0:
-        internalCounters.empty++;
-        assignment(samRecord1, samRecord2, "__no_feature");
-        break;
+        case 0:
+          internalCounters.empty++;
+          assignment(samRecord1, samRecord2, "__no_feature");
+          break;
 
-      case 1:
-        String id = fs.iterator().next();
-        increment(counts, id);
-        assignment(samRecord1, samRecord2, id);
-        break;
+        case 1:
+          String id = fs.iterator().next();
+          increment(counts, id);
+          assignment(samRecord1, samRecord2, id);
+          break;
 
-      default:
+        default:
+          internalCounters.ambiguous++;
+          assignment(samRecord1, samRecord2, fs);
 
-        internalCounters.ambiguous++;
-        assignment(samRecord1, samRecord2, fs);
-
-        if (!this.removeAmbiguousCases) {
-          for (String id2 : fs) {
-            increment(counts, id2);
+          if (!this.removeAmbiguousCases) {
+            for (String id2 : fs) {
+              increment(counts, id2);
+            }
           }
-        }
-        break;
+          break;
       }
     } catch (UnknownChromosomeException e) {
       internalCounters.empty++;
@@ -611,11 +612,11 @@ public class HTSeqCounter extends AbstractExpressionCounter
 
   /**
    * Increment a count.
+   *
    * @param counts the counts
    * @param key the feature to increment
    */
-  private static void increment(final Map<String, Integer> counts,
-      final String key) {
+  private static void increment(final Map<String, Integer> counts, final String key) {
 
     if (!counts.containsKey(key)) {
       counts.put(key, 1);
@@ -626,12 +627,13 @@ public class HTSeqCounter extends AbstractExpressionCounter
 
   /**
    * Assign a feature to SAM entries.
+   *
    * @param samRecord1 first entry
    * @param samRecord2 second entry
    * @param assignment the value of the assignment
    */
-  private void assignment(final SAMRecord samRecord1,
-      final SAMRecord samRecord2, final String assignment) {
+  private void assignment(
+      final SAMRecord samRecord1, final SAMRecord samRecord2, final String assignment) {
 
     if (this.removeNonAssignedFeatureSamTags && assignment.startsWith("__")) {
       return;
@@ -648,12 +650,13 @@ public class HTSeqCounter extends AbstractExpressionCounter
 
   /**
    * Assign features to SAM entries.
+   *
    * @param samRecord1 first entry
    * @param samRecord2 second entry
    * @param features ambiguous features of the assignment
    */
-  private void assignment(final SAMRecord samRecord1,
-      final SAMRecord samRecord2, final Set<String> features) {
+  private void assignment(
+      final SAMRecord samRecord1, final SAMRecord samRecord2, final Set<String> features) {
 
     // Sort the features to always have the same feature order in outputs
     List<String> list = new ArrayList<>(features);
@@ -685,15 +688,28 @@ public class HTSeqCounter extends AbstractExpressionCounter
   public String toString() {
 
     return "HTSeqCounter{genomicType="
-        + this.genomicType + ", attributeId=" + this.attributeId
-        + ", splitAttributeValues=" + this.splitAttributeValues + ", stranded="
-        + this.stranded + ", overlapMode=" + this.overlapMode
-        + ", removeAmbiguousCases=" + this.removeAmbiguousCases
-        + ", removeNonUnique=" + this.removeNonUnique + ","
-        + ", removeSecondaryAlignments=" + this.removeSecondaryAlignments
+        + this.genomicType
+        + ", attributeId="
+        + this.attributeId
+        + ", splitAttributeValues="
+        + this.splitAttributeValues
+        + ", stranded="
+        + this.stranded
+        + ", overlapMode="
+        + this.overlapMode
+        + ", removeAmbiguousCases="
+        + this.removeAmbiguousCases
+        + ", removeNonUnique="
+        + this.removeNonUnique
+        + ","
+        + ", removeSecondaryAlignments="
+        + this.removeSecondaryAlignments
         + ", removeSupplementaryAlignments="
-        + this.removeSupplementaryAlignments + " minAverageQuality="
-        + this.minimalQuality + ", initialized=" + this.initialized + "}";
+        + this.removeSupplementaryAlignments
+        + " minAverageQuality="
+        + this.minimalQuality
+        + ", initialized="
+        + this.initialized
+        + "}";
   }
-
 }

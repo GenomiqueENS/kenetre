@@ -24,16 +24,16 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.readmapper;
 
+import com.google.common.collect.Lists;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
 /**
  * This class define a wrapper on the STAR mapper.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
@@ -80,14 +80,12 @@ public class STARMapperProvider extends AbstractMapperProvider {
       final String execPath;
 
       synchronized (SYNC) {
-        execPath = mapperInstance.getExecutor()
-            .install(flavoredBinary(mapperInstance.getFlavor()));
+        execPath = mapperInstance.getExecutor().install(flavoredBinary(mapperInstance.getFlavor()));
       }
 
       final List<String> cmd = Lists.newArrayList(execPath, "--version");
 
-      final String s =
-          MapperUtils.executeToString(mapperInstance.getExecutor(), cmd);
+      final String s = MapperUtils.executeToString(mapperInstance.getExecutor(), cmd);
       final String[] lines = s.split("\n");
       if (lines.length == 0) {
         return null;
@@ -107,11 +105,9 @@ public class STARMapperProvider extends AbstractMapperProvider {
   }
 
   @Override
-  public List<String> getIndexerExecutables(
-      final MapperInstance mapperInstance) {
+  public List<String> getIndexerExecutables(final MapperInstance mapperInstance) {
 
-    return Collections
-        .singletonList(flavoredBinary(mapperInstance.getFlavor()));
+    return Collections.singletonList(flavoredBinary(mapperInstance.getFlavor()));
   }
 
   @Override
@@ -123,32 +119,33 @@ public class STARMapperProvider extends AbstractMapperProvider {
   public boolean checkIfFlavorExists(final MapperInstance mapperInstance) {
 
     switch (mapperInstance.getFlavor().trim().toLowerCase()) {
-    case SHORT_INDEX_FLAVOR:
-    case LARGE_INDEX_FLAVOR:
-      return true;
+      case SHORT_INDEX_FLAVOR:
+      case LARGE_INDEX_FLAVOR:
+        return true;
 
-    default:
-      return false;
+      default:
+        return false;
     }
   }
 
   /**
    * Get the name of the flavored binary.
+   *
    * @return the flavored binary name
    */
   private String flavoredBinary(final String flavor) {
 
-    if (flavor != null
-        && LARGE_INDEX_FLAVOR.equals(flavor.trim().toLowerCase())) {
+    if (flavor != null && LARGE_INDEX_FLAVOR.equals(flavor.trim().toLowerCase())) {
       return MAPPER_LARGE_INDEX_EXECUTABLE;
     }
     return MAPPER_STANDARD_EXECUTABLE;
-
   }
 
   @Override
-  public List<String> getIndexerCommand(final File indexerFile,
-      final File genomeFile, final List<String> indexerArguments,
+  public List<String> getIndexerCommand(
+      final File indexerFile,
+      final File genomeFile,
+      final List<String> indexerArguments,
       final int threads) {
 
     List<String> cmd = new ArrayList<>();
@@ -168,42 +165,52 @@ public class STARMapperProvider extends AbstractMapperProvider {
   }
 
   @Override
-  public MapperProcess mapSE(final EntryMapping mapping, final File inputFile,
-      final File errorFile, final File logFile) throws IOException {
-
-    final String starPath;
-
-    synchronized (SYNC) {
-      starPath =
-          mapping.getExecutor().install(flavoredBinary(mapping.getFlavor()));
-    }
-
-    return createMapperProcessSE(mapping, starPath, inputFile, errorFile,
-        logFile);
-  }
-
-  @Override
-  public MapperProcess mapPE(final EntryMapping mapping, final File inputFile1,
-      final File inputFile2, final File errorFile, final File logFile)
+  public MapperProcess mapSE(
+      final EntryMapping mapping, final File inputFile, final File errorFile, final File logFile)
       throws IOException {
 
     final String starPath;
 
     synchronized (SYNC) {
-      starPath =
-          mapping.getExecutor().install(flavoredBinary(mapping.getFlavor()));
+      starPath = mapping.getExecutor().install(flavoredBinary(mapping.getFlavor()));
     }
 
-    return createMapperProcessPE(mapping, starPath, inputFile1, inputFile2,
-        errorFile, logFile);
+    return createMapperProcessSE(mapping, starPath, inputFile, errorFile, logFile);
   }
 
-  private MapperProcess createMapperProcessSE(final EntryMapping mapping,
-      final String starPath, final File inputFile, final File errorFile,
-      final File logFile) throws IOException {
+  @Override
+  public MapperProcess mapPE(
+      final EntryMapping mapping,
+      final File inputFile1,
+      final File inputFile2,
+      final File errorFile,
+      final File logFile)
+      throws IOException {
 
-    return new MapperProcess(mapping.getName(), mapping.getExecutor(),
-        mapping.getTemporaryDirectory(), errorFile, false, inputFile) {
+    final String starPath;
+
+    synchronized (SYNC) {
+      starPath = mapping.getExecutor().install(flavoredBinary(mapping.getFlavor()));
+    }
+
+    return createMapperProcessPE(mapping, starPath, inputFile1, inputFile2, errorFile, logFile);
+  }
+
+  private MapperProcess createMapperProcessSE(
+      final EntryMapping mapping,
+      final String starPath,
+      final File inputFile,
+      final File errorFile,
+      final File logFile)
+      throws IOException {
+
+    return new MapperProcess(
+        mapping.getName(),
+        mapping.getExecutor(),
+        mapping.getTemporaryDirectory(),
+        errorFile,
+        false,
+        inputFile) {
 
       @Override
       protected List<List<String>> createCommandLines() {
@@ -231,16 +238,26 @@ public class STARMapperProvider extends AbstractMapperProvider {
 
         return Collections.singletonList(cmd);
       }
-
     };
   }
 
-  private MapperProcess createMapperProcessPE(final EntryMapping mapping,
-      final String starPath, final File inputFile1, final File inputFile2,
-      final File errorFile, final File logFile) throws IOException {
+  private MapperProcess createMapperProcessPE(
+      final EntryMapping mapping,
+      final String starPath,
+      final File inputFile1,
+      final File inputFile2,
+      final File errorFile,
+      final File logFile)
+      throws IOException {
 
-    return new MapperProcess(mapping.getName(), mapping.getExecutor(),
-        mapping.getTemporaryDirectory(), errorFile, true, true, inputFile1,
+    return new MapperProcess(
+        mapping.getName(),
+        mapping.getExecutor(),
+        mapping.getTemporaryDirectory(),
+        errorFile,
+        true,
+        true,
+        inputFile1,
         inputFile2) {
 
       @Override
@@ -270,8 +287,6 @@ public class STARMapperProvider extends AbstractMapperProvider {
 
         return Collections.singletonList(cmd);
       }
-
     };
   }
-
 }

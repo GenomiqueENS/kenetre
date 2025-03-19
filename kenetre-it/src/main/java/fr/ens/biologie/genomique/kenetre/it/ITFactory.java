@@ -27,6 +27,8 @@ import static com.google.common.io.Files.newReader;
 import static fr.ens.biologie.genomique.kenetre.io.FileUtils.checkExistingDirectoryFile;
 import static fr.ens.biologie.genomique.kenetre.io.FileUtils.checkExistingStandardFile;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
+import fr.ens.biologie.genomique.kenetre.util.process.ProcessUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -39,15 +41,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-
 import org.apache.commons.compress.utils.Charsets;
 import org.testng.annotations.Factory;
 
-import fr.ens.biologie.genomique.kenetre.util.process.ProcessUtils;
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-
 /**
  * This class launch integration test with Testng.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  * @author Sandrine Perrin
@@ -62,8 +61,7 @@ public class ITFactory {
       "it.generate.all.expected.data";
   public static final String IT_GENERATE_NEW_EXPECTED_DATA_SYSTEM_KEY =
       "it.generate.new.expected.data";
-  public static final String IT_APPLICATION_PATH_KEY_SYSTEM_KEY =
-      "it.application.path";
+  public static final String IT_APPLICATION_PATH_KEY_SYSTEM_KEY = "it.application.path";
   public static final String IT_DEBUG_ENABLE_SYSTEM_KEY = "it.debug.enable";
 
   /** Set test output directory to replace value in configuration file. */
@@ -71,45 +69,35 @@ public class ITFactory {
 
   // Configuration properties keys
   static final String TESTS_DIRECTORY_CONF_KEY = "tests.directory";
-  static final String OUTPUT_ANALYSIS_DIRECTORY_CONF_KEY =
-      "output.analysis.directory";
+  static final String OUTPUT_ANALYSIS_DIRECTORY_CONF_KEY = "output.analysis.directory";
   static final String LOG_DIRECTORY_CONF_KEY = "log.directory";
   static final String PRE_TEST_SCRIPT_CONF_KEY = "pre.test.script";
   static final String POST_TEST_SCRIPT_CONF_KEY = "post.test.script";
-  static final String GENERATE_ALL_EXPECTED_DATA_CONF_KEY =
-      "generate.all.expected.data";
-  static final String GENERATE_NEW_EXPECTED_DATA_CONF_KEY =
-      "generate.new.expected.data";
+  static final String GENERATE_ALL_EXPECTED_DATA_CONF_KEY = "generate.all.expected.data";
+  static final String GENERATE_NEW_EXPECTED_DATA_CONF_KEY = "generate.new.expected.data";
   static final String DESCRIPTION_CONF_KEY = "description";
-  static final String COMMAND_TO_LAUNCH_APPLICATION_CONF_KEY =
-      "command.to.launch.application";
-  static final String COMMAND_TO_GENERATE_MANUALLY_CONF_KEY =
-      "command.to.generate.manually";
+  static final String COMMAND_TO_LAUNCH_APPLICATION_CONF_KEY = "command.to.launch.application";
+  static final String COMMAND_TO_GENERATE_MANUALLY_CONF_KEY = "command.to.generate.manually";
   static final String COMMAND_TO_GET_APPLICATION_VERSION_CONF_KEY =
       "command.to.get.application.version";
   static final String INCLUDE_CONF_KEY = "include";
 
   // Configure to delete file matching with patterns if IT succeeded
-  static final String SUCCESS_IT_DELETE_FILE_CONF_KEY =
-      "success.it.delete.file";
+  static final String SUCCESS_IT_DELETE_FILE_CONF_KEY = "success.it.delete.file";
 
   // Default value for key configuration success.it.delete.file
   private static final String SUCCESS_IT_DELETE_FILE_DEFAULT_VALUE = "false";
 
   /** Patterns */
   static final String FILE_TO_COMPARE_PATTERNS_CONF_KEY = "files.to.compare";
-  static final String EXCLUDE_TO_COMPARE_PATTERNS_CONF_KEY =
-      "excluded.files.to.compare";
-  static final String CHECK_LENGTH_FILE_PATTERNS_CONF_KEY =
-      "files.to.check.length";
-  static final String CHECK_EXISTENCE_FILE_PATTERNS_CONF_KEY =
-      "files.to.check.existences";
-  static final String CHECK_ABSENCE_FILE_PATTERNS_CONF_KEY =
-      "files.to.check.absence";
+
+  static final String EXCLUDE_TO_COMPARE_PATTERNS_CONF_KEY = "excluded.files.to.compare";
+  static final String CHECK_LENGTH_FILE_PATTERNS_CONF_KEY = "files.to.check.length";
+  static final String CHECK_EXISTENCE_FILE_PATTERNS_CONF_KEY = "files.to.check.existences";
+  static final String CHECK_ABSENCE_FILE_PATTERNS_CONF_KEY = "files.to.check.absence";
   static final String FILE_TO_REMOVE_CONF_KEY = "files.to.remove";
 
-  static final String MANUAL_GENERATION_EXPECTED_DATA_CONF_KEY =
-      "manual.generation.expected.data";
+  static final String MANUAL_GENERATION_EXPECTED_DATA_CONF_KEY = "manual.generation.expected.data";
 
   static final String RUNTIME_IT_MAXIMUM_KEY = "runtime.test.maximum";
 
@@ -136,6 +124,7 @@ public class ITFactory {
 
   /**
    * Create all instance for integrated tests.
+   *
    * @return array object from integrated tests
    */
   @Factory
@@ -161,7 +150,6 @@ public class ITFactory {
 
     } catch (final Throwable e) {
       System.err.println(e.getMessage());
-
     }
 
     // Return none test
@@ -173,28 +161,25 @@ public class ITFactory {
   //
 
   /**
-   * Collect all tests to launch from parameter command : in one case all tests
-   * present in output test directory, in other case from a list with all name
-   * test directory. For each, it checks the file configuration 'test.txt'.
+   * Collect all tests to launch from parameter command : in one case all tests present in output
+   * test directory, in other case from a list with all name test directory. For each, it checks the
+   * file configuration 'test.txt'.
+   *
    * @return collection of test directories
-   * @throws EoulsanException if an error occurs while create instance for each
-   *           test.
+   * @throws EoulsanException if an error occurs while create instance for each test.
    * @throws IOException if the source file doesn't exist
    */
-  private Map<String, File> collectTestsDirectoryToExecute()
-      throws KenetreException, IOException {
+  private Map<String, File> collectTestsDirectoryToExecute() throws KenetreException, IOException {
 
     final Map<String, File> result = new HashMap<>();
 
     // Collect tests from a file with names tests
-    final List<File> testsToExecuteDirectories =
-        new ArrayList<>(readTestListFile());
+    final List<File> testsToExecuteDirectories = new ArrayList<>(readTestListFile());
 
     // Add the selected test if set
     if (this.selectedTest != null) {
 
-      testsToExecuteDirectories
-          .add(new File(this.testsDataDirectory, this.selectedTest));
+      testsToExecuteDirectories.add(new File(this.testsDataDirectory, this.selectedTest));
     }
 
     // If no test was defined by user use all the existing tests
@@ -204,8 +189,8 @@ public class ITFactory {
     }
 
     if (testsToExecuteDirectories.size() == 0) {
-      throw new KenetreException("None test directory found in "
-          + this.testsDataDirectory.getAbsolutePath());
+      throw new KenetreException(
+          "None test directory found in " + this.testsDataDirectory.getAbsolutePath());
     }
 
     // Build map
@@ -230,6 +215,7 @@ public class ITFactory {
 
   /**
    * Collect tests to launch from text files with name tests.
+   *
    * @return list all directories test found
    * @throws IOException if an error occurs while read file
    */
@@ -244,8 +230,8 @@ public class ITFactory {
     checkExistingStandardFile(this.selectedTestsFile, "selected tests file");
 
     final BufferedReader br =
-        new BufferedReader(newReader(this.selectedTestsFile,
-            Charsets.toCharset(Charset.defaultCharset())));
+        new BufferedReader(
+            newReader(this.selectedTestsFile, Charsets.toCharset(Charset.defaultCharset())));
 
     String nameTest;
     while ((nameTest = br.readLine()) != null) {
@@ -269,6 +255,7 @@ public class ITFactory {
 
   /**
    * Initialize the constants values.
+   *
    * @return a map with the constants
    */
   private static Properties initConstants() {
@@ -276,8 +263,7 @@ public class ITFactory {
     final Properties constants = new Properties();
 
     // Add java properties
-    for (final Map.Entry<Object, Object> e : System.getProperties()
-        .entrySet()) {
+    for (final Map.Entry<Object, Object> e : System.getProperties().entrySet()) {
       constants.put(e.getKey(), e.getValue());
     }
 
@@ -291,6 +277,7 @@ public class ITFactory {
 
   /**
    * Load configuration file in properties object.
+   *
    * @param configurationFile configuration file
    * @return properties
    * @throws IOException if an error occurs when reading file.
@@ -307,8 +294,7 @@ public class ITFactory {
     checkExistingStandardFile(configurationFile, "test configuration file");
 
     // Load configuration file
-    rawProps.load(newReader(configurationFile,
-        Charsets.toCharset(Charset.defaultCharset())));
+    rawProps.load(newReader(configurationFile, Charsets.toCharset(Charset.defaultCharset())));
 
     props = evaluateProperties(rawProps);
 
@@ -319,16 +305,14 @@ public class ITFactory {
       // Check configuration file
       final File otherConfigurationFile = new File(includeOption);
 
-      checkExistingStandardFile(otherConfigurationFile,
-          "configuration file doesn't exist");
+      checkExistingStandardFile(otherConfigurationFile, "configuration file doesn't exist");
 
       // Load configuration in global configuration
       final Properties rawPropsIncludedConfigurationFile = new Properties();
-      rawPropsIncludedConfigurationFile.load(newReader(otherConfigurationFile,
-          Charsets.toCharset(Charset.defaultCharset())));
+      rawPropsIncludedConfigurationFile.load(
+          newReader(otherConfigurationFile, Charsets.toCharset(Charset.defaultCharset())));
 
-      final Properties newProps =
-          evaluateProperties(rawPropsIncludedConfigurationFile);
+      final Properties newProps = evaluateProperties(rawPropsIncludedConfigurationFile);
 
       for (final String propertyName : newProps.stringPropertyNames()) {
 
@@ -349,14 +333,14 @@ public class ITFactory {
 
   /**
    * Adds the default properties if does not exist in the configuration file.
+   *
    * @param props the props
    */
   private static void addDefaultProperties(Properties props) {
     // Particular case delete files
     if (props.getProperty(SUCCESS_IT_DELETE_FILE_CONF_KEY) == null) {
       // Set default value
-      props.put(SUCCESS_IT_DELETE_FILE_CONF_KEY,
-          SUCCESS_IT_DELETE_FILE_DEFAULT_VALUE);
+      props.put(SUCCESS_IT_DELETE_FILE_CONF_KEY, SUCCESS_IT_DELETE_FILE_DEFAULT_VALUE);
     }
 
     // Add default runtime test duration
@@ -367,12 +351,12 @@ public class ITFactory {
 
   /**
    * Evaluate properties.
+   *
    * @param rawProps the raw props
    * @return the properties
    * @throws EoulsanException if the evaluation expression from value failed.
    */
-  private static Properties evaluateProperties(final Properties rawProps)
-      throws KenetreException {
+  private static Properties evaluateProperties(final Properties rawProps) throws KenetreException {
     final Properties props = new Properties();
     final int pos = IT.PREFIX_ENV_VAR.length();
 
@@ -381,20 +365,17 @@ public class ITFactory {
       if (propertyName.startsWith(IT.PREFIX_ENV_VAR)) {
 
         // Evaluate property
-        final String evalPropValue =
-            evaluateExpressions(rawProps.getProperty(propertyName), true);
+        final String evalPropValue = evaluateExpressions(rawProps.getProperty(propertyName), true);
 
         // Put in constants map
         CONSTANTS.put(propertyName.substring(pos), evalPropValue);
-
       }
     }
 
     // Evaluate property
     for (final String propertyName : rawProps.stringPropertyNames()) {
 
-      final String propertyValue =
-          evaluateExpressions(rawProps.getProperty(propertyName), true);
+      final String propertyValue = evaluateExpressions(rawProps.getProperty(propertyName), true);
 
       // Set property
       props.setProperty(propertyName, propertyValue);
@@ -405,11 +386,11 @@ public class ITFactory {
 
   /**
    * Evaluate expression in a string.
+   *
    * @param s string in witch expression must be replaced
    * @param allowExec allow execution of code
    * @return a string with expression evaluated
-   * @throws EoulsanException if an error occurs while parsing the string or
-   *           executing an expression
+   * @throws EoulsanException if an error occurs while parsing the string or executing an expression
    */
   static String evaluateExpressions(final String s, final boolean allowExec)
       throws KenetreException {
@@ -448,8 +429,7 @@ public class ITFactory {
       if (c0 == '`' && allowExec) {
         final String expr = subStr(s, i + 1, '`');
         try {
-          final String r =
-              ProcessUtils.execToString(evaluateExpressions(expr, false));
+          final String r = ProcessUtils.execToString(evaluateExpressions(expr, false));
 
           // remove last '\n' in the result
           if (!r.isEmpty() && r.charAt(r.length() - 1) == '\n') {
@@ -459,8 +439,7 @@ public class ITFactory {
           }
 
         } catch (final IOException e) {
-          throw new KenetreException(
-              "Error while evaluating expression \"" + expr + "\"", e);
+          throw new KenetreException("Error while evaluating expression \"" + expr + "\"", e);
         }
         i += expr.length() + 1;
         continue;
@@ -472,14 +451,13 @@ public class ITFactory {
     return result.toString();
   }
 
-  private static String subStr(final String s, final int beginIndex,
-      final int charPoint) throws KenetreException {
+  private static String subStr(final String s, final int beginIndex, final int charPoint)
+      throws KenetreException {
 
     final int endIndex = s.indexOf(charPoint, beginIndex);
 
     if (endIndex == -1) {
-      throw new KenetreException(
-          "Unexpected end of expression in \"" + s + "\"");
+      throw new KenetreException("Unexpected end of expression in \"" + s + "\"");
     }
 
     return s.substring(beginIndex, endIndex);
@@ -491,12 +469,12 @@ public class ITFactory {
 
   /**
    * Adds the parameter command line in configuration.
-   * @throws EoulsanException occurs if the it output directory path is invalid
-   *           (to a file or parent directory not exists).
+   *
+   * @throws EoulsanException occurs if the it output directory path is invalid (to a file or parent
+   *     directory not exists).
    * @throws IOException occurs if it can not be create the directory.
    */
-  private void addParameterCommandLineInConfiguration()
-      throws KenetreException, IOException {
+  private void addParameterCommandLineInConfiguration() throws KenetreException, IOException {
 
     if (this.globalsConf == null) {
       throw new KenetreException(
@@ -506,14 +484,14 @@ public class ITFactory {
 
     // Load command line properties
     // Command generate all expected directories test
-    this.globalsConf.setProperty(GENERATE_ALL_EXPECTED_DATA_CONF_KEY,
-        getBooleanFromSystemProperty(IT_GENERATE_ALL_EXPECTED_DATA_SYSTEM_KEY)
-            .toString());
+    this.globalsConf.setProperty(
+        GENERATE_ALL_EXPECTED_DATA_CONF_KEY,
+        getBooleanFromSystemProperty(IT_GENERATE_ALL_EXPECTED_DATA_SYSTEM_KEY).toString());
 
     // Command generate new expected directories test
-    this.globalsConf.setProperty(GENERATE_NEW_EXPECTED_DATA_CONF_KEY,
-        getBooleanFromSystemProperty(IT_GENERATE_NEW_EXPECTED_DATA_SYSTEM_KEY)
-            .toString());
+    this.globalsConf.setProperty(
+        GENERATE_NEW_EXPECTED_DATA_CONF_KEY,
+        getBooleanFromSystemProperty(IT_GENERATE_NEW_EXPECTED_DATA_SYSTEM_KEY).toString());
 
     // If exist in command line, replace output directory from configuration
     final File itOutputDirectoryFromCommandLine =
@@ -523,17 +501,17 @@ public class ITFactory {
       checkDirectoryFileAndCreateIfNotExist(itOutputDirectoryFromCommandLine);
 
       // Replace value from configuration file
-      this.globalsConf.put(OUTPUT_ANALYSIS_DIRECTORY_CONF_KEY,
-          itOutputDirectoryFromCommandLine.getAbsolutePath());
-
+      this.globalsConf.put(
+          OUTPUT_ANALYSIS_DIRECTORY_CONF_KEY, itOutputDirectoryFromCommandLine.getAbsolutePath());
     }
   }
 
   /**
    * Check directory file and create if not exist.
+   *
    * @param dir the dir
-   * @throws EoulsanException occurs if the it output directory path is invalid
-   *           (to a file or parent directory not exists).
+   * @throws EoulsanException occurs if the it output directory path is invalid (to a file or parent
+   *     directory not exists).
    * @throws IOException occurs if it can not be create the directory.
    */
   private void checkDirectoryFileAndCreateIfNotExist(File dir)
@@ -546,30 +524,30 @@ public class ITFactory {
 
     if (dir.exists() && dir.isFile()) {
       throw new KenetreException(
-          "The it output directory is a file not a directory "
-              + dir.getAbsolutePath());
+          "The it output directory is a file not a directory " + dir.getAbsolutePath());
     }
 
     // Check parent directory exist
     final File parentDir = dir.getParentFile();
 
     if (!parentDir.isDirectory()) {
-      throw new KenetreException("Can not create it output directory ("
-          + dir.getName() + "), parent directory doesn't exist "
-          + parentDir.getAbsolutePath());
+      throw new KenetreException(
+          "Can not create it output directory ("
+              + dir.getName()
+              + "), parent directory doesn't exist "
+              + parentDir.getAbsolutePath());
     }
 
     // Check create directory
     if (!dir.mkdir()) {
       throw new IOException(
-          "Fail to create it output directory set in command line "
-              + dir.getAbsolutePath());
+          "Fail to create it output directory set in command line " + dir.getAbsolutePath());
     }
-
   }
 
   /**
    * Get a File object from a Java System property.
+   *
    * @param property the key of the property to get
    * @return a File object or null if the property does not exists
    */
@@ -589,6 +567,7 @@ public class ITFactory {
 
   /**
    * Get a Boolean object from a Java System property.
+   *
    * @param property the key of the property to get
    * @return a Boolean object or false if the property does not exists
    */
@@ -598,23 +577,24 @@ public class ITFactory {
   }
 
   /**
-   * Get the application path as a File object. If the "it.application.path"
-   * system property is set, return a File object pointing to the file, else try
-   * to find the application in <tt>./target/dist</tt> directory.
+   * Get the application path as a File object. If the "it.application.path" system property is set,
+   * return a File object pointing to the file, else try to find the application in
+   * <tt>./target/dist</tt> directory.
+   *
    * @return a File object or null if no application path is found
    */
   private static File getApplicationPath() {
 
-    final File dir =
-        getFileFromSystemProperty(IT_APPLICATION_PATH_KEY_SYSTEM_KEY);
+    final File dir = getFileFromSystemProperty(IT_APPLICATION_PATH_KEY_SYSTEM_KEY);
 
     if (dir != null) {
       return dir;
     }
 
     // Get user dir
-    final File distDir = new File(System.getProperty("user.dir")
-        + File.separator + "target" + File.separator + "dist");
+    final File distDir =
+        new File(
+            System.getProperty("user.dir") + File.separator + "target" + File.separator + "dist");
 
     // The dist directory does not exists ?
     if (!distDir.isDirectory()) {
@@ -661,28 +641,25 @@ public class ITFactory {
 
   /**
    * Public constructor.
-   * @throws KenetreException if an error occurs when reading configuration
-   *           file.
+   *
+   * @throws KenetreException if an error occurs when reading configuration file.
    * @throws IOException if an error occurs when reading configuration
    */
   public ITFactory() throws KenetreException, IOException {
 
     // Get configuration file path
-    final File configurationFile =
-        getFileFromSystemProperty(IT_CONF_PATH_SYSTEM_KEY);
+    final File configurationFile = getFileFromSystemProperty(IT_CONF_PATH_SYSTEM_KEY);
 
     if (configurationFile != null) {
 
       // Get application path
       this.applicationPath = getApplicationPath();
-      CONSTANTS.setProperty(APPLICATION_PATH_VARIABLE,
-          this.applicationPath.getAbsolutePath());
+      CONSTANTS.setProperty(APPLICATION_PATH_VARIABLE, this.applicationPath.getAbsolutePath());
 
       checkExistingDirectoryFile(this.applicationPath, "application path");
 
       // Get the file with the list of tests to run
-      this.selectedTestsFile =
-          getFileFromSystemProperty(IT_TEST_LIST_PATH_SYSTEM_KEY);
+      this.selectedTestsFile = getFileFromSystemProperty(IT_TEST_LIST_PATH_SYSTEM_KEY);
 
       // Get the test to execute
       this.selectedTest = System.getProperty(IT_TEST_SYSTEM_KEY);
@@ -693,14 +670,13 @@ public class ITFactory {
       addParameterCommandLineInConfiguration();
 
       // Set test data source directory
-      this.testsDataDirectory =
-          new File(this.globalsConf.getProperty(TESTS_DIRECTORY_CONF_KEY));
+      this.testsDataDirectory = new File(this.globalsConf.getProperty(TESTS_DIRECTORY_CONF_KEY));
 
       this.testsDirectoryFoundToExecute = collectTestsDirectoryToExecute();
 
       // Init it suite with all potential tests found in test data direction
-      ITSuite.getInstance(this.testsDirectoryFoundToExecute, this.globalsConf,
-          this.applicationPath);
+      ITSuite.getInstance(
+          this.testsDirectoryFoundToExecute, this.globalsConf, this.applicationPath);
 
     } else {
       // Case no testng must be create when compile project with maven
@@ -712,5 +688,4 @@ public class ITFactory {
       this.testsDirectoryFoundToExecute = null;
     }
   }
-
 }

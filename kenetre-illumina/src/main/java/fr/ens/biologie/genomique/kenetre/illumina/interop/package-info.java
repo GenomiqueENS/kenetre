@@ -2,8 +2,8 @@
  *                  Aozan development code
  *
  * This code may be freely distributed and modified under the
- * terms of the GNU General Public License version 3 or later 
- * and CeCILL. This should be distributed with the code. If you 
+ * terms of the GNU General Public License version 3 or later
+ * and CeCILL. This should be distributed with the code. If you
  * do not have a copy, see:
  *
  *      http://www.gnu.org/licenses/gpl-3.0-standalone.html
@@ -22,8 +22,8 @@
  */
 
 /**
- * This package defines the collectors which collects data from InterOp binary
- * files for a run.
+ * This package defines the collectors which collects data from InterOp binary files for a run.
+ *
  * @since 1.1
  */
 package fr.ens.biologie.genomique.kenetre.illumina.interop;

@@ -2,8 +2,8 @@
  *                 Aozan development code
  *
  * This code may be freely distributed and modified under the
- * terms of the GNU General Public License version 3 or later 
- * and CeCILL. This should be distributed with the code. If you 
+ * terms of the GNU General Public License version 3 or later
+ * and CeCILL. This should be distributed with the code. If you
  * do not have a copy, see:
  *
  *      http://www.gnu.org/licenses/gpl-3.0-standalone.html
@@ -23,6 +23,7 @@
 
 package fr.ens.biologie.genomique.kenetre.illumina.interop;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -30,21 +31,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-
 /**
  * This class define a specified iterator for reading the binary file version 2:
  * ExtractionMetricsOut.bin.
+ *
  * @author Sandrine Perrin
  * @since 1.1
  */
-public class ExtractionMetricsReader
-    extends AbstractBinaryFileReader<ExtractionMetric> {
+public class ExtractionMetricsReader extends AbstractBinaryFileReader<ExtractionMetric> {
 
   public static final String NAME = "ExtractionMetricsOut";
 
-  public static final String EXTRACTION_METRICS_FILE =
-      "ExtractionMetricsOut.bin";
+  public static final String EXTRACTION_METRICS_FILE = "ExtractionMetricsOut.bin";
 
   private int channelCount = 4;
 
@@ -62,14 +60,14 @@ public class ExtractionMetricsReader
   protected int getExpectedRecordSize(int version) {
 
     switch (version) {
-    case 2:
-      return 38;
+      case 2:
+        return 38;
 
-    case 3:
-      return 8 + 6 * this.channelCount;
+      case 3:
+        return 8 + 6 * this.channelCount;
 
-    default:
-      throw new IllegalArgumentException();
+      default:
+        throw new IllegalArgumentException();
     }
   }
 
@@ -82,22 +80,21 @@ public class ExtractionMetricsReader
   protected void readOptionalFlag(ByteBuffer bb, int version) {
 
     switch (version) {
-    case 2:
-      return;
+      case 2:
+        return;
 
-    case 3:
-      this.channelCount = uByteToInt(bb);
-      return;
+      case 3:
+        this.channelCount = uByteToInt(bb);
+        return;
 
-    default:
-      throw new IllegalArgumentException();
+      default:
+        throw new IllegalArgumentException();
     }
-
   }
 
   @Override
-  protected void readMetricRecord(final List<ExtractionMetric> collection,
-      final ByteBuffer bb, final int version) {
+  protected void readMetricRecord(
+      final List<ExtractionMetric> collection, final ByteBuffer bb, final int version) {
 
     collection.add(new ExtractionMetric(version, this.channelCount, bb));
   }
@@ -109,5 +106,4 @@ public class ExtractionMetricsReader
   public ExtractionMetricsReader(final File dirPath) throws KenetreException {
     super(dirPath);
   }
-
 }

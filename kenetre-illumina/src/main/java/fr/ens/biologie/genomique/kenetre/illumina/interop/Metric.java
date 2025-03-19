@@ -6,6 +6,7 @@ import java.util.Objects;
 
 /**
  * This class define a metric.
+ *
  * @author Laurent Jourdren
  * @since 0.2
  */
@@ -16,6 +17,7 @@ public abstract class Metric {
 
   /**
    * Get the name of the metric
+   *
    * @return the name of the metric
    */
   public String getName() {
@@ -24,6 +26,7 @@ public abstract class Metric {
 
   /**
    * Get the name of the metric
+   *
    * @return the name of the metric
    */
   public int getVersion() {
@@ -56,6 +59,7 @@ public abstract class Metric {
 
   /**
    * Get the values of the metric as a CVS line.
+   *
    * @return a CSV String
    */
   public String toCSV() {
@@ -64,6 +68,7 @@ public abstract class Metric {
 
   /**
    * Convert a list of number to a CSV String.
+   *
    * @param values values to conver
    * @return a CSV String
    */

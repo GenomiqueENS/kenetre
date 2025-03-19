@@ -27,6 +27,8 @@ import static fr.ens.biologie.genomique.kenetre.it.ITLogger.getLogger;
 import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.base.Stopwatch;
+import fr.ens.biologie.genomique.kenetre.KenetreException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,12 +39,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Stopwatch;
-
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-
 /**
  * The class represents an executor to command line.
+ *
  * @author Sandrine Perrin
  * @since 2.0
  */
@@ -76,17 +75,19 @@ public class ITCommandExecutor {
 
   /**
    * Execute a script from a command line retrieved from the test configuration.
+   *
    * @param scriptConfKey key for configuration to get command line
-   * @param suffixNameOutputFile suffix for standard and error output file on
-   *          process
+   * @param suffixNameOutputFile suffix for standard and error output file on process
    * @param desc description on command line
-   * @param isApplicationCmdLine true if application to run, otherwise false
-   *          corresponding to annexes script
-   * @return result of execution command line, if command line not found in
-   *         configuration return null
+   * @param isApplicationCmdLine true if application to run, otherwise false corresponding to
+   *     annexes script
+   * @return result of execution command line, if command line not found in configuration return
+   *     null
    */
-  public ITCommandResult executeCommand(final String scriptConfKey,
-      final String suffixNameOutputFile, final String desc,
+  public ITCommandResult executeCommand(
+      final String scriptConfKey,
+      final String suffixNameOutputFile,
+      final String desc,
       final boolean isApplicationCmdLine) {
 
     if (this.testConf.getProperty(scriptConfKey) == null) {
@@ -107,9 +108,8 @@ public class ITCommandExecutor {
         Files.write(this.cmdLineFile.toPath(), singleton(cmdLine));
       } catch (final IOException e) {
 
-        getLogger().warning(
-            "Error while writing the application command line in file: "
-                + e.getMessage());
+        getLogger()
+            .warning("Error while writing the application command line in file: " + e.getMessage());
       }
     }
 
@@ -120,13 +120,13 @@ public class ITCommandExecutor {
     int exitValue = -1;
     final Stopwatch timer = Stopwatch.createStarted();
 
-    final ITCommandResult cmdResult = new ITCommandResult(cmdLine,
-        this.outputTestDirectory, desc, durationMax);
+    final ITCommandResult cmdResult =
+        new ITCommandResult(cmdLine, this.outputTestDirectory, desc, durationMax);
 
     try {
 
-      final Process p = Runtime.getRuntime().exec(cmdLine,
-          this.environmentVariables, this.outputTestDirectory);
+      final Process p =
+          Runtime.getRuntime().exec(cmdLine, this.environmentVariables, this.outputTestDirectory);
 
       // Save stdout
       if (stdoutFile != null) {
@@ -146,9 +146,14 @@ public class ITCommandExecutor {
       // Execution script fail, create an exception
       if (exitValue != 0) {
 
-        cmdResult.setException(new KenetreException("\tCommand line: "
-            + cmdLine + "\n\tDirectory: " + this.outputTestDirectory
-            + "\n\tMessage: bad exit value: " + exitValue));
+        cmdResult.setException(
+            new KenetreException(
+                "\tCommand line: "
+                    + cmdLine
+                    + "\n\tDirectory: "
+                    + this.outputTestDirectory
+                    + "\n\tMessage: bad exit value: "
+                    + exitValue));
         cmdResult.setErrorFileOnProcess(stderrFile);
 
       } else if (exitValue == 0 && !isApplicationCmdLine) {
@@ -162,10 +167,14 @@ public class ITCommandExecutor {
       }
 
     } catch (IOException | InterruptedException e) {
-      cmdResult.setException(e,
+      cmdResult.setException(
+          e,
           "\tError before execution.\n\tCommand line: "
-              + cmdLine + "\n\tDirectory: " + this.outputTestDirectory
-              + "\n\tMessage: " + e.getMessage());
+              + cmdLine
+              + "\n\tDirectory: "
+              + this.outputTestDirectory
+              + "\n\tMessage: "
+              + e.getMessage());
 
     } finally {
       cmdResult.setDuration(timer.elapsed(TimeUnit.MILLISECONDS));
@@ -177,22 +186,24 @@ public class ITCommandExecutor {
 
   /**
    * Create standard output file with suffix name, if not empty.
+   *
    * @param suffixName the suffix name
    * @return file
    */
   private File createSdtoutFile(final String suffixName) {
-    return new File(this.outputTestDirectory,
-        STDOUT_FILENAME + (suffixName.isEmpty() ? "" : "_" + suffixName));
+    return new File(
+        this.outputTestDirectory, STDOUT_FILENAME + (suffixName.isEmpty() ? "" : "_" + suffixName));
   }
 
   /**
    * Create error output file with suffix name, if not empty.
+   *
    * @param suffixName the suffix name
    * @return file
    */
   private File createSdterrFile(final String suffixName) {
-    return new File(this.outputTestDirectory,
-        STDERR_FILENAME + (suffixName.isEmpty() ? "" : "_" + suffixName));
+    return new File(
+        this.outputTestDirectory, STDERR_FILENAME + (suffixName.isEmpty() ? "" : "_" + suffixName));
   }
 
   //
@@ -200,13 +211,16 @@ public class ITCommandExecutor {
   //
   /**
    * Public constructor.
+   *
    * @param testConf properties on the test
    * @param outputTestDirectory output test directory
    * @param environmentVariables environment variables to run test
    * @param durationMax the duration maximum in minutes
    */
-  public ITCommandExecutor(final Properties testConf,
-      final File outputTestDirectory, final List<String> environmentVariables,
+  public ITCommandExecutor(
+      final Properties testConf,
+      final File outputTestDirectory,
+      final List<String> environmentVariables,
       final int durationMax) {
 
     this.testConf = testConf;
@@ -217,11 +231,11 @@ public class ITCommandExecutor {
     this.cmdLineFile = new File(this.outputTestDirectory, CMDLINE_FILENAME);
 
     this.durationMax = durationMax;
-
   }
 
   /**
    * This internal class allow to save Process outputs.
+   *
    * @author Laurent Jourdren
    */
   private static final class CopyProcessOutput extends Thread {
@@ -245,20 +259,18 @@ public class ITCommandExecutor {
       try {
         Files.copy(this.in, this.path, StandardCopyOption.REPLACE_EXISTING);
       } catch (final IOException e) {
-        getLogger().warning(
-            "Error while copying " + this.desc + ": " + e.getMessage());
+        getLogger().warning("Error while copying " + this.desc + ": " + e.getMessage());
       }
-
     }
 
     /**
      * Instantiates a new copy process output.
+     *
      * @param in the in
      * @param file the file
      * @param desc the desc
      */
-    CopyProcessOutput(final InputStream in, final File file,
-        final String desc) {
+    CopyProcessOutput(final InputStream in, final File file, final String desc) {
 
       requireNonNull(in, "in argument cannot be null");
       requireNonNull(file, "file argument cannot be null");
@@ -268,7 +280,5 @@ public class ITCommandExecutor {
       this.path = file.toPath();
       this.desc = desc;
     }
-
   }
-
 }

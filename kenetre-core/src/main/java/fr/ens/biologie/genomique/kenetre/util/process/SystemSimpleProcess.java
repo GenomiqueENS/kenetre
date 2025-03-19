@@ -1,17 +1,16 @@
 package fr.ens.biologie.genomique.kenetre.util.process;
 
+import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-
 /**
- * This class define how to easily launch a subprocess using the Java Process
- * API.
+ * This class define how to easily launch a subprocess using the Java Process API.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -20,19 +19,35 @@ public class SystemSimpleProcess extends AbstractSimpleProcess {
   private final GenericLogger logger;
 
   @Override
-  public AdvancedProcess start(final List<String> commandLine,
+  public AdvancedProcess start(
+      final List<String> commandLine,
       final File executionDirectory,
       final Map<String, String> environmentVariables,
-      final File temporaryDirectory, final File stdoutFile,
-      final File stderrFile, final boolean redirectErrorStream,
-      final File... filesUsed) throws IOException {
+      final File temporaryDirectory,
+      final File stdoutFile,
+      final File stderrFile,
+      final boolean redirectErrorStream,
+      final File... filesUsed)
+      throws IOException {
 
-    this.logger.debug(getClass().getName()
-        + " : commandLine=" + commandLine + ", executionDirectory="
-        + executionDirectory + ", environmentVariables=" + environmentVariables
-        + ", temporaryDirectory=" + temporaryDirectory + ", stdoutFile="
-        + stdoutFile + ", stderrFile=" + stderrFile + ", redirectErrorStream="
-        + redirectErrorStream + ", filesUsed=" + Arrays.toString(filesUsed));
+    this.logger.debug(
+        getClass().getName()
+            + " : commandLine="
+            + commandLine
+            + ", executionDirectory="
+            + executionDirectory
+            + ", environmentVariables="
+            + environmentVariables
+            + ", temporaryDirectory="
+            + temporaryDirectory
+            + ", stdoutFile="
+            + stdoutFile
+            + ", stderrFile="
+            + stderrFile
+            + ", redirectErrorStream="
+            + redirectErrorStream
+            + ", filesUsed="
+            + Arrays.toString(filesUsed));
 
     final ProcessBuilder pb = new ProcessBuilder(commandLine);
     // Set execution directory
@@ -47,8 +62,7 @@ public class SystemSimpleProcess extends AbstractSimpleProcess {
 
     // Set temporary directory
     if (temporaryDirectory != null) {
-      pb.environment().put(TMP_DIR_ENV_VARIABLE,
-          temporaryDirectory.getAbsolutePath());
+      pb.environment().put(TMP_DIR_ENV_VARIABLE, temporaryDirectory.getAbsolutePath());
     }
 
     // Redirect stdout
@@ -66,7 +80,6 @@ public class SystemSimpleProcess extends AbstractSimpleProcess {
     final Process process = pb.start();
 
     return () -> {
-
       try {
         return process.waitFor();
       } catch (InterruptedException e) {
@@ -79,9 +92,7 @@ public class SystemSimpleProcess extends AbstractSimpleProcess {
   // Constructors
   //
 
-  /**
-   * Constructor.
-   */
+  /** Constructor. */
   public SystemSimpleProcess() {
 
     this(null);
@@ -89,11 +100,11 @@ public class SystemSimpleProcess extends AbstractSimpleProcess {
 
   /**
    * Constructor.
+   *
    * @param logger logger to use
    */
   public SystemSimpleProcess(GenericLogger logger) {
 
     this.logger = logger == null ? new DummyLogger() : logger;
   }
-
 }

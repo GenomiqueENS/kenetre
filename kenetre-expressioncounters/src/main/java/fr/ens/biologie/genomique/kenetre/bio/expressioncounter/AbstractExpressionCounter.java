@@ -26,13 +26,6 @@ package fr.ens.biologie.genomique.kenetre.bio.expressioncounter;
 
 import static java.util.Objects.requireNonNull;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Iterator;
-import java.util.Map;
-
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
 import fr.ens.biologie.genomique.kenetre.bio.io.GFFReader;
@@ -46,9 +39,16 @@ import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamInputResource;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * This abstract class implements a generic Expression Counter.
+ *
  * @since 1.2
  * @author Claire Wallon
  */
@@ -74,11 +74,8 @@ public abstract class AbstractExpressionCounter implements ExpressionCounter {
     return this.logger;
   }
 
-  /**
-   * This class allow to save the modified SAM entries after the counting.
-   */
-  private static class IteratorWriter
-      implements Iterable<SAMRecord>, Iterator<SAMRecord> {
+  /** This class allow to save the modified SAM entries after the counting. */
+  private static class IteratorWriter implements Iterable<SAMRecord>, Iterator<SAMRecord> {
 
     private final SAMFileWriter writer;
     private final Iterator<SAMRecord> samRecords;
@@ -123,11 +120,11 @@ public abstract class AbstractExpressionCounter implements ExpressionCounter {
 
     /**
      * Constructor.
+     *
      * @param writer SAM writer
      * @param samReader SAM reader
      */
-    private IteratorWriter(final SAMFileWriter writer,
-        final SamReader samReader) {
+    private IteratorWriter(final SAMFileWriter writer, final SamReader samReader) {
 
       this.writer = writer;
       this.samRecords = samReader.iterator();
@@ -136,6 +133,7 @@ public abstract class AbstractExpressionCounter implements ExpressionCounter {
 
   /**
    * Set a common parameter of the counter.
+   *
    * @param key name of the parameter to set
    * @param value value of the parameter to set
    * @return true if the parameter is common parameter
@@ -152,14 +150,13 @@ public abstract class AbstractExpressionCounter implements ExpressionCounter {
       try {
         int intValue = Integer.parseInt(value);
         if (intValue < 1) {
-          throw new KenetreException("Invalid "
-              + key + "parameter (The value must be greater than 1): " + value);
+          throw new KenetreException(
+              "Invalid " + key + "parameter (The value must be greater than 1): " + value);
         }
         this.maxRecordsInRam = intValue;
       } catch (NumberFormatException e) {
         throw new KenetreException(
-            "Invalid parameter, an integer parameter is need for "
-                + key + " parameter: " + value,
+            "Invalid parameter, an integer parameter is need for " + key + " parameter: " + value,
             e);
       }
 
@@ -170,8 +167,8 @@ public abstract class AbstractExpressionCounter implements ExpressionCounter {
   }
 
   @Override
-  public void init(final GenomeDescription genomeDesc,
-      final InputStream annotationIs, final boolean gtfFormat)
+  public void init(
+      final GenomeDescription genomeDesc, final InputStream annotationIs, final boolean gtfFormat)
       throws KenetreException, IOException {
 
     try (GFFReader gffReader =
@@ -182,8 +179,9 @@ public abstract class AbstractExpressionCounter implements ExpressionCounter {
   }
 
   @Override
-  public void init(final InputStream descIs, final InputStream annotationIs,
-      final boolean gtfFormat) throws KenetreException, IOException {
+  public void init(
+      final InputStream descIs, final InputStream annotationIs, final boolean gtfFormat)
+      throws KenetreException, IOException {
 
     try (GFFReader gffReader =
         gtfFormat ? new GTFReader(annotationIs) : new GFFReader(annotationIs)) {
@@ -193,8 +191,8 @@ public abstract class AbstractExpressionCounter implements ExpressionCounter {
   }
 
   @Override
-  public Map<String, Integer> count(final InputStream inputSam,
-      final ReporterIncrementer reporter, final String counterGroup)
+  public Map<String, Integer> count(
+      final InputStream inputSam, final ReporterIncrementer reporter, final String counterGroup)
       throws KenetreException {
 
     if (inputSam == null) {
@@ -202,14 +200,16 @@ public abstract class AbstractExpressionCounter implements ExpressionCounter {
     }
 
     return count(
-        SamReaderFactory.makeDefault().open(SamInputResource.of(inputSam)),
-        reporter, counterGroup);
+        SamReaderFactory.makeDefault().open(SamInputResource.of(inputSam)), reporter, counterGroup);
   }
 
   @Override
-  public Map<String, Integer> count(final InputStream inputSam,
-      final OutputStream outputSam, final File temporaryDirectory,
-      final ReporterIncrementer reporter, final String counterGroup)
+  public Map<String, Integer> count(
+      final InputStream inputSam,
+      final OutputStream outputSam,
+      final File temporaryDirectory,
+      final ReporterIncrementer reporter,
+      final String counterGroup)
       throws KenetreException {
 
     if (inputSam == null) {
@@ -225,16 +225,15 @@ public abstract class AbstractExpressionCounter implements ExpressionCounter {
     }
 
     // Define the reader
-    SamReader reader =
-        SamReaderFactory.makeDefault().open(SamInputResource.of(inputSam));
+    SamReader reader = SamReaderFactory.makeDefault().open(SamInputResource.of(inputSam));
 
     // Define the writer
     SAMFileWriter writer =
-        new SAMFileWriterFactory().setTempDirectory(temporaryDirectory)
+        new SAMFileWriterFactory()
+            .setTempDirectory(temporaryDirectory)
             .setMaxRecordsInRam(this.maxRecordsInRam)
             .makeSAMWriter(reader.getFileHeader(), false, outputSam);
 
     return count(new IteratorWriter(writer, reader), reporter, counterGroup);
   }
-
 }

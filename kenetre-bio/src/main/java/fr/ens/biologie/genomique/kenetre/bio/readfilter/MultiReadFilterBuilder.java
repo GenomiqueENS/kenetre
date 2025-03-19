@@ -26,6 +26,10 @@ package fr.ens.biologie.genomique.kenetre.bio.readfilter;
 
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
+import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
+import fr.ens.biologie.genomique.kenetre.util.ReporterIncrementer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,13 +37,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-import fr.ens.biologie.genomique.kenetre.util.ReporterIncrementer;
-
 /**
  * This builder allow to create a MultiReadFilter object.
+ *
  * @since 1.1
  * @author Laurent Jourdren
  */
@@ -54,6 +54,7 @@ public class MultiReadFilterBuilder {
 
   /**
    * Set the logger to use.
+   *
    * @param logger the logger to use
    */
   private void setLogger(GenericLogger logger) {
@@ -64,6 +65,7 @@ public class MultiReadFilterBuilder {
 
   /**
    * Get the logger.
+   *
    * @return the logger
    */
   public GenericLogger getLogger() {
@@ -73,32 +75,31 @@ public class MultiReadFilterBuilder {
 
   /**
    * Add a parameter to the builder
+   *
    * @param key key of the parameter
    * @param value value of the parameter
    * @return true if the parameter has been successfully added
-   * @throws KenetreException if the filter reference in the key does not exist
-   *           or if an error occurs while setting the parameter in the
-   *           dedicated filter
+   * @throws KenetreException if the filter reference in the key does not exist or if an error
+   *     occurs while setting the parameter in the dedicated filter
    */
-  public boolean addParameter(final String key, final String value)
-      throws KenetreException {
+  public boolean addParameter(final String key, final String value) throws KenetreException {
 
     return addParameter(key, value, false);
   }
 
   /**
    * Add a parameter to the builder
+   *
    * @param key key of the parameter
    * @param value value of the parameter
-   * @param noExceptionIfFilterNotExists do not thrown an exception if the
-   *          filter does not exists.
+   * @param noExceptionIfFilterNotExists do not thrown an exception if the filter does not exists.
    * @return true if the parameter has been successfully added
-   * @throws KenetreException if the filter reference in the key does not exist
-   *           or if an error occurs while setting the parameter in the
-   *           dedicated filter
+   * @throws KenetreException if the filter reference in the key does not exist or if an error
+   *     occurs while setting the parameter in the dedicated filter
    */
-  public boolean addParameter(final String key, final String value,
-      final boolean noExceptionIfFilterNotExists) throws KenetreException {
+  public boolean addParameter(
+      final String key, final String value, final boolean noExceptionIfFilterNotExists)
+      throws KenetreException {
 
     if (key == null || value == null) {
       return false;
@@ -126,8 +127,7 @@ public class MultiReadFilterBuilder {
     if (this.mapFilters.containsKey(filterName)) {
       filter = this.mapFilters.get(filterName);
     } else {
-      filter = ReadFilterService.getInstance(this.useNewServiceInstance)
-          .newService(filterName);
+      filter = ReadFilterService.getInstance(this.useNewServiceInstance).newService(filterName);
 
       if (filter == null) {
 
@@ -135,8 +135,7 @@ public class MultiReadFilterBuilder {
           return false;
         }
 
-        throw new KenetreException(
-            "Unable to find " + filterName + " read filter.");
+        throw new KenetreException("Unable to find " + filterName + " read filter.");
       }
       filter.setLogger(this.logger);
       this.mapFilters.put(filterName, filter);
@@ -148,13 +147,17 @@ public class MultiReadFilterBuilder {
       final String valueTrimmed = value.trim();
       filter.setParameter(filterKey, valueTrimmed);
       this.mapParameters.put(keyTrimmed, valueTrimmed);
-      getLogger().info("Set read filter \""
-          + filterName + "\" with parameter: " + filterKey + "="
-          + valueTrimmed);
+      getLogger()
+          .info(
+              "Set read filter \""
+                  + filterName
+                  + "\" with parameter: "
+                  + filterKey
+                  + "="
+                  + valueTrimmed);
     } else {
       this.mapParameters.put(filterName, "");
-      getLogger()
-          .info("Set read filter \"" + filterName + "\" with no parameter");
+      getLogger().info("Set read filter \"" + filterName + "\" with no parameter");
     }
 
     return true;
@@ -162,13 +165,12 @@ public class MultiReadFilterBuilder {
 
   /**
    * Add parameters to the builder.
+   *
    * @param parameters parameters to add
-   * @throws KenetreException if the filter reference in the key does not exist
-   *           or if an error occurs while setting the parameter in the
-   *           dedicated filter
+   * @throws KenetreException if the filter reference in the key does not exist or if an error
+   *     occurs while setting the parameter in the dedicated filter
    */
-  public void addParameters(final Map<String, String> parameters)
-      throws KenetreException {
+  public void addParameters(final Map<String, String> parameters) throws KenetreException {
 
     if (parameters == null) {
       return;
@@ -181,9 +183,9 @@ public class MultiReadFilterBuilder {
 
   /**
    * Create the final MultiReadFilter.
+   *
    * @return a new MultiReadFilter object
-   * @throws KenetreException if an error occurs while initialize one of the
-   *           filter
+   * @throws KenetreException if an error occurs while initialize one of the filter
    */
   public MultiReadFilter getReadFilter() throws KenetreException {
 
@@ -196,14 +198,14 @@ public class MultiReadFilterBuilder {
 
   /**
    * Create the final MultiReadFilter.
+   *
    * @param incrementer incrementer to use
    * @param counterGroup counter group for the incrementer
    * @return a new MultiReadFilter object
-   * @throws KenetreException if an error occurs while initialize one of the
-   *           filter
+   * @throws KenetreException if an error occurs while initialize one of the filter
    */
-  public MultiReadFilter getReadFilter(final ReporterIncrementer incrementer,
-      final String counterGroup) throws KenetreException {
+  public MultiReadFilter getReadFilter(
+      final ReporterIncrementer incrementer, final String counterGroup) throws KenetreException {
 
     for (ReadFilter f : this.listFilter) {
       f.init();
@@ -214,6 +216,7 @@ public class MultiReadFilterBuilder {
 
   /**
    * Get a map with all the parameters used to create the MultiReadFilter.
+   *
    * @return an ordered map object
    */
   public Map<String, String> getParameters() {
@@ -223,6 +226,7 @@ public class MultiReadFilterBuilder {
 
   /**
    * Force the usage of a new service instance to get ReadFilter objects.
+   *
    * @param forceUseNewServiceInstance force new service instance usage
    */
   public void useNewServiceInstance(boolean forceUseNewServiceInstance) {
@@ -234,14 +238,12 @@ public class MultiReadFilterBuilder {
   // Constructors
   //
 
-  /**
-   * Public constructor.
-   */
-  public MultiReadFilterBuilder() {
-  }
+  /** Public constructor. */
+  public MultiReadFilterBuilder() {}
 
   /**
    * Public constructor.
+   *
    * @param logger the logger to use
    */
   public MultiReadFilterBuilder(final GenericLogger logger) {
@@ -251,30 +253,28 @@ public class MultiReadFilterBuilder {
 
   /**
    * Public constructor.
+   *
    * @param parameters parameters to add to the builder
-   * @throws KenetreException if the filter reference in the key does not exist
-   *           or if an error occurs while setting the parameter in the
-   *           dedicated filter
+   * @throws KenetreException if the filter reference in the key does not exist or if an error
+   *     occurs while setting the parameter in the dedicated filter
    */
-  public MultiReadFilterBuilder(final Map<String, String> parameters)
-      throws KenetreException {
+  public MultiReadFilterBuilder(final Map<String, String> parameters) throws KenetreException {
 
     addParameters(parameters);
   }
 
   /**
    * Public constructor.
+   *
    * @param logger the logger to use
    * @param parameters parameters to add to the builder
-   * @throws KenetreException if the filter reference in the key does not exist
-   *           or if an error occurs while setting the parameter in the
-   *           dedicated filter
+   * @throws KenetreException if the filter reference in the key does not exist or if an error
+   *     occurs while setting the parameter in the dedicated filter
    */
-  public MultiReadFilterBuilder(final GenericLogger logger,
-      final Map<String, String> parameters) throws KenetreException {
+  public MultiReadFilterBuilder(final GenericLogger logger, final Map<String, String> parameters)
+      throws KenetreException {
 
     setLogger(logger);
     addParameters(parameters);
   }
-
 }

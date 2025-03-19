@@ -31,6 +31,7 @@ import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
 
 /**
  * This class define a filter based on mean quality of a read.
+ *
  * @since 1.0
  * @author Maria Bernard
  * @author Laurent Jourdren
@@ -62,8 +63,7 @@ public class QualityReadFilter extends AbstractReadFilter {
   }
 
   @Override
-  public void setParameter(final String key, final String value)
-      throws KenetreException {
+  public void setParameter(final String key, final String value) throws KenetreException {
 
     if (key == null || value == null) {
       return;
@@ -78,14 +78,11 @@ public class QualityReadFilter extends AbstractReadFilter {
       }
 
       if (this.qualityThreshold < 0.0) {
-        throw new KenetreException(
-            "Invalid qualityThreshold: " + this.qualityThreshold);
+        throw new KenetreException("Invalid qualityThreshold: " + this.qualityThreshold);
       }
     } else {
-      throw new KenetreException(
-          "Unknown parameter for " + getName() + " read filter: " + key);
+      throw new KenetreException("Unknown parameter for " + getName() + " read filter: " + key);
     }
-
   }
 
   @Override
@@ -100,19 +97,13 @@ public class QualityReadFilter extends AbstractReadFilter {
   @Override
   public String toString() {
 
-    return this.getClass().getSimpleName()
-        + "{qualityThreshold=" + this.qualityThreshold + "}";
+    return this.getClass().getSimpleName() + "{qualityThreshold=" + this.qualityThreshold + "}";
   }
 
   //
   // Constructor
   //
 
-  /**
-   * Public constructor.
-   */
-  public QualityReadFilter() {
-
-  }
-
+  /** Public constructor. */
+  public QualityReadFilter() {}
 }

@@ -1,5 +1,7 @@
 package fr.ens.biologie.genomique.kenetre.illumina.interop;
 
+import com.google.common.base.Splitter;
+import fr.ens.biologie.genomique.kenetre.KenetreException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -9,70 +11,54 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.google.common.base.Splitter;
-
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-import fr.ens.biologie.genomique.kenetre.illumina.interop.ErrorMetric;
-import fr.ens.biologie.genomique.kenetre.illumina.interop.ErrorMetricsReader;
 
 public class ErrorMetricsReaderTest {
 
   @Test
-  public void testHiSeq1500PE100()
-      throws URISyntaxException, KenetreException, IOException {
+  public void testHiSeq1500PE100() throws URISyntaxException, KenetreException, IOException {
 
     testReadFile("interop/HiSeq1500_PE100/InterOp");
   }
 
   @Test
-  public void testHiSeq1500SR50()
-      throws URISyntaxException, KenetreException, IOException {
+  public void testHiSeq1500SR50() throws URISyntaxException, KenetreException, IOException {
 
     testReadFile("interop/HiSeq1500_SR50/InterOp");
   }
 
   @Test
-  public void testNextSeq500SR75()
-      throws URISyntaxException, KenetreException, IOException {
+  public void testNextSeq500SR75() throws URISyntaxException, KenetreException, IOException {
 
     testReadFile("interop/NextSeq500_SR75/InterOp");
   }
 
   @Test
-  public void testNextSeq50010X()
-      throws URISyntaxException, KenetreException, IOException {
+  public void testNextSeq50010X() throws URISyntaxException, KenetreException, IOException {
 
     testReadFile("interop/NextSeq500_10X/InterOp");
   }
 
-  
   @Test
-  public void testNextSeq2000SR100()
-      throws URISyntaxException, KenetreException, IOException {
+  public void testNextSeq2000SR100() throws URISyntaxException, KenetreException, IOException {
 
     testReadFile("interop/NextSeq2000_SR100/InterOp");
   }
 
   @Test
-  public void testNextSeq2000PE150()
-      throws URISyntaxException, KenetreException, IOException {
+  public void testNextSeq2000PE150() throws URISyntaxException, KenetreException, IOException {
 
     testReadFile("interop/NextSeq2000_PE150/InterOp");
   }
-  
-  private void testReadFile(String path)
-      throws URISyntaxException, KenetreException, IOException {
+
+  private void testReadFile(String path) throws URISyntaxException, KenetreException, IOException {
 
     String binFilename = "ErrorMetricsOut.bin";
     String csvFilename = "ErrorMetricsOut.csv";
 
     // Get the file URL, not working in JAR file.
-    URL binResource =
-        getClass().getClassLoader().getResource(path + '/' + binFilename);
+    URL binResource = getClass().getClassLoader().getResource(path + '/' + binFilename);
 
     if (binResource == null) {
       throw new IllegalArgumentException("file not found!");
@@ -101,8 +87,10 @@ public class ErrorMetricsReaderTest {
 
     // Read expected metrics from csv file and sort it
     List<String> csvLines = new ArrayList<>();
-    try (BufferedReader in = new BufferedReader(new InputStreamReader(getClass()
-        .getClassLoader().getResourceAsStream(path + '/' + csvFilename)))) {
+    try (BufferedReader in =
+        new BufferedReader(
+            new InputStreamReader(
+                getClass().getClassLoader().getResourceAsStream(path + '/' + csvFilename)))) {
 
       String line = null;
       while ((line = in.readLine()) != null) {
@@ -123,10 +111,8 @@ public class ErrorMetricsReaderTest {
     int count = csvLines.size();
     for (int i = 0; i < count; i++) {
 
-      List<String> csvFields =
-          splitter.splitToList(csvLines.get(i).replace("nan", "NaN"));
-      List<String> binFields =
-          splitter.splitToList(binLines.get(i).replace("nan", "NaN"));
+      List<String> csvFields = splitter.splitToList(csvLines.get(i).replace("nan", "NaN"));
+      List<String> binFields = splitter.splitToList(binLines.get(i).replace("nan", "NaN"));
 
       for (int j = 0; j < types.size(); j++) {
 
@@ -134,13 +120,12 @@ public class ErrorMetricsReaderTest {
 
         if (c == Float.class) {
 
-          Assert.assertEquals(Float.parseFloat(csvFields.get(j)),
-              Float.parseFloat(binFields.get(j)), 0.0001);
+          Assert.assertEquals(
+              Float.parseFloat(csvFields.get(j)), Float.parseFloat(binFields.get(j)), 0.0001);
         } else {
           Assert.assertEquals(csvFields.get(j), binFields.get(j));
         }
       }
     }
   }
-
 }

@@ -24,29 +24,31 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.readmapper;
 
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-
 /**
- * This interface define a mapper executors that allow to execute system
- * processes against the mapper execution mode (bundled binaries, binaries in
- * PATH or execute binaries in a Docker container).
+ * This interface define a mapper executors that allow to execute system processes against the
+ * mapper execution mode (bundled binaries, binaries in PATH or execute binaries in a Docker
+ * container).
+ *
  * @author Laurent Jourdren
  */
 interface MapperExecutor {
 
   /**
    * This interface define a result of a call of MapperExecutor.execute().
+   *
    * @author Laurent Jourdren
    */
   interface Result {
 
     /**
      * Get the stdout input stream of the process
+     *
      * @return an InputStream
      * @throws IOException if an error occurs while creating the input stream
      */
@@ -54,6 +56,7 @@ interface MapperExecutor {
 
     /**
      * Wait the end of the process.
+     *
      * @return the exit code of the process
      * @throws IOException if an error occurs while waiting the process
      */
@@ -62,21 +65,23 @@ interface MapperExecutor {
 
   /**
    * Get the logger to use for the mapping.
+   *
    * @return the logger to use for the mapping
    */
   GenericLogger getLogger();
 
   /**
    * Test if an executable exists.
+   *
    * @param executable executable to test
    * @return true if the executable exists
-   * @throws IOException if an error occurs while testing if the executable
-   *           exists
+   * @throws IOException if an error occurs while testing if the executable exists
    */
   boolean isExecutable(String executable) throws IOException;
 
   /**
    * Install an executable
+   *
    * @param executable the executable to install
    * @return the path of the executable
    * @throws IOException if an error occurs while installing the executable
@@ -85,6 +90,7 @@ interface MapperExecutor {
 
   /**
    * Execute a command
+   *
    * @param command the command to execute
    * @param executionDirectory the execution directory
    * @param stdout true if stdout will be used
@@ -92,11 +98,14 @@ interface MapperExecutor {
    * @param redirectStderr redirect stderr into stdout
    * @param filesUsed files used by the process
    * @return a MapperExecutor.Result object
-   * @throws IOException if an error occurs while starting the execution of the
-   *           command
+   * @throws IOException if an error occurs while starting the execution of the command
    */
-  Result execute(List<String> command, File executionDirectory, boolean stdout,
-      File stdErrFile, boolean redirectStderr, File... filesUsed)
+  Result execute(
+      List<String> command,
+      File executionDirectory,
+      boolean stdout,
+      File stdErrFile,
+      boolean redirectStderr,
+      File... filesUsed)
       throws IOException;
-
 }

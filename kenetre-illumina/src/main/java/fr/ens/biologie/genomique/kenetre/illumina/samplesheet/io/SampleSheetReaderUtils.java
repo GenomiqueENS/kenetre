@@ -5,8 +5,7 @@ import java.util.List;
 
 public class SampleSheetReaderUtils {
 
-  public static final void trimFields(final List<String> fields)
-      throws IOException {
+  public static final void trimFields(final List<String> fields) throws IOException {
 
     if (fields == null) {
       throw new IOException("The fields are null");
@@ -20,25 +19,21 @@ public class SampleSheetReaderUtils {
       }
       fields.set(i, val.trim());
     }
-
   }
 
-  public static final void checkFields(final List<String> fields)
-      throws IOException {
+  public static final void checkFields(final List<String> fields) throws IOException {
 
     if (fields.size() == 10) {
       return;
     }
 
     if (fields.size() < 10) {
-      throw new IOException(
-          "Invalid number of field (" + fields.size() + "), 10 excepted.");
+      throw new IOException("Invalid number of field (" + fields.size() + "), 10 excepted.");
     }
 
     for (int i = 10; i < fields.size(); i++) {
       if (!"".equals(fields.get(i).trim())) {
-        throw new IOException(
-            "Invalid number of field (" + fields.size() + "), 10 excepted.");
+        throw new IOException("Invalid number of field (" + fields.size() + "), 10 excepted.");
       }
     }
   }
@@ -70,10 +65,6 @@ public class SampleSheetReaderUtils {
   // Constructor
   //
 
-  /**
-   * Private constructor.
-   */
-  private SampleSheetReaderUtils() {
-  }
-
+  /** Private constructor. */
+  private SampleSheetReaderUtils() {}
 }

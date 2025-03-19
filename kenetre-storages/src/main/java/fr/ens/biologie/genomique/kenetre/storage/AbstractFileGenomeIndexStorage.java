@@ -27,6 +27,12 @@ package fr.ens.biologie.genomique.kenetre.storage;
 import static com.google.common.base.Strings.nullToEmpty;
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
+import fr.ens.biologie.genomique.kenetre.bio.readmapper.MapperInstance;
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
+import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
+import fr.ens.biologie.genomique.kenetre.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -43,20 +49,13 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
-import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
-import fr.ens.biologie.genomique.kenetre.bio.readmapper.MapperInstance;
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-import fr.ens.biologie.genomique.kenetre.util.StringUtils;
-
 /**
  * This class define an abstract GenomeIndexStorage based on an index file.
+ *
  * @since 2.6
  * @author Laurent Jourdren
  */
-public abstract class AbstractFileGenomeIndexStorage
-    implements GenomeIndexStorage {
+public abstract class AbstractFileGenomeIndexStorage implements GenomeIndexStorage {
 
   private static final String INDEX_FILENAME = "genomes_index_storage.txt";
 
@@ -66,6 +65,7 @@ public abstract class AbstractFileGenomeIndexStorage
 
   /**
    * This inner class define an entry of the index file.
+   *
    * @author Laurent Jourdren
    */
   private static final class IndexEntry {
@@ -85,9 +85,18 @@ public abstract class AbstractFileGenomeIndexStorage
     @Override
     public String toString() {
       return this.getClass().getSimpleName()
-          + "{genomeName=" + this.genomeName + ", sequences=" + this.sequences
-          + ", length=" + this.length + ", genomeMD5=" + this.genomeMD5
-          + ", mapperName= " + this.mapperName + ", fileName=" + this.fileName
+          + "{genomeName="
+          + this.genomeName
+          + ", sequences="
+          + this.sequences
+          + ", length="
+          + this.length
+          + ", genomeMD5="
+          + this.genomeMD5
+          + ", mapperName= "
+          + this.mapperName
+          + ", fileName="
+          + this.fileName
           + "}";
     }
   }
@@ -98,6 +107,7 @@ public abstract class AbstractFileGenomeIndexStorage
 
   /**
    * Create a new DataPath object.
+   *
    * @param source source of the DataPath object
    * @return a new DataPath object
    */
@@ -105,6 +115,7 @@ public abstract class AbstractFileGenomeIndexStorage
 
   /**
    * Create a new DataPath object.
+   *
    * @param parent parent of the DataPath object
    * @param filename name of the file
    * @return a new DataPath object
@@ -112,14 +123,15 @@ public abstract class AbstractFileGenomeIndexStorage
   protected abstract DataPath newDataPath(DataPath parent, String filename);
 
   /**
-   * Get from the storage the DataPath of the index of a mapper for a genome and
-   * its parameters.
+   * Get from the storage the DataPath of the index of a mapper for a genome and its parameters.
+   *
    * @param mapperInstance mapper to use
    * @param genome genome description
    * @param additionalDescription additional parameter for the index
    * @return the path of the index
    */
-  protected DataPath getDataPath(final MapperInstance mapperInstance,
+  protected DataPath getDataPath(
+      final MapperInstance mapperInstance,
       final GenomeDescription genome,
       final Map<String, String> additionalDescription) {
 
@@ -127,20 +139,22 @@ public abstract class AbstractFileGenomeIndexStorage
     requireNonNull(genome, "Genome description is null");
     requireNonNull(additionalDescription, "additionalDescription is null");
 
-    final IndexEntry entry = this.entries.get(
-        createKey(mapperInstance, genome, additionalDescription, this.logger));
+    final IndexEntry entry =
+        this.entries.get(createKey(mapperInstance, genome, additionalDescription, this.logger));
 
     return entry == null ? null : newDataPath(this.dir, entry.fileName);
   }
 
   /**
    * Put in the storage an index.
+   *
    * @param mapperInstance mapper to use
    * @param genome genome description
    * @param additionalDescription additional parameter for the index
    * @param indexArchive DataPath of the index
    */
-  protected void put(final MapperInstance mapperInstance,
+  protected void put(
+      final MapperInstance mapperInstance,
       final GenomeDescription genome,
       final Map<String, String> additionalDescription,
       final DataPath indexArchive) {
@@ -162,31 +176,32 @@ public abstract class AbstractFileGenomeIndexStorage
       return;
     }
 
-    final String key =
-        createKey(mapperInstance, genome, additionalDescription, this.logger);
+    final String key = createKey(mapperInstance, genome, additionalDescription, this.logger);
 
     if (this.entries.containsKey(key)) {
       return;
     }
 
-    final IndexEntry entry =
-        createIndexEntry(mapperInstance, genome, additionalDescription);
+    final IndexEntry entry = createIndexEntry(mapperInstance, genome, additionalDescription);
     if (entry == null) {
       return;
     }
 
     try {
 
-      FileUtils.copy(indexArchive.rawOpen(),
-          newDataPath(this.dir, entry.fileName).create());
+      FileUtils.copy(indexArchive.rawOpen(), newDataPath(this.dir, entry.fileName).create());
       this.entries.put(entry.getKey(), entry);
       save();
-      this.logger.info("Successfully added "
-          + indexArchive.getName() + " index archive to genome index storage.");
+      this.logger.info(
+          "Successfully added "
+              + indexArchive.getName()
+              + " index archive to genome index storage.");
     } catch (IOException e) {
-      this.logger.warn("Failed to add "
-          + indexArchive.getName() + " index archive to genome index storage: "
-          + e.getMessage());
+      this.logger.warn(
+          "Failed to add "
+              + indexArchive.getName()
+              + " index archive to genome index storage: "
+              + e.getMessage());
     }
   }
 
@@ -195,18 +210,20 @@ public abstract class AbstractFileGenomeIndexStorage
   //
 
   @Override
-  public File get(final MapperInstance mapperInstance,
+  public File get(
+      final MapperInstance mapperInstance,
       final GenomeDescription genome,
       final Map<String, String> additionalDescription) {
 
-    DataPath result =
-        getDataPath(mapperInstance, genome, additionalDescription);
+    DataPath result = getDataPath(mapperInstance, genome, additionalDescription);
 
     return result == null ? null : result.toFile();
   }
 
   @Override
-  public void put(final MapperInstance mapper, final GenomeDescription genome,
+  public void put(
+      final MapperInstance mapper,
+      final GenomeDescription genome,
       final Map<String, String> additionalDescription,
       final File indexArchive) {
 
@@ -219,7 +236,8 @@ public abstract class AbstractFileGenomeIndexStorage
   // Sum creation method
   //
 
-  private IndexEntry createIndexEntry(final MapperInstance mapper,
+  private IndexEntry createIndexEntry(
+      final MapperInstance mapper,
       final GenomeDescription genome,
       final Map<String, String> additionalDescription) {
 
@@ -229,8 +247,7 @@ public abstract class AbstractFileGenomeIndexStorage
     entry.length = genome.getGenomeLength();
     entry.mapperName = mapper.getName().toLowerCase().trim();
 
-    final Map<String, String> md5Map =
-        createMD5SumMap(mapper, genome, additionalDescription);
+    final Map<String, String> md5Map = createMD5SumMap(mapper, genome, additionalDescription);
     final String md5Sum = createMD5Sum(md5Map, this.logger);
     if (md5Sum == null) {
       return null;
@@ -244,7 +261,8 @@ public abstract class AbstractFileGenomeIndexStorage
   }
 
   private static Map<String, String> createMD5SumMap(
-      final MapperInstance mapperInstance, final GenomeDescription genome,
+      final MapperInstance mapperInstance,
+      final GenomeDescription genome,
       final Map<String, String> additionalDescription) {
 
     final LinkedHashMap<String, String> map = new LinkedHashMap<>();
@@ -260,15 +278,13 @@ public abstract class AbstractFileGenomeIndexStorage
     return map;
   }
 
-  private static String createMD5Sum(final Map<String, String> map,
-      final GenericLogger logger) {
+  private static String createMD5Sum(final Map<String, String> map, final GenericLogger logger) {
 
     MessageDigest md5Digest;
     try {
       md5Digest = MessageDigest.getInstance("MD5");
     } catch (NoSuchAlgorithmException e) {
-      logger.warn(
-          "Failled to create checksum for mapper index: " + e.getMessage());
+      logger.warn("Failled to create checksum for mapper index: " + e.getMessage());
       return null;
     }
 
@@ -287,13 +303,13 @@ public abstract class AbstractFileGenomeIndexStorage
 
   /**
    * Load the information from the index file
+   *
    * @throws IOException if an error occurs while loading the index file
    */
   private void load() throws IOException {
 
     if (!this.dir.exists()) {
-      throw new IOException(
-          "Genome index storage directory not found: " + this.dir.getSource());
+      throw new IOException("Genome index storage directory not found: " + this.dir.getSource());
     }
 
     final DataPath indexFile = newDataPath(this.dir, INDEX_FILENAME);
@@ -308,8 +324,8 @@ public abstract class AbstractFileGenomeIndexStorage
     // Clear the entries (useful when reloading the index)
     this.entries.clear();
 
-    try (final BufferedReader br = new BufferedReader(
-        new InputStreamReader(indexFile.open(), Charset.defaultCharset()))) {
+    try (final BufferedReader br =
+        new BufferedReader(new InputStreamReader(indexFile.open(), Charset.defaultCharset()))) {
 
       final Pattern pattern = Pattern.compile("\t");
       String line = null;
@@ -342,27 +358,26 @@ public abstract class AbstractFileGenomeIndexStorage
         if (fields.size() == 7) {
           e.description = fields.get(6);
         }
-
       }
     }
   }
 
   /**
    * Save the information in the index file
+   *
    * @throws IOException if an error occurs while saving the index file
    */
   private void save() throws IOException {
 
     if (!this.dir.exists()) {
-      throw new IOException(
-          "Genome index storage directory not found: " + this.dir.getSource());
+      throw new IOException("Genome index storage directory not found: " + this.dir.getSource());
     }
 
     final DataPath indexFile = newDataPath(this.dir, INDEX_FILENAME);
 
     // Create an empty index file
-    try (final BufferedWriter writer = new BufferedWriter(
-        new OutputStreamWriter(indexFile.create(), Charset.defaultCharset()))) {
+    try (final BufferedWriter writer =
+        new BufferedWriter(new OutputStreamWriter(indexFile.create(), Charset.defaultCharset()))) {
       writer.write(
           "#Genome\tChecksum\tGenomeSequences\tGenomeLength\tMapper\tIndexFile\tDescription\n");
 
@@ -396,19 +411,18 @@ public abstract class AbstractFileGenomeIndexStorage
   // Other methods
   //
 
-  private static String createKey(final MapperInstance mapperInstance,
+  private static String createKey(
+      final MapperInstance mapperInstance,
       final GenomeDescription genome,
       final Map<String, String> additionalDescription,
       final GenericLogger logger) {
 
-    return createKey(mapperInstance.getName(),
-        createMD5Sum(
-            createMD5SumMap(mapperInstance, genome, additionalDescription),
-            logger));
+    return createKey(
+        mapperInstance.getName(),
+        createMD5Sum(createMD5SumMap(mapperInstance, genome, additionalDescription), logger));
   }
 
-  private static String createKey(final String mapperName,
-      final String genomeMD5) {
+  private static String createKey(final String mapperName, final String genomeMD5) {
 
     return mapperName.toLowerCase().trim() + '\t' + genomeMD5;
   }
@@ -445,12 +459,13 @@ public abstract class AbstractFileGenomeIndexStorage
 
   /**
    * Private constructor.
+   *
    * @param dir Path to the index storage
    * @param logger the logger
    * @throws IOException if an error occurs while testing the index storage
    */
-  protected AbstractFileGenomeIndexStorage(final DataPath dir,
-      final GenericLogger logger) throws IOException {
+  protected AbstractFileGenomeIndexStorage(final DataPath dir, final GenericLogger logger)
+      throws IOException {
 
     requireNonNull(dir, "Index directory is null");
 
@@ -458,8 +473,7 @@ public abstract class AbstractFileGenomeIndexStorage
     this.logger = logger != null ? logger : new DummyLogger();
     load();
 
-    this.logger.info("Genome index storage found."
-        + this.entries.size() + " entries in : " + dir.getSource());
+    this.logger.info(
+        "Genome index storage found." + this.entries.size() + " entries in : " + dir.getSource());
   }
-
 }

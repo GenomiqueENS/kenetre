@@ -6,29 +6,30 @@ import java.util.Objects;
 
 /**
  * This class contains useful methods for transforming matrices.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
 public class ExpressionMatrices {
 
   /**
-   * Merge some columns of a matrix in another matrice by summing the content of
-   * the cell to merge.
+   * Merge some columns of a matrix in another matrice by summing the content of the cell to merge.
+   *
    * @param srcMatrix source matrix
    * @param srcColumNames column of the source matrix to merge
    * @param destMatrix destination matrix
    * @param destColumName destination column name
    */
-  public static void merge(final ExpressionMatrix srcMatrix,
-      final Collection<String> srcColumNames, final ExpressionMatrix destMatrix,
+  public static void merge(
+      final ExpressionMatrix srcMatrix,
+      final Collection<String> srcColumNames,
+      final ExpressionMatrix destMatrix,
       final String destColumName) {
 
     Objects.requireNonNull(srcMatrix, "srcMatrix argument cannot be null");
-    Objects.requireNonNull(srcColumNames,
-        "srcColumNames argument cannot be null");
+    Objects.requireNonNull(srcColumNames, "srcColumNames argument cannot be null");
     Objects.requireNonNull(destMatrix, "destMatrix argument cannot be null");
-    Objects.requireNonNull(destColumName,
-        "destColumName argument cannot be null");
+    Objects.requireNonNull(destColumName, "destColumName argument cannot be null");
 
     for (String rowName : srcMatrix.getRowNames()) {
 
@@ -44,6 +45,7 @@ public class ExpressionMatrices {
 
   /**
    * Remove all the rows of the matrix that contains only zero values.
+   *
    * @param matrix the matrix to process
    */
   public static void removeEmptyRows(final ExpressionMatrix matrix) {
@@ -70,21 +72,19 @@ public class ExpressionMatrices {
 
   /**
    * Reverse the row and column of a matrix.
+   *
    * @param srcMatrix input matrix
    * @param destMatrix output matrix
    */
-  public static void reverse(final ExpressionMatrix srcMatrix,
-      final ExpressionMatrix destMatrix) {
+  public static void reverse(final ExpressionMatrix srcMatrix, final ExpressionMatrix destMatrix) {
 
     Objects.requireNonNull(srcMatrix, "matrix argument cannot be null");
     Objects.requireNonNull(destMatrix, "matrix argument cannot be null");
 
     for (String rowName : srcMatrix.getRowNames()) {
       for (String columnName : srcMatrix.getColumnNames()) {
-        destMatrix.setValue(columnName, rowName,
-            srcMatrix.getValue(rowName, columnName));
+        destMatrix.setValue(columnName, rowName, srcMatrix.getValue(rowName, columnName));
       }
     }
   }
-
 }

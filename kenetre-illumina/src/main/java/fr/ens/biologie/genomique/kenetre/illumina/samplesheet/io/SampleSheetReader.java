@@ -2,8 +2,8 @@
  *                  Aozan development code
  *
  * This code may be freely distributed and modified under the
- * terms of the GNU General Public License version 3 or later 
- * and CeCILL. This should be distributed with the code. If you 
+ * terms of the GNU General Public License version 3 or later
+ * and CeCILL. This should be distributed with the code. If you
  * do not have a copy, see:
  *
  *      http://www.gnu.org/licenses/gpl-3.0-standalone.html
@@ -23,12 +23,12 @@
 
 package fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io;
 
-import java.io.IOException;
-
 import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheet;
+import java.io.IOException;
 
 /**
  * This interface define a reader for Bcl2fastq samplesheet.
+ *
  * @since 1.1
  * @author Laurent Jourdren
  */
@@ -36,6 +36,7 @@ public interface SampleSheetReader extends AutoCloseable {
 
   /**
    * Read a samplesheet.
+   *
    * @return a SampleSheet object
    * @throws IOException if an error occurs while reading the samplesheet
    */

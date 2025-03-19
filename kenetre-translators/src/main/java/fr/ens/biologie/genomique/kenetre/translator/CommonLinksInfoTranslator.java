@@ -40,6 +40,7 @@ import java.util.Map;
 
 /**
  * This class define a translator that add commons links information.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
@@ -50,6 +51,7 @@ public class CommonLinksInfoTranslator extends AbstractTranslator {
 
   /**
    * Get an ordered list of the translator fields
+   *
    * @return an ordered list of the translator fields.
    */
   @Override
@@ -60,6 +62,7 @@ public class CommonLinksInfoTranslator extends AbstractTranslator {
 
   /**
    * Get a translation for a feature
+   *
    * @param id Identifier of the feature
    * @param field the field to get
    * @return An array with the annotation of the Feature
@@ -72,6 +75,7 @@ public class CommonLinksInfoTranslator extends AbstractTranslator {
 
   /**
    * Test if the link information is available for the field
+   *
    * @param field Field to test
    * @return true if link information is available
    */
@@ -83,6 +87,7 @@ public class CommonLinksInfoTranslator extends AbstractTranslator {
 
   /**
    * Get link information.
+   *
    * @param translatedId Translated id
    * @param field field of the id
    * @return a link for the translated id
@@ -91,23 +96,21 @@ public class CommonLinksInfoTranslator extends AbstractTranslator {
   public String getLinkInfo(final String translatedId, final String field) {
 
     if (translatedId == null || field == null) {
-      throw new NullPointerException(
-          "field and translateId arguments can't be null.");
+      throw new NullPointerException("field and translateId arguments can't be null.");
     }
 
     if (mapLinks.containsKey(field)) {
-      String encodedTranslatedId =
-          URLEncoder.encode(translatedId, defaultCharset());
+      String encodedTranslatedId = URLEncoder.encode(translatedId, defaultCharset());
 
       return mapLinks.get(field).replace("${ID}", encodedTranslatedId);
     }
 
     return null;
-
   }
 
   /**
    * Get the available identifiers by the translator if possible.
+   *
    * @return a array of string with the identifiers
    */
   @Override
@@ -118,6 +121,7 @@ public class CommonLinksInfoTranslator extends AbstractTranslator {
 
   /**
    * Add a new link to a field
+   *
    * @param field to link
    * @param link for the field
    */
@@ -131,6 +135,7 @@ public class CommonLinksInfoTranslator extends AbstractTranslator {
 
   /**
    * Remove the link of a field
+   *
    * @param field to remove
    */
   public void remove(final String field) {
@@ -141,15 +146,14 @@ public class CommonLinksInfoTranslator extends AbstractTranslator {
     this.mapLinks.remove(field);
   }
 
-  /**
-   * Clear the links of all fields.
-   */
+  /** Clear the links of all fields. */
   public void clear() {
     this.mapLinks.clear();
   }
 
   /**
    * Load the field and links from a file
+   *
    * @param in File to load
    * @throws IOException if an error occurs while reading the links
    */
@@ -159,11 +163,11 @@ public class CommonLinksInfoTranslator extends AbstractTranslator {
       throw new NullPointerException("file argument can't be null.");
     }
     load(new FileInputStream(in));
-
   }
 
   /**
    * Load the field and links from a file
+   *
    * @param in File to load
    * @throws IOException if an error occurs while reading the links
    */
@@ -177,6 +181,7 @@ public class CommonLinksInfoTranslator extends AbstractTranslator {
 
   /**
    * Load the field and links from a file
+   *
    * @param in File to load
    * @throws IOException if an error occurs while reading the links
    */
@@ -203,14 +208,15 @@ public class CommonLinksInfoTranslator extends AbstractTranslator {
         }
       }
     }
-
   }
+
   //
   // Constructor
   //
 
   /**
    * Public constructor.
+   *
    * @param translator Translator to use
    */
   public CommonLinksInfoTranslator(final Translator translator) {
@@ -220,8 +226,7 @@ public class CommonLinksInfoTranslator extends AbstractTranslator {
     }
 
     try {
-      load(this.getClass()
-          .getResourceAsStream("/META-INF/commonlinks.properties"));
+      load(this.getClass().getResourceAsStream("/META-INF/commonlinks.properties"));
     } catch (IOException e) {
       // Do nothing.
     }

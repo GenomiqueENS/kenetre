@@ -26,16 +26,15 @@ package fr.ens.biologie.genomique.kenetre.util;
 
 /**
  * This class define a reporter that do nothing.
+ *
  * @since 1.1
  * @author Laurent Jourdren
  */
 public class FakeReporter implements ReporterIncrementer {
 
   @Override
-  public void incrCounter(final String counterGroup, final String counterName,
-      final long amount) {
+  public void incrCounter(final String counterGroup, final String counterName, final long amount) {
 
     // Do nothing.
   }
-
 }

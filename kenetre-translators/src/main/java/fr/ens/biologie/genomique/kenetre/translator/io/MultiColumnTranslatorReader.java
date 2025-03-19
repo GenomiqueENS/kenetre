@@ -24,6 +24,7 @@
 
 package fr.ens.biologie.genomique.kenetre.translator.io;
 
+import fr.ens.biologie.genomique.kenetre.translator.MultiColumnTranslator;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,10 +36,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import fr.ens.biologie.genomique.kenetre.translator.MultiColumnTranslator;
-
 /**
  * This class define a reader for load annotation into a translator.
+ *
  * @since 2.0
  * @author Laurent Jourdren T
  */
@@ -59,6 +59,7 @@ public class MultiColumnTranslatorReader {
 
   /**
    * Get the input stream.
+   *
    * @return Returns the input stream
    */
   protected InputStream getInputStream() {
@@ -67,6 +68,7 @@ public class MultiColumnTranslatorReader {
 
   /**
    * Get the buffered reader of the stream.
+   *
    * @return Returns the bufferedReader
    */
   protected BufferedReader getBufferedReader() {
@@ -75,6 +77,7 @@ public class MultiColumnTranslatorReader {
 
   /**
    * Get the separator field of the file.
+   *
    * @return The separator field of the file
    */
   protected String getSeparatorField() {
@@ -83,6 +86,7 @@ public class MultiColumnTranslatorReader {
 
   /**
    * Test if quotes of the fields must be removed
+   *
    * @return Returns the removeQuotes
    */
   public boolean isRemoveQuotes() {
@@ -95,6 +99,7 @@ public class MultiColumnTranslatorReader {
 
   /**
    * Set the buffered reader of the stream.
+   *
    * @param bufferedReader The bufferedReader to set
    */
   protected void setBufferedReader(final BufferedReader bufferedReader) {
@@ -103,6 +108,7 @@ public class MultiColumnTranslatorReader {
 
   /**
    * Set the input stream.
+   *
    * @param is The input stream to set
    * @throws IOException if the stream is null
    */
@@ -116,6 +122,7 @@ public class MultiColumnTranslatorReader {
 
   /**
    * Set if the quotes of the fields must be removed
+   *
    * @param removeQuotes The removeQuotes to set
    */
   public void setRemoveQuotes(final boolean removeQuotes) {
@@ -128,13 +135,14 @@ public class MultiColumnTranslatorReader {
 
   /**
    * Read the design.
+   *
    * @return a new Design object
    * @throws IOException if an error occurs while reading the design
    */
   public MultiColumnTranslator read() throws IOException {
 
-    setBufferedReader(new BufferedReader(
-        new InputStreamReader(getInputStream(), Charset.defaultCharset())));
+    setBufferedReader(
+        new BufferedReader(new InputStreamReader(getInputStream(), Charset.defaultCharset())));
 
     final boolean removeQuotes = isRemoveQuotes();
 
@@ -173,7 +181,6 @@ public class MultiColumnTranslatorReader {
       } else {
         result.addRow(cols);
       }
-
     }
 
     return result;
@@ -185,6 +192,7 @@ public class MultiColumnTranslatorReader {
 
   /**
    * Remove double quote from a string.
+   *
    * @param s The string parameter
    * @return a string without double quotes
    */
@@ -208,6 +216,7 @@ public class MultiColumnTranslatorReader {
 
   /**
    * Remove double quote and trim a string.
+   *
    * @param s The string parameter
    * @return a string without space and double quotes
    */
@@ -226,9 +235,9 @@ public class MultiColumnTranslatorReader {
 
   /**
    * Public constructor.
+   *
    * @param filename file to read
-   * @throws IOException if an error occurs while reading the file or if the
-   *           file is null.
+   * @throws IOException if an error occurs while reading the file or if the file is null.
    */
   public MultiColumnTranslatorReader(final String filename) throws IOException {
 
@@ -237,22 +246,22 @@ public class MultiColumnTranslatorReader {
 
   /**
    * Public constructor.
+   *
    * @param filename file to read
    * @param noHeader true if there is no header for column names
-   * @throws IOException if an error occurs while reading the file or if the
-   *           file is null.
+   * @throws IOException if an error occurs while reading the file or if the file is null.
    */
-  public MultiColumnTranslatorReader(final String filename,
-      final boolean noHeader) throws IOException {
+  public MultiColumnTranslatorReader(final String filename, final boolean noHeader)
+      throws IOException {
 
     this(new File(filename), noHeader);
   }
 
   /**
    * Public constructor.
+   *
    * @param file file to read
-   * @throws IOException if an error occurs while reading the file or if the
-   *           file is null.
+   * @throws IOException if an error occurs while reading the file or if the file is null.
    */
   public MultiColumnTranslatorReader(final File file) throws IOException {
 
@@ -261,13 +270,12 @@ public class MultiColumnTranslatorReader {
 
   /**
    * Public constructor.
+   *
    * @param file file to read
    * @param noHeader true if there is no header for column names
-   * @throws IOException if an error occurs while reading the file or if the
-   *           file is null.
+   * @throws IOException if an error occurs while reading the file or if the file is null.
    */
-  public MultiColumnTranslatorReader(final File file, final boolean noHeader)
-      throws IOException {
+  public MultiColumnTranslatorReader(final File file, final boolean noHeader) throws IOException {
 
     if (file == null) {
       throw new IOException("No file to load");
@@ -280,6 +288,7 @@ public class MultiColumnTranslatorReader {
 
   /**
    * Public constructor
+   *
    * @param is Input stream to read
    * @throws IOException if the stream is null
    */
@@ -290,15 +299,15 @@ public class MultiColumnTranslatorReader {
 
   /**
    * Public constructor
+   *
    * @param is Input stream to read
    * @param noHeader true if there is no header for column names
    * @throws IOException if the stream is null
    */
-  public MultiColumnTranslatorReader(final InputStream is,
-      final boolean noHeader) throws IOException {
+  public MultiColumnTranslatorReader(final InputStream is, final boolean noHeader)
+      throws IOException {
 
     this.noHeader = noHeader;
     setInputStream(is);
   }
-
 }

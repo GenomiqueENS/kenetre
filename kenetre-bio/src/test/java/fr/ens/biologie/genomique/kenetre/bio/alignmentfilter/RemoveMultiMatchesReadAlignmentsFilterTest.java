@@ -26,21 +26,18 @@ package fr.ens.biologie.genomique.kenetre.bio.alignmentfilter;
 
 import static org.junit.Assert.assertEquals;
 
+import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
+import fr.ens.biologie.genomique.kenetre.bio.SAMUtils;
+import htsjdk.samtools.SAMLineParser;
+import htsjdk.samtools.SAMRecord;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
-import fr.ens.biologie.genomique.kenetre.bio.SAMUtils;
-import fr.ens.biologie.genomique.kenetre.bio.alignmentfilter.RemoveMultiMatchesReadAlignmentFilter;
-import htsjdk.samtools.SAMLineParser;
-import htsjdk.samtools.SAMRecord;
-
 /**
- * This class is a JUnit test class to test the class
- * RemoveMultiMatchesReadAlignments.java.
+ * This class is a JUnit test class to test the class RemoveMultiMatchesReadAlignments.java.
+ *
  * @author Claire Wallon
  */
 public class RemoveMultiMatchesReadAlignmentsFilterTest {
@@ -126,14 +123,12 @@ public class RemoveMultiMatchesReadAlignmentsFilterTest {
    */
   @Test
   public void testGetDescription() {
-    assertEquals("Remove all the alignments with several matches",
-        this.filter.getDescription());
+    assertEquals("Remove all the alignments with several matches", this.filter.getDescription());
   }
 
   /**
    * Test method for {fr.ens.biologie.genomique.eoulsan.bio.alignmentsfilters.
-   * RemoveMultiMatchesReadAlignmentsFilter#filterReadAlignments(java.util.List,
-   * boolean)}.
+   * RemoveMultiMatchesReadAlignmentsFilter#filterReadAlignments(java.util.List, boolean)}.
    */
   @Test
   public void testFilterReadAlignments() {
@@ -213,6 +208,5 @@ public class RemoveMultiMatchesReadAlignmentsFilterTest {
     records.clear();
     this.filter.filterReadAlignments(records);
     assertEquals(0, records.size());
-
   }
 }

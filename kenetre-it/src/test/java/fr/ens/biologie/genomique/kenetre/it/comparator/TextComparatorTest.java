@@ -35,12 +35,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.junit.Test;
 
 public class TextComparatorTest {
-  private final File dir =
-      new File(new File(".").getAbsolutePath() + "/src/test/java/files");
+  private final File dir = new File(new File(".").getAbsolutePath() + "/src/test/java/files");
 
   private final File fileA = new File(this.dir, "testdataformat.xml");
   private final File fileB = new File(this.dir, "phix.fasta");
@@ -52,8 +50,7 @@ public class TextComparatorTest {
     final InputStream isA1 = new FileInputStream(this.fileA);
     final InputStream isA2 = new FileInputStream(this.fileA);
 
-    AbstractComparatorWithBloomFilter comparator =
-        new SAMComparator(false, "@PG");
+    AbstractComparatorWithBloomFilter comparator = new SAMComparator(false, "@PG");
     assertTrue("files are same", comparator.compareFiles(isA1, isA2));
   }
 
@@ -63,34 +60,33 @@ public class TextComparatorTest {
     final InputStream isA = new FileInputStream(this.fileA);
     final InputStream isB = new FileInputStream(this.fileB);
 
-    AbstractComparatorWithBloomFilter comparator =
-        new SAMComparator(false, "@PG");
+    AbstractComparatorWithBloomFilter comparator = new SAMComparator(false, "@PG");
     assertFalse("files are different", comparator.compareFiles(isA, isB));
   }
 
   @Test
   public void testDivergentText() throws Exception {
-    AbstractComparatorWithBloomFilter comparator =
-        new SAMComparator(false, "@PG");
+    AbstractComparatorWithBloomFilter comparator = new SAMComparator(false, "@PG");
 
     modifyFile(0);
-    assertFalse("files are different: duplicate line",
-        comparator.compareFiles(this.fileA, this.fileC));
+    assertFalse(
+        "files are different: duplicate line", comparator.compareFiles(this.fileA, this.fileC));
 
     modifyFile(1);
-    assertFalse("files are different: remove line",
-        comparator.compareFiles(this.fileA, this.fileC));
+    assertFalse(
+        "files are different: remove line", comparator.compareFiles(this.fileA, this.fileC));
 
     modifyFile(2);
-    assertFalse("files are different: add line",
-        comparator.compareFiles(this.fileA, this.fileC));
+    assertFalse("files are different: add line", comparator.compareFiles(this.fileA, this.fileC));
 
     modifyFile(3);
-    assertFalse("files are different: remove a char in one line",
+    assertFalse(
+        "files are different: remove a char in one line",
         comparator.compareFiles(this.fileA, this.fileC));
 
     modifyFile(4);
-    assertFalse("files are different: add a char in one line",
+    assertFalse(
+        "files are different: add a char in one line",
         comparator.compareFiles(this.fileA, this.fileC));
 
     if (this.fileC.exists()) {
@@ -105,10 +101,8 @@ public class TextComparatorTest {
       this.fileC.delete();
     }
 
-    final BufferedReader br =
-        new BufferedReader(new FileReader(this.fileA, defaultCharset()));
-    final BufferedWriter bw =
-        new BufferedWriter(new FileWriter(this.fileC, defaultCharset()));
+    final BufferedReader br = new BufferedReader(new FileReader(this.fileA, defaultCharset()));
+    final BufferedWriter bw = new BufferedWriter(new FileWriter(this.fileC, defaultCharset()));
 
     String line = "";
     // Chose multi 4 corresponding to header fastq line
@@ -122,44 +116,41 @@ public class TextComparatorTest {
       if (comp == numberLine) {
 
         switch (typeModification) {
+          case 0:
+            // duplicate line
+            // first time
+            bw.write(line + "\n");
+            // second time
+            bw.write(line + "\n");
+            break;
 
-        case 0:
-          // duplicate line
-          // first time
-          bw.write(line + "\n");
-          // second time
-          bw.write(line + "\n");
-          break;
+          case 1:
+            // Remove line
+            // no write current line
+            break;
 
-        case 1:
-          // Remove line
-          // no write current line
-          break;
+          case 2:
+            // Add line
+            String newLine = "<!--totoformat -->\n";
 
-        case 2:
-          // Add line
-          String newLine = "<!--totoformat -->\n";
+            bw.write(newLine);
+            bw.write(line + "\n");
+            break;
 
-          bw.write(newLine);
-          bw.write(line + "\n");
-          break;
+          case 3:
+            // remove a char in header line
+            int pos = line.length() / 2;
+            String modifiedLine = line.substring(0, pos) + line.substring(pos + 2);
 
-        case 3:
-          // remove a char in header line
-          int pos = line.length() / 2;
-          String modifiedLine =
-              line.substring(0, pos) + line.substring(pos + 2);
+            bw.write(modifiedLine + "\n");
+            break;
 
-          bw.write(modifiedLine + "\n");
-          break;
-
-        case 4:
-          // add a char in header line
-          int pos2 = line.length() / 2;
-          String newLine2 =
-              line.substring(0, pos2) + "t" + line.substring(pos2 + 1);
-          bw.write(newLine2 + "\n");
-          break;
+          case 4:
+            // add a char in header line
+            int pos2 = line.length() / 2;
+            String newLine2 = line.substring(0, pos2) + "t" + line.substring(pos2 + 1);
+            bw.write(newLine2 + "\n");
+            break;
         }
       }
     }

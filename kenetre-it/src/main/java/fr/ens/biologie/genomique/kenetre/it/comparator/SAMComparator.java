@@ -24,6 +24,8 @@
 
 package fr.ens.biologie.genomique.kenetre.it.comparator;
 
+import com.google.common.collect.Sets;
+import fr.ens.biologie.genomique.eoulsan.util.EnhancedBloomFilter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,12 +35,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.common.collect.Sets;
-
-import fr.ens.biologie.genomique.eoulsan.util.EnhancedBloomFilter;
-
 /**
  * This class allow compare two SAM file with use BloomFilter.
+ *
  * @since 2.0
  * @author Sandrine Perrin
  */
@@ -52,8 +51,8 @@ public class SAMComparator extends AbstractComparatorWithBloomFilter {
   private int numberElementsCompared;
 
   @Override
-  public boolean compareFiles(final EnhancedBloomFilter filter,
-      final InputStream is) throws IOException {
+  public boolean compareFiles(final EnhancedBloomFilter filter, final InputStream is)
+      throws IOException {
 
     final BufferedReader reader =
         new BufferedReader(new InputStreamReader(is, Charset.defaultCharset()));
@@ -92,9 +91,12 @@ public class SAMComparator extends AbstractComparatorWithBloomFilter {
 
     // Check count element is the same between two files
     if (this.numberElementsCompared != filter.getAddedNumberOfElements()) {
-      setCauseFailComparison("Different count elements "
-          + this.numberElementsCompared + " was "
-          + filter.getAddedNumberOfElements() + " expected.");
+      setCauseFailComparison(
+          "Different count elements "
+              + this.numberElementsCompared
+              + " was "
+              + filter.getAddedNumberOfElements()
+              + " expected.");
       return false;
     }
 
@@ -143,8 +145,8 @@ public class SAMComparator extends AbstractComparatorWithBloomFilter {
   /**
    * Public constructor public FastqComparator(final boolean useSerializeFile) {
    * super(useSerializeFile); } /** Public constructor
-   * @param useSerializeFile true if it needed to save BloomFilter in file with
-   *          extension '.ser'
+   *
+   * @param useSerializeFile true if it needed to save BloomFilter in file with extension '.ser'
    */
   public SAMComparator(final boolean useSerializeFile) {
     super(useSerializeFile);
@@ -154,12 +156,11 @@ public class SAMComparator extends AbstractComparatorWithBloomFilter {
 
   /**
    * Public constructor, specify all headers tags not used to compare.
-   * @param useSerializeFile true if it needed to save BloomFilter in file with
-   *          extension '.ser'
+   *
+   * @param useSerializeFile true if it needed to save BloomFilter in file with extension '.ser'
    * @param headersTags all headers tags
    */
-  public SAMComparator(final boolean useSerializeFile,
-      final String... headersTags) {
+  public SAMComparator(final boolean useSerializeFile, final String... headersTags) {
     super(useSerializeFile);
 
     if (headersTags == null) {
@@ -168,5 +169,4 @@ public class SAMComparator extends AbstractComparatorWithBloomFilter {
 
     this.tagsToNotCompare = Sets.newHashSet(headersTags);
   }
-
 }

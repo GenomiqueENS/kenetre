@@ -24,19 +24,18 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.alignmentfilter;
 
+import htsjdk.samtools.SAMRecord;
 import java.util.List;
 
-import htsjdk.samtools.SAMRecord;
-
 /**
- * This alignments filter keep only one alignment for a read. This filter is
- * useful to count the number of reads that can match on the genome.
+ * This alignments filter keep only one alignment for a read. This filter is useful to count the
+ * number of reads that can match on the genome.
+ *
  * @since 1.1
  * @author Laurent Jourdren
  * @author Claire Wallon
  */
-public class KeepOneMatchReadAlignmentFilter
-    extends AbstractReadAlignmentFilter {
+public class KeepOneMatchReadAlignmentFilter extends AbstractReadAlignmentFilter {
 
   public static final String FILTER_NAME = "keeponematch";
 
@@ -89,5 +88,4 @@ public class KeepOneMatchReadAlignmentFilter
 
     return this.getClass().getSimpleName() + "{name=" + getName() + "}";
   }
-
 }

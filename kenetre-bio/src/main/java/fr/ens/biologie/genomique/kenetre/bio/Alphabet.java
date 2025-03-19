@@ -27,9 +27,9 @@ package fr.ens.biologie.genomique.kenetre.bio;
 import java.util.Objects;
 import java.util.Set;
 
-
 /**
  * This abstract class define an alphabet.
+ *
  * @since 1.1
  * @author Laurent Jourdren
  */
@@ -37,32 +37,36 @@ public abstract class Alphabet {
 
   /**
    * Get the name of the alphabet.
+   *
    * @return the name of the alphabet
    */
   public abstract String getName();
 
   /**
    * Get the letters of the alphabet.
+   *
    * @return an array of char with the letters of the alphabet
    */
   public abstract Set<Character> getLetters();
 
   /**
    * Test if lower case of letter is valid for this alphabet
+   *
    * @return true if lower case of letter is valid for this alphabet
    */
   protected abstract boolean isLowerCaseValid();
 
   /**
    * Get the complement for this letter
+   *
    * @param letter input letter
-   * @return the complement for this letter or the letter if no complement
-   *         exists for this letter
+   * @return the complement for this letter or the letter if no complement exists for this letter
    */
   protected abstract char getComplement(char letter);
 
   /**
    * Test if a letter if valid.
+   *
    * @param letter the letter to test
    * @return true if the letter is valid
    */
@@ -101,5 +105,4 @@ public abstract class Alphabet {
         && this.getLetters().equals(that.getLetters())
         && this.isLowerCaseValid() == that.isLowerCaseValid();
   }
-
 }

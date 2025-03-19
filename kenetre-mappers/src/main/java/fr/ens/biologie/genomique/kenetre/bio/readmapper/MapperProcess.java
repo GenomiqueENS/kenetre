@@ -26,6 +26,10 @@ package fr.ens.biologie.genomique.kenetre.bio.readmapper;
 
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
+import fr.ens.biologie.genomique.kenetre.bio.readmapper.MapperExecutor.Result;
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
+import fr.ens.biologie.genomique.kenetre.util.ReporterIncrementer;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -43,13 +47,9 @@ import java.util.UUID;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
-import fr.ens.biologie.genomique.kenetre.bio.readmapper.MapperExecutor.Result;
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-import fr.ens.biologie.genomique.kenetre.util.ReporterIncrementer;
-
 /**
  * This class define an abstract class that is returned by a mapper.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -84,8 +84,8 @@ public abstract class MapperProcess {
   //
 
   /**
-   * This class allow to write standard output of a MapperProcess in an
-   * OutputStream.
+   * This class allow to write standard output of a MapperProcess in an OutputStream.
+   *
    * @author Laurent Jourdren
    */
   public static final class ProcessThreadStdOut extends Thread {
@@ -107,6 +107,7 @@ public abstract class MapperProcess {
 
     /**
      * Save exception.
+     *
      * @param e Exception to save
      */
     private void catchException(final Exception e) {
@@ -115,6 +116,7 @@ public abstract class MapperProcess {
 
     /**
      * Test is an exception has been thrown.
+     *
      * @return true if is an exception has been thrown
      */
     public boolean isException() {
@@ -124,6 +126,7 @@ public abstract class MapperProcess {
 
     /**
      * Get the exception.
+     *
      * @return the exception
      */
     public Exception getException() {
@@ -133,12 +136,12 @@ public abstract class MapperProcess {
 
     /**
      * Constructor.
+     *
      * @param process process
      * @param os output stream
      * @throws IOException if an error occurs while creating the input stream
      */
-    public ProcessThreadStdOut(final Result process, final OutputStream os)
-        throws IOException {
+    public ProcessThreadStdOut(final Result process, final OutputStream os) throws IOException {
 
       if (process == null) {
         throw new NullPointerException("The Process parameter is null");
@@ -154,8 +157,8 @@ public abstract class MapperProcess {
   }
 
   /**
-   * Wrapper around an InputStream that call process.waitFor() method when the
-   * stream is closed.
+   * Wrapper around an InputStream that call process.waitFor() method when the stream is closed.
+   *
    * @author Laurent Jourdren.
    */
   private final class InputStreamWrapper extends InputStream {
@@ -173,15 +176,13 @@ public abstract class MapperProcess {
 
       this.is.close();
 
-      final int exitValue =
-          MapperProcess.this.getStdoutProcessResult().waitFor();
+      final int exitValue = MapperProcess.this.getStdoutProcessResult().waitFor();
 
-      executor.getLogger()
-          .debug("End of process with " + exitValue + " exit value");
+      executor.getLogger().debug("End of process with " + exitValue + " exit value");
 
       if (exitValue != 0) {
-        throw new IOException("Bad error result for "
-            + MapperProcess.this.mapperName + " execution: " + exitValue);
+        throw new IOException(
+            "Bad error result for " + MapperProcess.this.mapperName + " execution: " + exitValue);
       }
     }
 
@@ -204,8 +205,7 @@ public abstract class MapperProcess {
     }
 
     @Override
-    public int read(final byte[] arg0, final int arg1, final int arg2)
-        throws IOException {
+    public int read(final byte[] arg0, final int arg1, final int arg2) throws IOException {
 
       return this.is.read(arg0, arg1, arg2);
     }
@@ -233,28 +233,22 @@ public abstract class MapperProcess {
     }
   }
 
-  /**
-   * This interface define how to write read to the mapper input.
-   */
+  /** This interface define how to write read to the mapper input. */
   private interface FastqWriter extends AutoCloseable {
 
     /**
      * Write a string to the pipe.
+     *
      * @param s string to write
      * @throws IOException if an error has occurred in writings
      */
     void write(final String s) throws IOException;
 
-    /**
-     * Close the writer.
-     */
+    /** Close the writer. */
     void close() throws IOException;
-
   }
 
-  /**
-   * This class allow to do synchronous writes in a named piped.
-   */
+  /** This class allow to do synchronous writes in a named piped. */
   static class FastqWriterNoThread implements FastqWriter {
 
     final Writer writer;
@@ -277,6 +271,7 @@ public abstract class MapperProcess {
 
     /**
      * Constructor.
+     *
      * @param writer the writer to use to write data
      */
     public FastqWriterNoThread(final Writer writer) {
@@ -286,6 +281,7 @@ public abstract class MapperProcess {
 
     /**
      * Constructor.
+     *
      * @param namedPipeFile the named pipe file
      */
     public FastqWriterNoThread(final File namedPipeFile) throws IOException {
@@ -294,9 +290,7 @@ public abstract class MapperProcess {
     }
   }
 
-  /**
-   * This class allow to do asynchronous writes in a named piped.
-   */
+  /** This class allow to do asynchronous writes in a named piped. */
   static class FastqWriterThread extends Thread implements FastqWriter {
 
     // The queue can store a little more than 1,00,000 * 1000 = 100,000,000
@@ -305,8 +299,7 @@ public abstract class MapperProcess {
     private static final int MIN_LINE_SIZE = 1000;
 
     private volatile boolean closed;
-    private final BlockingDeque<String> queue =
-        new LinkedBlockingDeque<>(MAX_CAPACITY);
+    private final BlockingDeque<String> queue = new LinkedBlockingDeque<>(MAX_CAPACITY);
     private final Writer writer;
     private Exception exception;
 
@@ -342,6 +335,7 @@ public abstract class MapperProcess {
 
     /**
      * Write a string to the pipe. This method is not synchronized.
+     *
      * @param s string to write
      * @throws IOException if an error has occurred in writings
      */
@@ -381,8 +375,8 @@ public abstract class MapperProcess {
     }
 
     /**
-     * Asynchronous close. This method is not synchronized. A call to write()
-     * just after close() may to lead to lose data.
+     * Asynchronous close. This method is not synchronized. A call to write() just after close() may
+     * to lead to lose data.
      */
     @Override
     public void close() throws IOException {
@@ -402,6 +396,7 @@ public abstract class MapperProcess {
 
     /**
      * Throw an exception if an exception has occurred while writing data.
+     *
      * @throws IOException if an exception has occurred while writing data
      */
     private void throwExceptionIfExists() throws IOException {
@@ -417,6 +412,7 @@ public abstract class MapperProcess {
 
     /**
      * Constructor.
+     *
      * @param writer the writer to use to write data
      */
     public FastqWriterThread(final Writer writer, final String threadName) {
@@ -431,14 +427,13 @@ public abstract class MapperProcess {
 
     /**
      * Constructor.
+     *
      * @param namedPipeFile the named pipe file
      */
-    public FastqWriterThread(final File namedPipeFile, final String threadName)
-        throws IOException {
+    public FastqWriterThread(final File namedPipeFile, final String threadName) throws IOException {
 
       this(createPipeWriter(namedPipeFile), threadName);
     }
-
   }
 
   //
@@ -447,12 +442,14 @@ public abstract class MapperProcess {
 
   /**
    * Create the command lines to be executed.
+   *
    * @return a List of List of String
    */
   protected abstract List<List<String>> createCommandLines();
 
   /**
    * Get the execution directory for the mapper.
+   *
    * @return a File object or null if the execution directory does not matter
    */
   protected File executionDirectory() {
@@ -461,20 +458,20 @@ public abstract class MapperProcess {
   }
 
   /**
-   * Create a custom InputStream that allow to convert result of mapper in SAM
-   * format.
+   * Create a custom InputStream that allow to convert result of mapper in SAM format.
+   *
    * @param stdout standard output from the mapper
    * @return a InputStream that contains a SAM File data
    * @throws IOException if an error occurs when creating the InputStream
    */
-  protected InputStream createCustomInputStream(final InputStream stdout)
-      throws IOException {
+  protected InputStream createCustomInputStream(final InputStream stdout) throws IOException {
 
     return stdout;
   }
 
   /**
    * Get the the UUID generated for the mapper process.
+   *
    * @return the UUID generated for the mapper process
    */
   protected String getUUID() {
@@ -488,6 +485,7 @@ public abstract class MapperProcess {
 
   /**
    * Test if data to process is paired-end data.
+   *
    * @return true if data to process is paired-end data
    */
   public boolean isPairedEnd() {
@@ -497,6 +495,7 @@ public abstract class MapperProcess {
 
   /**
    * Get File for temporary file for first end FASTQ file.
+   *
    * @return a File object
    */
   protected File getNamedPipeFile1() {
@@ -505,15 +504,14 @@ public abstract class MapperProcess {
 
   /**
    * Get File for temporary file for second end FASTQ file.
+   *
    * @return a File object
    */
   protected File getNamedPipeFile2() {
     return this.pipeFile2;
   }
 
-  /**
-   * Increments input reads written by writeEntry() methods.
-   */
+  /** Increments input reads written by writeEntry() methods. */
   protected void inputReadsIncr() {
 
     if (this.incrementer != null) {
@@ -523,6 +521,7 @@ public abstract class MapperProcess {
 
   /**
    * Return the executed command line.
+   *
    * @return the executed command line
    */
   public String getCommandLine() {
@@ -535,11 +534,11 @@ public abstract class MapperProcess {
 
   /**
    * Set the incrementer.
+   *
    * @param incrementer Incrementer to use
    * @param counterGroup the counter group to use
    */
-  public void setIncrementer(final ReporterIncrementer incrementer,
-      final String counterGroup) {
+  public void setIncrementer(final ReporterIncrementer incrementer, final String counterGroup) {
 
     if (counterGroup == null) {
       throw new NullPointerException("The counterGroup is null");
@@ -555,6 +554,7 @@ public abstract class MapperProcess {
 
   /**
    * Get the standard output stream for the process
+   *
    * @return the standard output stream for the process
    */
   public InputStream getStout() {
@@ -568,6 +568,7 @@ public abstract class MapperProcess {
 
   /**
    * Convert the output stream from the mapper to a file using a thread.
+   *
    * @param outputFile output SAM file
    * @throws IOException if an error occurs while creating the writer thread
    */
@@ -575,24 +576,24 @@ public abstract class MapperProcess {
 
     // Start stdout thread
     final Thread tout =
-        new Thread(new ProcessThreadStdOut(getStdoutProcessResult(),
-            new FileOutputStream(outputFile)));
+        new Thread(
+            new ProcessThreadStdOut(getStdoutProcessResult(), new FileOutputStream(outputFile)));
     tout.start();
   }
 
   /**
    * Write a FASTQ entry in single end mode.
+   *
    * @param name name of the sequence
    * @param sequence sequence
    * @param quality quality sequence
    * @throws IOException if an exception occurs while writing the sequence
    */
-  public void writeEntry(final String name, final String sequence,
-      final String quality) throws IOException {
+  public void writeEntry(final String name, final String sequence, final String quality)
+      throws IOException {
 
     if (this.pairedEnd) {
-      throw new IllegalStateException(
-          "Cannot use this writeEntry method in paired-end mode");
+      throw new IllegalStateException("Cannot use this writeEntry method in paired-end mode");
     }
 
     this.writer1.write(ReadSequence.toFastQ(name, sequence, quality) + '\n');
@@ -601,6 +602,7 @@ public abstract class MapperProcess {
 
   /**
    * Write a FASTQ entry in single end mode.
+   *
    * @param read read to write
    * @throws IOException if an exception occurs while writing the sequence
    */
@@ -616,14 +618,14 @@ public abstract class MapperProcess {
 
   /**
    * Write a FASTQ entry in single end mode.
+   *
    * @param read read to write
    * @throws IOException if an exception occurs while writing the sequence
    */
   public void writeEntry2(final ReadSequence read) throws IOException {
 
     if (!this.pairedEnd) {
-      throw new IllegalStateException(
-          "Cannot use this writeEntry method in paired-end mode");
+      throw new IllegalStateException("Cannot use this writeEntry method in paired-end mode");
     }
 
     if (read == null) {
@@ -635,6 +637,7 @@ public abstract class MapperProcess {
 
   /**
    * Write a FASTQ entry in paired-end mode.
+   *
    * @param name1 name of the sequence of the first end
    * @param sequence1 sequence of the first end
    * @param quality1 quality sequence of the first end
@@ -643,13 +646,17 @@ public abstract class MapperProcess {
    * @param quality2 quality sequence of the second end
    * @throws IOException if an error occurs while writing the entry
    */
-  public void writeEntry(final String name1, final String sequence1,
-      final String quality1, final String name2, final String sequence2,
-      final String quality2) throws IOException {
+  public void writeEntry(
+      final String name1,
+      final String sequence1,
+      final String quality1,
+      final String name2,
+      final String sequence2,
+      final String quality2)
+      throws IOException {
 
     if (!this.pairedEnd) {
-      throw new IllegalStateException(
-          "Cannot use this writeEntry method in single-end mode");
+      throw new IllegalStateException("Cannot use this writeEntry method in single-end mode");
     }
 
     this.writer1.write(ReadSequence.toFastQ(name1, sequence1, quality1) + '\n');
@@ -659,6 +666,7 @@ public abstract class MapperProcess {
 
   /**
    * Close writer 1.
+   *
    * @throws IOException if an error occurs while closing the first writer
    */
   public void closeWriter1() throws IOException {
@@ -677,6 +685,7 @@ public abstract class MapperProcess {
 
   /**
    * Close writer 2.
+   *
    * @throws IOException if an error occurs while closing the first writer
    */
   public void closeWriter2() throws IOException {
@@ -694,8 +703,9 @@ public abstract class MapperProcess {
   }
 
   /**
-   * Closes the streams for standard input for the mapper. After this the
-   * writeEntry() methods cannot be used.
+   * Closes the streams for standard input for the mapper. After this the writeEntry() methods
+   * cannot be used.
+   *
    * @throws IOException if an error occurs while closing stream(s)
    * @throws InterruptedException if an error occurs while closing stream(s)
    */
@@ -716,6 +726,7 @@ public abstract class MapperProcess {
 
   /**
    * Get the process result object which stdout is used to the SAM output.
+   *
    * @return a Result object
    */
   private Result getStdoutProcessResult() {
@@ -731,6 +742,7 @@ public abstract class MapperProcess {
 
   /**
    * Start the process.
+   *
    * @throws IOException if an error occurs while starting the process
    */
   void startProcess() throws IOException {
@@ -745,13 +757,12 @@ public abstract class MapperProcess {
 
   /**
    * Start the process(es) of the mapper.
+   *
    * @param tmpDirectory temporary directory
    * @throws IOException if an error occurs while starting the process(es)
-   * @throws InterruptedException if an error occurs while starting the
-   *           process(es)
+   * @throws InterruptedException if an error occurs while starting the process(es)
    */
-  private void startProcess(final File tmpDirectory)
-      throws IOException, InterruptedException {
+  private void startProcess(final File tmpDirectory) throws IOException, InterruptedException {
 
     final List<List<String>> cmds = createCommandLines();
     this.commandLine = commandLinesToString(cmds);
@@ -764,8 +775,14 @@ public abstract class MapperProcess {
       final boolean last = i == cmds.size() - 1;
 
       final Result result =
-          this.executor.execute(cmds.get(i), executionDirectory, last,
-              this.stdErrFile, false, this.pipeFile1, this.pipeFile2);
+          this.executor.execute(
+              cmds.get(i),
+              executionDirectory,
+              last,
+              this.stdErrFile,
+              false,
+              this.pipeFile1,
+              this.pipeFile2);
 
       this.processResults.add(result);
 
@@ -774,14 +791,14 @@ public abstract class MapperProcess {
         Thread.sleep(1000);
       } else {
 
-        this.stdout = new InputStreamWrapper(
-            createCustomInputStream(result.getInputStream()));
+        this.stdout = new InputStreamWrapper(createCustomInputStream(result.getInputStream()));
       }
     }
   }
 
   /**
    * Wait the end of the main process.
+   *
    * @throws IOException if an error occurs while waiting the end of the process
    */
   public void waitFor() throws IOException {
@@ -789,12 +806,11 @@ public abstract class MapperProcess {
     for (Result result : this.processResults) {
 
       final int exitValue = result.waitFor();
-      this.executor.getLogger()
-          .debug("End of process with " + exitValue + " exit value");
+      this.executor.getLogger().debug("End of process with " + exitValue + " exit value");
 
       if (exitValue != 0) {
-        throw new IOException("Bad error result for "
-            + this.mapperName + " execution: " + exitValue);
+        throw new IOException(
+            "Bad error result for " + this.mapperName + " execution: " + exitValue);
       }
     }
 
@@ -806,6 +822,7 @@ public abstract class MapperProcess {
 
   /**
    * Remove a temporary file.
+   *
    * @param f f file to remove
    */
   private void removeFile(final File f) {
@@ -820,10 +837,10 @@ public abstract class MapperProcess {
 
   /**
    * Create pipe writer.
+   *
    * @param file the pipe file to create
    * @return a writer on the pipe
-   * @throws IOException if an error occurs while creating the pipe or the
-   *           writer
+   * @throws IOException if an error occurs while creating the pipe or the writer
    */
   private static Writer createPipeWriter(final File file) throws IOException {
 
@@ -839,6 +856,7 @@ public abstract class MapperProcess {
 
   /**
    * Add a list of temporary files to remove at the end of the mapping.
+   *
    * @param files files to remove
    */
   protected void addFilesToRemove(final File... files) {
@@ -850,12 +868,11 @@ public abstract class MapperProcess {
     Collections.addAll(this.filesToRemove, files);
   }
 
-  protected void additionalInit() throws IOException {
-
-  }
+  protected void additionalInit() throws IOException {}
 
   /**
    * Convert command lines to a String.
+   *
    * @param cmds the command lines
    * @return a String with the command lines
    */
@@ -882,7 +899,6 @@ public abstract class MapperProcess {
       }
 
       sb.append(String.join(" ", cmd));
-
     }
 
     return sb.toString();
@@ -894,6 +910,7 @@ public abstract class MapperProcess {
 
   /**
    * Constructor.
+   *
    * @param mapperName mapper name
    * @param executor executor
    * @param temporaryDirectory temporary directory
@@ -901,16 +918,20 @@ public abstract class MapperProcess {
    * @param pairedEnd paired-end mode
    * @throws IOException if an error occurs
    */
-  protected MapperProcess(final String mapperName, MapperExecutor executor,
-      final File temporaryDirectory, final File stdErrFile,
-      final boolean pairedEnd) throws IOException {
+  protected MapperProcess(
+      final String mapperName,
+      MapperExecutor executor,
+      final File temporaryDirectory,
+      final File stdErrFile,
+      final boolean pairedEnd)
+      throws IOException {
 
-    this(mapperName, executor, temporaryDirectory, stdErrFile, pairedEnd,
-        false);
+    this(mapperName, executor, temporaryDirectory, stdErrFile, pairedEnd, false);
   }
 
   /**
    * Constructor.
+   *
    * @param mapperName mapper name
    * @param executor executor
    * @param stdErrFile standard error file
@@ -920,17 +941,30 @@ public abstract class MapperProcess {
    * @param inputFile2 second file to map
    * @throws IOException if an error occurs
    */
-  protected MapperProcess(final String mapperName, MapperExecutor executor,
-      final File temporaryDirectory, final File stdErrFile,
-      final boolean pairedEnd, final File inputFile1, final File inputFile2)
+  protected MapperProcess(
+      final String mapperName,
+      MapperExecutor executor,
+      final File temporaryDirectory,
+      final File stdErrFile,
+      final boolean pairedEnd,
+      final File inputFile1,
+      final File inputFile2)
       throws IOException {
 
-    this(mapperName, executor, temporaryDirectory, stdErrFile, pairedEnd, false,
-        inputFile1, inputFile2);
+    this(
+        mapperName,
+        executor,
+        temporaryDirectory,
+        stdErrFile,
+        pairedEnd,
+        false,
+        inputFile1,
+        inputFile2);
   }
 
   /**
    * Constructor.
+   *
    * @param mapperName mapper name
    * @param executor executor
    * @param temporaryDirectory temporary directory
@@ -939,16 +973,21 @@ public abstract class MapperProcess {
    * @param inputFile first file to map
    * @throws IOException if an error occurs
    */
-  protected MapperProcess(final String mapperName, MapperExecutor executor,
-      final File temporaryDirectory, final File stdErrFile,
-      final boolean pairedEnd, final File inputFile) throws IOException {
+  protected MapperProcess(
+      final String mapperName,
+      MapperExecutor executor,
+      final File temporaryDirectory,
+      final File stdErrFile,
+      final boolean pairedEnd,
+      final File inputFile)
+      throws IOException {
 
-    this(mapperName, executor, temporaryDirectory, stdErrFile, pairedEnd, false,
-        inputFile, null);
+    this(mapperName, executor, temporaryDirectory, stdErrFile, pairedEnd, false, inputFile, null);
   }
 
   /**
    * Constructor.
+   *
    * @param mapperName mapper name
    * @param executor executor
    * @param temporaryDirectory temporary directory
@@ -957,17 +996,29 @@ public abstract class MapperProcess {
    * @param threadForRead1 use a thread to read the first FASTQ file
    * @throws IOException if en error occurs
    */
-  protected MapperProcess(final String mapperName, MapperExecutor executor,
-      final File temporaryDirectory, final File stdErrFile,
-      final boolean pairedEnd, final boolean threadForRead1)
+  protected MapperProcess(
+      final String mapperName,
+      MapperExecutor executor,
+      final File temporaryDirectory,
+      final File stdErrFile,
+      final boolean pairedEnd,
+      final boolean threadForRead1)
       throws IOException {
 
-    this(mapperName, executor, temporaryDirectory, stdErrFile, pairedEnd,
-        threadForRead1, null, null);
+    this(
+        mapperName,
+        executor,
+        temporaryDirectory,
+        stdErrFile,
+        pairedEnd,
+        threadForRead1,
+        null,
+        null);
   }
 
   /**
    * Constructor.
+   *
    * @param mapperName mapper name
    * @param executor executor
    * @param temporaryDirectory temporary directory
@@ -978,15 +1029,20 @@ public abstract class MapperProcess {
    * @param inputFile2 second file to map
    * @throws IOException if en error occurs
    */
-  protected MapperProcess(final String mapperName, MapperExecutor executor,
-      final File temporaryDirectory, final File stdErrFile,
-      final boolean pairedEnd, final boolean threadForRead1,
-      final File inputFile1, final File inputFile2) throws IOException {
+  protected MapperProcess(
+      final String mapperName,
+      MapperExecutor executor,
+      final File temporaryDirectory,
+      final File stdErrFile,
+      final boolean pairedEnd,
+      final boolean threadForRead1,
+      final File inputFile1,
+      final File inputFile2)
+      throws IOException {
 
     requireNonNull(mapperName, "mapperName argument cannot be null");
     requireNonNull(executor, "executor argument cannot be null");
-    requireNonNull(temporaryDirectory,
-        "temporaryDirectory argument cannot be null");
+    requireNonNull(temporaryDirectory, "temporaryDirectory argument cannot be null");
 
     this.mapperName = mapperName;
     this.uuid = UUID.randomUUID().toString();
@@ -996,24 +1052,26 @@ public abstract class MapperProcess {
 
     this.temporaryDirectory = temporaryDirectory;
 
-    this.pipeFile1 = inputFile1 != null
-        ? inputFile1 : new File(this.temporaryDirectory,
-            "mapper-inputfile1-" + uuid + ".fq");
-    this.pipeFile2 = inputFile2 != null
-        ? inputFile2 : new File(this.temporaryDirectory,
-            "mapper-inputfile2-" + uuid + ".fq");
+    this.pipeFile1 =
+        inputFile1 != null
+            ? inputFile1
+            : new File(this.temporaryDirectory, "mapper-inputfile1-" + uuid + ".fq");
+    this.pipeFile2 =
+        inputFile2 != null
+            ? inputFile2
+            : new File(this.temporaryDirectory, "mapper-inputfile2-" + uuid + ".fq");
 
     this.stdErrFile = stdErrFile;
 
     // If in entry mode
     if (inputFile1 == null) {
 
-      this.writer1 = threadForRead1
-          ? new FastqWriterThread(this.pipeFile1, "FastqWriterThread fastq1")
-          : new FastqWriterNoThread(this.pipeFile1);
-      this.writer2 = pairedEnd
-          ? new FastqWriterThread(this.pipeFile2, "FastqWriterThread fastq2")
-          : null;
+      this.writer1 =
+          threadForRead1
+              ? new FastqWriterThread(this.pipeFile1, "FastqWriterThread fastq1")
+              : new FastqWriterNoThread(this.pipeFile1);
+      this.writer2 =
+          pairedEnd ? new FastqWriterThread(this.pipeFile2, "FastqWriterThread fastq2") : null;
 
       addFilesToRemove(this.pipeFile1, this.pipeFile2);
     } else {

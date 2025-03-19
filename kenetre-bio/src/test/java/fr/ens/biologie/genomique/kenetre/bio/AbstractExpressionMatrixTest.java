@@ -5,14 +5,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import fr.ens.biologie.genomique.kenetre.bio.AbstractMatrix.BasicEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.Test;
-
-import fr.ens.biologie.genomique.kenetre.bio.AbstractMatrix.BasicEntry;
 
 public abstract class AbstractExpressionMatrixTest {
 
@@ -183,7 +181,6 @@ public abstract class AbstractExpressionMatrixTest {
     } catch (IllegalArgumentException e) {
       assertTrue(true);
     }
-
   }
 
   @Test
@@ -205,15 +202,18 @@ public abstract class AbstractExpressionMatrixTest {
       result.add(e);
     }
 
-    assertEquals(Arrays.asList(new BasicEntry<>("row1", "col1", 0.0),
-        new BasicEntry<>("row1", "col2", 0.0),
-        new BasicEntry<>("row1", "col3", 0.0),
-        new BasicEntry<>("row2", "col1", 2.0),
-        new BasicEntry<>("row2", "col2", 5.0),
-        new BasicEntry<>("row2", "col3", 0.0),
-        new BasicEntry<>("row3", "col1", 0.0),
-        new BasicEntry<>("row3", "col2", 6.0),
-        new BasicEntry<>("row3", "col3", 0.0)), result);
+    assertEquals(
+        Arrays.asList(
+            new BasicEntry<>("row1", "col1", 0.0),
+            new BasicEntry<>("row1", "col2", 0.0),
+            new BasicEntry<>("row1", "col3", 0.0),
+            new BasicEntry<>("row2", "col1", 2.0),
+            new BasicEntry<>("row2", "col2", 5.0),
+            new BasicEntry<>("row2", "col3", 0.0),
+            new BasicEntry<>("row3", "col1", 0.0),
+            new BasicEntry<>("row3", "col2", 6.0),
+            new BasicEntry<>("row3", "col3", 0.0)),
+        result);
   }
 
   @Test
@@ -235,9 +235,12 @@ public abstract class AbstractExpressionMatrixTest {
       result.add(e);
     }
 
-    assertEquals(Arrays.asList(new BasicEntry<>("row2", "col1", 2.0),
-        new BasicEntry<>("row2", "col2", 5.0),
-        new BasicEntry<>("row3", "col2", 6.0)), result);
+    assertEquals(
+        Arrays.asList(
+            new BasicEntry<>("row2", "col1", 2.0),
+            new BasicEntry<>("row2", "col2", 5.0),
+            new BasicEntry<>("row3", "col2", 6.0)),
+        result);
   }
 
   @Test
@@ -537,5 +540,4 @@ public abstract class AbstractExpressionMatrixTest {
     assertEquals(2.0, matrix.getValue("row2", "col1"), 0.0);
     assertEquals(3.0, matrix.getValue("row3", "col1"), 0.0);
   }
-
 }

@@ -31,6 +31,7 @@ import java.io.InputStream;
 
 /**
  * This method define a Fasta reader for fasta section of GFF files.
+ *
  * @since 1.1
  * @author Laurent Jourdren
  */
@@ -54,7 +55,6 @@ public class GFFFastaReader extends FastaReader {
           this.fastaSectionFound = true;
           return super.hasNext();
         }
-
       }
     } catch (IOException e) {
 
@@ -70,6 +70,7 @@ public class GFFFastaReader extends FastaReader {
 
   /**
    * Public constructor
+   *
    * @param filename File to use
    * @throws FileNotFoundException if the file does not exists
    */
@@ -79,6 +80,7 @@ public class GFFFastaReader extends FastaReader {
 
   /**
    * Public constructor
+   *
    * @param file File to use
    * @throws FileNotFoundException if the file does not exists
    */
@@ -88,10 +90,10 @@ public class GFFFastaReader extends FastaReader {
 
   /**
    * Public constructor
+   *
    * @param is InputStream to use
    */
   public GFFFastaReader(final InputStream is) {
     super(is);
   }
-
 }

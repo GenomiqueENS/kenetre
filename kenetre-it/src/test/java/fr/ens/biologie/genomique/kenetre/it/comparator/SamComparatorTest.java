@@ -36,13 +36,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.junit.Test;
 
 public class SamComparatorTest {
 
-  private final File dir =
-      new File(new File(".").getAbsolutePath() + "/src/test/java/files");
+  private final File dir = new File(new File(".").getAbsolutePath() + "/src/test/java/files");
 
   private InputStream isA;
   private InputStream isB;
@@ -58,25 +56,22 @@ public class SamComparatorTest {
     this.isA = new FileInputStream(this.fileA);
     this.isB = new FileInputStream(this.fileB);
 
-    AbstractComparatorWithBloomFilter comparator =
-        new SAMComparator(false, "PG");
-    assertTrue("files are same without tag header @PG",
-        comparator.compareFiles(this.isA, this.isB));
+    AbstractComparatorWithBloomFilter comparator = new SAMComparator(false, "PG");
+    assertTrue(
+        "files are same without tag header @PG", comparator.compareFiles(this.isA, this.isB));
 
     this.isA = new FileInputStream(this.fileA);
     this.isB = new FileInputStream(this.fileB);
 
     AbstractComparatorWithBloomFilter comparator2 = new SAMComparator(false);
-    assertFalse("files are different with all tag header",
-        comparator2.compareFiles(this.isA, this.isB));
+    assertFalse(
+        "files are different with all tag header", comparator2.compareFiles(this.isA, this.isB));
 
     this.isA = new FileInputStream(this.fileA);
     this.isB = new FileInputStream(this.fileB);
 
-    AbstractComparatorWithBloomFilter comparator3 =
-        new SAMComparator(false, "PG", "SQ");
-    assertTrue("files are same without all tags",
-        comparator3.compareFiles(this.isA, this.isB));
+    AbstractComparatorWithBloomFilter comparator3 = new SAMComparator(false, "PG", "SQ");
+    assertTrue("files are same without all tags", comparator3.compareFiles(this.isA, this.isB));
   }
 
   @Test
@@ -86,33 +81,33 @@ public class SamComparatorTest {
     this.isA = new FileInputStream(this.fileA);
     this.isB = new FileInputStream(this.fileB);
 
-    assertFalse("files are different",
-        comparator.compareFiles(this.isA, this.isB));
+    assertFalse("files are different", comparator.compareFiles(this.isA, this.isB));
   }
 
   @Test
   public void testDivergentSAM() throws Exception {
-    AbstractComparatorWithBloomFilter comparator =
-        new SAMComparator(false, "@PG");
+    AbstractComparatorWithBloomFilter comparator = new SAMComparator(false, "@PG");
 
     modifyFile(0);
-    assertFalse("files are different: duplicate SAM line",
-        comparator.compareFiles(this.fileA, this.fileC));
+    assertFalse(
+        "files are different: duplicate SAM line", comparator.compareFiles(this.fileA, this.fileC));
 
     modifyFile(1);
-    assertFalse("files are different: remove SAM line",
-        comparator.compareFiles(this.fileA, this.fileC));
+    assertFalse(
+        "files are different: remove SAM line", comparator.compareFiles(this.fileA, this.fileC));
 
     modifyFile(2);
-    assertFalse("files are different: add SAM line",
-        comparator.compareFiles(this.fileA, this.fileC));
+    assertFalse(
+        "files are different: add SAM line", comparator.compareFiles(this.fileA, this.fileC));
 
     modifyFile(3);
-    assertFalse("files are different: remove a char in one line",
+    assertFalse(
+        "files are different: remove a char in one line",
         comparator.compareFiles(this.fileA, this.fileC));
 
     modifyFile(4);
-    assertFalse("files are different: add a char in one line",
+    assertFalse(
+        "files are different: add a char in one line",
         comparator.compareFiles(this.fileA, this.fileC));
 
     if (this.fileC.exists()) {
@@ -127,10 +122,8 @@ public class SamComparatorTest {
       this.fileC.delete();
     }
 
-    final BufferedReader br =
-        new BufferedReader(new FileReader(this.fileA, defaultCharset()));
-    final BufferedWriter bw =
-        new BufferedWriter(new FileWriter(this.fileC, defaultCharset()));
+    final BufferedReader br = new BufferedReader(new FileReader(this.fileA, defaultCharset()));
+    final BufferedWriter bw = new BufferedWriter(new FileWriter(this.fileC, defaultCharset()));
 
     String line = "";
     // Chose no header line
@@ -144,49 +137,46 @@ public class SamComparatorTest {
       if (comp == numberLine) {
 
         switch (typeModification) {
+          case 0:
+            // duplicate SAMline, no header
+            // first time
+            bw.write(line + "\n");
+            // second time
+            bw.write(line + "\n");
+            break;
 
-        case 0:
-          // duplicate SAMline, no header
-          // first time
-          bw.write(line + "\n");
-          // second time
-          bw.write(line + "\n");
-          break;
+          case 1:
+            // Remove read
+            // no write current line
+            break;
 
-        case 1:
-          // Remove read
-          // no write current line
-          break;
+          case 2:
+            // Add read
+            String newSAMline =
+                "HWI-1KL110:37:C0BE6ACXX:7:1101:1426:2207  147 chr17   35400811    40  101M    =   35400491    -421    GTTTCAGGCTGGGGGAGGGGAGACTACATCTCCTCNNNNCTCCTCTTCCATGCGGCGAAGGGTCTCACTGATGAAC   ##############################################EEE:E=<?5=?#BAAF=AFFEFFFDE?EEE   MD:Z:101    NH:i:1  HI:i:1  NM:i:0  SM:i:40 XQ:i:40 X2:i:0";
 
-        case 2:
-          // Add read
-          String newSAMline =
-              "HWI-1KL110:37:C0BE6ACXX:7:1101:1426:2207  147 chr17   35400811    40  101M    =   35400491    -421    GTTTCAGGCTGGGGGAGGGGAGACTACATCTCCTCNNNNCTCCTCTTCCATGCGGCGAAGGGTCTCACTGATGAAC   ##############################################EEE:E=<?5=?#BAAF=AFFEFFFDE?EEE   MD:Z:101    NH:i:1  HI:i:1  NM:i:0  SM:i:40 XQ:i:40 X2:i:0";
+            bw.write(newSAMline);
+            bw.write(line + "\n");
+            break;
 
-          bw.write(newSAMline);
-          bw.write(line + "\n");
-          break;
+          case 3:
+            // remove a char in header line
+            int pos = line.length() / 2;
+            String newLine = line.substring(0, pos) + line.substring(pos + 2);
 
-        case 3:
-          // remove a char in header line
-          int pos = line.length() / 2;
-          String newLine = line.substring(0, pos) + line.substring(pos + 2);
+            bw.write(newLine + "\n");
+            break;
 
-          bw.write(newLine + "\n");
-          break;
-
-        case 4:
-          // add a char in header line
-          int pos2 = line.length() / 2;
-          String newLine2 =
-              line.substring(0, pos2) + "t" + line.substring(pos2 + 1);
-          bw.write(newLine2 + "\n");
-          break;
+          case 4:
+            // add a char in header line
+            int pos2 = line.length() / 2;
+            String newLine2 = line.substring(0, pos2) + "t" + line.substring(pos2 + 1);
+            bw.write(newLine2 + "\n");
+            break;
         }
       }
     }
     br.close();
     bw.close();
   }
-
 }

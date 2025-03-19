@@ -23,6 +23,18 @@
  */
 package fr.ens.biologie.genomique.kenetre.it;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
+import fr.ens.biologie.genomique.kenetre.KenetreException;
+import fr.ens.biologie.genomique.kenetre.it.ITOutputComparisonResult.StatusComparison;
+import fr.ens.biologie.genomique.kenetre.it.comparator.BAMComparator;
+import fr.ens.biologie.genomique.kenetre.it.comparator.BinaryComparator;
+import fr.ens.biologie.genomique.kenetre.it.comparator.Comparator;
+import fr.ens.biologie.genomique.kenetre.it.comparator.FastqComparator;
+import fr.ens.biologie.genomique.kenetre.it.comparator.LogComparator;
+import fr.ens.biologie.genomique.kenetre.it.comparator.SAMComparator;
+import fr.ens.biologie.genomique.kenetre.it.comparator.TextComparator;
+import fr.ens.biologie.genomique.kenetre.util.StringUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -42,49 +54,34 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
-
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-import fr.ens.biologie.genomique.kenetre.it.ITOutputComparisonResult.StatusComparison;
-import fr.ens.biologie.genomique.kenetre.it.comparator.BAMComparator;
-import fr.ens.biologie.genomique.kenetre.it.comparator.BinaryComparator;
-import fr.ens.biologie.genomique.kenetre.it.comparator.Comparator;
-import fr.ens.biologie.genomique.kenetre.it.comparator.FastqComparator;
-import fr.ens.biologie.genomique.kenetre.it.comparator.LogComparator;
-import fr.ens.biologie.genomique.kenetre.it.comparator.SAMComparator;
-import fr.ens.biologie.genomique.kenetre.it.comparator.TextComparator;
-import fr.ens.biologie.genomique.kenetre.util.StringUtils;
-
 /**
- * The class manage the output directory of the integrated test for the
- * comparison.
+ * The class manage the output directory of the integrated test for the comparison.
+ *
  * @author Sandrine Perrin
  * @since 2.0
  */
 public class ITOutput {
 
-  private static final Splitter SPACE_SPLITTER =
-      Splitter.on(' ').trimResults().omitEmptyStrings();
+  private static final Splitter SPACE_SPLITTER = Splitter.on(' ').trimResults().omitEmptyStrings();
 
   private static final PathMatcher ALL_PATH_MATCHER =
       FileSystems.getDefault().getPathMatcher("glob:*");
 
   private static final boolean USE_DEFAULT_PATTERN = true;
 
-  /**
-   * Percent difference length between expected and tested file, when need to
-   * check existing.
-   */
+  /** Percent difference length between expected and tested file, when need to check existing. */
   private static final double PART_DIFFERENCE_LENGTH_FILE = 0.01;
 
   private final String fileToComparePatterns;
   private final String fileToRemovePatterns;
   private final String excludeToComparePatterns;
+
   /** Patterns to check file and is not empty */
   private final String checkExistenceFilePatterns;
+
   /** Patterns to check file not exist in test directory */
   private final String checkAbsenceFilePatterns;
+
   /** Patterns to check file and compare size */
   private final String checkLengthFilePatterns;
 
@@ -99,8 +96,9 @@ public class ITOutput {
   private final File directory;
 
   /**
-   * Move all files matching to a pattern in the destination directory, then
-   * clean directory. If no pattern defined, moving all files.
+   * Move all files matching to a pattern in the destination directory, then clean directory. If no
+   * pattern defined, moving all files.
+   *
    * @param destinationDirectory destination directory
    * @throws IOException if an error occurs while moving file
    * @throws KenetreException if no file copy in destination directory
@@ -126,9 +124,12 @@ public class ITOutput {
         final File dest = new File(destinationDirectory, filename);
 
         if (Files.copy(f.toPath(), dest.toPath()) == null) {
-          throw new IOException("Error when moving file "
-              + filename + " to " + destinationDirectory.getAbsolutePath()
-              + ".");
+          throw new IOException(
+              "Error when moving file "
+                  + filename
+                  + " to "
+                  + destinationDirectory.getAbsolutePath()
+                  + ".");
         }
 
         noFileFoundToCopy = false;
@@ -136,8 +137,8 @@ public class ITOutput {
     }
 
     if (noFileFoundToCopy) {
-      final String msg = "Fail: none file to copy in destination "
-          + destinationDirectory.getAbsolutePath();
+      final String msg =
+          "Fail: none file to copy in destination " + destinationDirectory.getAbsolutePath();
       throw new KenetreException(msg);
     }
 
@@ -147,16 +148,14 @@ public class ITOutput {
   }
 
   /**
-   * Compare all files matching to a pattern files.If no pattern defined, moving
-   * all files.
+   * Compare all files matching to a pattern files.If no pattern defined, moving all files.
+   *
    * @param expectedOutput instance of RegressionResultIT to compare with this.
-   * @return a set of ITOutputComparisonResult which summary result of
-   *         directories comparison
-   * @throws IOException if on error occurs while clean directory or compare
-   *           file
+   * @return a set of ITOutputComparisonResult which summary result of directories comparison
+   * @throws IOException if on error occurs while clean directory or compare file
    */
-  public final Set<ITOutputComparisonResult> compareTo(
-      final ITOutput expectedOutput) throws IOException {
+  public final Set<ITOutputComparisonResult> compareTo(final ITOutput expectedOutput)
+      throws IOException {
 
     final Set<ITOutputComparisonResult> results = new TreeSet<>();
 
@@ -164,8 +163,7 @@ public class ITOutput {
     final List<File> allFilesFromTest = Lists.newArrayList(this.filesToCompare);
 
     // Build map filename with files path
-    final Map<String, File> filesTestedMap =
-        new HashMap<>(this.filesToCompare.size());
+    final Map<String, File> filesTestedMap = new HashMap<>(this.filesToCompare.size());
 
     for (final File f : allFilesFromTest) {
       filesTestedMap.put(f.getName(), f);
@@ -177,13 +175,12 @@ public class ITOutput {
       final String filename = fileExpected.getName();
       final File fileTested = filesTestedMap.get(filename);
 
-      final ITOutputComparisonResult comparisonResult =
-          new ITOutputComparisonResult(filename);
+      final ITOutputComparisonResult comparisonResult = new ITOutputComparisonResult(filename);
 
       if (fileTested == null) {
-        comparisonResult.setResult(StatusComparison.MISSING,
-            "missing file in output test directory "
-                + this.directory.getAbsolutePath());
+        comparisonResult.setResult(
+            StatusComparison.MISSING,
+            "missing file in output test directory " + this.directory.getAbsolutePath());
       } else {
 
         compareFiles(comparisonResult, fileExpected, fileTested);
@@ -200,10 +197,12 @@ public class ITOutput {
 
       for (final File f : allFilesFromTest) {
 
-        final ITOutputComparisonResult ocr = new ITOutputComparisonResult(
-            f.getName(), StatusComparison.UNEXPECTED,
-            "unexpected file in test data directory "
-                + expectedOutput.getDirectory().getAbsolutePath());
+        final ITOutputComparisonResult ocr =
+            new ITOutputComparisonResult(
+                f.getName(),
+                StatusComparison.UNEXPECTED,
+                "unexpected file in test data directory "
+                    + expectedOutput.getDirectory().getAbsolutePath());
 
         results.add(ocr);
       }
@@ -225,11 +224,12 @@ public class ITOutput {
 
   /**
    * Delete file matching on pattern, if is a link, delete the real file too.
+   *
    * @param itResult the it result
    * @param isDeleteFileRequired the is delete file required.
    */
-  public void deleteFileMatchingOnPattern(final ITResult itResult,
-      final boolean isDeleteFileRequired) {
+  public void deleteFileMatchingOnPattern(
+      final ITResult itResult, final boolean isDeleteFileRequired) {
 
     // Save all symbolic link found with patterns
     final List<File> linksSymbolic = new ArrayList<>();
@@ -240,9 +240,10 @@ public class ITOutput {
     boolean success = true;
 
     if (!itResult.isSuccess()) {
-      msg.append(isDeleteFileRequired
-          ? "\tConfiguration required to delete files, but test fail. Files still exist in "
-          : "\tConfiguration required always to keep files in ");
+      msg.append(
+          isDeleteFileRequired
+              ? "\tConfiguration required to delete files, but test fail. Files still exist in "
+              : "\tConfiguration required always to keep files in ");
       msg.append(this.directory.getAbsolutePath());
     }
 
@@ -284,7 +285,6 @@ public class ITOutput {
 
     // Update itResult
     itResult.addCommentsIntoTextReport(msg.toString());
-
   }
 
   //
@@ -293,6 +293,7 @@ public class ITOutput {
 
   /**
    * Removes broken symbolic links.
+   *
    * @param linksSymbolic the links symbolic
    * @return message to final report
    */
@@ -312,8 +313,7 @@ public class ITOutput {
         // Nothing to do
       }
 
-      if (realFile == null)
-        continue;
+      if (realFile == null) continue;
 
       if (!realFile.exists()) {
 
@@ -330,13 +330,17 @@ public class ITOutput {
 
   /**
    * Compare files.
+   *
    * @param comparisonResult the comparison result
    * @param fileExpected the file expected
    * @param fileTested the file tested
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  private void compareFiles(final ITOutputComparisonResult comparisonResult,
-      final File fileExpected, final File fileTested) throws IOException {
+  private void compareFiles(
+      final ITOutputComparisonResult comparisonResult,
+      final File fileExpected,
+      final File fileTested)
+      throws IOException {
 
     if (this.filesToCheckContent.contains(fileTested)) {
       compareFilesContent(comparisonResult, fileExpected, fileTested);
@@ -347,20 +351,22 @@ public class ITOutput {
     } else if (this.filesToCheckExistence.contains(fileTested)) {
       compareFilesExistence(comparisonResult, fileExpected, fileTested);
     }
-
   }
 
   /**
-   * Compare content on expected file from tested file with same filename, save
-   * result in outputExecution instance.
+   * Compare content on expected file from tested file with same filename, save result in
+   * outputExecution instance.
+   *
    * @param comparisonResult outputExecution object
    * @param fileExpected file from expected directory
    * @param fileTested file from tested directory
    * @throws IOException if an error occurs during comparison file
    */
   private void compareFilesContent(
-      final ITOutputComparisonResult comparisonResult, final File fileExpected,
-      final File fileTested) throws IOException {
+      final ITOutputComparisonResult comparisonResult,
+      final File fileExpected,
+      final File fileTested)
+      throws IOException {
 
     // Comparison two files with same filename
     final FilesComparator fc = new FilesComparator(fileExpected, fileTested);
@@ -368,8 +374,8 @@ public class ITOutput {
     final boolean res = fc.compare();
 
     if (!res) {
-      comparisonResult.setResult(StatusComparison.NOT_EQUALS, fileExpected,
-          fileTested, fc.getDetailComparison());
+      comparisonResult.setResult(
+          StatusComparison.NOT_EQUALS, fileExpected, fileTested, fc.getDetailComparison());
     } else {
 
       // Add comparison in the report text
@@ -378,22 +384,23 @@ public class ITOutput {
   }
 
   /**
-   * Compare length on expected file from tested file with same filename, save
-   * result in outputExecution instance.
+   * Compare length on expected file from tested file with same filename, save result in
+   * outputExecution instance.
+   *
    * @param comparisonResult outputExecution object
    * @param fileExpected file from expected directory
    * @param fileTested file from tested directory
    */
   private void compareFilesLength(
-      final ITOutputComparisonResult comparisonResult, final File fileExpected,
+      final ITOutputComparisonResult comparisonResult,
+      final File fileExpected,
       final File fileTested) {
 
     // Compare size file
     final long fileExpectedLength = fileExpected.length();
     final long fileTestedLength = fileTested.length();
 
-    final long diffLengthMax =
-        (long) (fileExpectedLength * PART_DIFFERENCE_LENGTH_FILE);
+    final long diffLengthMax = (long) (fileExpectedLength * PART_DIFFERENCE_LENGTH_FILE);
 
     final long diffLength = fileExpectedLength - fileTestedLength;
     final boolean isEqualsLength = diffLength < diffLengthMax;
@@ -406,24 +413,28 @@ public class ITOutput {
       comparisonResult.setResult(StatusComparison.EQUALS);
 
     } else {
-      msg = String.format("length expected: %s (%d) vs tested %s (%d)%n",
-          fileExpected.getAbsolutePath(), fileExpectedLength,
-          fileTested.getAbsolutePath(), fileTestedLength);
+      msg =
+          String.format(
+              "length expected: %s (%d) vs tested %s (%d)%n",
+              fileExpected.getAbsolutePath(),
+              fileExpectedLength,
+              fileTested.getAbsolutePath(),
+              fileTestedLength);
 
-      comparisonResult.setResult(StatusComparison.NOT_EQUALS, fileExpected,
-          fileTested, msg);
-
+      comparisonResult.setResult(StatusComparison.NOT_EQUALS, fileExpected, fileTested, msg);
     }
   }
 
   /**
    * Compare files existence, fail if the file tested can not be empty.
+   *
    * @param comparisonResult outputExecution object
    * @param fileExpected file from expected directory
    * @param fileTested file from tested directory
    */
   private void compareFilesExistence(
-      final ITOutputComparisonResult comparisonResult, final File fileExpected,
+      final ITOutputComparisonResult comparisonResult,
+      final File fileExpected,
       final File fileTested) {
 
     final long fileExpectedLength = fileExpected.length();
@@ -435,27 +446,28 @@ public class ITOutput {
       comparisonResult.setResult(StatusComparison.EQUALS);
     } else {
 
-      comparisonResult.setResult(StatusComparison.NOT_EQUALS, fileExpected,
-          fileTested, "file tested can not be empty.");
+      comparisonResult.setResult(
+          StatusComparison.NOT_EQUALS, fileExpected, fileTested, "file tested can not be empty.");
     }
-
   }
 
   /**
-   * Check if can be find files matching to patterns setting to absence file
-   * expected after run test.
+   * Check if can be find files matching to patterns setting to absence file expected after run
+   * test.
+   *
    * @return comparisons result, one per comparison file realized
    * @throws IOException if an error occurs when list file matched to patterns.
    */
-  private Set<ITOutputComparisonResult> checkAbsenceFileFromPatterns()
-      throws IOException {
+  private Set<ITOutputComparisonResult> checkAbsenceFileFromPatterns() throws IOException {
 
     final Set<ITOutputComparisonResult> results = new HashSet<>();
 
     for (final File f : this.filesToCheckAbsence) {
 
       final ITOutputComparisonResult ocr =
-          new ITOutputComparisonResult(f.getName(), StatusComparison.UNEXPECTED,
+          new ITOutputComparisonResult(
+              f.getName(),
+              StatusComparison.UNEXPECTED,
               "Unexpected file in output test directory matched to patterns "
                   + this.checkAbsenceFilePatterns);
 
@@ -467,18 +479,17 @@ public class ITOutput {
   }
 
   /**
-   * Listing recursively all files in the source directory which match with
-   * patterns files
+   * Listing recursively all files in the source directory which match with patterns files
+   *
    * @param patternKey the pattern key
    * @param defaultAllPath the default all path
    * @return the list with all files which match with pattern
    * @throws IOException if an error occurs while parsing input directory
    */
-  private List<File> collectFilesFromPattern(final String patternKey,
-      final boolean defaultAllPath) throws IOException {
+  private List<File> collectFilesFromPattern(final String patternKey, final boolean defaultAllPath)
+      throws IOException {
 
-    final Set<PathMatcher> fileMatcher =
-        createPathMatchers(patternKey, defaultAllPath);
+    final Set<PathMatcher> fileMatcher = createPathMatchers(patternKey, defaultAllPath);
 
     final List<File> files = listingFilesFromPatterns(fileMatcher);
 
@@ -496,34 +507,35 @@ public class ITOutput {
 
   /**
    * Select files from pattern.
+   *
    * @param patternKey the pattern key
    * @return the list
    * @throws IOException if an error occurs while parsing input directory
    */
-  private List<File> collectFilesFromPattern(final String patternKey)
-      throws IOException {
+  private List<File> collectFilesFromPattern(final String patternKey) throws IOException {
 
     return collectFilesFromPattern(patternKey, false);
   }
 
   /**
    * Create list files matching to the patterns
+   *
    * @param patterns set of pattern to filter file in result directory
    * @return unmodifiable list of files or empty list
    * @throws IOException if an error occurs while listing files
    */
-  private List<File> listingFilesFromPatterns(final Set<PathMatcher> patterns)
-      throws IOException {
+  private List<File> listingFilesFromPatterns(final Set<PathMatcher> patterns) throws IOException {
 
     final List<File> matchedFiles = new ArrayList<>();
 
     for (final PathMatcher matcher : patterns) {
 
-      Files.walkFileTree(Paths.get(this.directory.toURI()),
+      Files.walkFileTree(
+          Paths.get(this.directory.toURI()),
           new SimpleFileVisitor<Path>() {
             @Override
-            public FileVisitResult visitFile(final Path file,
-                final BasicFileAttributes attrs) throws IOException {
+            public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs)
+                throws IOException {
 
               if (matcher.matches(file)) {
                 matchedFiles.add(file.toFile());
@@ -532,8 +544,8 @@ public class ITOutput {
             }
 
             @Override
-            public FileVisitResult visitFileFailed(final Path file,
-                final IOException exc) throws IOException {
+            public FileVisitResult visitFileFailed(final Path file, final IOException exc)
+                throws IOException {
               return FileVisitResult.CONTINUE;
             }
           });
@@ -549,17 +561,17 @@ public class ITOutput {
   }
 
   /**
-   * Build collection of PathMatcher for selection files to tread according to a
-   * pattern file define in test configuration. Patterns set in string with
-   * space to separator. Get input and output patterns files.
+   * Build collection of PathMatcher for selection files to tread according to a pattern file define
+   * in test configuration. Patterns set in string with space to separator. Get input and output
+   * patterns files.
+   *
    * @param patterns sequences of patterns filesList.
-   * @param defaultAllPath if true and patterns empty use default pattern
-   *          otherwise empty collection
-   * @return collection of PathMatcher, one per pattern. Can be empty if no
-   *         pattern defined and exclude use default patterns.
+   * @param defaultAllPath if true and patterns empty use default pattern otherwise empty collection
+   * @return collection of PathMatcher, one per pattern. Can be empty if no pattern defined and
+   *     exclude use default patterns.
    */
-  private static Set<PathMatcher> createPathMatchers(final String patterns,
-      final boolean defaultAllPath) {
+  private static Set<PathMatcher> createPathMatchers(
+      final String patterns, final boolean defaultAllPath) {
 
     // No pattern defined
     if (patterns == null || patterns.trim().isEmpty()) {
@@ -577,8 +589,7 @@ public class ITOutput {
     for (final String globSyntax : SPACE_SPLITTER.split(patterns)) {
 
       // Convert in syntax reading by Java
-      final PathMatcher matcher =
-          FileSystems.getDefault().getPathMatcher("glob:" + globSyntax);
+      final PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + globSyntax);
 
       // Add in list patterns files to treat
       result.add(matcher);
@@ -594,6 +605,7 @@ public class ITOutput {
 
   /**
    * Gets the directory.
+   *
    * @return the directory
    */
   private File getDirectory() {
@@ -602,6 +614,7 @@ public class ITOutput {
 
   /**
    * Gets the files to check length.
+   *
    * @return the files to check length
    */
   public List<File> getFilesToCheckLength() {
@@ -614,6 +627,7 @@ public class ITOutput {
 
   /**
    * Gets the files to check absence.
+   *
    * @return the files to check absence
    */
   public List<File> getFilesToCheckAbsence() {
@@ -622,6 +636,7 @@ public class ITOutput {
 
   /**
    * Gets the files to check existence.
+   *
    * @return the files to check existence
    */
   public List<File> getFilesToCheckExistence() {
@@ -630,6 +645,7 @@ public class ITOutput {
 
   /**
    * Gets the files to compare.
+   *
    * @return the files to compare
    */
   public List<File> getFilesToCompare() {
@@ -638,6 +654,7 @@ public class ITOutput {
 
   /**
    * Gets the files to remove.
+   *
    * @return the files to remove
    */
   public List<File> getFilesToRemove() {
@@ -646,6 +663,7 @@ public class ITOutput {
 
   /**
    * Gets the count files to check content.
+   *
    * @return the count files to check content
    */
   public int getCountFilesToCheckContent() {
@@ -654,6 +672,7 @@ public class ITOutput {
 
   /**
    * Gets the count files to check length.
+   *
    * @return the count files to check length
    */
   public int getCountFilesToCheckLength() {
@@ -662,6 +681,7 @@ public class ITOutput {
 
   /**
    * Gets the count files to check existence.
+   *
    * @return the count files to check existence
    */
   public int getCountFilesToCheckExistence() {
@@ -670,6 +690,7 @@ public class ITOutput {
 
   /**
    * Gets the count files to check absence.
+   *
    * @return the count files to check absence
    */
   public int getCountFilesToCheckAbsence() {
@@ -678,6 +699,7 @@ public class ITOutput {
 
   /**
    * Gets the count files to compare.
+   *
    * @return the count files to compare
    */
   public int getCountFilesToCompare() {
@@ -686,6 +708,7 @@ public class ITOutput {
 
   /**
    * Gets the count files to remove.
+   *
    * @return the count files to remove
    */
   public int getCountFilesToRemove() {
@@ -697,25 +720,25 @@ public class ITOutput {
   //
 
   /**
-   * Public constructor, it build list patterns and create list files from the
-   * source directory.
+   * Public constructor, it build list patterns and create list files from the source directory.
+   *
    * @param outputTestDirectory source directory
    * @param fileToComparePatterns sequences of patterns, separated by a space
    * @param excludeToComparePatterns sequences of patterns, separated by a space
    * @param checkLengthFilePatterns the check length file patterns
-   * @param checkExistenceFilePatterns sequences of patterns, separated by a
-   *          space
+   * @param checkExistenceFilePatterns sequences of patterns, separated by a space
    * @param checkAbsenceFilePatterns sequences of patterns, separated by a space
-   * @param fileToRemovePatterns the file to remove patterns, separated by a
-   *          space
+   * @param fileToRemovePatterns the file to remove patterns, separated by a space
    * @throws IOException if an error occurs while parsing input directory
    */
-  public ITOutput(final File outputTestDirectory,
-      final String fileToComparePatterns, final String excludeToComparePatterns,
+  public ITOutput(
+      final File outputTestDirectory,
+      final String fileToComparePatterns,
+      final String excludeToComparePatterns,
       final String checkLengthFilePatterns,
       final String checkExistenceFilePatterns,
-
-      final String checkAbsenceFilePatterns, final String fileToRemovePatterns)
+      final String checkAbsenceFilePatterns,
+      final String fileToRemovePatterns)
       throws IOException {
 
     this.directory = outputTestDirectory;
@@ -730,23 +753,19 @@ public class ITOutput {
     this.filesToCompare = new ArrayList<>();
 
     // Set specific list, file not use to compare
-    this.filesToExclude =
-        collectFilesFromPattern(this.excludeToComparePatterns);
+    this.filesToExclude = collectFilesFromPattern(this.excludeToComparePatterns);
 
     // Set specific list, file compare content, compile in fileToCompare
-    this.filesToCheckContent = collectFilesFromPattern(
-        this.fileToComparePatterns, USE_DEFAULT_PATTERN);
+    this.filesToCheckContent =
+        collectFilesFromPattern(this.fileToComparePatterns, USE_DEFAULT_PATTERN);
 
     // Set specific list, file exist and is not empty, compile in fileToCompare
-    this.filesToCheckExistence =
-        collectFilesFromPattern(this.checkExistenceFilePatterns);
+    this.filesToCheckExistence = collectFilesFromPattern(this.checkExistenceFilePatterns);
 
     // Set specific list, file compare length, compile in fileToCompare
-    this.filesToCheckLength =
-        collectFilesFromPattern(this.checkLengthFilePatterns);
+    this.filesToCheckLength = collectFilesFromPattern(this.checkLengthFilePatterns);
 
-    this.filesToCheckAbsence =
-        collectFilesFromPattern(this.checkAbsenceFilePatterns);
+    this.filesToCheckAbsence = collectFilesFromPattern(this.checkAbsenceFilePatterns);
 
     this.filesToRemove = collectFilesFromPattern(this.fileToRemovePatterns);
 
@@ -761,8 +780,8 @@ public class ITOutput {
   //
 
   /**
-   * The internal class choice the comparator matching to filename and compare
-   * two files.
+   * The internal class choice the comparator matching to filename and compare two files.
+   *
    * @author Sandrine Perrin
    * @since 2.0
    */
@@ -779,6 +798,7 @@ public class ITOutput {
 
     /**
      * Compare two files
+     *
      * @return true if files are the same
      * @throws IOException if an error occurs while reading file.
      */
@@ -786,22 +806,25 @@ public class ITOutput {
       final boolean b = this.comparator.compareFiles(this.fileA, this.fileB);
 
       if (!b) {
-        this.detailComparison = "fail at comparison #"
-            + this.comparator.getNumberElementsCompared() + ":[ "
-            + this.comparator.getCauseFailComparison() + "]";
+        this.detailComparison =
+            "fail at comparison #"
+                + this.comparator.getNumberElementsCompared()
+                + ":[ "
+                + this.comparator.getCauseFailComparison()
+                + "]";
       }
       return b;
     }
 
     /**
      * Find the comparator adapted to the file
+     *
      * @param filename file name
      * @return instance of a comparator
      */
     private Comparator findComparator(final String filename) {
 
-      final String extension =
-          StringUtils.extensionWithoutCompressionExtension(filename);
+      final String extension = StringUtils.extensionWithoutCompressionExtension(filename);
 
       for (final Comparator comp : this.comparators) {
 
@@ -828,6 +851,7 @@ public class ITOutput {
 
     /**
      * Public constructor, initialization collection of comparators.
+     *
      * @param fileA first file
      * @param fileB second file
      */
@@ -840,16 +864,12 @@ public class ITOutput {
       this.comparators.add(new BinaryComparator());
 
       this.comparators.add(new FastqComparator(USE_SERIALIZATION_FILE));
-      this.comparators
-          .add(new SAMComparator(USE_SERIALIZATION_FILE, "PG", "HD", "CO"));
-      this.comparators
-          .add(new BAMComparator(USE_SERIALIZATION_FILE, "PG", "HD", "CO"));
+      this.comparators.add(new SAMComparator(USE_SERIALIZATION_FILE, "PG", "HD", "CO"));
+      this.comparators.add(new BAMComparator(USE_SERIALIZATION_FILE, "PG", "HD", "CO"));
       this.comparators.add(new TextComparator(USE_SERIALIZATION_FILE));
       this.comparators.add(new LogComparator());
 
       this.comparator = findComparator(this.fileA.getName());
-
     }
   }
-
 }

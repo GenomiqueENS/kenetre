@@ -28,6 +28,7 @@ import fr.ens.biologie.genomique.kenetre.util.ServiceNameLoader;
 
 /**
  * This class define a service to retrieve a ReadFilter.
+ *
  * @since 1.1
  * @author Laurent Jourdren
  */
@@ -41,6 +42,7 @@ public class ReadFilterService extends ServiceNameLoader<ReadFilter> {
 
   /**
    * Retrieve the singleton static instance of an ReadFilterService.
+   *
    * @return A ActionService instance
    */
   public static ReadFilterService getInstance() {
@@ -50,11 +52,11 @@ public class ReadFilterService extends ServiceNameLoader<ReadFilter> {
 
   /**
    * Retrieve the singleton static instance of an ReadFilterService.
+   *
    * @param forceNewInstance force the usage of a new instance
    * @return A ActionService instance
    */
-  public static synchronized ReadFilterService getInstance(
-      boolean forceNewInstance) {
+  public static synchronized ReadFilterService getInstance(boolean forceNewInstance) {
 
     if (forceNewInstance || service == null) {
       service = new ReadFilterService();
@@ -83,11 +85,8 @@ public class ReadFilterService extends ServiceNameLoader<ReadFilter> {
   // Constructor
   //
 
-  /**
-   * Private constructor.
-   */
+  /** Private constructor. */
   private ReadFilterService() {
     super(ReadFilter.class);
   }
-
 }

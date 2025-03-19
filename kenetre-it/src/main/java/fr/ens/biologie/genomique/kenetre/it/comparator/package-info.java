@@ -24,6 +24,7 @@
 
 /**
  * This package contains classes for compare files.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */

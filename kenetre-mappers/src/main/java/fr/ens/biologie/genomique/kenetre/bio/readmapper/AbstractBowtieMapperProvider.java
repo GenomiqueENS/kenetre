@@ -24,31 +24,28 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.readmapper;
 
+import com.google.common.collect.Lists;
+import fr.ens.biologie.genomique.kenetre.util.Version;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
-import fr.ens.biologie.genomique.kenetre.util.Version;
-
 /**
  * This class define a wrapper on the Bowtie mapper.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
-public abstract class AbstractBowtieMapperProvider
-    extends AbstractMapperProvider {
+public abstract class AbstractBowtieMapperProvider extends AbstractMapperProvider {
 
-  protected static final String SYNC =
-      AbstractBowtieMapperProvider.class.getName();
+  protected static final String SYNC = AbstractBowtieMapperProvider.class.getName();
 
   private static final String SHORT_INDEX_FLAVOR = "standard";
   private static final String LARGE_INDEX_FLAVOR = "large-index";
 
-  abstract protected String getExtensionIndexFile(final EntryMapping mapping);
+  protected abstract String getExtensionIndexFile(final EntryMapping mapping);
 
   @Override
   public String getDefaultFlavor() {
@@ -68,19 +65,19 @@ public abstract class AbstractBowtieMapperProvider
     }
 
     switch (mapperInstance.getFlavor().trim().toLowerCase()) {
-    case SHORT_INDEX_FLAVOR:
-      return true;
+      case SHORT_INDEX_FLAVOR:
+        return true;
 
-    case LARGE_INDEX_FLAVOR:
-      return true;
+      case LARGE_INDEX_FLAVOR:
+        return true;
 
-    default:
-      return false;
+      default:
+        return false;
     }
   }
 
-  protected boolean isLongIndexFlavor(final EntryMapping mapping,
-      final Version firstFlavoredVersion) {
+  protected boolean isLongIndexFlavor(
+      final EntryMapping mapping, final Version firstFlavoredVersion) {
 
     final Version currentVersion = new Version(mapping.getVersion());
 
@@ -88,8 +85,7 @@ public abstract class AbstractBowtieMapperProvider
 
       final String flavor = mapping.getFlavor();
 
-      return flavor != null
-          && LARGE_INDEX_FLAVOR.equals(flavor.trim().toLowerCase());
+      return flavor != null && LARGE_INDEX_FLAVOR.equals(flavor.trim().toLowerCase());
     }
 
     return false;
@@ -97,21 +93,25 @@ public abstract class AbstractBowtieMapperProvider
 
   /**
    * Get the name of a bowtie flavored binary.
+   *
    * @param version mapper version
    * @param flavor mapper flavor
    * @param binary the binary
    * @param firstFlavoredVersion first version of Bowtie to be flavored
    * @return the flavored binary name
    */
-  protected String flavoredBinary(final String version, final String flavor,
-      final String binary, final Version firstFlavoredVersion) {
+  protected String flavoredBinary(
+      final String version,
+      final String flavor,
+      final String binary,
+      final Version firstFlavoredVersion) {
 
-    return flavoredBinary(version, flavor, binary, binary,
-        firstFlavoredVersion);
+    return flavoredBinary(version, flavor, binary, binary, firstFlavoredVersion);
   }
 
   /**
    * Get the name of a bowtie flavored binary.
+   *
    * @param version mapper version
    * @param flavor mapper flavor
    * @param binary the binary
@@ -119,16 +119,18 @@ public abstract class AbstractBowtieMapperProvider
    * @param firstFlavoredVersion first version of Bowtie to be flavored
    * @return the flavored binary name
    */
-  protected String flavoredBinary(final String version, final String flavor,
-      final String binary, final String newBinary,
+  protected String flavoredBinary(
+      final String version,
+      final String flavor,
+      final String binary,
+      final String newBinary,
       final Version firstFlavoredVersion) {
 
     final Version currentVersion = new Version(version);
 
     if (currentVersion.greaterThanOrEqualTo(firstFlavoredVersion)) {
 
-      if (flavor != null
-          && LARGE_INDEX_FLAVOR.equals(flavor.trim().toLowerCase())) {
+      if (flavor != null && LARGE_INDEX_FLAVOR.equals(flavor.trim().toLowerCase())) {
         return newBinary + "-l";
       } else {
         return newBinary + "-s";
@@ -145,14 +147,12 @@ public abstract class AbstractBowtieMapperProvider
       final String bowtiePath;
 
       synchronized (SYNC) {
-        bowtiePath = mapperInstance.getExecutor()
-            .install(getMapperExecutableName(mapperInstance));
+        bowtiePath = mapperInstance.getExecutor().install(getMapperExecutableName(mapperInstance));
       }
 
       final List<String> cmd = Lists.newArrayList(bowtiePath, "--version");
 
-      final String s =
-          MapperUtils.executeToString(mapperInstance.getExecutor(), cmd);
+      final String s = MapperUtils.executeToString(mapperInstance.getExecutor(), cmd);
       final String[] lines = s.split("\n");
       if (lines.length == 0) {
         return null;
@@ -172,8 +172,10 @@ public abstract class AbstractBowtieMapperProvider
   }
 
   @Override
-  public List<String> getIndexerCommand(final File indexerFile,
-      final File genomeFile, final List<String> indexerArguments,
+  public List<String> getIndexerCommand(
+      final File indexerFile,
+      final File genomeFile,
+      final List<String> indexerArguments,
       final int threads) {
 
     List<String> cmd = new ArrayList<>();
@@ -186,8 +188,7 @@ public abstract class AbstractBowtieMapperProvider
   }
 
   protected String bowtieQualityArgument(final EntryMapping mapping) {
-    return BowtieMapperProvider
-        .getBowtieQualityArgument(mapping.getFastqFormat());
+    return BowtieMapperProvider.getBowtieQualityArgument(mapping.getFastqFormat());
   }
 
   //
@@ -195,28 +196,33 @@ public abstract class AbstractBowtieMapperProvider
   //
 
   @Override
-  public MapperProcess mapSE(final EntryMapping mapping, final File inputFile,
-      final File errorFile, final File logFile) throws IOException {
+  public MapperProcess mapSE(
+      final EntryMapping mapping, final File inputFile, final File errorFile, final File logFile)
+      throws IOException {
 
     final String bowtiePath;
 
     synchronized (SYNC) {
-      bowtiePath = mapping.getExecutor()
-          .install(getMapperExecutableName(mapping.getMapperInstance()));
+      bowtiePath =
+          mapping.getExecutor().install(getMapperExecutableName(mapping.getMapperInstance()));
     }
 
     // Get index argument
     final String index = getIndexArgument(mapping);
 
-    return new MapperProcess(mapping.getName(), mapping.getExecutor(),
-        mapping.getTemporaryDirectory(), errorFile, false, inputFile) {
+    return new MapperProcess(
+        mapping.getName(),
+        mapping.getExecutor(),
+        mapping.getTemporaryDirectory(),
+        errorFile,
+        false,
+        inputFile) {
 
       @Override
       protected List<List<String>> createCommandLines() {
 
         // Build the command line and add common arguments
-        final List<String> cmd =
-            new ArrayList<>(createCommonArgs(mapping, bowtiePath, index));
+        final List<String> cmd = new ArrayList<>(createCommonArgs(mapping, bowtiePath, index));
 
         // Enable Index memory mapped in streaming mode
         if (mapping.isMultipleInstancesEnabled()) {
@@ -234,35 +240,42 @@ public abstract class AbstractBowtieMapperProvider
 
         return mapping.getIndexDirectory();
       }
-
     };
   }
 
   @Override
-  public MapperProcess mapPE(final EntryMapping mapping, final File inputFile1,
-      final File inputFile2, final File errorFile, final File logFile)
+  public MapperProcess mapPE(
+      final EntryMapping mapping,
+      final File inputFile1,
+      final File inputFile2,
+      final File errorFile,
+      final File logFile)
       throws IOException {
 
     final String bowtiePath;
 
     synchronized (SYNC) {
-      bowtiePath = mapping.getExecutor()
-          .install(getMapperExecutableName(mapping.getMapperInstance()));
+      bowtiePath =
+          mapping.getExecutor().install(getMapperExecutableName(mapping.getMapperInstance()));
     }
 
     // Get index argument
     final String index = getIndexArgument(mapping);
 
-    return new MapperProcess(mapping.getName(), mapping.getExecutor(),
-        mapping.getTemporaryDirectory(), errorFile, true, inputFile1,
+    return new MapperProcess(
+        mapping.getName(),
+        mapping.getExecutor(),
+        mapping.getTemporaryDirectory(),
+        errorFile,
+        true,
+        inputFile1,
         inputFile2) {
 
       @Override
       protected List<List<String>> createCommandLines() {
 
         // Build the command line and add common arguments
-        final List<String> cmd =
-            new ArrayList<>(createCommonArgs(mapping, bowtiePath, index));
+        final List<String> cmd = new ArrayList<>(createCommonArgs(mapping, bowtiePath, index));
 
         // Enable Index memory mapped in streaming mode
         if (mapping.isMultipleInstancesEnabled()) {
@@ -285,27 +298,25 @@ public abstract class AbstractBowtieMapperProvider
 
         return mapping.getIndexDirectory();
       }
-
     };
-
   }
 
   /**
    * Get the index argument for bowtie from the archive index directory path
+   *
    * @param mapping mapping object
    * @return the Bowtie index argument
    * @throws IOException if an error occurs when getting directory path
    */
-  private String getIndexArgument(final EntryMapping mapping)
-      throws IOException {
+  private String getIndexArgument(final EntryMapping mapping) throws IOException {
 
     final String extensionIndexFile = getExtensionIndexFile(mapping);
 
-    return MapperUtils.getIndexPath(getName(), mapping.getIndexDirectory(),
-        extensionIndexFile, extensionIndexFile.length()).getName();
+    return MapperUtils.getIndexPath(
+            getName(), mapping.getIndexDirectory(), extensionIndexFile, extensionIndexFile.length())
+        .getName();
   }
 
-  protected abstract List<String> createCommonArgs(final EntryMapping mapping,
-      final String bowtiePath, final String index);
-
+  protected abstract List<String> createCommonArgs(
+      final EntryMapping mapping, final String bowtiePath, final String index);
 }

@@ -26,17 +26,16 @@ package fr.ens.biologie.genomique.kenetre.bio.io;
 
 import static fr.ens.biologie.genomique.kenetre.bio.io.BioCharsets.FASTA_CHARSET;
 
+import fr.ens.biologie.genomique.kenetre.bio.Sequence;
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 
-import fr.ens.biologie.genomique.kenetre.bio.Sequence;
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-
 /**
  * This class implements a Fasta writer.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -50,6 +49,7 @@ public class FastaWriter implements SequenceWriter {
 
   /**
    * Write the current entry.
+   *
    * @throws IOException if an error occurs while writing data
    */
   @Override
@@ -64,6 +64,7 @@ public class FastaWriter implements SequenceWriter {
 
   /**
    * Close the writer.
+   *
    * @throws IOException if an error occurs while closing the writer
    */
   @Override
@@ -78,6 +79,7 @@ public class FastaWriter implements SequenceWriter {
 
   /**
    * Check the line length.
+   *
    * @param lineLength the line length to check
    * @return the input argument
    * @throws IllegalArgumentException if the argument is invalid
@@ -85,8 +87,7 @@ public class FastaWriter implements SequenceWriter {
   private static int checkLineLength(final int lineLength) {
 
     if (lineLength < 1) {
-      throw new IllegalArgumentException(
-          "Invalid FASTA line length: " + lineLength);
+      throw new IllegalArgumentException("Invalid FASTA line length: " + lineLength);
     }
 
     return lineLength;
@@ -98,6 +99,7 @@ public class FastaWriter implements SequenceWriter {
 
   /**
    * Public constructor.
+   *
    * @param writer Writer to use
    * @param lineLength FASTA line length
    */
@@ -113,6 +115,7 @@ public class FastaWriter implements SequenceWriter {
 
   /**
    * Public constructor.
+   *
    * @param os OutputStream to use
    * @param lineLength FASTA line length
    */
@@ -124,12 +127,12 @@ public class FastaWriter implements SequenceWriter {
 
   /**
    * Public constructor.
+   *
    * @param outputFile file to use
    * @param lineLength FASTA line length
    * @throws IOException if an error occurs while creating the output file
    */
-  public FastaWriter(final File outputFile, final int lineLength)
-      throws IOException {
+  public FastaWriter(final File outputFile, final int lineLength) throws IOException {
 
     this.writer = FileUtils.createFastBufferedWriter(outputFile, FASTA_CHARSET);
     this.lineLength = checkLineLength(lineLength);
@@ -137,20 +140,20 @@ public class FastaWriter implements SequenceWriter {
 
   /**
    * Public constructor.
+   *
    * @param outputFilename name of the file to use
    * @param lineLength FASTA line length
    * @throws IOException if an error occurs while creating the output file
    */
-  public FastaWriter(final String outputFilename, final int lineLength)
-      throws IOException {
+  public FastaWriter(final String outputFilename, final int lineLength) throws IOException {
 
-    this.writer =
-        FileUtils.createFastBufferedWriter(outputFilename, FASTA_CHARSET);
+    this.writer = FileUtils.createFastBufferedWriter(outputFilename, FASTA_CHARSET);
     this.lineLength = checkLineLength(lineLength);
   }
 
   /**
    * Public constructor.
+   *
    * @param writer Writer to use
    */
   public FastaWriter(final Writer writer) {
@@ -160,6 +163,7 @@ public class FastaWriter implements SequenceWriter {
 
   /**
    * Public constructor.
+   *
    * @param os OutputStream to use
    */
   public FastaWriter(final OutputStream os) {
@@ -169,6 +173,7 @@ public class FastaWriter implements SequenceWriter {
 
   /**
    * Public constructor.
+   *
    * @param outputFile file to use
    * @throws IOException if an error occurs while creating the output file
    */
@@ -179,6 +184,7 @@ public class FastaWriter implements SequenceWriter {
 
   /**
    * Public constructor.
+   *
    * @param outputFilename name of the file to use
    * @throws IOException if an error occurs while creating the output file
    */
@@ -186,5 +192,4 @@ public class FastaWriter implements SequenceWriter {
 
     this(outputFilename, FASTA_FILE_WIDTH);
   }
-
 }

@@ -3,6 +3,7 @@ package fr.ens.biologie.genomique.kenetre.bio.io;
 import static fr.ens.biologie.genomique.kenetre.util.StringUtils.md5DigestToString;
 import static org.junit.Assert.assertEquals;
 
+import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,10 +11,7 @@ import java.security.DigestInputStream;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
 import org.junit.Test;
-
-import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
 
 public class FastqReaderWriterTest {
 
@@ -24,14 +22,12 @@ public class FastqReaderWriterTest {
     testFile("/alexander_PC_20161027_R9-4_1D_template.fastq");
   }
 
-  private void testFile(final String resourcePath)
-      throws NoSuchAlgorithmException, IOException {
+  private void testFile(final String resourcePath) throws NoSuchAlgorithmException, IOException {
 
     MessageDigest mdi = MessageDigest.getInstance("MD5");
     MessageDigest mdo = MessageDigest.getInstance("MD5");
 
-    InputStream resourceStream =
-        this.getClass().getResourceAsStream(resourcePath);
+    InputStream resourceStream = this.getClass().getResourceAsStream(resourcePath);
 
     if (resourceStream == null) {
       throw new IOException("resource not found: " + resourcePath);
@@ -51,5 +47,4 @@ public class FastqReaderWriterTest {
 
     assertEquals(md5DigestToString(mdi), md5DigestToString(mdo));
   }
-
 }

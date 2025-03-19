@@ -1,13 +1,13 @@
 package fr.ens.biologie.genomique.kenetre.bio.readfilter;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
+import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
-
 /**
  * This class define a read filter that filter the special motif
+ *
  * @since 2.0
  * @author Runxin DU
  */
@@ -37,22 +37,18 @@ public class PatternReadFilter extends AbstractReadFilter {
       return false;
     }
 
-    if (this.forbiddenPattern != null
-        && this.forbiddenPattern.matcher(seq).find()) {
+    if (this.forbiddenPattern != null && this.forbiddenPattern.matcher(seq).find()) {
       return false;
     }
 
-    if (this.allowedPattern != null
-        && !this.allowedPattern.matcher(seq).find()) {
+    if (this.allowedPattern != null && !this.allowedPattern.matcher(seq).find()) {
       return false;
     }
     return true;
-
   }
 
   @Override
-  public void setParameter(final String key, final String value)
-      throws KenetreException {
+  public void setParameter(final String key, final String value) throws KenetreException {
     if (key == null || value == null) {
       return;
     }
@@ -61,22 +57,17 @@ public class PatternReadFilter extends AbstractReadFilter {
       try {
         this.forbiddenPattern = Pattern.compile(value);
       } catch (PatternSyntaxException e) {
-        throw new KenetreException(
-            "Invalid motif: " + getName() + " read filter: " + value);
+        throw new KenetreException("Invalid motif: " + getName() + " read filter: " + value);
       }
 
     } else if ("allowed.regex".equals(key.trim())) {
       try {
         this.allowedPattern = Pattern.compile(value);
       } catch (PatternSyntaxException e) {
-        throw new KenetreException(
-            "valid motif: " + getName() + " read filter: " + value);
+        throw new KenetreException("valid motif: " + getName() + " read filter: " + value);
       }
     } else {
-      throw new KenetreException(
-          "Unknown parameter for " + getName() + " read filter: " + key);
+      throw new KenetreException("Unknown parameter for " + getName() + " read filter: " + key);
     }
-
   }
-
 }

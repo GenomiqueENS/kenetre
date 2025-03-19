@@ -32,8 +32,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class define a translator with create unique identifier from another
- * translator and a array of identifiers.
+ * This class define a translator with create unique identifier from another translator and a array
+ * of identifiers.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
@@ -50,6 +51,7 @@ public class UniqueIdentifierTranslator extends AbstractTranslator {
 
   /**
    * Get an ordered list of the translator fields
+   *
    * @return an ordered list of the translator fields.
    */
   @Override
@@ -60,6 +62,7 @@ public class UniqueIdentifierTranslator extends AbstractTranslator {
 
   /**
    * Get a translation for a feature
+   *
    * @param id Identifier of the feature
    * @param field the field to get
    * @return An array with the annotation of the Feature
@@ -78,6 +81,7 @@ public class UniqueIdentifierTranslator extends AbstractTranslator {
 
   /**
    * Test if the link information is available for the field
+   *
    * @param field Field to test
    * @return true if link information is available
    */
@@ -89,6 +93,7 @@ public class UniqueIdentifierTranslator extends AbstractTranslator {
 
   /**
    * Get link information.
+   *
    * @param translatedId Translated id
    * @param field field of the id
    * @return a link for the translated id
@@ -110,8 +115,7 @@ public class UniqueIdentifierTranslator extends AbstractTranslator {
     Map<String, String> translation = new HashMap<>();
     Map<String, Integer> translationCount = new HashMap<>();
 
-    final String fieldName =
-        field == null ? translator.getDefaultField() : field;
+    final String fieldName = field == null ? translator.getDefaultField() : field;
 
     for (String row : ids) {
 
@@ -129,7 +133,6 @@ public class UniqueIdentifierTranslator extends AbstractTranslator {
       } else {
         translationCount.put(t, 1);
       }
-
     }
 
     Map<String, Integer> translationCurrentCount = new HashMap<>();
@@ -157,7 +160,6 @@ public class UniqueIdentifierTranslator extends AbstractTranslator {
 
         translation.put(row, t + postfix);
       }
-
     }
 
     for (final String id : ids) {
@@ -167,12 +169,9 @@ public class UniqueIdentifierTranslator extends AbstractTranslator {
       this.mapUniqueId.put(newId, id);
       this.reverseMapUniqueId.put(id, newId);
     }
-
   }
 
-  /**
-   * Update the fields from the input translator.
-   */
+  /** Update the fields from the input translator. */
   public void updateFields() {
 
     List<String> tFields = this.translator.getFields();
@@ -187,11 +186,11 @@ public class UniqueIdentifierTranslator extends AbstractTranslator {
       // System.arraycopy(tFields, 0, this.fields, 1, tFields.size());
       this.fields.addAll(tFields);
     }
-
   }
 
   /**
    * Set the name of the new field of the translator.
+   *
    * @param newFieldName the name of new field
    */
   public void setNewFieldName(final String newFieldName) {
@@ -205,6 +204,7 @@ public class UniqueIdentifierTranslator extends AbstractTranslator {
 
   /**
    * Get the reverse translator for this translator.
+   *
    * @return a reverse translator
    */
   @Override
@@ -215,8 +215,7 @@ public class UniqueIdentifierTranslator extends AbstractTranslator {
       @Override
       public List<String> getFields() {
 
-        return Collections
-            .singletonList(UniqueIdentifierTranslator.this.newFieldName);
+        return Collections.singletonList(UniqueIdentifierTranslator.this.newFieldName);
       }
 
       @Override
@@ -227,16 +226,15 @@ public class UniqueIdentifierTranslator extends AbstractTranslator {
 
         return null;
       }
-
     };
-
   }
 
   /**
    * Get the default field of a translator.
+   *
    * @param translator a translator
-   * @return the default field or null if the translator is null or if there is
-   *         no default field for the translator
+   * @return the default field or null if the translator is null or if there is no default field for
+   *     the translator
    */
   private static String getTranslatorDefaultField(final Translator translator) {
 
@@ -253,36 +251,40 @@ public class UniqueIdentifierTranslator extends AbstractTranslator {
 
   /**
    * Public constructor.
+   *
    * @param ids Identifier to set unique
    * @param translator Translator to use
    */
-  public UniqueIdentifierTranslator(final List<String> ids,
-      final Translator translator) {
+  public UniqueIdentifierTranslator(final List<String> ids, final Translator translator) {
 
     this(ids, translator, getTranslatorDefaultField(translator), null);
   }
 
   /**
    * Public constructor.
+   *
    * @param ids Identifier to set unique
    * @param translator Translator to use
    * @param translatorField field of the translator to use
    */
-  public UniqueIdentifierTranslator(final List<String> ids,
-      final Translator translator, final String translatorField) {
+  public UniqueIdentifierTranslator(
+      final List<String> ids, final Translator translator, final String translatorField) {
 
     this(ids, translator, translatorField, null);
   }
 
   /**
    * Public constructor.
+   *
    * @param ids Identifier to set unique
    * @param translator Translator to use
    * @param translatorField field of the translator to use
    * @param newFieldName the name of new field
    */
-  public UniqueIdentifierTranslator(final List<String> ids,
-      final Translator translator, final String translatorField,
+  public UniqueIdentifierTranslator(
+      final List<String> ids,
+      final Translator translator,
+      final String translatorField,
       final String newFieldName) {
 
     if (ids == null) {
@@ -305,5 +307,4 @@ public class UniqueIdentifierTranslator extends AbstractTranslator {
 
     this(Arrays.asList(ids), translator);
   }
-
 }

@@ -24,14 +24,14 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.readfilter;
 
-import java.util.regex.Pattern;
-
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
+import java.util.regex.Pattern;
 
 /**
- * Define a filter that remove terminal polyN sequences of a read and check the
- * length of the resulting read.
+ * Define a filter that remove terminal polyN sequences of a read and check the length of the
+ * resulting read.
+ *
  * @since 1.0
  * @author Maria Bernard
  * @author Laurent Jourdren
@@ -45,12 +45,14 @@ public class TrimReadFilter extends AbstractReadFilter {
 
   /**
    * Trim the read sequence and quality if ends with polyN.
+   *
    * @param read Read to trim
    */
   public static void trim(final ReadSequence read) {
 
     if (read == null
-        || read.getSequence() == null || read.getQuality() == null
+        || read.getSequence() == null
+        || read.getQuality() == null
         || read.getSequence().length() != read.getQuality().length()
         || read.getSequence().length() == 0) {
       return;
@@ -97,8 +99,7 @@ public class TrimReadFilter extends AbstractReadFilter {
   }
 
   @Override
-  public void setParameter(final String key, final String value)
-      throws KenetreException {
+  public void setParameter(final String key, final String value) throws KenetreException {
 
     if (key == null || value == null) {
       return;
@@ -113,14 +114,11 @@ public class TrimReadFilter extends AbstractReadFilter {
       }
 
       if (this.lengthThreshold < 1) {
-        throw new KenetreException(
-            "Invalid length threshold: " + this.lengthThreshold);
+        throw new KenetreException("Invalid length threshold: " + this.lengthThreshold);
       }
     } else {
-      throw new KenetreException(
-          "Unknown parameter for " + getName() + " read filter: " + key);
+      throw new KenetreException("Unknown parameter for " + getName() + " read filter: " + key);
     }
-
   }
 
   @Override
@@ -135,18 +133,13 @@ public class TrimReadFilter extends AbstractReadFilter {
   @Override
   public String toString() {
 
-    return this.getClass().getSimpleName()
-        + "{lengthThreshold=" + this.lengthThreshold + "}";
+    return this.getClass().getSimpleName() + "{lengthThreshold=" + this.lengthThreshold + "}";
   }
 
   //
   // Constructor
   //
 
-  /**
-   * Public constructor.
-   */
-  public TrimReadFilter() {
-  }
-
+  /** Public constructor. */
+  public TrimReadFilter() {}
 }

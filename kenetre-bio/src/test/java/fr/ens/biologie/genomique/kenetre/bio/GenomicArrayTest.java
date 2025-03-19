@@ -30,12 +30,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 import java.util.Set;
-
 import org.junit.Before;
 import org.junit.Test;
 
 /**
  * TODO: finish the test class.
+ *
  * @since 1.2
  * @author Laurent Jourdren
  * @author Claire Wallon
@@ -57,7 +57,6 @@ public class GenomicArrayTest {
       this.chromosome = chromosome;
       this.strand = strand;
     }
-
   }
 
   private GenomicArray<String> ga;
@@ -77,8 +76,7 @@ public class GenomicArrayTest {
   }
 
   /**
-   * Test method for
-   * {fr.ens.biologie.genomique.eoulsan.bio.GenomicArray#addEntry(fr.ens
+   * Test method for {fr.ens.biologie.genomique.eoulsan.bio.GenomicArray#addEntry(fr.ens
    * .biologie.genomique.eoulsan.bio.GenomicInterval, java.lang.Object)}.
    */
   @Test

@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
@@ -45,8 +44,8 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 
 /**
- * This class define a TranslatorOutputFormat that generate a Microsoft Excel
- * XLSX file.
+ * This class define a TranslatorOutputFormat that generate a Microsoft Excel XLSX file.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
@@ -112,19 +111,20 @@ public class XLSXTranslatorOutputFormat implements TranslatorOutputFormat {
   }
 
   @Override
-  public void writeLink(final String text, final String link)
-      throws IOException {
+  public void writeLink(final String text, final String link) throws IOException {
 
-    final SXSSFCell cell =
-        (SXSSFCell) this.row.createCell(this.colCount++, CellType.FORMULA);
+    final SXSSFCell cell = (SXSSFCell) this.row.createCell(this.colCount++, CellType.FORMULA);
     // final Cell cell = this.row.createCell(this.colCount++);
 
     if (text != null) {
 
       if (link != null) {
-        cell.setCellFormula("HYPERLINK(\""
-            + link.replace("\"", "\"\"") + "\",\"" + text.replace("\"", "\"\"")
-            + "\")");
+        cell.setCellFormula(
+            "HYPERLINK(\""
+                + link.replace("\"", "\"\"")
+                + "\",\""
+                + text.replace("\"", "\"\"")
+                + "\")");
         cell.setCellStyle(this.linkStyle);
       }
 
@@ -148,11 +148,11 @@ public class XLSXTranslatorOutputFormat implements TranslatorOutputFormat {
 
   /**
    * Public constructor.
+   *
    * @param os output stream
    * @param temporaryDirectory the temporary directory to use
    */
-  public XLSXTranslatorOutputFormat(final OutputStream os,
-      final File temporaryDirectory) {
+  public XLSXTranslatorOutputFormat(final OutputStream os, final File temporaryDirectory) {
 
     if (os == null) {
       throw new NullPointerException("The output stream is null");
@@ -162,8 +162,7 @@ public class XLSXTranslatorOutputFormat implements TranslatorOutputFormat {
 
     // Set the temporary directory to use
     if (temporaryDirectory != null) {
-      TempFile.setTempFileCreationStrategy(
-          new DefaultTempFileCreationStrategy(temporaryDirectory));
+      TempFile.setTempFileCreationStrategy(new DefaultTempFileCreationStrategy(temporaryDirectory));
     }
 
     // Initialize the workbench
@@ -203,6 +202,7 @@ public class XLSXTranslatorOutputFormat implements TranslatorOutputFormat {
 
   /**
    * Public constructor.
+   *
    * @param os output stream
    */
   public XLSXTranslatorOutputFormat(final OutputStream os) {
@@ -212,6 +212,7 @@ public class XLSXTranslatorOutputFormat implements TranslatorOutputFormat {
 
   /**
    * Public constructor.
+   *
    * @param file output file
    * @throws IOException if an error occurs while creating the output file
    */
@@ -222,14 +223,14 @@ public class XLSXTranslatorOutputFormat implements TranslatorOutputFormat {
 
   /**
    * Public constructor.
+   *
    * @param file output file
    * @param temporaryDirectory the temporary directory to use
    * @throws IOException if an error occurs while creating the output file
    */
-  public XLSXTranslatorOutputFormat(final File file,
-      final File temporaryDirectory) throws IOException {
+  public XLSXTranslatorOutputFormat(final File file, final File temporaryDirectory)
+      throws IOException {
 
     this(new FileOutputStream(file), temporaryDirectory);
   }
-
 }

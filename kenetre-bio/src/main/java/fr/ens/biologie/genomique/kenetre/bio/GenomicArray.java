@@ -36,8 +36,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * This class define a genomic array. TODO more doc and rename attributes and
- * field of the inner classes
+ * This class define a genomic array. TODO more doc and rename attributes and field of the inner
+ * classes
+ *
  * @since 1.2
  * @author Laurent Jourdren
  */
@@ -49,6 +50,7 @@ public class GenomicArray<T> implements Serializable {
 
   /**
    * This class define a zone in a ChromosomeZone object.
+   *
    * @author Laurent Jourdren
    */
   private static final class Zone<T> implements Serializable {
@@ -65,6 +67,7 @@ public class GenomicArray<T> implements Serializable {
 
     /**
      * Add a value to the zone.
+     *
      * @param value Exon to add
      */
     public void addExon(final T value) {
@@ -80,8 +83,7 @@ public class GenomicArray<T> implements Serializable {
 
         if (this.valueCount == 1) {
 
-          if (value == this._value
-              || this._value.hashCode() == value.hashCode()) {
+          if (value == this._value || this._value.hashCode() == value.hashCode()) {
             return;
           }
 
@@ -97,6 +99,7 @@ public class GenomicArray<T> implements Serializable {
 
     /**
      * Add values to the zone.
+     *
      * @param values values to add
      */
     private void addExons(final Set<T> values) {
@@ -118,11 +121,11 @@ public class GenomicArray<T> implements Serializable {
         this._values = new HashSet<>(values);
         this.valueCount = len;
       }
-
     }
 
     /**
      * Get the values of the zone.
+     *
      * @return a set with the values of the zone
      */
     public Set<T> getValues() {
@@ -140,9 +143,10 @@ public class GenomicArray<T> implements Serializable {
 
     /**
      * Test if a position is before, in or after the zone.
+     *
      * @param position to test
-     * @return -1 if position is before the zone, 0 if the position is in the
-     *         zone and 1 of the position is after the zone
+     * @return -1 if position is before the zone, 0 if the position is in the zone and 1 of the
+     *     position is after the zone
      */
     public int compareTo(final int position) {
 
@@ -163,8 +167,7 @@ public class GenomicArray<T> implements Serializable {
         }
       }
 
-      return this.getClass().getSimpleName()
-          + "{" + this.start + "," + this.end + "," + r + "}";
+      return this.getClass().getSimpleName() + "{" + this.start + "," + this.end + "," + r + "}";
     }
 
     @Override
@@ -188,24 +191,22 @@ public class GenomicArray<T> implements Serializable {
       }
 
       switch (this.valueCount) {
+        case 0:
+          return true;
 
-      case 0:
-        return true;
+        case 1:
+          return Objects.equals(this._value, that._value);
 
-      case 1:
-        return Objects.equals(this._value, that._value);
-
-      default:
-        return Objects.equals(this._values, that._values);
+        default:
+          return Objects.equals(this._values, that._values);
       }
-
     }
 
     @Override
     public int hashCode() {
 
-      return Objects.hash(this._value, this._values, this.start, this.end,
-          this.strand, this.valueCount);
+      return Objects.hash(
+          this._value, this._values, this.start, this.end, this.strand, this.valueCount);
     }
 
     //
@@ -214,6 +215,7 @@ public class GenomicArray<T> implements Serializable {
 
     /**
      * Constructor that create a zone
+     *
      * @param start start position of the zone
      * @param end end position of the zone
      * @param strand strand of the zone
@@ -227,27 +229,25 @@ public class GenomicArray<T> implements Serializable {
 
     /**
      * Constructor that create a zone
+     *
      * @param start start position of the zone
      * @param end end position of the zone
      * @param strand strand of the zone
      * @param exons of the zone
      */
-    public Zone(final int start, final int end, final char strand,
-        final Set<T> exons) {
+    public Zone(final int start, final int end, final char strand, final Set<T> exons) {
 
       this(start, end, strand);
       addExons(exons);
     }
-
   }
 
   /**
-   * This class define an object that contains all the stranded zones of a
-   * chromosome.
+   * This class define an object that contains all the stranded zones of a chromosome.
+   *
    * @author Laurent Jourdren
    */
-  private static final class ChromosomeStrandedZones<T>
-      implements Serializable {
+  private static final class ChromosomeStrandedZones<T> implements Serializable {
 
     private static final long serialVersionUID = 8073207058699194059L;
 
@@ -262,6 +262,7 @@ public class GenomicArray<T> implements Serializable {
 
     /**
      * Add a zone.
+     *
      * @param zone zone to add
      */
     private void add(final Zone<T> zone) {
@@ -271,6 +272,7 @@ public class GenomicArray<T> implements Serializable {
 
     /**
      * Add a zone.
+     *
      * @param index index where add the zone
      * @param zone the zone to add
      */
@@ -281,9 +283,10 @@ public class GenomicArray<T> implements Serializable {
 
     /**
      * Find the zone index for a position.
+     *
      * @param pos the position on the chromosome
-     * @return the index of the zone or -1 if the position if lower than 1 or
-     *         greater than the length of the chromosome
+     * @return the index of the zone or -1 if the position if lower than 1 or greater than the
+     *     length of the chromosome
      */
     private int findIndexPos(final int pos) {
 
@@ -329,14 +332,14 @@ public class GenomicArray<T> implements Serializable {
 
     /**
      * Split a zone in two zone.
+     *
      * @param zone zone to split
      * @param pos position of the split
      * @return a new zone object
      */
     private Zone<T> splitZone(final Zone<T> zone, final int pos) {
 
-      final Zone<T> result =
-          new Zone<>(pos, zone.end, zone.strand, zone.getValues());
+      final Zone<T> result = new Zone<>(pos, zone.end, zone.strand, zone.getValues());
       zone.end = pos - 1;
 
       return result;
@@ -344,6 +347,7 @@ public class GenomicArray<T> implements Serializable {
 
     /**
      * Add an entry.
+     *
      * @param interval interval of the entry
      * @param value value to add
      */
@@ -428,12 +432,12 @@ public class GenomicArray<T> implements Serializable {
 
     /**
      * Get entries.
+     *
      * @param start start of the interval
      * @param stop end of the interval
      * @return a map with the values
      */
-    public Map<GenomicInterval, Set<T>> getEntries(final int start,
-        final int stop) {
+    public Map<GenomicInterval, Set<T>> getEntries(final int start, final int stop) {
 
       final int indexStart = findIndexPos(start);
       final int indexEnd = findIndexPos(stop);
@@ -453,8 +457,8 @@ public class GenomicArray<T> implements Serializable {
         // Really needed ?
         if (intersect(start, stop, zone.start, zone.end)) {
 
-          final GenomicInterval iv = new GenomicInterval(this.chromosomeName,
-              zone.start, zone.end, zone.strand);
+          final GenomicInterval iv =
+              new GenomicInterval(this.chromosomeName, zone.start, zone.end, zone.strand);
 
           final Set<T> r = zone.getValues();
 
@@ -471,11 +475,12 @@ public class GenomicArray<T> implements Serializable {
       }
 
       if (stop > get(to).end && start > get(to).start) {
-        result.put(new GenomicInterval(this.chromosomeName, start, stop,
-            get(to).strand), new HashSet<>());
+        result.put(
+            new GenomicInterval(this.chromosomeName, start, stop, get(to).strand), new HashSet<>());
       } else if (stop > get(to).end) {
-        result.put(new GenomicInterval(this.chromosomeName, get(to).end + 1,
-            stop, get(to).strand), new HashSet<>());
+        result.put(
+            new GenomicInterval(this.chromosomeName, get(to).end + 1, stop, get(to).strand),
+            new HashSet<>());
       }
 
       return result;
@@ -483,14 +488,15 @@ public class GenomicArray<T> implements Serializable {
 
     /**
      * Test if an interval intersect a zone.
+     *
      * @param start start of the interval
      * @param end end of the interval
      * @param startZone start of the zone
      * @param endZone end of the zone
      * @return true if the interval intersect a zone
      */
-    private static boolean intersect(final int start, final int end,
-        final int startZone, final int endZone) {
+    private static boolean intersect(
+        final int start, final int end, final int startZone, final int endZone) {
 
       return (start >= startZone && start <= endZone)
           || (end >= startZone && end <= endZone)
@@ -525,8 +531,13 @@ public class GenomicArray<T> implements Serializable {
     public String toString() {
 
       return this.getClass().getSimpleName()
-          + "{chromosomeName=" + this.chromosomeName + ", length=" + this.length
-          + ", zones=" + this.zones + "}";
+          + "{chromosomeName="
+          + this.chromosomeName
+          + ", length="
+          + this.length
+          + ", zones="
+          + this.zones
+          + "}";
     }
 
     //
@@ -535,13 +546,13 @@ public class GenomicArray<T> implements Serializable {
 
     /**
      * Public constructor.
+     *
      * @param chromosomeName name of the chromosome
      */
     public ChromosomeStrandedZones(final String chromosomeName) {
 
       if (chromosomeName == null) {
-        throw new NullPointerException(
-            "chromosomeName argument cannot be null");
+        throw new NullPointerException("chromosomeName argument cannot be null");
       }
 
       this.chromosomeName = chromosomeName;
@@ -549,8 +560,9 @@ public class GenomicArray<T> implements Serializable {
   }
 
   /**
-   * This class define an object that contains all the zones of a chromosome.
-   * These zones are stranded if "yes" or "reverse".
+   * This class define an object that contains all the zones of a chromosome. These zones are
+   * stranded if "yes" or "reverse".
+   *
    * @author Claire Wallon
    */
   private static final class ChromosomeZones<T> implements Serializable {
@@ -562,6 +574,7 @@ public class GenomicArray<T> implements Serializable {
 
     /**
      * Add a stranded entry.
+     *
      * @param interval interval of the entry
      * @param value value to add
      */
@@ -584,24 +597,22 @@ public class GenomicArray<T> implements Serializable {
 
     /**
      * Get stranded entries.
+     *
      * @param start start of the interval
      * @param stop end of the interval
      * @return a map with the values
      */
-    public Map<GenomicInterval, Set<T>> getEntries(final int start,
-        final int stop) {
+    public Map<GenomicInterval, Set<T>> getEntries(final int start, final int stop) {
 
       final Map<GenomicInterval, Set<T>> result = new HashMap<>();
 
-      final Map<GenomicInterval, Set<T>> interPlus =
-          this.plus.getEntries(start, stop);
+      final Map<GenomicInterval, Set<T>> interPlus = this.plus.getEntries(start, stop);
 
       if (interPlus != null) {
         result.putAll(interPlus);
       }
 
-      final Map<GenomicInterval, Set<T>> interMinus =
-          this.minus.getEntries(start, stop);
+      final Map<GenomicInterval, Set<T>> interMinus = this.minus.getEntries(start, stop);
 
       if (interMinus != null) {
         result.putAll(interMinus);
@@ -623,8 +634,7 @@ public class GenomicArray<T> implements Serializable {
 
       final ChromosomeZones<?> that = (ChromosomeZones<?>) o;
 
-      return Objects.equals(this.minus, that.minus)
-          && Objects.equals(this.plus, that.plus);
+      return Objects.equals(this.minus, that.minus) && Objects.equals(this.plus, that.plus);
     }
 
     @Override
@@ -636,8 +646,7 @@ public class GenomicArray<T> implements Serializable {
     @Override
     public String toString() {
 
-      return this.getClass().getSimpleName()
-          + "{minus=" + this.minus + ", plus=" + this.plus + "}";
+      return this.getClass().getSimpleName() + "{minus=" + this.minus + ", plus=" + this.plus + "}";
     }
 
     //
@@ -646,13 +655,13 @@ public class GenomicArray<T> implements Serializable {
 
     /**
      * Public constructor.
+     *
      * @param chromosomeName name of the chromosome
      */
     public ChromosomeZones(final String chromosomeName) {
 
       if (chromosomeName == null) {
-        throw new NullPointerException(
-            "chromosomeName argument cannot be null");
+        throw new NullPointerException("chromosomeName argument cannot be null");
       }
 
       this.plus = new ChromosomeStrandedZones<>(chromosomeName);
@@ -662,6 +671,7 @@ public class GenomicArray<T> implements Serializable {
 
   /**
    * Add an entry on the genomic array.
+   *
    * @param interval genomic interval
    * @param value value to add
    */
@@ -688,6 +698,7 @@ public class GenomicArray<T> implements Serializable {
 
   /**
    * Add a chromosome.
+   *
    * @param chromosomeName name of the chromosome to add
    */
   public void addChromosome(final String chromosomeName) {
@@ -705,6 +716,7 @@ public class GenomicArray<T> implements Serializable {
 
   /**
    * Add chromosomes from the list of sequence in a GenomeDescription object.
+   *
    * @param gd genome description
    */
   public void addChromosomes(final GenomeDescription gd) {
@@ -720,29 +732,29 @@ public class GenomicArray<T> implements Serializable {
 
   /**
    * Get entries in an interval.
+   *
    * @param interval the genomic interval
    * @return a map with the values
    */
-  public Map<GenomicInterval, Set<T>> getEntries(
-      final GenomicInterval interval) {
+  public Map<GenomicInterval, Set<T>> getEntries(final GenomicInterval interval) {
 
     if (interval == null) {
       throw new NullPointerException("interval argument cannot be null");
     }
 
-    return getEntries(interval.getChromosome(), interval.getStart(),
-        interval.getEnd());
+    return getEntries(interval.getChromosome(), interval.getStart(), interval.getEnd());
   }
 
   /**
    * Get entries in an interval
+   *
    * @param chromosome chromosome of the interval
    * @param start start of the interval
    * @param end end of the interval
    * @return a map with the values
    */
-  public Map<GenomicInterval, Set<T>> getEntries(final String chromosome,
-      final int start, final int end) {
+  public Map<GenomicInterval, Set<T>> getEntries(
+      final String chromosome, final int start, final int end) {
 
     if (chromosome == null) {
       throw new NullPointerException("chromosome argument cannot be null");
@@ -759,6 +771,7 @@ public class GenomicArray<T> implements Serializable {
 
   /**
    * Test if the GenomicArray contains a chromosome.
+   *
    * @param chromosomeName name of the chromosome to test
    * @return true if the GenomicArray contains the chromosome
    */
@@ -773,14 +786,14 @@ public class GenomicArray<T> implements Serializable {
 
   /**
    * Get a set with zone identifiers.
+   *
    * @return a set of strings with identifiers
    */
   public Set<String> getFeaturesIds() {
 
     Set<String> results = new TreeSet<>();
 
-    for (Map.Entry<String, ChromosomeZones<T>> strandedZone : this.chromosomes
-        .entrySet()) {
+    for (Map.Entry<String, ChromosomeZones<T>> strandedZone : this.chromosomes.entrySet()) {
 
       // Process plus zones
       for (Zone<T> zone : strandedZone.getValue().plus.zones) {
@@ -799,7 +812,6 @@ public class GenomicArray<T> implements Serializable {
           }
         }
       }
-
     }
 
     return results;
@@ -807,6 +819,7 @@ public class GenomicArray<T> implements Serializable {
 
   /**
    * Get the names of the chromosomes that contains the GenomicArray.
+   *
    * @return a set with the name of the chromosomes
    */
   public Set<String> getChromosomesNames() {
@@ -821,7 +834,6 @@ public class GenomicArray<T> implements Serializable {
   public void clear() {
 
     this.chromosomes.clear();
-
   }
 
   //
@@ -853,22 +865,19 @@ public class GenomicArray<T> implements Serializable {
   @Override
   public String toString() {
 
-    return this.getClass().getSimpleName()
-        + "{chromosomes=" + this.chromosomes + "}";
+    return this.getClass().getSimpleName() + "{chromosomes=" + this.chromosomes + "}";
   }
 
   //
   // Constructors
   //
 
-  /**
-   * Public constructor.
-   */
-  public GenomicArray() {
-  }
+  /** Public constructor. */
+  public GenomicArray() {}
 
   /**
    * Public constructor.
+   *
    * @param gd The genome description.
    */
   public GenomicArray(final GenomeDescription gd) {
@@ -876,5 +885,4 @@ public class GenomicArray<T> implements Serializable {
     this();
     addChromosomes(gd);
   }
-
 }

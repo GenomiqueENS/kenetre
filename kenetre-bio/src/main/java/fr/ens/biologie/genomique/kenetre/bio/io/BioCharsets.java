@@ -28,6 +28,7 @@ import java.nio.charset.Charset;
 
 /**
  * This class define encoding and charsets for bio file formats.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -67,17 +68,12 @@ public class BioCharsets {
   public static final String EXPRESSION_ENCODING = "UTF-8";
 
   /** Expression files Charset. */
-  public static final Charset EXPRESSION_CHARSET =
-      Charset.forName(EXPRESSION_ENCODING);
+  public static final Charset EXPRESSION_CHARSET = Charset.forName(EXPRESSION_ENCODING);
 
   //
   // Constructor
   //
 
-  /**
-   * Private constructor.
-   */
-  private BioCharsets() {
-  }
-
+  /** Private constructor. */
+  private BioCharsets() {}
 }

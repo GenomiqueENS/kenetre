@@ -9,6 +9,7 @@ import java.util.Set;
 
 /**
  * This abstract class contains common methods for SampleSheetReader classes.
+ *
  * @since 0.32
  * @author Laurent Jourdren
  */
@@ -46,6 +47,7 @@ public abstract class AbstractSampleSheetReader implements SampleSheetReader {
 
   /**
    * Create a new parser.
+   *
    * @return a configurated SampleSheetParser
    */
   protected SampleSheetParser newSampleSheetParser() {
@@ -56,5 +58,4 @@ public abstract class AbstractSampleSheetReader implements SampleSheetReader {
 
     return parser;
   }
-
 }

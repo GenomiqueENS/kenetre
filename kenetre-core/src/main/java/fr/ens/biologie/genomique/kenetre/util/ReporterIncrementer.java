@@ -26,6 +26,7 @@ package fr.ens.biologie.genomique.kenetre.util;
 
 /**
  * This interface allow to increment a counter in hadoop or local mode.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -33,10 +34,10 @@ public interface ReporterIncrementer {
 
   /**
    * Increment a counter.
+   *
    * @param counterName the counter to increment
    * @param counterGroup group of the counter
    * @param amount amount to add to the counter
    */
   void incrCounter(String counterGroup, String counterName, long amount);
-
 }

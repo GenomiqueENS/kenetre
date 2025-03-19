@@ -24,15 +24,15 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.alignmentfilter;
 
+import htsjdk.samtools.SAMRecord;
 import java.util.ArrayList;
 import java.util.List;
 
-import htsjdk.samtools.SAMRecord;
-
 /**
- * This class define a buffer that store all the alignments with the same read
- * name before to apply an alignment filter. This class only works with
- * alignment data where all the alignments for a read name are in straight.
+ * This class define a buffer that store all the alignments with the same read name before to apply
+ * an alignment filter. This class only works with alignment data where all the alignments for a
+ * read name are in straight.
+ *
  * @since 1.1
  * @author Laurent Jourdren
  * @author Claire Wallon
@@ -45,11 +45,12 @@ public class ReadAlignmentFilterBuffer {
   private final boolean reuseResultList;
 
   /**
-   * Add the provided alignment to a list of SAMRecord objects if this alignment
-   * has the same read name as the other alignments of the list.
+   * Add the provided alignment to a list of SAMRecord objects if this alignment has the same read
+   * name as the other alignments of the list.
+   *
    * @param alignment SAM alignment
-   * @return true if the alignment provides is stored, i.e. if it has the same
-   *         read name as the other alignments already stored.
+   * @return true if the alignment provides is stored, i.e. if it has the same read name as the
+   *     other alignments already stored.
    */
   public boolean addAlignment(final SAMRecord alignment) {
 
@@ -81,9 +82,10 @@ public class ReadAlignmentFilterBuffer {
   }
 
   /**
-   * Get the list of the alignments that pass the tests of the filter with the
-   * same read name. Warning if reuseResultList argument in the constructor is
-   * set to true, this method will always returns the same object.
+   * Get the list of the alignments that pass the tests of the filter with the same read name.
+   * Warning if reuseResultList argument in the constructor is set to true, this method will always
+   * returns the same object.
+   *
    * @return a list of SAM record
    */
   public List<SAMRecord> getFilteredAlignments() {
@@ -105,6 +107,7 @@ public class ReadAlignmentFilterBuffer {
 
   /**
    * Parse alignment name.
+   *
    * @param alignment the alignment
    * @return the name of the sequence in the alignment
    */
@@ -126,6 +129,7 @@ public class ReadAlignmentFilterBuffer {
 
   /**
    * Public constructor.
+   *
    * @param filter the filter to use with this buffer.
    */
   public ReadAlignmentFilterBuffer(final ReadAlignmentFilter filter) {
@@ -135,12 +139,13 @@ public class ReadAlignmentFilterBuffer {
 
   /**
    * Public constructor.
+   *
    * @param filter the filter to use with this buffer
-   * @param reuseResultList true if the getFilteredAlignments() method must
-   *          return always the same internal list
+   * @param reuseResultList true if the getFilteredAlignments() method must return always the same
+   *     internal list
    */
-  public ReadAlignmentFilterBuffer(final ReadAlignmentFilter filter,
-      final boolean reuseResultList) {
+  public ReadAlignmentFilterBuffer(
+      final ReadAlignmentFilter filter, final boolean reuseResultList) {
 
     if (filter == null) {
       throw new NullPointerException("The alignment filter is null");
@@ -149,5 +154,4 @@ public class ReadAlignmentFilterBuffer {
     this.filter = filter;
     this.reuseResultList = reuseResultList;
   }
-
 }

@@ -5,6 +5,7 @@ import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
 
 /**
  * Define a filter that check the length of the reads.
+ *
  * @since 2.0
  * @author Runxin DU
  */
@@ -36,8 +37,7 @@ public class MaxLengthReadFilter extends AbstractReadFilter {
   }
 
   @Override
-  public void setParameter(final String key, final String value)
-      throws KenetreException {
+  public void setParameter(final String key, final String value) throws KenetreException {
 
     if (key == null || value == null) {
       return;
@@ -52,14 +52,11 @@ public class MaxLengthReadFilter extends AbstractReadFilter {
       }
 
       if (this.maximumLengthThreshold < 1) {
-        throw new KenetreException(
-            "Invalid length threshold: " + this.maximumLengthThreshold);
+        throw new KenetreException("Invalid length threshold: " + this.maximumLengthThreshold);
       }
     } else {
-      throw new KenetreException(
-          "Unknown parameter for " + getName() + " read filter: " + key);
+      throw new KenetreException("Unknown parameter for " + getName() + " read filter: " + key);
     }
-
   }
 
   @Override
@@ -67,8 +64,7 @@ public class MaxLengthReadFilter extends AbstractReadFilter {
 
     if (this.maximumLengthThreshold < 1) {
       throw new IllegalArgumentException(
-          "Maximum length threshold is not set for "
-              + getName() + " read filter.");
+          "Maximum length threshold is not set for " + getName() + " read filter.");
     }
   }
 }

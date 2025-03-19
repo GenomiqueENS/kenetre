@@ -26,6 +26,9 @@ package fr.ens.biologie.genomique.kenetre.bio.io;
 
 import static fr.ens.biologie.genomique.kenetre.bio.io.BioCharsets.FASTQ_CHARSET;
 
+import fr.ens.biologie.genomique.kenetre.bio.BadBioEntryException;
+import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,12 +37,9 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import fr.ens.biologie.genomique.kenetre.bio.BadBioEntryException;
-import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-
 /**
  * This class implements a TFQ reader.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -135,6 +135,7 @@ public class TFQReader implements ReadSequenceReader {
 
   /**
    * Public constructor
+   *
    * @param is InputStream to use
    */
   public TFQReader(final InputStream is) {
@@ -148,6 +149,7 @@ public class TFQReader implements ReadSequenceReader {
 
   /**
    * Public constructor
+   *
    * @param file File to use
    * @throws FileNotFoundException if cannot find the input file
    */
@@ -162,6 +164,7 @@ public class TFQReader implements ReadSequenceReader {
 
   /**
    * Public constructor
+   *
    * @param filename File to use
    * @throws FileNotFoundException if cannot find the input file
    */
@@ -173,5 +176,4 @@ public class TFQReader implements ReadSequenceReader {
 
     this.reader = FileUtils.createBufferedReader(filename, FASTQ_CHARSET);
   }
-
 }

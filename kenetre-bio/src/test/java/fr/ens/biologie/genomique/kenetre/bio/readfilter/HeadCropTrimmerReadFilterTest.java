@@ -5,12 +5,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
-import fr.ens.biologie.genomique.kenetre.bio.readfilter.HeadCropTrimmerReadFilter;
-import fr.ens.biologie.genomique.kenetre.bio.readfilter.ReadFilter;
+import org.junit.Test;
 
 public class HeadCropTrimmerReadFilterTest {
 
@@ -47,7 +44,5 @@ public class HeadCropTrimmerReadFilterTest {
     assertEquals("read4", read.getName());
     assertEquals("AGGGGGCAAA", read.getSequence());
     assertEquals("xxxxxxxxxx", read.getQuality());
-
   }
-
 }

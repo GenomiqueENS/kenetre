@@ -26,21 +26,18 @@ package fr.ens.biologie.genomique.kenetre.bio.alignmentfilter;
 
 import static org.junit.Assert.assertEquals;
 
+import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
+import fr.ens.biologie.genomique.kenetre.bio.SAMUtils;
+import htsjdk.samtools.SAMLineParser;
+import htsjdk.samtools.SAMRecord;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
-import fr.ens.biologie.genomique.kenetre.bio.SAMUtils;
-import fr.ens.biologie.genomique.kenetre.bio.alignmentfilter.RemoveUnmappedReadAlignmentFilter;
-import htsjdk.samtools.SAMLineParser;
-import htsjdk.samtools.SAMRecord;
-
 /**
- * This class is a JUnit test class to test the class
- * RemoveUnmappedReadAlignmentsFilter.java.
+ * This class is a JUnit test class to test the class RemoveUnmappedReadAlignmentsFilter.java.
+ *
  * @author Claire Wallon
  */
 public class RemoveUnmappedReadAlignmentsFilterTest {
@@ -156,14 +153,12 @@ public class RemoveUnmappedReadAlignmentsFilterTest {
    */
   @Test
   public void testGetDescription() {
-    assertEquals("Remove all the unmapped alignments",
-        this.filter.getDescription());
+    assertEquals("Remove all the unmapped alignments", this.filter.getDescription());
   }
 
   /**
    * Test method for {fr.ens.biologie.genomique.eoulsan.bio.alignmentsfilters.
-   * RemoveUnmappedReadAlignmentsFilter#filterReadAlignments(java.util.List,
-   * boolean)}.
+   * RemoveUnmappedReadAlignmentsFilter#filterReadAlignments(java.util.List, boolean)}.
    */
   @Test
   public void testFilterReadAlignments() {
@@ -193,6 +188,5 @@ public class RemoveUnmappedReadAlignmentsFilterTest {
     recordsVerif.add(this.samRecordPE2);
     this.filter.filterReadAlignments(this.records);
     assertEquals(this.records, recordsVerif);
-
   }
 }

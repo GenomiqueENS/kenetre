@@ -27,12 +27,9 @@ package fr.ens.biologie.genomique.kenetre.bio.readfilter;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
-import fr.ens.biologie.genomique.kenetre.bio.readfilter.PairCheckReadFilter;
-import fr.ens.biologie.genomique.kenetre.bio.readfilter.ReadFilter;
+import org.junit.Test;
 
 public class PairCheckReadFilterTest {
 
@@ -65,7 +62,5 @@ public class PairCheckReadFilterTest {
     read1.setName("READ/1");
     assertFalse(filter.accept(read1, read2));
     read1.setName("read/1");
-
   }
-
 }

@@ -2,6 +2,7 @@ package fr.ens.biologie.genomique.kenetre.log;
 
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -14,11 +15,10 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-
 /**
- * This class define an abstract logger for the GenericLogger implementations
- * that use java.util.logging API.
+ * This class define an abstract logger for the GenericLogger implementations that use
+ * java.util.logging API.
+ *
  * @author Laurent Jourdren
  */
 public abstract class AbstractJavaUtilLoggingLogger implements GenericLogger {
@@ -26,23 +26,27 @@ public abstract class AbstractJavaUtilLoggingLogger implements GenericLogger {
   private static final String DEFAULT_LOG_LEVEL = "INFO";
 
   /** Format of the log. */
-  public static final Formatter LOG_FORMATTER = new Formatter() {
+  public static final Formatter LOG_FORMATTER =
+      new Formatter() {
 
-    private final DateFormat df =
-        new SimpleDateFormat("yyyy.MM.dd kk:mm:ss", Locale.US);
+        private final DateFormat df = new SimpleDateFormat("yyyy.MM.dd kk:mm:ss", Locale.US);
 
-    @Override
-    public String format(final LogRecord record) {
-      return record.getLevel()
-          + "\t" + this.df.format(new Date(record.getMillis())) + "\t"
-          + record.getMessage() + "\n";
-    }
-  };
+        @Override
+        public String format(final LogRecord record) {
+          return record.getLevel()
+              + "\t"
+              + this.df.format(new Date(record.getMillis()))
+              + "\t"
+              + record.getMessage()
+              + "\n";
+        }
+      };
 
   private final String loggerName;
 
   /**
    * Get the Java logger. Compatibility method.
+   *
    * @return the Java logger
    */
   public Logger getLogger() {
@@ -98,15 +102,14 @@ public abstract class AbstractJavaUtilLoggingLogger implements GenericLogger {
   // Abstract methods
   //
 
-  abstract protected Handler createHandler(Map<String, String> conf)
-      throws KenetreException;
+  protected abstract Handler createHandler(Map<String, String> conf) throws KenetreException;
 
   //
   // Constructor
   //
 
-  public AbstractJavaUtilLoggingLogger(String loggerName,
-      Map<String, String> conf) throws KenetreException {
+  public AbstractJavaUtilLoggingLogger(String loggerName, Map<String, String> conf)
+      throws KenetreException {
 
     requireNonNull(loggerName);
 
@@ -144,5 +147,4 @@ public abstract class AbstractJavaUtilLoggingLogger implements GenericLogger {
 
     logger.addHandler(fh);
   }
-
 }

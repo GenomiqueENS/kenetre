@@ -26,14 +26,14 @@ package fr.ens.biologie.genomique.kenetre.bio.readmapper;
 
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
 import java.io.File;
 import java.io.IOException;
 
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-
 /**
- * This class define a class allow to define the mapper name, the version, the
- * flavor and how a mapper will be executed.
+ * This class define a class allow to define the mapper name, the version, the flavor and how a
+ * mapper will be executed.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -52,6 +52,7 @@ public class Mapper {
 
   /**
    * Get the name of the mapper
+   *
    * @return the name of the mapper
    */
   public String getName() {
@@ -60,6 +61,7 @@ public class Mapper {
 
   /**
    * Get the provider of the mapper.
+   *
    * @return the provider of the mapper
    */
   public MapperProvider getProvider() {
@@ -68,6 +70,7 @@ public class Mapper {
 
   /**
    * Get the logger of the mapper.
+   *
    * @return the logger of the mapper
    */
   public GenericLogger getLogger() {
@@ -76,6 +79,7 @@ public class Mapper {
 
   /**
    * Get the temporary directory.
+   *
    * @return the temporary directory
    */
   public File getTemporaryDirectory() {
@@ -84,6 +88,7 @@ public class Mapper {
 
   /**
    * Get the executable temporary directory.
+   *
    * @return the executable temporary directory
    */
   public File getExecutablesTemporaryDirectory() {
@@ -92,6 +97,7 @@ public class Mapper {
 
   /**
    * Get application name.
+   *
    * @return the application name
    */
   public String getApplicationName() {
@@ -100,6 +106,7 @@ public class Mapper {
 
   /**
    * Get application version.
+   *
    * @return the application version
    */
   public String getApplicationVersion() {
@@ -108,6 +115,7 @@ public class Mapper {
 
   /**
    * Get the software package of the mapper.
+   *
    * @return the software package of the mapper
    */
   private String getSoftwarePackage() {
@@ -116,6 +124,7 @@ public class Mapper {
 
   /**
    * Test if the mapper can only be use for generate the mapper index.
+   *
    * @return true if the mapper is a fake mapper
    */
   public boolean isIndexGeneratorOnly() {
@@ -124,6 +133,7 @@ public class Mapper {
 
   /**
    * Test if the mapping can be split for parallelization.
+   *
    * @return true if the mapping can be split for parallelization
    */
   public boolean isSplitsAllowed() {
@@ -132,6 +142,7 @@ public class Mapper {
 
   /**
    * Test if the mapper index must be compressed in ZIP archive.
+   *
    * @return true if the mapper index must be compressed
    */
   public boolean isCompressIndex() {
@@ -144,6 +155,7 @@ public class Mapper {
 
   /**
    * Create a new mapper instance.
+   *
    * @param version the version of the mapper
    * @param flavor the flavor of the mapper
    * @param useBundledBinaries true if bundled binaries must be used
@@ -151,47 +163,57 @@ public class Mapper {
    * @return a new MapperInstance object
    * @throws IOException if an error occurs while creating the mapper instance
    */
-  MapperInstance newMapperInstance(final String version, final String flavor,
-      final boolean useBundledBinaries, final String dockerImage)
+  MapperInstance newMapperInstance(
+      final String version,
+      final String flavor,
+      final boolean useBundledBinaries,
+      final String dockerImage)
       throws IOException {
 
     // Define the version to use
-    final String versionToUse =
-        chooseVersion(version, this.provider.getDefaultVersion());
+    final String versionToUse = chooseVersion(version, this.provider.getDefaultVersion());
 
     // Define the falvor to use
-    final String flavorToUse =
-        chooseVersion(flavor, this.provider.getDefaultFlavor());
+    final String flavorToUse = chooseVersion(flavor, this.provider.getDefaultFlavor());
 
     // Create the executor
-    MapperExecutor executor =
-        getExecutor(versionToUse, dockerImage, useBundledBinaries);
+    MapperExecutor executor = getExecutor(versionToUse, dockerImage, useBundledBinaries);
 
-    return new MapperInstance(this, executor, versionToUse, flavorToUse,
-        getTemporaryDirectory(), this.applicationName, this.logger);
+    return new MapperInstance(
+        this,
+        executor,
+        versionToUse,
+        flavorToUse,
+        getTemporaryDirectory(),
+        this.applicationName,
+        this.logger);
   }
 
   /**
    * Select the best suited executor.
+   *
    * @param version the version of the mapper
    * @param dockerImage the docker image of the mapper
    * @param useBundledBinaries true if bundled binaries must be used
    * @return a MapperExecutor instance
    * @throws IOException if an error occurs while creating the executor
    */
-  private MapperExecutor getExecutor(final String version,
-      final String dockerImage, final boolean useBundledBinaries)
+  private MapperExecutor getExecutor(
+      final String version, final String dockerImage, final boolean useBundledBinaries)
       throws IOException {
 
     // Set the executor to use
     if (dockerImage != null && !dockerImage.isEmpty()) {
-      return new DockerMapperExecutor(dockerImage, getTemporaryDirectory(),
-          this.logger);
+      return new DockerMapperExecutor(dockerImage, getTemporaryDirectory(), this.logger);
     }
 
     if (useBundledBinaries) {
-      return new BundledMapperExecutor(getSoftwarePackage(), version,
-          getExecutablesTemporaryDirectory(), this.logger, this.applicationName,
+      return new BundledMapperExecutor(
+          getSoftwarePackage(),
+          version,
+          getExecutablesTemporaryDirectory(),
+          this.logger,
+          this.applicationName,
           this.applicationVersion);
     }
 
@@ -204,17 +226,16 @@ public class Mapper {
 
   /**
    * Choose the version to use.
+   *
    * @param requiredVersion the version required by user. Can be null or empty
    * @param defaultVersion the default version
-   * @return the version to use. This version is the default version if the
-   *         required version is null or empty
+   * @return the version to use. This version is the default version if the required version is null
+   *     or empty
    */
-  private static String chooseVersion(final String requiredVersion,
-      final String defaultVersion) {
+  private static String chooseVersion(final String requiredVersion, final String defaultVersion) {
 
     if (defaultVersion == null) {
-      throw new NullPointerException(
-          "the defaultVersion argument cannot be null");
+      throw new NullPointerException("the defaultVersion argument cannot be null");
     }
 
     if (requiredVersion == null) {
@@ -232,6 +253,7 @@ public class Mapper {
 
   /**
    * Private constructor.
+   *
    * @param provider the provider to use the the Mapper class.
    * @param tempDir temporary directory
    * @param executablesTempDir temporary directory for executables
@@ -239,21 +261,20 @@ public class Mapper {
    * @param applicationName name of the application
    * @param applicationVersion version of the application
    */
-  Mapper(final MapperProvider provider, final File tempDir,
-      final File executablesTempDir, final GenericLogger logger,
-      final String applicationName, final String applicationVersion) {
+  Mapper(
+      final MapperProvider provider,
+      final File tempDir,
+      final File executablesTempDir,
+      final GenericLogger logger,
+      final String applicationName,
+      final String applicationVersion) {
 
     requireNonNull(provider, "provider cannot be null");
     this.provider = provider;
     this.logger = logger;
-    this.tempDir = tempDir != null
-        ? tempDir : new File(System.getProperty("java.io.tmpdir"));
-    this.executablesTempDir =
-        executablesTempDir != null ? executablesTempDir : this.tempDir;
-    this.applicationName =
-        applicationName != null ? applicationName : "UnknownApplication";
-    this.applicationVersion =
-        applicationVersion != null ? applicationVersion : "UnknownVersion";
+    this.tempDir = tempDir != null ? tempDir : new File(System.getProperty("java.io.tmpdir"));
+    this.executablesTempDir = executablesTempDir != null ? executablesTempDir : this.tempDir;
+    this.applicationName = applicationName != null ? applicationName : "UnknownApplication";
+    this.applicationVersion = applicationVersion != null ? applicationVersion : "UnknownVersion";
   }
-
 }

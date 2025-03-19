@@ -24,6 +24,7 @@
 
 /**
  * This package contain utility classes for processes usage.
+ *
  * @since 2.0
  */
 package fr.ens.biologie.genomique.kenetre.util.process;

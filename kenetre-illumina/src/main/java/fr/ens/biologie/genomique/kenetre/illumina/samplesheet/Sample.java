@@ -9,6 +9,7 @@ import java.util.Map;
 
 /**
  * This class define a sample of a samplesheet.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -34,6 +35,7 @@ public class Sample {
 
   /**
    * Get the value for a field of the sample.
+   *
    * @param fieldName field name
    * @return the value for a field of the sample
    */
@@ -44,6 +46,7 @@ public class Sample {
 
   /**
    * Get the lane of the sample.
+   *
    * @return the lane of the sample
    */
   public int getLane() {
@@ -67,6 +70,7 @@ public class Sample {
 
   /**
    * Get the sample Id.
+   *
    * @return the sample Id
    */
   public String getSampleId() {
@@ -76,6 +80,7 @@ public class Sample {
 
   /**
    * Get the sample name.
+   *
    * @return the sample name
    */
   public String getSampleName() {
@@ -85,6 +90,7 @@ public class Sample {
 
   /**
    * Get the description of the sample.
+   *
    * @return the description of the sample
    */
   public String getDescription() {
@@ -94,6 +100,7 @@ public class Sample {
 
   /**
    * Get the project related to the sample.
+   *
    * @return the project related to the sample
    */
   public String getSampleProject() {
@@ -103,6 +110,7 @@ public class Sample {
 
   /**
    * Get the first index of the sample.
+   *
    * @return the first index of the sample
    */
   public String getIndex1() {
@@ -112,6 +120,7 @@ public class Sample {
 
   /**
    * Get the second index of the sample.
+   *
    * @return the first second of the sample
    */
   public String getIndex2() {
@@ -121,6 +130,7 @@ public class Sample {
 
   /**
    * Get the sample reference.
+   *
    * @return the sample reference
    */
   public String getSampleRef() {
@@ -130,6 +140,7 @@ public class Sample {
 
   /**
    * Get the sample field names.
+   *
    * @return a list with the sample field names
    */
   public List<String> getFieldNames() {
@@ -139,6 +150,7 @@ public class Sample {
 
   /**
    * Test if the sample is indexed.
+   *
    * @return true if the sample is indexed
    */
   public boolean isIndexed() {
@@ -156,6 +168,7 @@ public class Sample {
 
   /**
    * Test if the sample is indexed.
+   *
    * @return true if the sample is indexed
    */
   public boolean isDualIndexed() {
@@ -173,6 +186,7 @@ public class Sample {
 
   /**
    * Get the table section of the sample.
+   *
    * @return a TableSection object
    */
   public TableSection getTableSection() {
@@ -182,6 +196,7 @@ public class Sample {
 
   /**
    * Get the samplesheet of the sample.
+   *
    * @return a SampleSheet object
    */
   public SampleSheet getSampleSheet() {
@@ -191,6 +206,7 @@ public class Sample {
 
   /**
    * Get the demultiplexing name of the sample.
+   *
    * @return the demultiplexing name of the sample
    */
   public String getDemultiplexingName() {
@@ -211,6 +227,7 @@ public class Sample {
 
   /**
    * Set a field value.
+   *
    * @param fieldName the name of the field
    * @param value the value of the field for the sample
    */
@@ -232,6 +249,7 @@ public class Sample {
 
   /**
    * Set the sample id.
+   *
    * @param sampleId the sample id
    */
   public void setSampleId(final String sampleId) {
@@ -241,6 +259,7 @@ public class Sample {
 
   /**
    * Set the sample name.
+   *
    * @param sampleName the sample id
    */
   public void setSampleName(final String sampleName) {
@@ -250,13 +269,13 @@ public class Sample {
 
   /**
    * Set the lane of the sample.
+   *
    * @param lane the lane
    */
   public void setLane(final int lane) {
 
     if (lane < 1) {
-      throw new IllegalArgumentException(
-          "Lane argument cannot be lower than 1");
+      throw new IllegalArgumentException("Lane argument cannot be lower than 1");
     }
 
     set(LANE_FIELD_NAME, "" + lane);
@@ -264,6 +283,7 @@ public class Sample {
 
   /**
    * Set the description of the sample.
+   *
    * @param description the sample id
    */
   public void setDescription(final String description) {
@@ -273,6 +293,7 @@ public class Sample {
 
   /**
    * Set the description of the sample.
+   *
    * @param projectName the sample id
    */
   public void setSampleProject(final String projectName) {
@@ -282,6 +303,7 @@ public class Sample {
 
   /**
    * Set the sample reference.
+   *
    * @param sampleRef the sample reference
    */
   public void setSampleRef(final String sampleRef) {
@@ -291,6 +313,7 @@ public class Sample {
 
   /**
    * Set the first index.
+   *
    * @param index the first index
    */
   public void setIndex1(final String index) {
@@ -304,6 +327,7 @@ public class Sample {
 
   /**
    * Set the second index.
+   *
    * @param index the second index
    */
   public void setIndex2(final String index) {
@@ -321,6 +345,7 @@ public class Sample {
 
   /**
    * Test if a field exists for the sample.
+   *
    * @param fieldName field name
    * @return true if the field exists
    */
@@ -331,6 +356,7 @@ public class Sample {
 
   /**
    * Test if the lane field exists for the sample.
+   *
    * @return true if the field exists
    */
   public boolean isLaneField() {
@@ -340,6 +366,7 @@ public class Sample {
 
   /**
    * Test if the sample Id field exists for the sample.
+   *
    * @return true if the field exists
    */
   public boolean isSampleIdField() {
@@ -349,6 +376,7 @@ public class Sample {
 
   /**
    * Test if the sample name field exists for the sample.
+   *
    * @return true if the field exists
    */
   public boolean isSampleNameField() {
@@ -358,6 +386,7 @@ public class Sample {
 
   /**
    * Test if the description field exists for the sample.
+   *
    * @return true if the field exists
    */
   public boolean isDescriptionField() {
@@ -367,6 +396,7 @@ public class Sample {
 
   /**
    * Test if the project field exists for the sample.
+   *
    * @return true if the field exists
    */
   public boolean isSampleProjectField() {
@@ -376,6 +406,7 @@ public class Sample {
 
   /**
    * Test if the index1 field exists for the sample.
+   *
    * @return true if the field exists
    */
   public boolean isIndex1Field() {
@@ -385,6 +416,7 @@ public class Sample {
 
   /**
    * Test if the index2 field exists for the sample.
+   *
    * @return true if the field exists
    */
   public boolean isIndex2Field() {
@@ -394,6 +426,7 @@ public class Sample {
 
   /**
    * Test if the sample reference field exists for the sample.
+   *
    * @return true if the field exists
    */
   public boolean isSampleRefField() {
@@ -403,6 +436,7 @@ public class Sample {
 
   /**
    * Remove value.
+   *
    * @param fieldName field to remove
    */
   public void remove(final String fieldName) {
@@ -413,6 +447,7 @@ public class Sample {
 
   /**
    * Rename a field
+   *
    * @param oldFieldName old name of the field
    * @param newFieldName new name of the field
    */
@@ -421,8 +456,7 @@ public class Sample {
     requireNonNull(oldFieldName);
     requireNonNull(newFieldName);
 
-    if (!this.map.containsKey(oldFieldName)
-        || this.map.containsKey(newFieldName)) {
+    if (!this.map.containsKey(oldFieldName) || this.map.containsKey(newFieldName)) {
       return;
     }
 
@@ -452,7 +486,6 @@ public class Sample {
         || INDEX1_FIELD_NAME.equals(fieldName)
         || INDEX2_FIELD_NAME.equals(fieldName)
         || SAMPLE_REF_FIELD_NAME.equals(fieldName);
-
   }
 
   //
@@ -477,5 +510,4 @@ public class Sample {
 
     this.tableSection = tableSection;
   }
-
 }

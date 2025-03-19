@@ -2,8 +2,8 @@
  *                  Aozan development code
  *
  * This code may be freely distributed and modified under the
- * terms of the GNU General Public License version 3 or later 
- * and CeCILL. This should be distributed with the code. If you 
+ * terms of the GNU General Public License version 3 or later
+ * and CeCILL. This should be distributed with the code. If you
  * do not have a copy, see:
  *
  *      http://www.gnu.org/licenses/gpl-3.0-standalone.html
@@ -24,6 +24,17 @@ package fr.ens.biologie.genomique.kenetre.illumina.io;
 
 import static java.nio.charset.Charset.defaultCharset;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import fr.ens.biologie.genomique.kenetre.KenetreException;
+import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.Sample;
+import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheet;
+import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheetUtils;
+import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetCSVReader;
+import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetCSVWriter;
+import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetXLSReader;
+import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetXLSXReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,22 +48,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
-
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.Sample;
-import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheet;
-import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheetUtils;
-import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetCSVReader;
-import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetCSVWriter;
-import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetXLSReader;
-import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetXLSXReader;
 
 public class SampleSheetReaderTest {
 
@@ -134,32 +131,41 @@ public class SampleSheetReaderTest {
   @Test
   public void testReadsXLSWithHeaderVersion2() {
 
-    testSampleSheet(SAMPLESHEET_XLS_WITH_HEADER_BCL2FASTQ_V2_FILENAME, "xls", 2,
-        EXPECTED_WIHTHEADER_SMALLER_CSV, false);
+    testSampleSheet(
+        SAMPLESHEET_XLS_WITH_HEADER_BCL2FASTQ_V2_FILENAME,
+        "xls",
+        2,
+        EXPECTED_WIHTHEADER_SMALLER_CSV,
+        false);
   }
 
   @Test
   public void testReadsXLSXWithHeaderVersion2() {
 
-    testSampleSheet(SAMPLESHEET_XLSX_WITH_HEADER_BCL2FASTQ_V2_FILENAME, "xlsx",
-        2, EXPECTED_WIHTHEADER_SMALLER_CSV, false);
+    testSampleSheet(
+        SAMPLESHEET_XLSX_WITH_HEADER_BCL2FASTQ_V2_FILENAME,
+        "xlsx",
+        2,
+        EXPECTED_WIHTHEADER_SMALLER_CSV,
+        false);
   }
 
-  private void testSampleSheet(final String samplesheetFileToTest,
-      final String samplesheetType, final int version,
-      final String expectedDataName, final boolean withLane) {
+  private void testSampleSheet(
+      final String samplesheetFileToTest,
+      final String samplesheetType,
+      final int version,
+      final String expectedDataName,
+      final boolean withLane) {
 
     int laneNumber = (withLane ? 2 : -1);
 
     File outputFile = temporaryFile();
 
     // Create CSV file
-    convertSamplesheetToCSV(samplesheetFileToTest, samplesheetType, outputFile,
-        0, version);
+    convertSamplesheetToCSV(samplesheetFileToTest, samplesheetType, outputFile, 0, version);
 
     // Load sample sheet CSV
-    final SampleSheet samplesheetTested =
-        readSamplesheetCSV(outputFile, laneNumber);
+    final SampleSheet samplesheetTested = readSamplesheetCSV(outputFile, laneNumber);
 
     // Compare with expected content
     final Map<String, SampleSheetTest> samplesheetExpected =
@@ -171,14 +177,12 @@ public class SampleSheetReaderTest {
     outputFile.delete();
   }
 
-  /**
-   * Test reads short csv version.
-   */
+  /** Test reads short csv version. */
   @Test
   public void testReadsShortCSVVersion() {
 
-    try (SampleSheetCSVReader reader = new SampleSheetCSVReader(
-        new ByteArrayInputStream(EXPECTED_SMALLER_CSV.getBytes()))) {
+    try (SampleSheetCSVReader reader =
+        new SampleSheetCSVReader(new ByteArrayInputStream(EXPECTED_SMALLER_CSV.getBytes()))) {
 
       reader.read();
 
@@ -186,59 +190,60 @@ public class SampleSheetReaderTest {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-
   }
 
   /**
-   * Reads xls sample sheet file and check sample sheet instance is the same
-   * that expected, with right converting index sequences.
+   * Reads xls sample sheet file and check sample sheet instance is the same that expected, with
+   * right converting index sequences.
    */
   @Test
   public void testReadsXLSVersion2WithoutLaneColumnToCreate() {
 
-    testSampleSheet(SAMPLESHEET_XLS_BCL2FASTQ_V2_FILENAME, "xls", 2,
-        EXPECTED_CSV, false);
+    testSampleSheet(SAMPLESHEET_XLS_BCL2FASTQ_V2_FILENAME, "xls", 2, EXPECTED_CSV, false);
   }
 
   @Test
   public void testReadsXLSVersion2WithLaneColumnToCreate() {
 
-    testSampleSheet(SAMPLESHEET_XLS_BCL2FASTQ_V2_FILENAME, "xls", 2,
-        EXPECTED_CSV_FULL, true);
-
+    testSampleSheet(SAMPLESHEET_XLS_BCL2FASTQ_V2_FILENAME, "xls", 2, EXPECTED_CSV_FULL, true);
   }
 
   @Test
   public void testReadsXLSVersion2DualIndexWithLaneColumnToCreate() {
 
-    testSampleSheet(SAMPLESHEET_XLS_DUALINDEX_BCL2FASTQ_V2_FILENAME, "xls", 2,
-        EXPECTED_FULL_WITH_DUALINDEX_CSV, true);
+    testSampleSheet(
+        SAMPLESHEET_XLS_DUALINDEX_BCL2FASTQ_V2_FILENAME,
+        "xls",
+        2,
+        EXPECTED_FULL_WITH_DUALINDEX_CSV,
+        true);
   }
 
   /**
-   * Reads xlsx sample sheet file and check sample sheet instance is the same
-   * that expected, with right converting index sequences.
+   * Reads xlsx sample sheet file and check sample sheet instance is the same that expected, with
+   * right converting index sequences.
    */
   @Test
   public void testReadsXLSXVersion2WithoutLaneColumnToCreate() {
 
-    testSampleSheet(SAMPLESHEET_XLSX_BCL2FASTQ_V2_FILENAME, "xlsx", 2,
-        EXPECTED_CSV, false);
+    testSampleSheet(SAMPLESHEET_XLSX_BCL2FASTQ_V2_FILENAME, "xlsx", 2, EXPECTED_CSV, false);
   }
 
   @Test
   public void testReadsXLSXVersion2WithLaneColumnToCreate() {
 
-    testSampleSheet(SAMPLESHEET_XLSX_BCL2FASTQ_V2_FILENAME, "xlsx", 2,
-        EXPECTED_CSV_FULL, true);
-
+    testSampleSheet(SAMPLESHEET_XLSX_BCL2FASTQ_V2_FILENAME, "xlsx", 2, EXPECTED_CSV_FULL, true);
   }
 
   @Test
   public void testReadsXLSXVersion2DualIndexWithLaneColumnToCreate() {
 
-    testSampleSheet(SAMPLESHEET_XLSX_DUALINDEX_BCL2FASTQ_V2_FILENAME, "xlsx", 2,
-        EXPECTED_FULL_WITH_DUALINDEX_CSV, true);
+    testSampleSheet(
+        SAMPLESHEET_XLSX_DUALINDEX_BCL2FASTQ_V2_FILENAME,
+        "xlsx",
+        2,
+        EXPECTED_FULL_WITH_DUALINDEX_CSV,
+        true);
   }
 
   @Test
@@ -251,15 +256,13 @@ public class SampleSheetReaderTest {
     writeCSVFromTabulatedString(csvFile, EXPECTED_CSV);
 
     // Load samplesheet csv
-    final SampleSheet samplesheetTested =
-        readSamplesheetCSV(csvFile, laneCount);
+    final SampleSheet samplesheetTested = readSamplesheetCSV(csvFile, laneCount);
 
     // Compare with expected content with content column lane
     final Map<String, SampleSheetTest> samplesheetExpected =
         buildSamplesheetExpected(EXPECTED_CSV_FULL, 2);
 
-    Assert.assertTrue("no sample read in expected string ",
-        samplesheetExpected.size() > 0);
+    Assert.assertTrue("no sample read in expected string ", samplesheetExpected.size() > 0);
 
     compareSamplesheetV2(samplesheetExpected, samplesheetTested, true);
 
@@ -281,8 +284,7 @@ public class SampleSheetReaderTest {
     final Map<String, SampleSheetTest> samplesheetExpected =
         buildSamplesheetExpected(EXPECTED_CSV, 2);
 
-    Assert.assertTrue("no sample read in expected string ",
-        samplesheetExpected.size() > 0);
+    Assert.assertTrue("no sample read in expected string ", samplesheetExpected.size() > 0);
 
     compareSamplesheetV2(samplesheetExpected, samplesheetTested, false);
 
@@ -291,8 +293,8 @@ public class SampleSheetReaderTest {
   }
 
   /**
-   * Reads xls samplesheet file and check samplesheet instance is the same that
-   * expected, with right converting index sequences.
+   * Reads xls samplesheet file and check samplesheet instance is the same that expected, with right
+   * converting index sequences.
    */
   @Test
   public void testReadsXLSVersion1() {
@@ -302,12 +304,10 @@ public class SampleSheetReaderTest {
     File outputFile = temporaryFile();
 
     // Create CSV file
-    convertSamplesheetToCSV(SAMPLESHEET_XLS_BCL2FASTQ_V1_FILENAME, "xls",
-        outputFile, laneCount, 1);
+    convertSamplesheetToCSV(SAMPLESHEET_XLS_BCL2FASTQ_V1_FILENAME, "xls", outputFile, laneCount, 1);
 
     // Load samplesheet csv
-    final SampleSheet samplesheetTested =
-        readSamplesheetCSV(outputFile, laneCount);
+    final SampleSheet samplesheetTested = readSamplesheetCSV(outputFile, laneCount);
 
     final Map<String, SampleSheetTest> samplesheetExpected =
         buildSamplesheetExpected(EXPECTED_CSV_FULL, 1);
@@ -320,8 +320,8 @@ public class SampleSheetReaderTest {
   }
 
   /**
-   * Reads xlsx samplesheet file and check samplesheet instance is the same that
-   * expected, with right converting index sequences.
+   * Reads xlsx samplesheet file and check samplesheet instance is the same that expected, with
+   * right converting index sequences.
    */
   @Test
   public void testReadsXLSXVersion1() {
@@ -331,12 +331,11 @@ public class SampleSheetReaderTest {
     File outputFile = temporaryFile();
 
     // Create CSV file
-    convertSamplesheetToCSV(SAMPLESHEET_XLSX_BCL2FASTQ_V1_FILENAME, "xlsx",
-        outputFile, laneCount, 1);
+    convertSamplesheetToCSV(
+        SAMPLESHEET_XLSX_BCL2FASTQ_V1_FILENAME, "xlsx", outputFile, laneCount, 1);
 
     // Load samplesheet csv
-    final SampleSheet samplesheetTested =
-        readSamplesheetCSV(outputFile, laneCount);
+    final SampleSheet samplesheetTested = readSamplesheetCSV(outputFile, laneCount);
 
     final Map<String, SampleSheetTest> samplesheetExpected =
         buildSamplesheetExpected(EXPECTED_CSV_FULL, 1);
@@ -347,33 +346,34 @@ public class SampleSheetReaderTest {
     // Delete temporary file
     outputFile.delete();
   }
+
   //
   // Private methods
   //
 
   private void compareSamplesheetV2(
       final Map<String, SampleSheetTest> samplesheetExpected,
-      final SampleSheet tested, final boolean withLane) {
+      final SampleSheet tested,
+      final boolean withLane) {
 
-    Assert.assertFalse("No sample expected loaded ",
-        samplesheetExpected.isEmpty());
+    Assert.assertFalse("No sample expected loaded ", samplesheetExpected.isEmpty());
 
     for (Sample e : tested) {
 
       final String sampleId = e.getSampleId();
       final int laneNumber = e.getLane() == -1 ? 0 : e.getLane();
 
-      if (withLane)
-        Assert.assertFalse("Lane number should be define in " + e,
-            laneNumber == 0);
+      if (withLane) Assert.assertFalse("Lane number should be define in " + e, laneNumber == 0);
 
-      final SampleSheetTest expected =
-          samplesheetExpected.get(sampleId + "_" + laneNumber);
+      final SampleSheetTest expected = samplesheetExpected.get(sampleId + "_" + laneNumber);
 
-      Assert.assertNotNull("Sample id "
-          + sampleId + "_" + laneNumber
-          + " not found in expected dataset, it contains\n" + Joiner.on("\n\t")
-              .withKeyValueSeparator(",").join(samplesheetExpected),
+      Assert.assertNotNull(
+          "Sample id "
+              + sampleId
+              + "_"
+              + laneNumber
+              + " not found in expected dataset, it contains\n"
+              + Joiner.on("\n\t").withKeyValueSeparator(",").join(samplesheetExpected),
           expected);
 
       compareSamplesheetEntryV2(expected, e, withLane);
@@ -383,25 +383,22 @@ public class SampleSheetReaderTest {
     }
 
     Assert.assertEquals(
-        "expected sample(s) missing: "
-            + Joiner.on(",").join(samplesheetExpected.keySet()),
-        0, samplesheetExpected.size());
+        "expected sample(s) missing: " + Joiner.on(",").join(samplesheetExpected.keySet()),
+        0,
+        samplesheetExpected.size());
   }
 
-  private void compareSamplesheetEntryV2(final SampleSheetTest expected,
-      final Sample tested, final boolean withLane) {
+  private void compareSamplesheetEntryV2(
+      final SampleSheetTest expected, final Sample tested, final boolean withLane) {
 
-    Assert.assertEquals("Sample ref", expected.getSampleRef(),
-        tested.getSampleRef());
-    Assert.assertEquals("Sample description", expected.getDescription(),
-        tested.getDescription());
-    Assert.assertEquals("Sample project", expected.getSampleProject(),
-        tested.getSampleProject());
-    Assert.assertEquals("Sample index", expected.getIndex(),
-        Strings.nullToEmpty(tested.getIndex1()));
+    Assert.assertEquals("Sample ref", expected.getSampleRef(), tested.getSampleRef());
+    Assert.assertEquals("Sample description", expected.getDescription(), tested.getDescription());
+    Assert.assertEquals("Sample project", expected.getSampleProject(), tested.getSampleProject());
+    Assert.assertEquals(
+        "Sample index", expected.getIndex(), Strings.nullToEmpty(tested.getIndex1()));
 
-    Assert.assertEquals("Sample index2", expected.getIndex2(),
-        Strings.nullToEmpty(tested.getIndex2()));
+    Assert.assertEquals(
+        "Sample index2", expected.getIndex2(), Strings.nullToEmpty(tested.getIndex2()));
 
     if (withLane) {
       Assert.assertEquals("Sample lane", expected.getLane(), tested.getLane());
@@ -409,44 +406,37 @@ public class SampleSheetReaderTest {
   }
 
   private void compareSamplesheetV1(
-      final Map<String, SampleSheetTest> samplesheetExpected,
-      final SampleSheet tested) {
+      final Map<String, SampleSheetTest> samplesheetExpected, final SampleSheet tested) {
 
     for (Sample s : tested) {
 
       final String sampleId = s.getSampleId();
       final int lane = s.getLane();
 
-      final SampleSheetTest expected =
-          samplesheetExpected.get(sampleId + "_" + lane);
+      final SampleSheetTest expected = samplesheetExpected.get(sampleId + "_" + lane);
 
       Assert.assertNotNull(
           "Sample id " + sampleId + "not found in expected dataset",
           Joiner.on(",").join(samplesheetExpected.keySet()));
 
-      Assert.assertEquals("Sample ref", expected.getSampleRef(),
-          s.getSampleRef());
-      Assert.assertEquals("Sample description", expected.getDescription(),
-          s.getDescription());
-      Assert.assertEquals("Sample project", expected.getSampleProject(),
-          s.getSampleProject());
+      Assert.assertEquals("Sample ref", expected.getSampleRef(), s.getSampleRef());
+      Assert.assertEquals("Sample description", expected.getDescription(), s.getDescription());
+      Assert.assertEquals("Sample project", expected.getSampleProject(), s.getSampleProject());
       Assert.assertEquals("Sample index", expected.getIndex(), s.getIndex1());
 
       Assert.assertEquals("Sample lane", expected.getLane(), s.getLane());
-      Assert.assertEquals("flowcell id", expected.getFCID(),
-          s.getSampleSheet().getFlowCellId());
+      Assert.assertEquals("flowcell id", expected.getFCID(), s.getSampleSheet().getFlowCellId());
       Assert.assertEquals("Recipe", expected.getRecipe(), s.get("Recipe"));
-      Assert.assertEquals("operator", expected.getOperator(),
-          s.get("Operator"));
+      Assert.assertEquals("operator", expected.getOperator(), s.get("Operator"));
 
       // Remove entry in expected map
       samplesheetExpected.remove(sampleId + "_" + lane);
     }
 
     Assert.assertEquals(
-        "expected sample(s) missing: "
-            + Joiner.on(",").join(samplesheetExpected.keySet()),
-        samplesheetExpected.size(), 0);
+        "expected sample(s) missing: " + Joiner.on(",").join(samplesheetExpected.keySet()),
+        samplesheetExpected.size(),
+        0);
   }
 
   private void writeCSVFromTabulatedString(File outputFile, String stringCSV) {
@@ -470,8 +460,7 @@ public class SampleSheetReaderTest {
     }
   }
 
-  private SampleSheet readSamplesheetCSV(final InputStream in,
-      final int laneCount) {
+  private SampleSheet readSamplesheetCSV(final InputStream in, final int laneCount) {
 
     try (SampleSheetCSVReader reader = new SampleSheetCSVReader(in)) {
 
@@ -489,11 +478,13 @@ public class SampleSheetReaderTest {
     }
 
     throw new RuntimeException();
-
   }
 
-  private void convertSamplesheetToCSV(final String samplesheetName,
-      final String samplesheetType, final File outputFile, final int laneCount,
+  private void convertSamplesheetToCSV(
+      final String samplesheetName,
+      final String samplesheetType,
+      final File outputFile,
+      final int laneCount,
       final int version) {
 
     try (InputStream in = loadRessource(samplesheetName)) {
@@ -513,16 +504,14 @@ public class SampleSheetReaderTest {
         }
 
       } else {
-        throw new IOException(
-            samplesheetName + " is not a " + samplesheetType + " file.");
+        throw new IOException(samplesheetName + " is not a " + samplesheetType + " file.");
       }
       if (!result.getDemuxSection().isLaneSampleField() && laneCount > 0) {
         SampleSheetUtils.duplicateSamplesIfLaneFieldNotSet(result, laneCount);
       }
 
       // Replace index sequence shortcuts by sequences
-      SampleSheetUtils.replaceIndexShortcutsBySequences(result,
-          loadIndexSequences());
+      SampleSheetUtils.replaceIndexShortcutsBySequences(result, loadIndexSequences());
 
       // Write CSV samplesheet file
       try (SampleSheetCSVWriter writer = new SampleSheetCSVWriter(outputFile)) {
@@ -565,8 +554,8 @@ public class SampleSheetReaderTest {
 
       } else {
 
-        final SampleSheetTest sample = new SampleSheetTest(line, version,
-            isLaneColumnExist, isIndex2ColumnExist);
+        final SampleSheetTest sample =
+            new SampleSheetTest(line, version, isLaneColumnExist, isIndex2ColumnExist);
         s.put(sample.getKey(), sample);
       }
     }
@@ -702,22 +691,32 @@ public class SampleSheetReaderTest {
     @Override
     public String toString() {
       return "SampleSheetTest [ lane= "
-          + lane + ", sampleID=" + sampleID + ", index=" + index
-          + ", sampleProject=" + sampleProject + ", description=" + description
-          + ", sampleRef=" + sampleRef + "]";
+          + lane
+          + ", sampleID="
+          + sampleID
+          + ", index="
+          + index
+          + ", sampleProject="
+          + sampleProject
+          + ", description="
+          + description
+          + ", sampleRef="
+          + sampleRef
+          + "]";
     }
 
     //
     // Constructor
     //
-    SampleSheetTest(final String line, final int version,
-        boolean isLaneColumnExist, boolean isIndex2ColumnExist) {
+    SampleSheetTest(
+        final String line,
+        final int version,
+        boolean isLaneColumnExist,
+        boolean isIndex2ColumnExist) {
       this.optionalFieds = (version == 1);
       this.laneColumnExist = isLaneColumnExist;
       this.index2ColumnExist = isIndex2ColumnExist;
       parse(line);
-
     }
-
   }
 }

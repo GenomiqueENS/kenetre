@@ -40,7 +40,6 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.junit.Test;
 
 public class FastqFormatTest {
@@ -78,7 +77,6 @@ public class FastqFormatTest {
     assertEquals(FASTQ_ILLUMINA_1_5, getFormatFromName("fastq-illumina-1.5"));
     assertEquals(FASTQ_ILLUMINA_1_5, getFormatFromName("illumina-1.5"));
     assertEquals(FASTQ_ILLUMINA_1_5, getFormatFromName("1.5"));
-
   }
 
   @Test
@@ -167,14 +165,12 @@ public class FastqFormatTest {
     for (int i = 0; i <= 90; i += 10) {
       assertEquals(i, convertToProbaToScore(FASTQ_SANGER, i), 0.01);
     }
-
   }
 
   @Test
   public void testConvertProbabilitytoScore() {
 
-    assertEquals(Double.POSITIVE_INFINITY,
-        FASTQ_SANGER.convertProbabilityToScore(0.0), 0.01);
+    assertEquals(Double.POSITIVE_INFINITY, FASTQ_SANGER.convertProbabilityToScore(0.0), 0.01);
     assertEquals(10, FASTQ_SANGER.convertProbabilityToScore(0.1), 0.01);
     assertEquals(20, FASTQ_SANGER.convertProbabilityToScore(0.01), 0.01);
     assertEquals(30, FASTQ_SANGER.convertProbabilityToScore(0.001), 0.01);
@@ -192,7 +188,6 @@ public class FastqFormatTest {
     for (int i = 0; i <= 90; i += 10) {
       assertEquals(i, convertToProbaToScore(FASTQ_ILLUMINA, i), 0.01);
     }
-
   }
 
   private double convertToProbaToScore(final FastqFormat f, final int q) {
@@ -235,24 +230,15 @@ public class FastqFormatTest {
     assertEquals(-5.00, FastqFormat.convertPhredSCoreToSolexaScore(1), 0.0);
     assertEquals(-5.00, FastqFormat.convertPhredSCoreToSolexaScore(0), 0.0);
 
-    assertEquals(phredScoreToSolexaScore(80),
-        convertPhredSCoreToSolexaScore(80), 0.9);
-    assertEquals(phredScoreToSolexaScore(50),
-        convertPhredSCoreToSolexaScore(50), 0.9);
-    assertEquals(phredScoreToSolexaScore(20),
-        convertPhredSCoreToSolexaScore(20), 0.9);
-    assertEquals(phredScoreToSolexaScore(10),
-        convertPhredSCoreToSolexaScore(10), 0.9);
-    assertEquals(phredScoreToSolexaScore(5), convertPhredSCoreToSolexaScore(5),
-        0.9);
-    assertEquals(phredScoreToSolexaScore(4), convertPhredSCoreToSolexaScore(4),
-        0.9);
-    assertEquals(phredScoreToSolexaScore(3), convertPhredSCoreToSolexaScore(3),
-        0.9);
-    assertEquals(phredScoreToSolexaScore(2), convertPhredSCoreToSolexaScore(2),
-        0.9);
-    assertEquals(phredScoreToSolexaScore(1), convertPhredSCoreToSolexaScore(1),
-        0.9);
+    assertEquals(phredScoreToSolexaScore(80), convertPhredSCoreToSolexaScore(80), 0.9);
+    assertEquals(phredScoreToSolexaScore(50), convertPhredSCoreToSolexaScore(50), 0.9);
+    assertEquals(phredScoreToSolexaScore(20), convertPhredSCoreToSolexaScore(20), 0.9);
+    assertEquals(phredScoreToSolexaScore(10), convertPhredSCoreToSolexaScore(10), 0.9);
+    assertEquals(phredScoreToSolexaScore(5), convertPhredSCoreToSolexaScore(5), 0.9);
+    assertEquals(phredScoreToSolexaScore(4), convertPhredSCoreToSolexaScore(4), 0.9);
+    assertEquals(phredScoreToSolexaScore(3), convertPhredSCoreToSolexaScore(3), 0.9);
+    assertEquals(phredScoreToSolexaScore(2), convertPhredSCoreToSolexaScore(2), 0.9);
+    assertEquals(phredScoreToSolexaScore(1), convertPhredSCoreToSolexaScore(1), 0.9);
     // assertEquals(phredToSolexa(0), convertPhredQualityToSolexa(0), 0.9);
   }
 
@@ -272,16 +258,11 @@ public class FastqFormatTest {
     assertEquals(3.01, FastqFormat.convertSolexaScoreToPhredScore(0), 0.01);
     assertEquals(1.19, FastqFormat.convertSolexaScoreToPhredScore(-5), 0.01);
 
-    assertEquals(solexaScoreToPhredScore(80),
-        convertSolexaScoreToPhredScore(80), 0.9);
-    assertEquals(solexaScoreToPhredScore(20),
-        convertSolexaScoreToPhredScore(20), 0.9);
-    assertEquals(solexaScoreToPhredScore(10),
-        convertSolexaScoreToPhredScore(10), 0.9);
-    assertEquals(solexaScoreToPhredScore(0), convertSolexaScoreToPhredScore(0),
-        0.9);
-    assertEquals(solexaScoreToPhredScore(-5),
-        convertSolexaScoreToPhredScore(-5), 0.9);
+    assertEquals(solexaScoreToPhredScore(80), convertSolexaScoreToPhredScore(80), 0.9);
+    assertEquals(solexaScoreToPhredScore(20), convertSolexaScoreToPhredScore(20), 0.9);
+    assertEquals(solexaScoreToPhredScore(10), convertSolexaScoreToPhredScore(10), 0.9);
+    assertEquals(solexaScoreToPhredScore(0), convertSolexaScoreToPhredScore(0), 0.9);
+    assertEquals(solexaScoreToPhredScore(-5), convertSolexaScoreToPhredScore(-5), 0.9);
   }
 
   @Test
@@ -375,13 +356,11 @@ public class FastqFormatTest {
     assertEquals(FASTQ_ILLUMINA_1_5, identifyFormat(rangeCharacters(66, 126)));
 
     for (FastqFormat f : FastqFormat.values()) {
-      assertEquals(f,
-          identifyFormat(rangeCharacters(f.getCharMin(), f.getCharMax())));
+      assertEquals(f, identifyFormat(rangeCharacters(f.getCharMin(), f.getCharMax())));
     }
 
     for (FastqFormat f : FastqFormat.values()) {
-      assertEquals(f,
-          identifyFormat(rangeCharacters(f.getCharMin() + 1, f.getCharMax())));
+      assertEquals(f, identifyFormat(rangeCharacters(f.getCharMin() + 1, f.getCharMax())));
     }
 
     assertNull(identifyFormat(rangeCharacters(32, 104)));
@@ -442,51 +421,58 @@ public class FastqFormatTest {
       assertTrue(true);
     }
 
-    assertEquals(-1,
-        FastqFormat.FASTQ_SANGER
-            .findInvalidChar("!\"#$%&'()*+,-./0123456789:;<=>?"
+    assertEquals(
+        -1,
+        FastqFormat.FASTQ_SANGER.findInvalidChar(
+            "!\"#$%&'()*+,-./0123456789:;<=>?"
                 + "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`"
                 + "abcdefghijklmnopqrstuvwxyz{|}~"));
 
-    assertEquals(' ', FastqFormat.FASTQ_SANGER
-        .findInvalidChar("!\"#$%&'()*+,-./012345 6789:;<=>?"));
+    assertEquals(
+        ' ', FastqFormat.FASTQ_SANGER.findInvalidChar("!\"#$%&'()*+,-./012345 6789:;<=>?"));
 
-    assertEquals(-1, FastqFormat.FASTQ_SOLEXA.findInvalidChar(
-        ";<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"));
-    assertEquals(' ', FastqFormat.FASTQ_SOLEXA.findInvalidChar(
-        ";<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdef ghijklmnopqrstuvwxyz{|}~"));
+    assertEquals(
+        -1,
+        FastqFormat.FASTQ_SOLEXA.findInvalidChar(
+            ";<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"));
+    assertEquals(
+        ' ',
+        FastqFormat.FASTQ_SOLEXA.findInvalidChar(
+            ";<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdef ghijklmnopqrstuvwxyz{|}~"));
 
-    assertEquals(-1, FastqFormat.FASTQ_ILLUMINA.findInvalidChar(
-        "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"));
-    assertEquals(' ', FastqFormat.FASTQ_ILLUMINA.findInvalidChar(
-        "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ "));
+    assertEquals(
+        -1,
+        FastqFormat.FASTQ_ILLUMINA.findInvalidChar(
+            "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"));
+    assertEquals(
+        ' ',
+        FastqFormat.FASTQ_ILLUMINA.findInvalidChar(
+            "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ "));
 
-    assertEquals(-1, FastqFormat.FASTQ_ILLUMINA_1_5.findInvalidChar(
-        "BCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"));
-    assertEquals(' ', FastqFormat.FASTQ_ILLUMINA_1_5.findInvalidChar(
-        "BCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ "));
+    assertEquals(
+        -1,
+        FastqFormat.FASTQ_ILLUMINA_1_5.findInvalidChar(
+            "BCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"));
+    assertEquals(
+        ' ',
+        FastqFormat.FASTQ_ILLUMINA_1_5.findInvalidChar(
+            "BCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ "));
   }
 
   @Test
   public void testConvertTo() {
 
-    assertEquals(';',
-        FastqFormat.FASTQ_SANGER.convertTo('!', FastqFormat.FASTQ_SOLEXA));
+    assertEquals(';', FastqFormat.FASTQ_SANGER.convertTo('!', FastqFormat.FASTQ_SOLEXA));
 
-    assertNull(
-        FastqFormat.FASTQ_SANGER.convertTo(null, FastqFormat.FASTQ_SOLEXA));
+    assertNull(FastqFormat.FASTQ_SANGER.convertTo(null, FastqFormat.FASTQ_SOLEXA));
 
-    assertEquals(";",
-        FastqFormat.FASTQ_SANGER.convertTo("!", FastqFormat.FASTQ_SOLEXA));
+    assertEquals(";", FastqFormat.FASTQ_SANGER.convertTo("!", FastqFormat.FASTQ_SOLEXA));
 
-    assertEquals(";;;;",
-        FastqFormat.FASTQ_SANGER.convertTo("!!!!", FastqFormat.FASTQ_SOLEXA));
-
+    assertEquals(";;;;", FastqFormat.FASTQ_SANGER.convertTo("!!!!", FastqFormat.FASTQ_SOLEXA));
   }
 
   @Test
-  public void testIdentifyFormatInputStream()
-      throws IOException, BadBioEntryException {
+  public void testIdentifyFormatInputStream() throws IOException, BadBioEntryException {
 
     try {
       FastqFormat.identifyFormat((InputStream) null);
@@ -500,7 +486,5 @@ public class FastqFormatTest {
 
     is = this.getClass().getResourceAsStream("/illumina_1_8.fastq");
     assertEquals(FastqFormat.FASTQ_SANGER, FastqFormat.identifyFormat(is, 500));
-
   }
-
 }

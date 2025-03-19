@@ -1,20 +1,19 @@
 package fr.ens.biologie.genomique.kenetre.util.process;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
+import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
+import fr.ens.biologie.genomique.kenetre.util.SystemUtils;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
-
-import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
-import fr.ens.biologie.genomique.kenetre.util.SystemUtils;
-
 /**
  * This class define a Docker client using the Docker command line.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -31,6 +30,7 @@ public class FallBackDockerClient implements DockerClient {
 
   /**
    * Test if gpus are enabled.
+   *
    * @return true if gpus are enabled
    */
   public boolean isGpusEnabled() {
@@ -39,6 +39,7 @@ public class FallBackDockerClient implements DockerClient {
 
   /**
    * Get the uid for executing the instance.
+   *
    * @return the uid for executing the instance
    */
   public int uid() {
@@ -48,6 +49,7 @@ public class FallBackDockerClient implements DockerClient {
 
   /**
    * Get the uid for executing the instance.
+   *
    * @return the uid for executing the instance
    */
   public int gid() {
@@ -61,6 +63,7 @@ public class FallBackDockerClient implements DockerClient {
 
   /**
    * Enable the GPUs.
+   *
    * @param enable enable the gpus
    */
   public void enableGpus(boolean enable) {
@@ -69,6 +72,7 @@ public class FallBackDockerClient implements DockerClient {
 
   /**
    * Set the UID.
+   *
    * @param uid the UID to set
    */
   public void setUid(int uid) {
@@ -82,6 +86,7 @@ public class FallBackDockerClient implements DockerClient {
 
   /**
    * Set the GID.
+   *
    * @param gid the GID to set
    */
   public void setGid(int gid) {
@@ -93,18 +98,14 @@ public class FallBackDockerClient implements DockerClient {
     this.userGid = gid;
   }
 
-  /**
-   * Set the UID and GID for root.
-   */
+  /** Set the UID and GID for root. */
   public void useRootUser() {
 
     setUid(0);
     setGid(0);
   }
 
-  /**
-   * Set the UID and GID for nobody.
-   */
+  /** Set the UID and GID for nobody. */
   public void useNobodyUser() {
 
     setUid(65534);
@@ -127,11 +128,10 @@ public class FallBackDockerClient implements DockerClient {
   }
 
   @Override
-  public DockerImageInstance createConnection(String dockerImage,
-      boolean mountFileIndirections) {
+  public DockerImageInstance createConnection(String dockerImage, boolean mountFileIndirections) {
 
-    return new FallBackDockerImageInstance(dockerImage, mountFileIndirections,
-        this.gpus, this.userUid, this.userGid, this.logger);
+    return new FallBackDockerImageInstance(
+        dockerImage, mountFileIndirections, this.gpus, this.userUid, this.userGid, this.logger);
   }
 
   @Override
@@ -146,8 +146,7 @@ public class FallBackDockerClient implements DockerClient {
     String output = ProcessUtils.execToString("docker images");
 
     Splitter lineSplitter = Splitter.on('\n');
-    Splitter fieldSplitter =
-        com.google.common.base.Splitter.on(' ').omitEmptyStrings();
+    Splitter fieldSplitter = com.google.common.base.Splitter.on(' ').omitEmptyStrings();
 
     boolean first = true;
 
@@ -175,9 +174,7 @@ public class FallBackDockerClient implements DockerClient {
   // Constructors
   //
 
-  /**
-   * Constructor.
-   */
+  /** Constructor. */
   public FallBackDockerClient() {
 
     this(null);
@@ -185,11 +182,11 @@ public class FallBackDockerClient implements DockerClient {
 
   /**
    * Constructor.
+   *
    * @param logger logger to use
    */
   public FallBackDockerClient(GenericLogger logger) {
 
     this.logger = logger == null ? new DummyLogger() : logger;
   }
-
 }

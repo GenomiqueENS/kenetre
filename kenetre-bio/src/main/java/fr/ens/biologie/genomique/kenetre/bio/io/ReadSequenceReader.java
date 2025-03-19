@@ -24,15 +24,15 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.io;
 
+import fr.ens.biologie.genomique.kenetre.bio.BadBioEntryException;
+import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Iterator;
 
-import fr.ens.biologie.genomique.kenetre.bio.BadBioEntryException;
-import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
-
 /**
  * This interface define method to implements for ReadSequenceReader.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -40,13 +40,10 @@ public interface ReadSequenceReader
     extends Iterator<ReadSequence>, Iterable<ReadSequence>, Closeable {
 
   /**
-   * Throw an exception if an exception has been caught while last hasNext()
-   * method call.
-   * @throws IOException if an exception has been caught while last hasNext()
-   *           method call
-   * @throws BadBioEntryException if an exception has been caught while last
-   *           hasNext() method call
+   * Throw an exception if an exception has been caught while last hasNext() method call.
+   *
+   * @throws IOException if an exception has been caught while last hasNext() method call
+   * @throws BadBioEntryException if an exception has been caught while last hasNext() method call
    */
   void throwException() throws IOException, BadBioEntryException;
-
 }

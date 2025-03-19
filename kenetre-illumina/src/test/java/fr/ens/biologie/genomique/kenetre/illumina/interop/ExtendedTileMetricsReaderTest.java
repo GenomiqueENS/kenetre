@@ -1,5 +1,7 @@
 package fr.ens.biologie.genomique.kenetre.illumina.interop;
 
+import com.google.common.base.Splitter;
+import fr.ens.biologie.genomique.kenetre.KenetreException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -9,39 +11,30 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.google.common.base.Splitter;
-
-import fr.ens.biologie.genomique.kenetre.KenetreException;
 
 public class ExtendedTileMetricsReaderTest {
 
   @Test
-  public void testNextSeq2000SR100()
-      throws URISyntaxException, KenetreException, IOException {
+  public void testNextSeq2000SR100() throws URISyntaxException, KenetreException, IOException {
 
     testReadFile("interop/NextSeq2000_SR100/InterOp");
   }
 
   @Test
-  public void testNextSeq2000PE150()
-      throws URISyntaxException, KenetreException, IOException {
+  public void testNextSeq2000PE150() throws URISyntaxException, KenetreException, IOException {
 
     testReadFile("interop/NextSeq2000_PE150/InterOp");
   }
 
-  private void testReadFile(String path)
-      throws URISyntaxException, KenetreException, IOException {
+  private void testReadFile(String path) throws URISyntaxException, KenetreException, IOException {
 
     String binFilename = "ExtendedTileMetricsOut.bin";
     String csvFilename = "ExtendedTileMetricsOut.csv";
 
     // Get the file URL, not working in JAR file.
-    URL binResource =
-        getClass().getClassLoader().getResource(path + '/' + binFilename);
+    URL binResource = getClass().getClassLoader().getResource(path + '/' + binFilename);
 
     if (binResource == null) {
       throw new IllegalArgumentException("file not found!");
@@ -51,8 +44,7 @@ public class ExtendedTileMetricsReaderTest {
     File binDir = binFile.getParentFile();
 
     // Read metrics from bin file
-    List<ExtendedTileMetric> result =
-        new ExtendedTileMetricsReader(binDir).readMetrics();
+    List<ExtendedTileMetric> result = new ExtendedTileMetricsReader(binDir).readMetrics();
 
     // Convert result to CSV and sort it
     boolean first = true;
@@ -71,8 +63,10 @@ public class ExtendedTileMetricsReaderTest {
 
     // Read expected metrics from csv file and sort it
     List<String> csvLines = new ArrayList<>();
-    try (BufferedReader in = new BufferedReader(new InputStreamReader(getClass()
-        .getClassLoader().getResourceAsStream(path + '/' + csvFilename)))) {
+    try (BufferedReader in =
+        new BufferedReader(
+            new InputStreamReader(
+                getClass().getClassLoader().getResourceAsStream(path + '/' + csvFilename)))) {
 
       String line = null;
       while ((line = in.readLine()) != null) {
@@ -97,10 +91,8 @@ public class ExtendedTileMetricsReaderTest {
       // System.out.println(csvLines.get(i));
       // System.out.println(binLines.get(i));
 
-      List<String> csvFields =
-          splitter.splitToList(csvLines.get(i).replace("nan", "NaN"));
-      List<String> binFields =
-          splitter.splitToList(binLines.get(i).replace("nan", "NaN"));
+      List<String> csvFields = splitter.splitToList(csvLines.get(i).replace("nan", "NaN"));
+      List<String> binFields = splitter.splitToList(binLines.get(i).replace("nan", "NaN"));
 
       for (int j = 0; j < types.size(); j++) {
 
@@ -111,8 +103,7 @@ public class ExtendedTileMetricsReaderTest {
           float csvValue = Float.parseFloat(csvFields.get(j));
           float delta = csvValue / 1000f;
 
-          Assert.assertEquals(csvValue, Float.parseFloat(binFields.get(j)),
-              delta);
+          Assert.assertEquals(csvValue, Float.parseFloat(binFields.get(j)), delta);
         } else {
 
           if (!binFields.get(j).equals("-1")) {
@@ -120,9 +111,7 @@ public class ExtendedTileMetricsReaderTest {
             Assert.assertEquals(csvFields.get(j), binFields.get(j));
           }
         }
-
       }
     }
   }
-
 }

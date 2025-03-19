@@ -30,22 +30,19 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
 import fr.ens.biologie.genomique.kenetre.bio.SAMUtils;
-import fr.ens.biologie.genomique.kenetre.bio.alignmentfilter.QualityReadAlignmentFilter;
 import htsjdk.samtools.SAMLineParser;
 import htsjdk.samtools.SAMRecord;
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
- * This class is a JUnit test class to test the class
- * QualityReadAlignmentsFilter.java.
+ * This class is a JUnit test class to test the class QualityReadAlignmentsFilter.java.
+ *
  * @author Claire Wallon
  */
 public class QualityReadAlignmentsFilterTest {
@@ -68,10 +65,11 @@ public class QualityReadAlignmentsFilterTest {
             + "CGGCCGGACCGACCCCGTNGGGGTCCGACAANNNNNNNNNNNNNNCACANGNACGNNGCANANCCAACCCGAGCGT"
             + "\tGGGFGBGGGEGGGGGDD?#A=>B3BA=BD###############################################\tXM:i:0";
     // recordSE2 quality score: 55
-    this.recordSE2 = "HWI-EAS285_0001_'':1:1:1260:13682#0/1\t0\tchr16\t"
-        + "23360177\t55\t76M\t*\t0\t0\t"
-        + "ATTTGCGACAGGTAGTTTNAAATCTGTGACTNNNNNNNNNNNNNNAGTGNCNTTCNNCGTNGNCACTGACGTCACT"
-        + "\tGGGGFGGGGFCECEEBCB#ACCCCCGGFGGA##############AA=A#A#A?A##A=?#9#8?CCB>CGEGGGA\tXA:i:1\tMD:Z:18A12G0A0G0T0G0C0T0A0T0A0G0G0A0A4T1T3T0A3G1G13\tNM:i:21";
+    this.recordSE2 =
+        "HWI-EAS285_0001_'':1:1:1260:13682#0/1\t0\tchr16\t"
+            + "23360177\t55\t76M\t*\t0\t0\t"
+            + "ATTTGCGACAGGTAGTTTNAAATCTGTGACTNNNNNNNNNNNNNNAGTGNCNTTCNNCGTNGNCACTGACGTCACT"
+            + "\tGGGGFGGGGFCECEEBCB#ACCCCCGGFGGA##############AA=A#A#A?A##A=?#9#8?CCB>CGEGGGA\tXA:i:1\tMD:Z:18A12G0A0G0T0G0C0T0A0T0A0G0G0A0A4T1T3T0A3G1G13\tNM:i:21";
 
     // recordPE1 and recordPE2 paired
     // recordPE1 quality score: 0
@@ -149,8 +147,7 @@ public class QualityReadAlignmentsFilterTest {
 
   /**
    * Test method for {fr.ens.biologie.genomique.eoulsan.bio.alignmentsfilters.
-   * QualityReadAlignmentsFilter#setParameter(java.lang.String,
-   * java.lang.String)}.
+   * QualityReadAlignmentsFilter#setParameter(java.lang.String, java.lang.String)}.
    */
   @Test
   public void testSetParameter() {
@@ -273,5 +270,4 @@ public class QualityReadAlignmentsFilterTest {
     QualityReadAlignmentFilter filterTest = new QualityReadAlignmentFilter();
     assertNotNull(filterTest);
   }
-
 }

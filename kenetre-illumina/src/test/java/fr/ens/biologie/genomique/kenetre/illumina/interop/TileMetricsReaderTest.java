@@ -1,5 +1,7 @@
 package fr.ens.biologie.genomique.kenetre.illumina.interop;
 
+import com.google.common.base.Splitter;
+import fr.ens.biologie.genomique.kenetre.KenetreException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -12,43 +14,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.google.common.base.Splitter;
-
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-import fr.ens.biologie.genomique.kenetre.illumina.interop.Metric;
-import fr.ens.biologie.genomique.kenetre.illumina.interop.TileMetric;
-import fr.ens.biologie.genomique.kenetre.illumina.interop.TileMetricsReader;
 
 public class TileMetricsReaderTest {
 
   @Test
-  public void testHiSeq1500PE100()
-      throws URISyntaxException, KenetreException, IOException {
+  public void testHiSeq1500PE100() throws URISyntaxException, KenetreException, IOException {
 
     testReadFile("interop/HiSeq1500_PE100/InterOp", null);
   }
 
   @Test
-  public void testHiSeq1500SR50()
-      throws URISyntaxException, KenetreException, IOException {
+  public void testHiSeq1500SR50() throws URISyntaxException, KenetreException, IOException {
 
     testReadFile("interop/HiSeq1500_SR50/InterOp", null);
   }
 
   @Test
-  public void testNextSeq500SR75()
-      throws URISyntaxException, KenetreException, IOException {
+  public void testNextSeq500SR75() throws URISyntaxException, KenetreException, IOException {
 
     testReadFile("interop/NextSeq500_SR75/InterOp", null);
   }
 
   @Test
-  public void testNextSeq50010X()
-      throws URISyntaxException, KenetreException, IOException {
+  public void testNextSeq50010X() throws URISyntaxException, KenetreException, IOException {
 
     Map<String, String> map = new HashMap<>();
     map.put("2", "3");
@@ -57,15 +47,13 @@ public class TileMetricsReaderTest {
   }
 
   @Test
-  public void testNextSeq2000SR100()
-      throws URISyntaxException, KenetreException, IOException {
+  public void testNextSeq2000SR100() throws URISyntaxException, KenetreException, IOException {
 
     testReadFile("interop/NextSeq2000_SR100/InterOp", null);
   }
 
   @Test
-  public void testNextSeq2000PE150()
-      throws URISyntaxException, KenetreException, IOException {
+  public void testNextSeq2000PE150() throws URISyntaxException, KenetreException, IOException {
 
     testReadFile("interop/NextSeq2000_PE150/InterOp", null);
   }
@@ -81,8 +69,7 @@ public class TileMetricsReaderTest {
     String csvFilename = "TileMetricsOut.csv";
 
     // Get the file URL, not working in JAR file.
-    URL binResource =
-        getClass().getClassLoader().getResource(path + '/' + binFilename);
+    URL binResource = getClass().getClassLoader().getResource(path + '/' + binFilename);
 
     if (binResource == null) {
       throw new IllegalArgumentException("file not found!");
@@ -108,20 +95,20 @@ public class TileMetricsReaderTest {
       for (int i = 0; i < m.getReadCount(); i++) {
         binLines.add(Metric.toCSV(m.values(i)).replace(".000000,", ","));
       }
-
     }
     Collections.sort(binLines);
 
     // Read expected metrics from csv file and sort it
     List<String> csvLines = new ArrayList<>();
-    try (BufferedReader in = new BufferedReader(new InputStreamReader(getClass()
-        .getClassLoader().getResourceAsStream(path + '/' + csvFilename)))) {
+    try (BufferedReader in =
+        new BufferedReader(
+            new InputStreamReader(
+                getClass().getClassLoader().getResourceAsStream(path + '/' + csvFilename)))) {
 
       String line = null;
       while ((line = in.readLine()) != null) {
 
-        if (!line.startsWith("#")
-            && !line.startsWith("Lane") && !line.trim().isEmpty()) {
+        if (!line.startsWith("#") && !line.startsWith("Lane") && !line.trim().isEmpty()) {
 
           csvLines.add(line);
         }
@@ -141,10 +128,8 @@ public class TileMetricsReaderTest {
       // System.out.println(csvLines.get(i));
       // System.out.println(binLines.get(i));
 
-      List<String> csvFields =
-          splitter.splitToList(csvLines.get(i).replace("nan", "NaN"));
-      List<String> binFields =
-          splitter.splitToList(binLines.get(i).replace("nan", "NaN"));
+      List<String> csvFields = splitter.splitToList(csvLines.get(i).replace("nan", "NaN"));
+      List<String> binFields = splitter.splitToList(binLines.get(i).replace("nan", "NaN"));
 
       for (int j = 0; j < types.size(); j++) {
 
@@ -155,11 +140,8 @@ public class TileMetricsReaderTest {
           float csvValue = Float.parseFloat(csvFields.get(j));
           float binValue = Float.parseFloat(binFields.get(j));
 
-          
-          csvValue =
-              Float.parseFloat(String.format(Locale.ROOT, "%1.4e", csvValue));
-          binValue =
-              Float.parseFloat(String.format(Locale.ROOT, "%1.4e", binValue));
+          csvValue = Float.parseFloat(String.format(Locale.ROOT, "%1.4e", csvValue));
+          binValue = Float.parseFloat(String.format(Locale.ROOT, "%1.4e", binValue));
 
           if (j == 7 && Float.isNaN(csvValue)) {
             continue;
@@ -183,12 +165,9 @@ public class TileMetricsReaderTest {
           if (!binFields.get(j).equals("-1")) {
 
             Assert.assertEquals(csvFields.get(j), binValue);
-
           }
         }
-
       }
     }
   }
-
 }

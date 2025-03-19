@@ -27,8 +27,8 @@ package fr.ens.biologie.genomique.kenetre.util;
 import java.util.Set;
 
 /**
- * This class implements a reporter class like Counter class in Hadoop
- * framework.
+ * This class implements a reporter class like Counter class in Hadoop framework.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -36,6 +36,7 @@ public interface Reporter extends ReporterIncrementer {
 
   /**
    * Get the value of a counter.
+   *
    * @param counterGroup the group of the counter
    * @param counter the counter name
    * @return the value of the counter or -1 if the counter does not exists
@@ -44,16 +45,17 @@ public interface Reporter extends ReporterIncrementer {
 
   /**
    * Get a list of counter groups
+   *
    * @return a unmodifiable list of the counter groups
    */
   Set<String> getCounterGroups();
 
   /**
    * Get the names of the counter of a counter group.
+   *
    * @param counterGroup the group of the counter
-   * @return a unmodifiable list of the name of the counter of the groups or
-   *         empty list if counter doesn't exist
+   * @return a unmodifiable list of the name of the counter of the groups or empty list if counter
+   *     doesn't exist
    */
   Set<String> getCounterNames(String counterGroup);
-
 }

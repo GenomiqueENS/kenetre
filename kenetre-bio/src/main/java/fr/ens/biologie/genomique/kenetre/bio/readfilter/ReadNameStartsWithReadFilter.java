@@ -24,15 +24,14 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.readfilter;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
+import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
 import java.util.HashSet;
 import java.util.Set;
 
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
-
 /**
- * This class define a read filter that filter reads on the start of the name of
- * the read.
+ * This class define a read filter that filter reads on the start of the name of the read.
+ *
  * @since 1.2
  * @author Laurent Jourdren
  */
@@ -54,8 +53,7 @@ public class ReadNameStartsWithReadFilter extends AbstractReadFilter {
   }
 
   @Override
-  public void setParameter(final String key, final String value)
-      throws KenetreException {
+  public void setParameter(final String key, final String value) throws KenetreException {
 
     if (key == null || value == null) {
       return;
@@ -90,8 +88,7 @@ public class ReadNameStartsWithReadFilter extends AbstractReadFilter {
       }
 
     } else {
-      throw new KenetreException(
-          "Unknown parameter for " + getName() + " read filter: " + key);
+      throw new KenetreException("Unknown parameter for " + getName() + " read filter: " + key);
     }
   }
 
@@ -128,5 +125,4 @@ public class ReadNameStartsWithReadFilter extends AbstractReadFilter {
 
     return true;
   }
-
 }

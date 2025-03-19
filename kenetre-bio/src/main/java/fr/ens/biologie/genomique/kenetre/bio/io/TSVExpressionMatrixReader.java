@@ -1,5 +1,10 @@
 package fr.ens.biologie.genomique.kenetre.bio.io;
 
+import com.google.common.base.Splitter;
+import fr.ens.biologie.genomique.kenetre.bio.DenseExpressionMatrix;
+import fr.ens.biologie.genomique.kenetre.bio.ExpressionMatrix;
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
+import fr.ens.biologie.genomique.kenetre.util.GuavaCompatibility;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,15 +16,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import com.google.common.base.Splitter;
-
-import fr.ens.biologie.genomique.kenetre.bio.DenseExpressionMatrix;
-import fr.ens.biologie.genomique.kenetre.bio.ExpressionMatrix;
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-import fr.ens.biologie.genomique.kenetre.util.GuavaCompatibility;
-
 /**
  * This class define an ExpressionMatrix reader for TSV format.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -34,8 +33,7 @@ public class TSVExpressionMatrixReader implements ExpressionMatrixReader {
   }
 
   @Override
-  public ExpressionMatrix read(final ExpressionMatrix matrix)
-      throws IOException {
+  public ExpressionMatrix read(final ExpressionMatrix matrix) throws IOException {
 
     Objects.requireNonNull(matrix, "matrix argument cannot be null");
 
@@ -69,8 +67,7 @@ public class TSVExpressionMatrixReader implements ExpressionMatrixReader {
         } else {
 
           if (fields.size() > columnNames.size() + 1) {
-            throw new IOException(
-                "Found a line with invalid number of column: " + line);
+            throw new IOException("Found a line with invalid number of column: " + line);
           }
 
           Iterator<String> it = columnNames.iterator();
@@ -84,7 +81,6 @@ public class TSVExpressionMatrixReader implements ExpressionMatrixReader {
           }
         }
       }
-
     }
 
     return matrix;
@@ -102,6 +98,7 @@ public class TSVExpressionMatrixReader implements ExpressionMatrixReader {
 
   /**
    * Public constructor
+   *
    * @param is InputStream to use
    */
   public TSVExpressionMatrixReader(final InputStream is) {
@@ -113,11 +110,11 @@ public class TSVExpressionMatrixReader implements ExpressionMatrixReader {
 
   /**
    * Public constructor
+   *
    * @param file File to use
    * @throws FileNotFoundException if the file does not exists
    */
-  public TSVExpressionMatrixReader(final File file)
-      throws FileNotFoundException {
+  public TSVExpressionMatrixReader(final File file) throws FileNotFoundException {
 
     Objects.requireNonNull(file, "file argument cannot be null");
 
@@ -126,16 +123,14 @@ public class TSVExpressionMatrixReader implements ExpressionMatrixReader {
 
   /**
    * Public constructor.
+   *
    * @param filename File to use
    * @throws FileNotFoundException if the file does not exists
    */
-  public TSVExpressionMatrixReader(final String filename)
-      throws FileNotFoundException {
+  public TSVExpressionMatrixReader(final String filename) throws FileNotFoundException {
 
     Objects.requireNonNull(filename, "filename argument cannot be null");
 
     this.is = new FileInputStream(filename);
-
   }
-
 }

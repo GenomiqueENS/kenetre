@@ -23,8 +23,9 @@
  */
 
 /**
- * This package contains I/O classes for reading and writing objects of the
- * <code>fr.ens.biologie.genomique.eoulsan.bio.alignmentsfilters</code> package.
+ * This package contains I/O classes for reading and writing objects of the <code>
+ * fr.ens.biologie.genomique.eoulsan.bio.alignmentsfilters</code> package.
+ *
  * @since 1.0
  */
 package fr.ens.biologie.genomique.kenetre.bio.io;

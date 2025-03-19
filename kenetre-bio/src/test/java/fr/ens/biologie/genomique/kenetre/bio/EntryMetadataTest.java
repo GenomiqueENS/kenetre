@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.Test;
 
 public class EntryMetadataTest {
@@ -58,8 +57,7 @@ public class EntryMetadataTest {
     e2.add("key3", "value3");
     assertTrue(e.add(e2));
 
-    assertEquals(new HashSet<>(Arrays.asList("key1", "key2", "key3")),
-        e.keySet());
+    assertEquals(new HashSet<>(Arrays.asList("key1", "key2", "key3")), e.keySet());
   }
 
   @Test
@@ -249,5 +247,4 @@ public class EntryMetadataTest {
     EntryMetadata e = new EntryMetadata(e2);
     assertEquals(new HashSet<>(Arrays.asList("key2", "key3")), e.keySet());
   }
-
 }

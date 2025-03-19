@@ -1,16 +1,15 @@
 package fr.ens.biologie.genomique.kenetre.bio.readfilter;
 
-import java.util.Iterator;
-
 import com.google.common.base.Splitter;
-
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.bio.NanoporeReadId;
-import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
 import fr.ens.biologie.genomique.kenetre.bio.NanoporeReadId.SequenceType;
+import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
+import java.util.Iterator;
 
 /**
  * This class define a filter based on the Nanopore sequence type.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
@@ -47,24 +46,22 @@ public class NanoporeSequenceTypeFilter extends AbstractReadFilter {
     String sequenceName = it.next();
 
     switch (this.sequenceType) {
+      case CONSENSUS:
+        return sequenceName.indexOf('_') == -1;
 
-    case CONSENSUS:
-      return sequenceName.indexOf('_') == -1;
+      case TEMPLATE:
+        return sequenceName.endsWith("_t");
 
-    case TEMPLATE:
-      return sequenceName.endsWith("_t");
+      case COMPLEMENT:
+        return sequenceName.endsWith("_c");
 
-    case COMPLEMENT:
-      return sequenceName.endsWith("_c");
-
-    default:
-      return false;
+      default:
+        return false;
     }
   }
 
   @Override
-  public void setParameter(final String key, final String value)
-      throws KenetreException {
+  public void setParameter(final String key, final String value) throws KenetreException {
 
     if (key == null || value == null) {
       return;
@@ -76,17 +73,14 @@ public class NanoporeSequenceTypeFilter extends AbstractReadFilter {
 
       try {
         type = SequenceType.valueOf(value.toUpperCase().trim());
-      }
-
-      catch (IllegalArgumentException e) {
+      } catch (IllegalArgumentException e) {
         throw new KenetreException("Invalid sequence type: " + value);
       }
 
       this.sequenceType = type;
 
     } else {
-      throw new KenetreException(
-          "Unknown parameter for " + getName() + " read filter: " + key);
+      throw new KenetreException("Unknown parameter for " + getName() + " read filter: " + key);
     }
   }
 }

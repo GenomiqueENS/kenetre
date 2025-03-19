@@ -1,5 +1,10 @@
 package fr.ens.biologie.genomique.kenetre.bio.io;
 
+import com.google.common.base.Splitter;
+import fr.ens.biologie.genomique.kenetre.bio.AnnotationMatrix;
+import fr.ens.biologie.genomique.kenetre.bio.DenseAnnotationMatrix;
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
+import fr.ens.biologie.genomique.kenetre.util.GuavaCompatibility;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,15 +15,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import com.google.common.base.Splitter;
-
-import fr.ens.biologie.genomique.kenetre.bio.AnnotationMatrix;
-import fr.ens.biologie.genomique.kenetre.bio.DenseAnnotationMatrix;
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-import fr.ens.biologie.genomique.kenetre.util.GuavaCompatibility;
-
 /**
  * This class define an AnnotationMatrix reader for TSV format.
+ *
  * @author Laurent Jourdren
  * @since 2.4
  */
@@ -35,6 +34,7 @@ public class TSVAnnotationMatrixReader implements AnnotationMatrixReader {
 
   /**
    * Test if quotes of the fields must be removed
+   *
    * @return Returns the removeQuotes
    */
   public boolean isRemoveQuotes() {
@@ -82,8 +82,7 @@ public class TSVAnnotationMatrixReader implements AnnotationMatrixReader {
         } else {
 
           if (fields.size() > columnNames.size() + 1) {
-            throw new IOException(
-                "Found a line with invalid number of column: " + line);
+            throw new IOException("Found a line with invalid number of column: " + line);
           }
 
           Iterator<String> it = columnNames.iterator();
@@ -97,7 +96,6 @@ public class TSVAnnotationMatrixReader implements AnnotationMatrixReader {
           }
         }
       }
-
     }
     return matrix;
   }
@@ -114,6 +112,7 @@ public class TSVAnnotationMatrixReader implements AnnotationMatrixReader {
 
   /**
    * Remove double quote from a string.
+   *
    * @param s The string parameter
    * @return a string without double quotes
    */
@@ -137,6 +136,7 @@ public class TSVAnnotationMatrixReader implements AnnotationMatrixReader {
 
   /**
    * Remove double quote and trim a string.
+   *
    * @param s The string parameter
    * @return a string without space and double quotes
    */
@@ -155,9 +155,9 @@ public class TSVAnnotationMatrixReader implements AnnotationMatrixReader {
 
   /**
    * Public constructor.
+   *
    * @param filename file to read
-   * @throws IOException if an error occurs while reading the file or if the
-   *           file is null.
+   * @throws IOException if an error occurs while reading the file or if the file is null.
    */
   public TSVAnnotationMatrixReader(final String filename) throws IOException {
 
@@ -166,22 +166,22 @@ public class TSVAnnotationMatrixReader implements AnnotationMatrixReader {
 
   /**
    * Public constructor.
+   *
    * @param filename file to read
    * @param noHeader true if there is no header for column names
-   * @throws IOException if an error occurs while reading the file or if the
-   *           file is null.
+   * @throws IOException if an error occurs while reading the file or if the file is null.
    */
-  public TSVAnnotationMatrixReader(final String filename,
-      final boolean noHeader) throws IOException {
+  public TSVAnnotationMatrixReader(final String filename, final boolean noHeader)
+      throws IOException {
 
     this(new File(filename), noHeader);
   }
 
   /**
    * Public constructor.
+   *
    * @param file file to read
-   * @throws IOException if an error occurs while reading the file or if the
-   *           file is null.
+   * @throws IOException if an error occurs while reading the file or if the file is null.
    */
   public TSVAnnotationMatrixReader(final File file) throws IOException {
 
@@ -190,13 +190,12 @@ public class TSVAnnotationMatrixReader implements AnnotationMatrixReader {
 
   /**
    * Public constructor.
+   *
    * @param file file to read
    * @param noHeader true if there is no header for column names
-   * @throws IOException if an error occurs while reading the file or if the
-   *           file is null.
+   * @throws IOException if an error occurs while reading the file or if the file is null.
    */
-  public TSVAnnotationMatrixReader(final File file, final boolean noHeader)
-      throws IOException {
+  public TSVAnnotationMatrixReader(final File file, final boolean noHeader) throws IOException {
 
     if (file == null) {
       throw new IOException("No file to load");
@@ -207,6 +206,7 @@ public class TSVAnnotationMatrixReader implements AnnotationMatrixReader {
 
   /**
    * Public constructor
+   *
    * @param is Input stream to read
    * @throws IOException if the stream is null
    */
@@ -217,6 +217,7 @@ public class TSVAnnotationMatrixReader implements AnnotationMatrixReader {
 
   /**
    * Public constructor
+   *
    * @param is Input stream to read
    * @param noHeader true if there is no header for column names
    * @throws IOException if the stream is null
@@ -226,5 +227,4 @@ public class TSVAnnotationMatrixReader implements AnnotationMatrixReader {
 
     this.is = is;
   }
-
 }

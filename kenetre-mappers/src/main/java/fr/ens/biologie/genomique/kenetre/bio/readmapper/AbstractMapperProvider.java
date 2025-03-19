@@ -2,6 +2,7 @@ package fr.ens.biologie.genomique.kenetre.bio.readmapper;
 
 /**
  * This class define a abstract implementation of a MapperProvider.
+ *
  * @since 2.2
  * @author Laurent Jourdren
  */
@@ -27,5 +28,4 @@ public abstract class AbstractMapperProvider implements MapperProvider {
 
     return true;
   }
-
 }

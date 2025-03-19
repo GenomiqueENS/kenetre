@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class define a translator that call another translator but with a
- * different index field.
+ * This class define a translator that call another translator but with a different index field.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
@@ -45,6 +45,7 @@ public class ChangeIndexTranslator extends AbstractTranslator {
 
   /**
    * Get link information.
+   *
    * @param translatedId Translated id
    * @param field field of the id
    * @return a link for the translated id
@@ -57,6 +58,7 @@ public class ChangeIndexTranslator extends AbstractTranslator {
 
   /**
    * Test if the link information is available for the field
+   *
    * @param field Field to test
    * @return true if link information is available
    */
@@ -68,6 +70,7 @@ public class ChangeIndexTranslator extends AbstractTranslator {
 
   /**
    * Get an ordered list of the translator fields
+   *
    * @return an ordered list of the translator fields.
    */
   @Override
@@ -78,6 +81,7 @@ public class ChangeIndexTranslator extends AbstractTranslator {
 
   /**
    * Get a translation for a feature
+   *
    * @param id Identifier of the feature
    * @param field the field to get
    * @return An array with the annotation of the Feature
@@ -114,7 +118,6 @@ public class ChangeIndexTranslator extends AbstractTranslator {
         this.fields.add(f);
       }
     }
-
   }
 
   //
@@ -123,11 +126,11 @@ public class ChangeIndexTranslator extends AbstractTranslator {
 
   /**
    * Public constructor.
+   *
    * @param translator Translator to use
    * @param field Field to use for the new index
    */
-  public ChangeIndexTranslator(final Translator translator,
-      final String field) {
+  public ChangeIndexTranslator(final Translator translator, final String field) {
 
     if (translator == null) {
       throw new NullPointerException("Translator is null");
@@ -138,8 +141,7 @@ public class ChangeIndexTranslator extends AbstractTranslator {
     }
 
     if (!translator.isField(field)) {
-      throw new NullPointerException(
-          "The field " + field + " doesn't exist in the translator");
+      throw new NullPointerException("The field " + field + " doesn't exist in the translator");
     }
 
     this.translator = translator;
@@ -147,5 +149,4 @@ public class ChangeIndexTranslator extends AbstractTranslator {
 
     makeIndex();
   }
-
 }

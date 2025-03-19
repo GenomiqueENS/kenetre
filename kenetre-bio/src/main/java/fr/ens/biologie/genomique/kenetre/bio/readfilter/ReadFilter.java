@@ -24,12 +24,13 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.readfilter;
 
-import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
+import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
 
 /**
  * This interface define a filter for reads.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -37,6 +38,7 @@ public interface ReadFilter {
 
   /**
    * Tests if a specified read should be keep.
+   *
    * @param read read to test
    * @return true if the the read sequence must be kept
    */
@@ -44,6 +46,7 @@ public interface ReadFilter {
 
   /**
    * Tests if the specified reads should be keep.
+   *
    * @param read1 first read to test
    * @param read2 second read to test
    * @return true if the the read sequence must be kept
@@ -52,18 +55,21 @@ public interface ReadFilter {
 
   /**
    * Get the name of the filter.
+   *
    * @return the name of the filter
    */
   String getName();
 
   /**
    * Get the description of the filter.
+   *
    * @return the description of the filter
    */
   String getDescription();
 
   /**
    * Set a parameter of the ReadFilter.
+   *
    * @param key name of the parameter to set
    * @param value value of the parameter to set
    * @throws KenetreException if the parameter is invalid
@@ -72,20 +78,22 @@ public interface ReadFilter {
 
   /**
    * Set the logger to use.
+   *
    * @param logger the logger to use
    */
   void setLogger(GenericLogger logger);
 
   /**
    * Get the logger.
+   *
    * @return the logger
    */
   GenericLogger getLogger();
 
   /**
    * Initialize the filter.
+   *
    * @throws KenetreException an error occurs while initialize the filter
    */
   void init() throws KenetreException;
-
 }

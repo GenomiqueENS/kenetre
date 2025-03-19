@@ -1,5 +1,7 @@
 package fr.ens.biologie.genomique.kenetre.bio.io;
 
+import com.google.common.base.Splitter;
+import fr.ens.biologie.genomique.kenetre.util.GuavaCompatibility;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,12 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.google.common.base.Splitter;
-
-import fr.ens.biologie.genomique.kenetre.util.GuavaCompatibility;
-
 /**
  * This class define a counts reader for TSV format.
+ *
  * @author Laurent Jourdren
  * @since 2.4
  */
@@ -33,8 +32,7 @@ public class TSVCountsReader implements CountsReader {
     String line = null;
     int lineCount = 0;
 
-    try (BufferedReader reader =
-        new BufferedReader(new InputStreamReader(this.is))) {
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(this.is))) {
 
       Splitter splitter = Splitter.on('\t').trimResults();
 
@@ -55,21 +53,22 @@ public class TSVCountsReader implements CountsReader {
 
         List<String> fields = GuavaCompatibility.splitToList(splitter, line);
         if (fields.size() != 2) {
-          throw new IOException("Invalid number of fields found line "
-              + lineCount + ", 2 fields are expected: " + line);
+          throw new IOException(
+              "Invalid number of fields found line "
+                  + lineCount
+                  + ", 2 fields are expected: "
+                  + line);
         }
 
         try {
           result.put(fields.get(0), Integer.parseInt(fields.get(1)));
         } catch (NumberFormatException e) {
-          throw new IOException(
-              "Invalid count found line " + lineCount + ": " + line);
+          throw new IOException("Invalid count found line " + lineCount + ": " + line);
         }
       }
     }
 
     return result;
-
   }
 
   @Override
@@ -84,6 +83,7 @@ public class TSVCountsReader implements CountsReader {
 
   /**
    * Public constructor
+   *
    * @param is InputStream to use
    */
   public TSVCountsReader(final InputStream is) {
@@ -95,6 +95,7 @@ public class TSVCountsReader implements CountsReader {
 
   /**
    * Public constructor
+   *
    * @param file File to use
    * @throws FileNotFoundException if the file does not exists
    */
@@ -107,6 +108,7 @@ public class TSVCountsReader implements CountsReader {
 
   /**
    * Public constructor.
+   *
    * @param filename File to use
    * @throws FileNotFoundException if the file does not exists
    */
@@ -116,5 +118,4 @@ public class TSVCountsReader implements CountsReader {
 
     this.is = new FileInputStream(filename);
   }
-
 }

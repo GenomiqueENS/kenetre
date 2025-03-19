@@ -26,6 +26,7 @@ package fr.ens.biologie.genomique.kenetre.bio.alignmentfilter;
 
 /**
  * This class remove all the supplementary alignments.
+ *
  * @author Laurent Jourdren
  * @since 2.1
  */
@@ -46,11 +47,8 @@ public class SupplementaryAlignmentRemoveFlagReadAlignmentFilter
     return "Remove all the supplementary alignments";
   }
 
-  /**
-   * Public constructor.
-   */
+  /** Public constructor. */
   public SupplementaryAlignmentRemoveFlagReadAlignmentFilter() {
     super(FLAG_VALUE);
   }
-
 }

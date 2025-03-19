@@ -5,6 +5,7 @@ import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
 
 /**
  * This filter will remove all the reads without a GGG head sequence.
+ *
  * @since 2.4
  * @author Laurent Jourdren
  */
@@ -29,20 +30,16 @@ public class RequireGGGHeadReadFilter extends AbstractReadFilter {
   }
 
   @Override
-  public void setParameter(final String key, final String value)
-      throws KenetreException {
+  public void setParameter(final String key, final String value) throws KenetreException {
 
     switch (key) {
+      case "allow.mismatch":
+        this.mismatch = Boolean.parseBoolean(value);
+        break;
 
-    case "allow.mismatch":
-      this.mismatch = Boolean.parseBoolean(value);
-      break;
-
-    default:
-      throw new KenetreException(
-          "Unknown parameter for " + getName() + " read filter: " + key);
+      default:
+        throw new KenetreException("Unknown parameter for " + getName() + " read filter: " + key);
     }
-
   }
 
   @Override
@@ -55,8 +52,7 @@ public class RequireGGGHeadReadFilter extends AbstractReadFilter {
       return false;
     }
 
-    String start =
-        sequence.substring(0, Math.min(ADDITIONAL_BASE_COUNT, length));
+    String start = sequence.substring(0, Math.min(ADDITIONAL_BASE_COUNT, length));
 
     return count(start, 'G') >= (this.mismatch ? 2 : 3);
   }
@@ -73,5 +69,4 @@ public class RequireGGGHeadReadFilter extends AbstractReadFilter {
     }
     return result;
   }
-
 }

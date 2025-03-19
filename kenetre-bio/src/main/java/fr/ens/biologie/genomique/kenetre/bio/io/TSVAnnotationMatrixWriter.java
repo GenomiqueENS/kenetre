@@ -1,7 +1,7 @@
 package fr.ens.biologie.genomique.kenetre.bio.io;
 
+import fr.ens.biologie.genomique.kenetre.bio.AnnotationMatrix;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -10,10 +10,9 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.Objects;
 
-import fr.ens.biologie.genomique.kenetre.bio.AnnotationMatrix;
-
 /**
  * This class define an AnnotationMatrix writer for TSV format.
+ *
  * @author Laurent Jourdren
  * @since 2.4
  */
@@ -30,12 +29,11 @@ public class TSVAnnotationMatrixWriter implements AnnotationMatrixWriter {
   }
 
   @Override
-  public void write(final AnnotationMatrix matrix,
-      final Collection<String> rowNamesToWrite) throws IOException {
+  public void write(final AnnotationMatrix matrix, final Collection<String> rowNamesToWrite)
+      throws IOException {
 
     Objects.requireNonNull(matrix, "matrix argument cannot be null");
-    Objects.requireNonNull(rowNamesToWrite,
-        "rowNamesToWrite argument cannot be null");
+    Objects.requireNonNull(rowNamesToWrite, "rowNamesToWrite argument cannot be null");
 
     try (Writer writer = new OutputStreamWriter(this.os)) {
 
@@ -57,7 +55,6 @@ public class TSVAnnotationMatrixWriter implements AnnotationMatrixWriter {
         for (String value : matrix.getRowValues(rowName)) {
           sb.append('\t');
           sb.append(value);
-
         }
         sb.append('\n');
         writer.write((sb.toString()));
@@ -77,6 +74,7 @@ public class TSVAnnotationMatrixWriter implements AnnotationMatrixWriter {
 
   /**
    * Public constructor.
+   *
    * @param os OutputStream to use
    */
   public TSVAnnotationMatrixWriter(final OutputStream os) {
@@ -88,30 +86,27 @@ public class TSVAnnotationMatrixWriter implements AnnotationMatrixWriter {
 
   /**
    * Public constructor.
+   *
    * @param outputFile file to use
    * @throws IOException if an error occurs while creating the file
    */
   public TSVAnnotationMatrixWriter(final File outputFile) throws IOException {
 
-    Objects.requireNonNull(outputFile,
-        "the outputFile argument cannot be null");
+    Objects.requireNonNull(outputFile, "the outputFile argument cannot be null");
 
     this.os = new FileOutputStream(outputFile);
-
   }
 
   /**
    * Public constructor.
+   *
    * @param outputFilename name of the file to use
    * @throws IOException if an error occurs while creating the file
    */
-  public TSVAnnotationMatrixWriter(final String outputFilename)
-      throws IOException {
+  public TSVAnnotationMatrixWriter(final String outputFilename) throws IOException {
 
-    Objects.requireNonNull(outputFilename,
-        "the outputFilename argument cannot be null");
+    Objects.requireNonNull(outputFilename, "the outputFilename argument cannot be null");
 
     this.os = new FileOutputStream(outputFilename);
   }
-
 }

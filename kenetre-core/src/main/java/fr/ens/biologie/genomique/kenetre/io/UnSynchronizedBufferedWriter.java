@@ -29,11 +29,12 @@ import java.io.Writer;
 
 /**
  * This class define an unsynchronized buffered writer.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
 public class UnSynchronizedBufferedWriter extends Writer {
-  private final static int CAPACITY = 8192;
+  private static final int CAPACITY = 8192;
 
   private final char[] buffer = new char[CAPACITY];
   private int position = 0;
@@ -45,8 +46,7 @@ public class UnSynchronizedBufferedWriter extends Writer {
   }
 
   @Override
-  public void write(final char[] text, int offset, int length)
-      throws IOException {
+  public void write(final char[] text, int offset, int length) throws IOException {
     checkClosed();
     while (length > 0) {
       int n = Math.min(CAPACITY - this.position, length);

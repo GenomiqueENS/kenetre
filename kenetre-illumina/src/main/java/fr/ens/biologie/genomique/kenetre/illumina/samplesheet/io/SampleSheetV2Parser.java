@@ -3,14 +3,13 @@ package fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io;
 import static fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetReaderUtils.parseLane;
 import static fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetReaderUtils.trimFields;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.PropertySection;
 import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.Sample;
 import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheet;
 import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.TableSection;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SampleSheetV2Parser implements SampleSheetParser {
 
@@ -23,6 +22,7 @@ public class SampleSheetV2Parser implements SampleSheetParser {
 
   /**
    * Convert a field name to internal field name.
+   *
    * @param fieldName the field name to convert
    * @return the field name to use with SampleSheet internal model
    */
@@ -86,12 +86,10 @@ public class SampleSheetV2Parser implements SampleSheetParser {
 
       if (!firstField.endsWith("]")) {
 
-        throw new IOException(
-            "Section header do not ends with ']': " + firstField);
+        throw new IOException("Section header do not ends with ']': " + firstField);
       }
 
-      final String sectionName =
-          firstField.substring(1, firstField.length() - 1).trim();
+      final String sectionName = firstField.substring(1, firstField.length() - 1).trim();
 
       if (sectionName.toLowerCase().endsWith("data")) {
 
@@ -159,5 +157,4 @@ public class SampleSheetV2Parser implements SampleSheetParser {
     this.samplesheet = new SampleSheet();
     this.samplesheet.setVersion(2);
   }
-
 }

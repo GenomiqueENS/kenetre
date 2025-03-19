@@ -3,8 +3,9 @@ package fr.ens.biologie.genomique.kenetre.bio.readfilter;
 import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
 
 /**
- * This filter will search for GGG head and CCC tail and add additional fields
- * in read header fields.
+ * This filter will search for GGG head and CCC tail and add additional fields in read header
+ * fields.
+ *
  * @since 2.4
  * @author Laurent Jourdren
  */
@@ -32,14 +33,19 @@ public class GGGHeadReadFilter extends AbstractReadFilter {
     String sequence = read.getSequence();
     int length = read.length();
 
-    String start =
-        sequence.substring(0, Math.min(ADDITIONAL_BASE_COUNT, length));
-    String end =
-        sequence.substring(Math.max(length - ADDITIONAL_BASE_COUNT, 0));
+    String start = sequence.substring(0, Math.min(ADDITIONAL_BASE_COUNT, length));
+    String end = sequence.substring(Math.max(length - ADDITIONAL_BASE_COUNT, 0));
 
-    read.setName(read.getName()
-        + " start_sequence=" + start + " start_G_count=" + count(start, 'G')
-        + " end_sequence=" + end + " end_C_count=" + count(end, 'C'));
+    read.setName(
+        read.getName()
+            + " start_sequence="
+            + start
+            + " start_G_count="
+            + count(start, 'G')
+            + " end_sequence="
+            + end
+            + " end_C_count="
+            + count(end, 'C'));
 
     return true;
   }
@@ -57,5 +63,4 @@ public class GGGHeadReadFilter extends AbstractReadFilter {
 
     return result;
   }
-
 }

@@ -27,12 +27,9 @@ package fr.ens.biologie.genomique.kenetre.bio.readfilter;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
-import fr.ens.biologie.genomique.kenetre.bio.readfilter.LengthReadFilter;
-import fr.ens.biologie.genomique.kenetre.bio.readfilter.ReadFilter;
+import org.junit.Test;
 
 public class LengthReadFilterTest {
 
@@ -69,5 +66,4 @@ public class LengthReadFilterTest {
     read = new ReadSequence("toto", "ATGC", "xxxx");
     assertFalse(filter.accept(read));
   }
-
 }

@@ -24,10 +24,10 @@
 
 package fr.ens.biologie.genomique.kenetre.translator;
 
+import fr.ens.biologie.genomique.kenetre.translator.io.TranslatorOutputFormat;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -38,10 +38,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import fr.ens.biologie.genomique.kenetre.translator.io.TranslatorOutputFormat;
-
 /**
  * This class implements utility methods for translators.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
@@ -49,31 +48,38 @@ public class TranslatorUtils {
 
   /**
    * Create a file with additional annotation.
+   *
    * @param inputFile input file
    * @param fieldToTranslate field to use with translator
    * @param translator translator to use
    * @param outputFormat output format
    * @throws IOException if an error occurs while creating the output file
    */
-  public static void addTranslatorFields(final File inputFile,
-      final int fieldToTranslate, final Translator translator,
-      final TranslatorOutputFormat outputFormat) throws IOException {
+  public static void addTranslatorFields(
+      final File inputFile,
+      final int fieldToTranslate,
+      final Translator translator,
+      final TranslatorOutputFormat outputFormat)
+      throws IOException {
 
-    addTranslatorFields(new FileInputStream(inputFile), fieldToTranslate,
-        translator, outputFormat);
+    addTranslatorFields(new FileInputStream(inputFile), fieldToTranslate, translator, outputFormat);
   }
 
   /**
    * Create a file with additional annotation.
+   *
    * @param is input stream of the file
    * @param fieldToTranslate field to use with translator
    * @param translator translator to use
    * @param outputFormat output format
    * @throws IOException if an error occurs while creating the output file
    */
-  public static void addTranslatorFields(final InputStream is,
-      final int fieldToTranslate, final Translator translator,
-      final TranslatorOutputFormat outputFormat) throws IOException {
+  public static void addTranslatorFields(
+      final InputStream is,
+      final int fieldToTranslate,
+      final Translator translator,
+      final TranslatorOutputFormat outputFormat)
+      throws IOException {
 
     if (is == null) {
       throw new NullPointerException("InputStream is null");
@@ -94,8 +100,7 @@ public class TranslatorUtils {
 
     while ((line = reader.readLine()) != null) {
 
-      final List<String> fields =
-          new ArrayList<>(Arrays.asList(line.split("\t")));
+      final List<String> fields = new ArrayList<>(Arrays.asList(line.split("\t")));
 
       if (first) {
 
@@ -154,11 +159,9 @@ public class TranslatorUtils {
             } else {
               outputFormat.writeLink(value, link);
             }
-
           }
         }
       }
-
     }
 
     reader.close();
@@ -166,8 +169,9 @@ public class TranslatorUtils {
   }
 
   /**
-   * Create a translator that contains one column named "EnsemblID" that
-   * duplicate the Id if the the is an EnsemblID
+   * Create a translator that contains one column named "EnsemblID" that duplicate the Id if the the
+   * is an EnsemblID
+   *
    * @return a new translator
    */
   public static Translator createDuplicatedEnsemblIdTranslator() {
@@ -197,14 +201,11 @@ public class TranslatorUtils {
         return Collections.singletonList(FIELD_NAME);
       }
     };
-
   }
 
   //
   // Constructor
   //
 
-  private TranslatorUtils() {
-  }
-
+  private TranslatorUtils() {}
 }

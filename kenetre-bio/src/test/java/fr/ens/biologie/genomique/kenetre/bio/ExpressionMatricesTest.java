@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collections;
-
 import org.junit.Test;
 
 public class ExpressionMatricesTest {
@@ -75,7 +74,5 @@ public class ExpressionMatricesTest {
 
     assertEquals(2, matrix.getRowCount());
     assertEquals(Arrays.asList("row1", "row3"), matrix.getRowNames());
-
   }
-
 }

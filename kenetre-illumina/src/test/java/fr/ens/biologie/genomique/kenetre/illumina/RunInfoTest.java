@@ -4,21 +4,15 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 
+import fr.ens.biologie.genomique.kenetre.illumina.RunInfo.Read;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.SAXException;
-
-import fr.ens.biologie.genomique.kenetre.illumina.RunInfo.Read;
 
 public class RunInfoTest {
 
@@ -32,8 +26,7 @@ public class RunInfoTest {
   private RunInfo nextSeq500SR75;
 
   @BeforeClass
-  public static void load()
-      throws ParserConfigurationException, SAXException, IOException {
+  public static void load() throws ParserConfigurationException, SAXException, IOException {
 
     obj = new RunInfoTest();
 
@@ -48,8 +41,10 @@ public class RunInfoTest {
   private static RunInfo load(String interOpDir)
       throws ParserConfigurationException, SAXException, IOException {
 
-    InputStream in = RunInfoTest.class.getClassLoader()
-        .getResourceAsStream("interop/" + interOpDir + "/RunInfo.xml");
+    InputStream in =
+        RunInfoTest.class
+            .getClassLoader()
+            .getResourceAsStream("interop/" + interOpDir + "/RunInfo.xml");
 
     return RunInfo.parse(in);
   }
@@ -273,5 +268,4 @@ public class RunInfoTest {
     assertEquals(asList("Red", "Green"), obj.nextSeq50010X.getImageChannels());
     assertEquals(asList("Red", "Green"), obj.nextSeq500SR75.getImageChannels());
   }
-
 }

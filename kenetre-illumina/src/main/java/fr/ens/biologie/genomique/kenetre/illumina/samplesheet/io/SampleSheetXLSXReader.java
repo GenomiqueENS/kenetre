@@ -2,8 +2,8 @@
  *                  Aozan development code
  *
  * This code may be freely distributed and modified under the
- * terms of the GNU General Public License version 3 or later 
- * and CeCILL. This should be distributed with the code. If you 
+ * terms of the GNU General Public License version 3 or later
+ * and CeCILL. This should be distributed with the code. If you
  * do not have a copy, see:
  *
  *      http://www.gnu.org/licenses/gpl-3.0-standalone.html
@@ -23,6 +23,8 @@
 
 package fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io;
 
+import com.google.common.math.DoubleMath;
+import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheet;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -33,7 +35,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -42,12 +43,9 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.google.common.math.DoubleMath;
-
-import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheet;
-
 /**
  * This class reads a Bcl2fastq samplesheet file in xls format.
+ *
  * @since 0.1
  * @author Laurent Jourdren
  */
@@ -62,22 +60,20 @@ public class SampleSheetXLSXReader implements SampleSheetReader, AutoCloseable {
     final SampleSheetParser parser;
 
     switch (this.version) {
+      case -1:
+        parser = new SampleSheetDiscoverFormatParser();
+        break;
 
-    case -1:
-      parser = new SampleSheetDiscoverFormatParser();
-      break;
+      case 1:
+        parser = new SampleSheetV1Parser();
+        break;
 
-    case 1:
-      parser = new SampleSheetV1Parser();
-      break;
+      case 2:
+        parser = new SampleSheetV2Parser();
+        break;
 
-    case 2:
-      parser = new SampleSheetV2Parser();
-      break;
-
-    default:
-      throw new IOException(
-          "Unknown bcl2fastq samplesheet format version: " + this.version);
+      default:
+        throw new IOException("Unknown bcl2fastq samplesheet format version: " + this.version);
     }
 
     // Create a workbook out of the input stream
@@ -110,7 +106,6 @@ public class SampleSheetXLSXReader implements SampleSheetReader, AutoCloseable {
         parser.parseLine(fields);
       }
       fields.clear();
-
     }
 
     wb.close();
@@ -126,6 +121,7 @@ public class SampleSheetXLSXReader implements SampleSheetReader, AutoCloseable {
 
   /**
    * Parse the content of a cell.
+   *
    * @param cell cell to parse
    * @return a String with the cell content
    */
@@ -144,6 +140,7 @@ public class SampleSheetXLSXReader implements SampleSheetReader, AutoCloseable {
 
   /**
    * Test if all the elements of a list are empty.
+   *
    * @param list the list to test
    * @return true if all the elements of the list are empty
    */
@@ -164,6 +161,7 @@ public class SampleSheetXLSXReader implements SampleSheetReader, AutoCloseable {
 
   /**
    * Set the version of the samplesheet file to read.
+   *
    * @param version the version of the samplesheet file to read
    */
   public void setVersion(final int version) {
@@ -173,6 +171,7 @@ public class SampleSheetXLSXReader implements SampleSheetReader, AutoCloseable {
 
   /**
    * Get the version of the samplesheet file to read.
+   *
    * @return the version of the samplesheet file to read
    */
   public int getVersion() {
@@ -186,6 +185,7 @@ public class SampleSheetXLSXReader implements SampleSheetReader, AutoCloseable {
 
   /**
    * Public constructor.
+   *
    * @param is InputStream to use
    */
   public SampleSheetXLSXReader(final InputStream is) {
@@ -199,6 +199,7 @@ public class SampleSheetXLSXReader implements SampleSheetReader, AutoCloseable {
 
   /**
    * Public constructor.
+   *
    * @param file File to use
    * @throws FileNotFoundException if the file does not exists
    */
@@ -209,8 +210,7 @@ public class SampleSheetXLSXReader implements SampleSheetReader, AutoCloseable {
     }
 
     if (!file.isFile()) {
-      throw new FileNotFoundException(
-          "File not found: " + file.getAbsolutePath());
+      throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
     }
 
     this.is = new FileInputStream(file);
@@ -218,6 +218,7 @@ public class SampleSheetXLSXReader implements SampleSheetReader, AutoCloseable {
 
   /**
    * Public constructor.
+   *
    * @param file file to open
    * @throws IOException if an error occurs while openning the file
    */
@@ -236,13 +237,12 @@ public class SampleSheetXLSXReader implements SampleSheetReader, AutoCloseable {
 
   /**
    * Public constructor.
+   *
    * @param filename Filename to use
    * @throws FileNotFoundException if the file does not exists
    */
-  public SampleSheetXLSXReader(final String filename)
-      throws FileNotFoundException {
+  public SampleSheetXLSXReader(final String filename) throws FileNotFoundException {
 
     this(new File(filename));
   }
-
 }

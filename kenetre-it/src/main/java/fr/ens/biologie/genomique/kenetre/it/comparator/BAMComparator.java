@@ -24,22 +24,21 @@
 
 package fr.ens.biologie.genomique.kenetre.it.comparator;
 
+import com.google.common.collect.Sets;
+import fr.ens.biologie.genomique.eoulsan.util.EnhancedBloomFilter;
+import htsjdk.samtools.SAMRecord;
+import htsjdk.samtools.SamInputResource;
+import htsjdk.samtools.SamReader;
+import htsjdk.samtools.SamReaderFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.common.collect.Sets;
-
-import fr.ens.biologie.genomique.eoulsan.util.EnhancedBloomFilter;
-import htsjdk.samtools.SAMRecord;
-import htsjdk.samtools.SamInputResource;
-import htsjdk.samtools.SamReader;
-import htsjdk.samtools.SamReaderFactory;
-
 /**
  * This class allow compare two BAM file with use BloomFilter.
+ *
  * @since 2.0
  * @author Sandrine Perrin
  */
@@ -53,15 +52,14 @@ public class BAMComparator extends AbstractComparatorWithBloomFilter {
   private int numberElementsCompared;
 
   @Override
-  public boolean compareFiles(final EnhancedBloomFilter filter,
-      final InputStream in) throws IOException {
+  public boolean compareFiles(final EnhancedBloomFilter filter, final InputStream in)
+      throws IOException {
 
     String line = null;
     this.numberElementsCompared = 0;
 
     // Create Bam reader
-    final SamReader bamReader =
-        SamReaderFactory.makeDefault().open(SamInputResource.of(in));
+    final SamReader bamReader = SamReaderFactory.makeDefault().open(SamInputResource.of(in));
 
     // Get iterator on file
 
@@ -99,7 +97,6 @@ public class BAMComparator extends AbstractComparatorWithBloomFilter {
           return false;
         }
       }
-
     }
 
     // Close reader
@@ -107,9 +104,12 @@ public class BAMComparator extends AbstractComparatorWithBloomFilter {
 
     // Check count element is the same between two files
     if (this.numberElementsCompared != filter.getAddedNumberOfElements()) {
-      setCauseFailComparison("Different count elements "
-          + this.numberElementsCompared + " was "
-          + filter.getAddedNumberOfElements() + " expected.");
+      setCauseFailComparison(
+          "Different count elements "
+              + this.numberElementsCompared
+              + " was "
+              + filter.getAddedNumberOfElements()
+              + " expected.");
       return false;
     }
 
@@ -117,16 +117,13 @@ public class BAMComparator extends AbstractComparatorWithBloomFilter {
   }
 
   @Override
-  protected EnhancedBloomFilter buildBloomFilter(final InputStream is)
-      throws IOException {
+  protected EnhancedBloomFilter buildBloomFilter(final InputStream is) throws IOException {
 
     // Create filter
-    final EnhancedBloomFilter filter =
-        initBloomFilter(getExpectedNumberOfElements());
+    final EnhancedBloomFilter filter = initBloomFilter(getExpectedNumberOfElements());
 
     // Parse BAM file
-    try (final SamReader bamReader =
-        SamReaderFactory.makeDefault().open(SamInputResource.of(is))) {
+    try (final SamReader bamReader = SamReaderFactory.makeDefault().open(SamInputResource.of(is))) {
 
       for (SAMRecord aBamReader : bamReader) {
         // Convert in line in SAM and save in filter
@@ -181,8 +178,8 @@ public class BAMComparator extends AbstractComparatorWithBloomFilter {
 
   /**
    * Public constructor
-   * @param useSerializeFile true if it needed to save BloomFilter in file with
-   *          extension '.ser'
+   *
+   * @param useSerializeFile true if it needed to save BloomFilter in file with extension '.ser'
    */
   public BAMComparator(final boolean useSerializeFile) {
     super(useSerializeFile);
@@ -192,12 +189,11 @@ public class BAMComparator extends AbstractComparatorWithBloomFilter {
 
   /**
    * Public constructor, specify all headers tags not used to compare.
-   * @param useSerializeFile true if it needed to save BloomFilter in file with
-   *          extension '.ser'
+   *
+   * @param useSerializeFile true if it needed to save BloomFilter in file with extension '.ser'
    * @param headersTags all headers tags
    */
-  public BAMComparator(final boolean useSerializeFile,
-      final String... headersTags) {
+  public BAMComparator(final boolean useSerializeFile, final String... headersTags) {
     super(useSerializeFile);
 
     if (headersTags == null) {
@@ -206,5 +202,4 @@ public class BAMComparator extends AbstractComparatorWithBloomFilter {
 
     this.tagsToNotCompare = Sets.newHashSet(headersTags);
   }
-
 }

@@ -25,15 +25,15 @@ package fr.ens.biologie.genomique.kenetre.it;
 
 import static fr.ens.biologie.genomique.kenetre.util.StringUtils.toTimeHumanReadable;
 
+import com.google.common.io.Files;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import com.google.common.io.Files;
-
 /**
  * This internal class allow to save Process outputs.
+ *
  * @author Sandrine Perrin
  * @since 2.0
  */
@@ -52,6 +52,7 @@ public class ITCommandResult {
 
   @SuppressWarnings("unused")
   private String exceptionMessage;
+
   private boolean interruptedProcess = false;
   private File stderrFile;
 
@@ -63,6 +64,7 @@ public class ITCommandResult {
 
   /**
    * Gets the report on execution command line.
+   *
    * @return the report
    */
   public String getReport() {
@@ -82,8 +84,7 @@ public class ITCommandResult {
     this.message.append(this.directory.getAbsolutePath());
 
     this.message.append("\n\tDuration: ");
-    this.message.append(
-        this.duration == -1 ? "none" : toTimeHumanReadable(this.duration));
+    this.message.append(this.duration == -1 ? "none" : toTimeHumanReadable(this.duration));
 
     this.message.append("\n\tMessage: exit value ");
     this.message.append(this.exitValue);
@@ -109,6 +110,7 @@ public class ITCommandResult {
 
   /**
    * Adds the stderr message on process in the report.
+   *
    * @return the string
    */
   public String getSTDERRMessageOnProcess() {
@@ -123,8 +125,7 @@ public class ITCommandResult {
     sb.append('\n');
 
     // Read error file
-    try (BufferedReader br =
-        Files.newReader(stderrFile, Charset.defaultCharset())) {
+    try (BufferedReader br = Files.newReader(stderrFile, Charset.defaultCharset())) {
 
       String line = "";
 
@@ -152,6 +153,7 @@ public class ITCommandResult {
 
   /**
    * Checks if is caught exception.
+   *
    * @return true, if is caught exception
    */
   public boolean isCaughtException() {
@@ -160,6 +162,7 @@ public class ITCommandResult {
 
   /**
    * Set the exit value.
+   *
    * @param exitValue the new exit value
    */
   public void setExitValue(final int exitValue) {
@@ -168,6 +171,7 @@ public class ITCommandResult {
 
   /**
    * Set the duration.
+   *
    * @param duration the new duration
    */
   public void setDuration(final long duration) {
@@ -176,6 +180,7 @@ public class ITCommandResult {
 
   /**
    * Get the exception.
+   *
    * @return the exception
    */
   public Throwable getException() {
@@ -184,6 +189,7 @@ public class ITCommandResult {
 
   /**
    * Set the exception.
+   *
    * @param exception the new exception
    */
   public void setException(final Exception exception) {
@@ -192,6 +198,7 @@ public class ITCommandResult {
 
   /**
    * Set the exception.
+   *
    * @param exception the exception
    * @param message the message
    */
@@ -202,6 +209,7 @@ public class ITCommandResult {
 
   /**
    * Sets the error file on process.
+   *
    * @param stderrFile the new error file on process
    */
   public void setErrorFileOnProcess(final File stderrFile) {
@@ -210,6 +218,7 @@ public class ITCommandResult {
 
   /**
    * As error file save.
+   *
    * @return true, if successful
    */
   public boolean asErrorFileSave() {
@@ -218,15 +227,14 @@ public class ITCommandResult {
 
   /**
    * Checks if is interrupted process.
+   *
    * @return true, if is interrupted process
    */
   public boolean isInterruptedProcess() {
     return interruptedProcess;
   }
 
-  /**
-   * Sets the interrupted process at true.
-   */
+  /** Sets the interrupted process at true. */
   public void asInterruptedProcess() {
     this.interruptedProcess = true;
   }
@@ -236,12 +244,13 @@ public class ITCommandResult {
   //
   /**
    * Constructor.
+   *
    * @param commandLine the command line
    * @param directory the directory
    * @param desc the description on command line
    */
-  ITCommandResult(final String commandLine, final File directory,
-      final String desc, final int duration) {
+  ITCommandResult(
+      final String commandLine, final File directory, final String desc, final int duration) {
 
     this.commandLine = commandLine;
     this.directory = directory;
@@ -249,7 +258,5 @@ public class ITCommandResult {
     this.durationMaxToInterruptProcess = duration * 60 * 1000;
 
     this.message = new StringBuilder();
-
   }
-
 }

@@ -24,21 +24,21 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.expressioncounter;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Map;
-
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.bio.GFFEntry;
 import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
 import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
 import fr.ens.biologie.genomique.kenetre.util.ReporterIncrementer;
 import htsjdk.samtools.SAMRecord;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Map;
 
 /**
  * This class define an interface for a wrapper on an ExpressionCounter.
+ *
  * @since 1.2
  * @author Claire Wallon
  */
@@ -50,18 +50,21 @@ public interface ExpressionCounter {
 
   /**
    * Get the counter name.
+   *
    * @return a string with the counter name
    */
   String getName();
 
   /**
    * Get the description of the filter.
+   *
    * @return the description of the filter
    */
   String getDescription();
 
   /**
    * Set a parameter of the counter.
+   *
    * @param key name of the parameter to set
    * @param value value of the parameter to set
    * @throws KenetreException if the parameter is invalid
@@ -70,24 +73,28 @@ public interface ExpressionCounter {
 
   /**
    * Set the logger to use.
+   *
    * @param logger the logger to use
    */
   void setLogger(GenericLogger logger);
 
   /**
    * Get the logger.
+   *
    * @return the logger
    */
   GenericLogger getLogger();
 
   /**
    * Check the counter configuration.
+   *
    * @throws KenetreException if counter configuration is invalid
    */
   void checkConfiguration() throws KenetreException;
 
   /**
    * Initialize the counter
+   *
    * @param descIs genome description file
    * @param annotationIs annotation file
    * @param gtfFormat true if the input format is in GTF format
@@ -99,6 +106,7 @@ public interface ExpressionCounter {
 
   /**
    * Initialize the counter
+   *
    * @param desc genome description
    * @param annotationIs annotation file
    * @param gtfFormat true if the input format is in GTF format
@@ -110,26 +118,29 @@ public interface ExpressionCounter {
 
   /**
    * Initialize the counter
+   *
    * @param desc genome description
    * @param annotations annotation entries
    * @throws KenetreException if an error occurs while initialize the counter
    */
-  void init(GenomeDescription desc, Iterable<GFFEntry> annotations)
-      throws KenetreException;
+  void init(GenomeDescription desc, Iterable<GFFEntry> annotations) throws KenetreException;
 
   /**
    * Count the the features.
+   *
    * @param inputSam SAM file as an InputStream
    * @param reporter the reporter
    * @param counterGroup the counter group of the reporter
    * @return a map with the counts
    * @throws KenetreException if an error occurs while counting
    */
-  Map<String, Integer> count(InputStream inputSam, ReporterIncrementer reporter,
-      String counterGroup) throws KenetreException;
+  Map<String, Integer> count(
+      InputStream inputSam, ReporterIncrementer reporter, String counterGroup)
+      throws KenetreException;
 
   /**
    * Count the the features.
+   *
    * @param inputSam SAM file as an InputStream
    * @param outputSam SAM file as an OutputStream
    * @param temporaryDirectory temporary directory
@@ -138,26 +149,31 @@ public interface ExpressionCounter {
    * @return a map with the counts
    * @throws KenetreException if an error occurs while counting
    */
-  Map<String, Integer> count(InputStream inputSam, OutputStream outputSam,
-      File temporaryDirectory, ReporterIncrementer reporter,
-      String counterGroup) throws KenetreException;
+  Map<String, Integer> count(
+      InputStream inputSam,
+      OutputStream outputSam,
+      File temporaryDirectory,
+      ReporterIncrementer reporter,
+      String counterGroup)
+      throws KenetreException;
 
   /**
    * Count the the features.
+   *
    * @param samRecords SAM entries
    * @param reporter the reporter
    * @param counterGroup the counter group of the reporter
    * @return a map with the counts
    * @throws KenetreException if an error occurs while counting
    */
-  Map<String, Integer> count(Iterable<SAMRecord> samRecords,
-      ReporterIncrementer reporter, String counterGroup)
+  Map<String, Integer> count(
+      Iterable<SAMRecord> samRecords, ReporterIncrementer reporter, String counterGroup)
       throws KenetreException;
 
   /**
    * Add missing zero count features.
+   *
    * @param counts the counts
    */
   void addZeroCountFeatures(Map<String, Integer> counts);
-
 }

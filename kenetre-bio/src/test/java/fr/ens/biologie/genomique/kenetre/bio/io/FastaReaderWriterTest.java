@@ -27,6 +27,7 @@ package fr.ens.biologie.genomique.kenetre.bio.io;
 import static fr.ens.biologie.genomique.kenetre.util.StringUtils.md5DigestToString;
 import static org.junit.Assert.assertEquals;
 
+import fr.ens.biologie.genomique.kenetre.bio.Sequence;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -34,10 +35,7 @@ import java.security.DigestInputStream;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
 import org.junit.Test;
-
-import fr.ens.biologie.genomique.kenetre.bio.Sequence;
 
 public class FastaReaderWriterTest {
 
@@ -51,8 +49,7 @@ public class FastaReaderWriterTest {
     for (Sequence s : reader) {
 
       assertEquals(
-          "gi|9626372|ref|NC_001422.1| Enterobacteria phage phiX174, complete genome",
-          s.getName());
+          "gi|9626372|ref|NC_001422.1| Enterobacteria phage phiX174, complete genome", s.getName());
       assertEquals(5386, s.length());
     }
     reader.close();
@@ -66,7 +63,7 @@ public class FastaReaderWriterTest {
     MessageDigest mdo = MessageDigest.getInstance("MD5");
 
     try (InputStream is = this.getClass().getResourceAsStream("/phix.fasta");
-        OutputStream os =  OutputStream.nullOutputStream();
+        OutputStream os = OutputStream.nullOutputStream();
         DigestInputStream dis = new DigestInputStream(is, mdi);
         DigestOutputStream dos = new DigestOutputStream(os, mdo);
         SequenceReader reader = new FastaReader(dis);
@@ -79,5 +76,4 @@ public class FastaReaderWriterTest {
 
     assertEquals(md5DigestToString(mdi), md5DigestToString(mdo));
   }
-
 }

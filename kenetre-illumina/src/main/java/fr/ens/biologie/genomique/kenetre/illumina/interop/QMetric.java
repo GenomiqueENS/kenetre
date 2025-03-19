@@ -2,8 +2,8 @@
  *                  Aozan development code
  *
  * This code may be freely distributed and modified under the
- * terms of the GNU General Public License version 3 or later 
- * and CeCILL. This should be distributed with the code. If you 
+ * terms of the GNU General Public License version 3 or later
+ * and CeCILL. This should be distributed with the code. If you
  * do not have a copy, see:
  *
  *      http://www.gnu.org/licenses/gpl-3.0-standalone.html
@@ -32,45 +32,34 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * This internal class save a record from ExtractionMetricsOut.bin file,
- * corresponding of the description of the EXPECTED_VERSION. An record contains
- * data per tile per cycle per lane. Each record create an object_____________
- * The_file_format_for_q-metrics_is_as_follows:
+ * This internal class save a record from ExtractionMetricsOut.bin file, corresponding of the
+ * description of the EXPECTED_VERSION. An record contains data per tile per cycle per lane. Each
+ * record create an object_____________ The_file_format_for_q-metrics_is_as_follows:
  * __________________________________
  * ______________________________________________________________________________
  * Header________________________________________________________________________
- * ______________________________________________________________________________
- * ____byte_0:
- * _version_number____________________________________________________
- * ____byte_1:
+ * ______________________________________________________________________________ ____byte_0:
+ * _version_number____________________________________________________ ____byte_1:
  * _record_size_______________________________________________________
  * ______________________________________________________________________________
  * Extended_Header_______________________________________________________________
  * ______________________________________________________________________________
- * ____byte_2:_________________________flag_indicating_whether_is_has_bins_(
- * bool)
+ * ____byte_2:_________________________flag_indicating_whether_is_has_bins_( bool)
  * ______________________________________________________________________________
- * If_byte_2_is_true,_then_the_following_information_is_also_in_the_header:
- * ______
+ * If_byte_2_is_true,_then_the_following_information_is_also_in_the_header: ______
  * ______________________________________________________________________________
- * _byte_3:_________________________number_of_bins_(uint8)
- * _______________________
- * _byte_4-binCount:________________array_of_low_ends_for_each_bin_(uint8)
- * _______
- * _byte_4+binCount-4+binCount*2:___array_of_high_ends_for_each_bin_(uint8)
- * ______ _byte_4+2*binCount-4+binCount*3:_array_of_values_for_each_bin_(uint8)
- * _________
- * ______________________________________________________________________________
- * n-
+ * _byte_3:_________________________number_of_bins_(uint8) _______________________
+ * _byte_4-binCount:________________array_of_low_ends_for_each_bin_(uint8) _______
+ * _byte_4+binCount-4+binCount*2:___array_of_high_ends_for_each_bin_(uint8) ______
+ * _byte_4+2*binCount-4+binCount*3:_array_of_values_for_each_bin_(uint8) _________
+ * ______________________________________________________________________________ n-
  * Records_____________________________________________________________________
  * ______________________________________________________________________________
  * ______________________________________________________________________________
- * ____2_bytes:_lane_number_(uint16)
- * _____________________________________________
- * ____2_bytes:_tile_number_(uint16)
- * _____________________________________________
- * ____2_bytes:_cycle_number_(uint16)
- * ____________________________________________
+ * ____2_bytes:_lane_number_(uint16) _____________________________________________
+ * ____2_bytes:_tile_number_(uint16) _____________________________________________
+ * ____2_bytes:_cycle_number_(uint16) ____________________________________________
+ *
  * @author Cyril Firmo
  * @since 2.0
  */
@@ -85,6 +74,7 @@ public class QMetric extends Metric {
 
   /**
    * Get the lane number.
+   *
    * @return the lane number
    */
   public int getLaneNumber() {
@@ -93,6 +83,7 @@ public class QMetric extends Metric {
 
   /**
    * Get the tile number.
+   *
    * @return the tile number
    */
   public long getTileNumber() {
@@ -101,6 +92,7 @@ public class QMetric extends Metric {
 
   /**
    * Get the cycle number of this record.
+   *
    * @return cycle number
    */
   public int getCycleNumber() {
@@ -109,6 +101,7 @@ public class QMetric extends Metric {
 
   /**
    * Get the number of cluster having each quality score.
+   *
    * @return an array of longs with number of cluster for each quality score
    */
   public long[] getClustersScore() {
@@ -128,8 +121,8 @@ public class QMetric extends Metric {
     result.add("Tile");
     result.add("Cycle");
 
-    int binCount = this.remappedScoreQuality != null
-        ? this.remappedScoreQuality.length : this.binCount;
+    int binCount =
+        this.remappedScoreQuality != null ? this.remappedScoreQuality.length : this.binCount;
 
     for (int i = 1; i <= binCount; i++) {
       result.add("Bin_" + i);
@@ -165,8 +158,8 @@ public class QMetric extends Metric {
   public List<Class<?>> fieldTypes() {
     List<Class<?>> result = new ArrayList<>(3 + this.binCount);
 
-    int binCount = this.remappedScoreQuality != null
-        ? this.remappedScoreQuality.length : this.binCount;
+    int binCount =
+        this.remappedScoreQuality != null ? this.remappedScoreQuality.length : this.binCount;
 
     for (int i = 0; i < binCount + 3; i++) {
       result.add(Integer.class);
@@ -181,9 +174,13 @@ public class QMetric extends Metric {
 
   /**
    * Constructor. One record countReads on the ByteBuffer.
+   *
    * @param bb ByteBuffer who read one record
    */
-  QMetric(final int version, final ByteBuffer bb, final int binCount,
+  QMetric(
+      final int version,
+      final ByteBuffer bb,
+      final int binCount,
       final int[] remappedScoreQuality) {
 
     this.laneNumber = uShortToInt(bb);
@@ -207,5 +204,4 @@ public class QMetric extends Metric {
       }
     }
   }
-
 }

@@ -6,6 +6,7 @@ import java.io.InputStream;
 
 /**
  * This class defines a GTF reader.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
@@ -17,6 +18,7 @@ public class GTFReader extends GFFReader {
 
   /**
    * Public constructor
+   *
    * @param is InputStream to use
    */
   public GTFReader(final InputStream is) {
@@ -27,6 +29,7 @@ public class GTFReader extends GFFReader {
 
   /**
    * Public constructor
+   *
    * @param file File to use
    * @throws FileNotFoundException if the file does not exists
    */
@@ -38,6 +41,7 @@ public class GTFReader extends GFFReader {
 
   /**
    * Public constructor.
+   *
    * @param filename File to use
    * @throws FileNotFoundException if the file does not exists
    */
@@ -46,5 +50,4 @@ public class GTFReader extends GFFReader {
     super(filename);
     setGFF3Format(false);
   }
-
 }

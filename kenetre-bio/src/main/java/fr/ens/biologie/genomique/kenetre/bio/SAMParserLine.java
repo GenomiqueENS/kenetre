@@ -33,5 +33,4 @@ public interface SAMParserLine {
   void setup();
 
   void cleanup();
-
 }

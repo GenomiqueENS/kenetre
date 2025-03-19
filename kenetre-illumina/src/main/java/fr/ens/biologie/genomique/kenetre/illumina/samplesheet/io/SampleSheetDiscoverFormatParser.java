@@ -2,16 +2,16 @@ package fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io;
 
 import static fr.ens.biologie.genomique.kenetre.illumina.samplesheet.io.SampleSheetReaderUtils.trimFields;
 
+import fr.ens.biologie.genomique.kenetre.KenetreRuntimeException;
+import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheet;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import fr.ens.biologie.genomique.kenetre.KenetreRuntimeException;
-import fr.ens.biologie.genomique.kenetre.illumina.samplesheet.SampleSheet;
-
 /**
  * This class allow to discover the format of a samplesheet.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -21,8 +21,17 @@ public class SampleSheetDiscoverFormatParser implements SampleSheetParser {
   private final List<List<String>> cache = new ArrayList<List<String>>();
 
   private final List<String> sampleSheetV1Hearder =
-      Arrays.asList("FCID", "Lane", "SampleID", "SampleRef", "Index",
-          "Description", "Control", "Recipe", "Operator", "SampleProject");
+      Arrays.asList(
+          "FCID",
+          "Lane",
+          "SampleID",
+          "SampleRef",
+          "Index",
+          "Description",
+          "Control",
+          "Recipe",
+          "Operator",
+          "SampleProject");
 
   private final List<String> normalizedSampleSheetV1Hearder =
       normalizeHeader(this.sampleSheetV1Hearder);
@@ -86,6 +95,7 @@ public class SampleSheetDiscoverFormatParser implements SampleSheetParser {
 
   /**
    * Normalize the header of a samplesheet.
+   *
    * @param list a list with the field names of a samplesheet
    * @return a list with the normalized field names
    */
@@ -109,5 +119,4 @@ public class SampleSheetDiscoverFormatParser implements SampleSheetParser {
 
     return result;
   }
-
 }

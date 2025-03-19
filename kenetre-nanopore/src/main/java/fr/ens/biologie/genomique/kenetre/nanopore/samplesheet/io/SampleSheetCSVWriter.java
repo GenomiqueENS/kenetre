@@ -2,6 +2,7 @@ package fr.ens.biologie.genomique.kenetre.nanopore.samplesheet.io;
 
 import static java.nio.charset.Charset.defaultCharset;
 
+import fr.ens.biologie.genomique.kenetre.nanopore.samplesheet.SampleSheet;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,10 +11,9 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Path;
 
-import fr.ens.biologie.genomique.kenetre.nanopore.samplesheet.SampleSheet;
-
 /**
  * This class define a writer for Nanopore software CSV sample sheet files.
+ *
  * @since 0.20
  * @author Laurent Jourdren
  */
@@ -38,6 +38,7 @@ public class SampleSheetCSVWriter implements SampleSheetWriter, AutoCloseable {
 
   /**
    * Public constructor.
+   *
    * @param writer Writer to use
    */
   public SampleSheetCSVWriter(final Writer writer) {
@@ -51,6 +52,7 @@ public class SampleSheetCSVWriter implements SampleSheetWriter, AutoCloseable {
 
   /**
    * Public constructor.
+   *
    * @param os OutputStream to use
    */
   public SampleSheetCSVWriter(final OutputStream os) {
@@ -60,6 +62,7 @@ public class SampleSheetCSVWriter implements SampleSheetWriter, AutoCloseable {
 
   /**
    * Public constructor.
+   *
    * @param outputFile file to use
    * @throws IOException if an error occurs while creating the file
    */
@@ -70,6 +73,7 @@ public class SampleSheetCSVWriter implements SampleSheetWriter, AutoCloseable {
 
   /**
    * Public constructor.
+   *
    * @param outputFile file to use
    * @throws IOException if an error occurs while creating the file
    */
@@ -80,6 +84,7 @@ public class SampleSheetCSVWriter implements SampleSheetWriter, AutoCloseable {
 
   /**
    * Public constructor.
+   *
    * @param outputFilename name of the file to use
    * @throws IOException if an error occurs while creating the file
    */
@@ -87,5 +92,4 @@ public class SampleSheetCSVWriter implements SampleSheetWriter, AutoCloseable {
 
     this.writer = new FileWriter(outputFilename, defaultCharset());
   }
-
 }

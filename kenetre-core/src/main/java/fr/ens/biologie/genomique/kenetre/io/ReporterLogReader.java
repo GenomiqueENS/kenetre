@@ -24,6 +24,8 @@
 
 package fr.ens.biologie.genomique.kenetre.io;
 
+import fr.ens.biologie.genomique.kenetre.util.LocalReporter;
+import fr.ens.biologie.genomique.kenetre.util.Reporter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,11 +34,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
-import fr.ens.biologie.genomique.kenetre.util.LocalReporter;
-import fr.ens.biologie.genomique.kenetre.util.Reporter;
-
 /**
  * This class define a log reader that store log data in a Reporter object
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -49,6 +49,7 @@ public class ReporterLogReader {
 
   /**
    * Read a log file.
+   *
    * @return a reporter object
    * @throws IOException if an error occurs while reading data
    */
@@ -64,7 +65,8 @@ public class ReporterLogReader {
       final String tLine = line.trim();
 
       if ("".equals(tLine)
-          || tLine.startsWith("Start time:") || tLine.startsWith("End time:")
+          || tLine.startsWith("Start time:")
+          || tLine.startsWith("End time:")
           || tLine.startsWith("Duration:")) {
         continue;
       }
@@ -82,8 +84,7 @@ public class ReporterLogReader {
         final String counter = tLine.substring(0, separatorIndex);
 
         try {
-          final int value =
-              Integer.parseInt(tLine.substring(separatorIndex + 1));
+          final int value = Integer.parseInt(tLine.substring(separatorIndex + 1));
 
           result.setCounter(counterGroup, counter, value);
         } catch (NumberFormatException e) {
@@ -92,7 +93,6 @@ public class ReporterLogReader {
       } else {
         counterGroup = line;
       }
-
     }
 
     this.reader.close();
@@ -106,6 +106,7 @@ public class ReporterLogReader {
 
   /**
    * Public constructor
+   *
    * @param is InputStream to use
    */
   public ReporterLogReader(final InputStream is) {
@@ -119,6 +120,7 @@ public class ReporterLogReader {
 
   /**
    * Public constructor
+   *
    * @param file File to use
    * @throws FileNotFoundException if the file does not exists
    */
@@ -129,11 +131,9 @@ public class ReporterLogReader {
     }
 
     if (!file.isFile()) {
-      throw new FileNotFoundException(
-          "File not found: " + file.getAbsolutePath());
+      throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
     }
 
     this.reader = FileUtils.createBufferedReader(file);
   }
-
 }

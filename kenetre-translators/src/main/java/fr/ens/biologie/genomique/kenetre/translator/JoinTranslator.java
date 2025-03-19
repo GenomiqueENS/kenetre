@@ -31,9 +31,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class define a translator that concat two translator. To use the field
- * of the second translator, id must be translated with the first translator.
- * translator and a array of identifiers.
+ * This class define a translator that concat two translator. To use the field of the second
+ * translator, id must be translated with the first translator. translator and a array of
+ * identifiers.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
@@ -48,6 +49,7 @@ public class JoinTranslator extends AbstractTranslator {
 
   /**
    * Get an ordered list of the translator fields
+   *
    * @return an ordered list of the translator fields.
    */
   @Override
@@ -58,6 +60,7 @@ public class JoinTranslator extends AbstractTranslator {
 
   /**
    * Get a translation for a feature
+   *
    * @param id Identifier of the feature
    * @param field the field to get
    * @return An array with the annotation of the Feature
@@ -87,6 +90,7 @@ public class JoinTranslator extends AbstractTranslator {
 
   /**
    * Test if the link information is available for the field
+   *
    * @param field Field to test
    * @return true if link information is available
    */
@@ -107,6 +111,7 @@ public class JoinTranslator extends AbstractTranslator {
 
   /**
    * Get link information.
+   *
    * @param translatedId Translated id
    * @param field field of the id
    * @return a link for the translated id
@@ -133,25 +138,29 @@ public class JoinTranslator extends AbstractTranslator {
 
   /**
    * Public constructor.
+   *
    * @param translator1 First translator
    * @param translator2 Second translator
    * @param joinField The field of the join
    */
-  public JoinTranslator(final Translator translator1, final String joinField,
-      final Translator translator2) {
+  public JoinTranslator(
+      final Translator translator1, final String joinField, final Translator translator2) {
 
     this(translator1, joinField, translator2, false);
   }
 
   /**
    * Public constructor.
+   *
    * @param translator1 First translator
    * @param translator2 Second translator
    * @param joinField The field of the join
-   * @param returnTranslation1IfNoTranslation true if the result must the result
-   *          of translator1 if there is no result for translator2
+   * @param returnTranslation1IfNoTranslation true if the result must the result of translator1 if
+   *     there is no result for translator2
    */
-  public JoinTranslator(final Translator translator1, final String joinField,
+  public JoinTranslator(
+      final Translator translator1,
+      final String joinField,
       final Translator translator2,
       final boolean returnTranslation1IfNoTranslation) {
 
@@ -187,7 +196,5 @@ public class JoinTranslator extends AbstractTranslator {
     }
 
     this.fields = Collections.unmodifiableList(fieldList);
-
   }
-
 }

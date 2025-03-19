@@ -5,14 +5,12 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
-
 import org.junit.Test;
 
 public class AddIdentifierTranslatorTest {
 
   private static final String[] ARRAY_FIELD = {"Col1", "Col2", "Col3", "Col4"};
-  private final MultiColumnTranslator transl =
-      new MultiColumnTranslator(ARRAY_FIELD);
+  private final MultiColumnTranslator transl = new MultiColumnTranslator(ARRAY_FIELD);
 
   @Test
   public void testAddIdentifierTranslator() {
@@ -34,8 +32,7 @@ public class AddIdentifierTranslatorTest {
   @Test
   public void testSetGetUpdateFields() {
 
-    AddIdentifierTranslator addIdTransl =
-        new AddIdentifierTranslator(transl, "first field");
+    AddIdentifierTranslator addIdTransl = new AddIdentifierTranslator(transl, "first field");
     addIdTransl.setNewFieldName("last field");
     List<String> fields = addIdTransl.getFields();
     assertEquals("first field", fields.get(0));
@@ -50,7 +47,5 @@ public class AddIdentifierTranslatorTest {
     assertEquals("Col2", fields.get(1));
     assertEquals("Col3", fields.get(2));
     assertEquals("Col4", fields.get(3));
-
   }
-
 }

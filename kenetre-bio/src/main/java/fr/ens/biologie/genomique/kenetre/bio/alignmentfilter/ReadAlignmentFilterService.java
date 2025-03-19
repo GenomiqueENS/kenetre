@@ -28,11 +28,11 @@ import fr.ens.biologie.genomique.kenetre.util.ServiceNameLoader;
 
 /**
  * This class define a service to retrieve a AlignmentsFilter.
+ *
  * @since 1.1
  * @author Laurent Jourdren
  */
-public class ReadAlignmentFilterService
-    extends ServiceNameLoader<ReadAlignmentFilter> {
+public class ReadAlignmentFilterService extends ServiceNameLoader<ReadAlignmentFilter> {
 
   private static ReadAlignmentFilterService service;
 
@@ -42,6 +42,7 @@ public class ReadAlignmentFilterService
 
   /**
    * Retrieve the singleton static instance of an AlignmentsFilter.
+   *
    * @return A ActionService instance
    */
   public static ReadAlignmentFilterService getInstance() {
@@ -51,11 +52,11 @@ public class ReadAlignmentFilterService
 
   /**
    * Retrieve the singleton static instance of an AlignmentsFilter.
+   *
    * @param forceNewInstance force the usage of a new instance
    * @return A ActionService instance
    */
-  public static synchronized ReadAlignmentFilterService getInstance(
-      boolean forceNewInstance) {
+  public static synchronized ReadAlignmentFilterService getInstance(boolean forceNewInstance) {
 
     if (forceNewInstance || service == null) {
       service = new ReadAlignmentFilterService();
@@ -88,11 +89,8 @@ public class ReadAlignmentFilterService
   // Constructor
   //
 
-  /**
-   * Private constructor.
-   */
+  /** Private constructor. */
   private ReadAlignmentFilterService() {
     super(ReadAlignmentFilter.class);
   }
-
 }

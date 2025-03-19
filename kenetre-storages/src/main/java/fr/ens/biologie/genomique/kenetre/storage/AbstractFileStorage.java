@@ -26,16 +26,16 @@ package fr.ens.biologie.genomique.kenetre.storage;
 
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.io.CompressionType;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import fr.ens.biologie.genomique.kenetre.io.CompressionType;
-
 /**
  * This class define a storage for files.
+ *
  * @since 2.6
  * @author Laurent Jourdren
  */
@@ -47,6 +47,7 @@ public abstract class AbstractFileStorage {
 
   /**
    * Get the list of the file extensions of the files to search.
+   *
    * @return a list with file extensions of the files to search
    */
   protected List<String> getExtensions() {
@@ -56,6 +57,7 @@ public abstract class AbstractFileStorage {
 
   /**
    * Create a new DataPath object.
+   *
    * @param source source of the DataPath object
    * @return a new DataPath object
    */
@@ -63,6 +65,7 @@ public abstract class AbstractFileStorage {
 
   /**
    * Create a new DataPath object.
+   *
    * @param parent parent of the DataPath object
    * @param filename name of the file
    * @return a new DataPath object
@@ -71,10 +74,10 @@ public abstract class AbstractFileStorage {
 
   /**
    * Get the underlying Data.
+   *
    * @param shortName short name of the source to use
    * @return null if not file found
-   * @throws IOException if an error occurs while getting the underlying
-   *           DataFile
+   * @throws IOException if an error occurs while getting the underlying DataFile
    */
   public File getFile(final String shortName) throws IOException {
 
@@ -85,18 +88,17 @@ public abstract class AbstractFileStorage {
 
   /**
    * Get the underlying Data.
+   *
    * @param shortName short name of the source to use
    * @return null if not file found
-   * @throws IOException if an error occurs while getting the underlying
-   *           DataFile
+   * @throws IOException if an error occurs while getting the underlying DataFile
    */
   protected DataPath getDataPath(final String shortName) throws IOException {
 
     requireNonNull(shortName);
 
     if (!this.rootPath.exists()) {
-      throw new IOException(
-          "Storage base path does not exists: " + this.rootPath.getSource());
+      throw new IOException("Storage base path does not exists: " + this.rootPath.getSource());
     }
 
     // List the content of the directory if it can be listed
@@ -109,16 +111,14 @@ public abstract class AbstractFileStorage {
     for (String extension : extensions) {
 
       if (extension == null) {
-        throw new NullPointerException(
-            "One of the extensions of the storage protocol is null");
+        throw new NullPointerException("One of the extensions of the storage protocol is null");
       }
 
       final String filename = shortName.trim() + extension;
 
       for (CompressionType c : CompressionType.values()) {
 
-        final DataPath file =
-            newDataPath(this.rootPath, filename + c.getExtension());
+        final DataPath file = newDataPath(this.rootPath, filename + c.getExtension());
 
         // Check if the file in the right case exists
         if (file.exists()) {
@@ -141,15 +141,13 @@ public abstract class AbstractFileStorage {
           // For non browsable base directory
 
           // Check if the directory exists in lower case
-          final DataPath fileLower =
-              newDataPath(this.rootPath, file.getName().toLowerCase());
+          final DataPath fileLower = newDataPath(this.rootPath, file.getName().toLowerCase());
           if (fileLower.exists()) {
             return fileLower.canonicalize();
           }
 
           // Check if the directory exists in upper case
-          final DataPath fileUpper =
-              newDataPath(this.rootPath, file.getName().toUpperCase());
+          final DataPath fileUpper = newDataPath(this.rootPath, file.getName().toUpperCase());
           if (fileUpper.exists()) {
             return fileUpper.canonicalize();
           }
@@ -166,6 +164,7 @@ public abstract class AbstractFileStorage {
 
   /**
    * Constructor.
+   *
    * @param rootPath root of the storage
    * @param extensions extension of the files
    */
@@ -181,5 +180,4 @@ public abstract class AbstractFileStorage {
     this.rootPath = newDataPath(rootPath);
     this.extensions = extensions;
   }
-
 }

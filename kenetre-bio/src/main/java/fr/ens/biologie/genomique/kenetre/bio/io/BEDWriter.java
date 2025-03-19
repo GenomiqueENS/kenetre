@@ -2,6 +2,8 @@ package fr.ens.biologie.genomique.kenetre.bio.io;
 
 import static fr.ens.biologie.genomique.kenetre.bio.io.BioCharsets.BED_CHARSET;
 
+import fr.ens.biologie.genomique.kenetre.bio.BEDEntry;
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -10,11 +12,9 @@ import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
-import fr.ens.biologie.genomique.kenetre.bio.BEDEntry;
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-
 /**
  * This class define a BED writer.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -30,8 +30,7 @@ public class BEDWriter implements Closeable {
 
     final StringBuilder sb = new StringBuilder();
 
-    for (Map.Entry<String, List<String>> e : entry.getMetadata().entries()
-        .entrySet()) {
+    for (Map.Entry<String, List<String>> e : entry.getMetadata().entries().entrySet()) {
 
       for (String v : e.getValue()) {
         sb.append(e.getKey());
@@ -46,6 +45,7 @@ public class BEDWriter implements Closeable {
 
   /**
    * Write the current entry.
+   *
    * @param entry the entry to write
    * @throws IOException if an error occurs while writing data
    */
@@ -65,6 +65,7 @@ public class BEDWriter implements Closeable {
 
   /**
    * Close the writer.
+   *
    * @throws IOException if an error occurs while closing the writer
    */
   @Override
@@ -79,6 +80,7 @@ public class BEDWriter implements Closeable {
 
   /**
    * Public constructor.
+   *
    * @param writer Writer to use
    * @param format bed format as a number
    */
@@ -97,6 +99,7 @@ public class BEDWriter implements Closeable {
 
   /**
    * Public constructor.
+   *
    * @param os OutputStream to use
    * @param format bed format as a number
    */
@@ -111,6 +114,7 @@ public class BEDWriter implements Closeable {
 
   /**
    * Public constructor.
+   *
    * @param outputFile file to use
    * @param format bed format as a number
    * @throws IOException if an error occurs while creating the file
@@ -126,23 +130,23 @@ public class BEDWriter implements Closeable {
 
   /**
    * Public constructor.
+   *
    * @param outputFilename name of the file to use
    * @param format bed format as a number
    * @throws IOException if an error occurs while creating the file
    */
-  public BEDWriter(final String outputFilename, final int format)
-      throws IOException {
+  public BEDWriter(final String outputFilename, final int format) throws IOException {
 
     // Check the number of BED fields
     BEDEntry.checkBEDFieldCount(format);
 
-    this.writer =
-        FileUtils.createFastBufferedWriter(outputFilename, BED_CHARSET);
+    this.writer = FileUtils.createFastBufferedWriter(outputFilename, BED_CHARSET);
     this.format = format;
   }
 
   /**
    * Public constructor.
+   *
    * @param writer Writer to use
    */
   public BEDWriter(final Writer writer) {
@@ -152,6 +156,7 @@ public class BEDWriter implements Closeable {
 
   /**
    * Public constructor.
+   *
    * @param os OutputStream to use
    */
   public BEDWriter(final OutputStream os) {
@@ -161,6 +166,7 @@ public class BEDWriter implements Closeable {
 
   /**
    * Public constructor.
+   *
    * @param outputFile file to use
    * @throws IOException if an error occurs while creating the file
    */
@@ -171,6 +177,7 @@ public class BEDWriter implements Closeable {
 
   /**
    * Public constructor.
+   *
    * @param outputFilename name of the file to use
    * @throws IOException if an error occurs while creating the file
    */
@@ -178,5 +185,4 @@ public class BEDWriter implements Closeable {
 
     this(outputFilename, DEFAULT_FORMAT);
   }
-
 }

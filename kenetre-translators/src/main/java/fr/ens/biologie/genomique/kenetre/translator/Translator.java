@@ -28,6 +28,7 @@ import java.util.List;
 
 /**
  * This interface define how retrieve annotation for a feature.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
@@ -35,24 +36,28 @@ public interface Translator {
 
   /**
    * Get the default field.
+   *
    * @return default field
    */
   String getDefaultField();
 
   /**
    * Set the default field.
+   *
    * @param field The field to set
    */
   void setDefaultField(String field);
 
   /**
    * Get an ordered list of the translator fields
+   *
    * @return an ordered list of the translator fields.
    */
   List<String> getFields();
 
   /**
    * Get all the translation for a feature
+   *
    * @param id Identifier of the feature
    * @return An array with the annotation of the Feature
    */
@@ -60,6 +65,7 @@ public interface Translator {
 
   /**
    * Get a translation for a feature
+   *
    * @param id Identifier of the feature
    * @param field the field to get
    * @return An array with the annotation of the Feature
@@ -68,6 +74,7 @@ public interface Translator {
 
   /**
    * Get a translation for a feature. The field is the default field.
+   *
    * @param id Identifier of the feature
    * @return An array with the annotation of the Feature
    */
@@ -75,6 +82,7 @@ public interface Translator {
 
   /**
    * Get all the translations for features
+   *
    * @param ids Identifiers of the features
    * @return An array with the annotation of the Feature
    */
@@ -82,6 +90,7 @@ public interface Translator {
 
   /**
    * Get translations for features
+   *
    * @param ids Identifiers of the features
    * @param field the field to get
    * @return An array with the annotation of the Feature
@@ -90,6 +99,7 @@ public interface Translator {
 
   /**
    * Get translations for features. The field is the default field.
+   *
    * @param ids Identifiers of the features
    * @return An array with the annotation of the Feature
    */
@@ -97,6 +107,7 @@ public interface Translator {
 
   /**
    * Test if the link information is available for the field
+   *
    * @param field Field to test
    * @return true if link information is available
    */
@@ -104,6 +115,7 @@ public interface Translator {
 
   /**
    * Get link information.
+   *
    * @param translatedId Translated id
    * @param field field of the id
    * @return a link for the translated id
@@ -112,6 +124,7 @@ public interface Translator {
 
   /**
    * Get links information.
+   *
    * @param translatedIds Translated ids
    * @param field field of the id
    * @return a array of links for the translated ids
@@ -120,6 +133,7 @@ public interface Translator {
 
   /**
    * Test if the field exists.
+   *
    * @param field Field to test
    * @return true if the field exists
    */
@@ -127,14 +141,15 @@ public interface Translator {
 
   /**
    * Get the reverse translator for this translator.
+   *
    * @return a reverse translator
    */
   Translator getReverseTranslator();
 
   /**
    * Get the available identifiers by the translator if possible.
+   *
    * @return a array of string with the identifiers
    */
   List<String> getIds();
-
 }

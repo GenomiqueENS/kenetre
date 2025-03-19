@@ -24,13 +24,13 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.alignmentfilter;
 
+import htsjdk.samtools.SAMRecord;
 import java.util.List;
 
-import htsjdk.samtools.SAMRecord;
-
 /**
- * This class defines a filter to use after the mapper GSNAP (for the
- * compatibility with the expression estimation step).
+ * This class defines a filter to use after the mapper GSNAP (for the compatibility with the
+ * expression estimation step).
+ *
  * @since 1.2
  * @author Claire Wallon
  */
@@ -77,5 +77,4 @@ public class GSNAPReadAlignmentFilter extends AbstractReadAlignmentFilter {
 
     return this.getClass().getSimpleName() + "{name=" + getName() + "}";
   }
-
 }

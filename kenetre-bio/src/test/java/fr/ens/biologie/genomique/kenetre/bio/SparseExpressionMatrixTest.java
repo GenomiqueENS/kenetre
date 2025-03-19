@@ -13,5 +13,4 @@ public class SparseExpressionMatrixTest extends AbstractExpressionMatrixTest {
 
     return new SparseExpressionMatrix(defaultValue);
   }
-
 }

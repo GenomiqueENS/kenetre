@@ -26,12 +26,13 @@ package fr.ens.biologie.genomique.kenetre.bio.expressioncounter;
 
 /**
  * This enum defines the overlap mode for the Expression Counter.
+ *
  * @since 1.2
  * @author Laurent Jourdren
  */
 public enum OverlapMode {
-
-  UNION("union"), INTERSECTION_STRICT("intersection-strict"),
+  UNION("union"),
+  INTERSECTION_STRICT("intersection-strict"),
   INTERSECTION_NONEMPTY("intersection-nonempty");
 
   private final String name;
@@ -42,6 +43,7 @@ public enum OverlapMode {
 
   /**
    * Get the name of strand usage
+   *
    * @return a string with the name of the strand usage
    */
   public String getName() {
@@ -55,6 +57,7 @@ public enum OverlapMode {
 
   /**
    * Get the OverlapMode from its name.
+   *
    * @param name name of the overlap mode
    * @return a OverlapMode or null if no OverlapMode found for the name
    */
@@ -82,11 +85,11 @@ public enum OverlapMode {
 
   /**
    * Constructor.
+   *
    * @param name name of the overlap mode
    */
   OverlapMode(final String name) {
 
     this.name = name;
   }
-
 }

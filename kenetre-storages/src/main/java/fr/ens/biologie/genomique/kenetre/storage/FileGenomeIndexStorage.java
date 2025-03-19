@@ -26,12 +26,12 @@ package fr.ens.biologie.genomique.kenetre.storage;
 
 import static java.util.Objects.requireNonNull;
 
-import java.io.IOException;
-
 import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
+import java.io.IOException;
 
 /**
  * This class define a basic GenomeIndexStorage based on an index file.
+ *
  * @since 1.1
  * @author Laurent Jourdren
  */
@@ -55,13 +55,13 @@ public class FileGenomeIndexStorage extends AbstractFileGenomeIndexStorage {
 
   /**
    * Create a GenomeIndexStorage
+   *
    * @param dir the path of the genome descriptions storage
    * @param logger the logger
-   * @return a GenomeIndexStorage object if the path contains an index storage
-   *         or null if no index storage is found
+   * @return a GenomeIndexStorage object if the path contains an index storage or null if no index
+   *     storage is found
    */
-  public static GenomeIndexStorage getInstance(final String dir,
-      GenericLogger logger) {
+  public static GenomeIndexStorage getInstance(final String dir, GenericLogger logger) {
 
     requireNonNull(dir);
 
@@ -78,14 +78,13 @@ public class FileGenomeIndexStorage extends AbstractFileGenomeIndexStorage {
 
   /**
    * Private constructor.
+   *
    * @param dir the path of the genome descriptions storage
    * @param logger logger to use
    * @throws IOException
    */
-  private FileGenomeIndexStorage(DataPath dir, GenericLogger logger)
-      throws IOException {
+  private FileGenomeIndexStorage(DataPath dir, GenericLogger logger) throws IOException {
     super(dir, logger);
     // TODO Auto-generated constructor stub
   }
-
 }

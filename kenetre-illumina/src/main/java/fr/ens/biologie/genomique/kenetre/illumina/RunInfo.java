@@ -2,8 +2,8 @@
  *                  Aozan development code
  *
  * This code may be freely distributed and modified under the
- * terms of the GNU General Public License version 3 or later 
- * and CeCILL. This should be distributed with the code. If you 
+ * terms of the GNU General Public License version 3 or later
+ * and CeCILL. This should be distributed with the code. If you
  * do not have a copy, see:
  *
  *      http://www.gnu.org/licenses/gpl-3.0-standalone.html
@@ -29,6 +29,8 @@ import static fr.ens.biologie.genomique.kenetre.util.XMLUtils.getElementsByTagNa
 import static fr.ens.biologie.genomique.kenetre.util.XMLUtils.getTagValue;
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.KenetreRuntimeException;
+import fr.ens.biologie.genomique.kenetre.util.XMLUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -36,23 +38,19 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import fr.ens.biologie.genomique.kenetre.KenetreRuntimeException;
-import fr.ens.biologie.genomique.kenetre.util.XMLUtils;
-
 /**
- * This class handle RTA run info data. It is updated with new data related to
- * RTA version 2.X, published in mars 2015.
+ * This class handle RTA run info data. It is updated with new data related to RTA version 2.X,
+ * published in mars 2015.
+ *
  * @since 1.1
  * @author Laurent Jourdren
  */
@@ -78,6 +76,7 @@ public class RunInfo {
 
   /**
    * Handle information about a read.
+   *
    * @author Laurent Jourdren
    */
   public static class Read {
@@ -110,22 +109,25 @@ public class RunInfo {
     @Override
     public String toString() {
       return this.getClass().getSimpleName()
-          + "{number=" + this.number + ", numberCycles=" + this.numberCycles
-          + ", indexedRead=" + this.indexedRead + "}";
+          + "{number="
+          + this.number
+          + ", numberCycles="
+          + this.numberCycles
+          + ", indexedRead="
+          + this.indexedRead
+          + "}";
     }
 
     //
     // Constructor
     //
 
-    private Read(final int number, final int numberCycles,
-        final boolean indexedRead) {
+    private Read(final int number, final int numberCycles, final boolean indexedRead) {
 
       this.number = number;
       this.numberCycles = numberCycles;
       this.indexedRead = indexedRead;
     }
-
   }
 
   /*
@@ -143,18 +145,18 @@ public class RunInfo {
     private final int lanePerSection;
 
     /**
-     * Gets the Nextseq tiles count per lane (surfaces × swaths × camera
-     * segments × tiles per swath per segment).
+     * Gets the Nextseq tiles count per lane (surfaces × swaths × camera segments × tiles per swath
+     * per segment).
+     *
      * @return the Nextseq tiles count
      */
     private int getNextseqTilesCount() {
-      return this.surfaceCount
-          * this.swathCount * this.tileCount * this.sectionPerLane;
+      return this.surfaceCount * this.swathCount * this.tileCount * this.sectionPerLane;
     }
 
     /**
-     * Gets the Hiseq tiles count per lane (surfaces × swaths × tiles per swath
-     * per segment).
+     * Gets the Hiseq tiles count per lane (surfaces × swaths × tiles per swath per segment).
+     *
      * @return the Hiseq tiles count
      */
     private int getHiseqTilesCount() {
@@ -166,18 +168,18 @@ public class RunInfo {
     // Constructor
     //
 
-    private FlowCellLayout(final int laneCount, final int surfaceCount,
-        final int swathCount, final int tileCount, final int sectionPerLane,
+    private FlowCellLayout(
+        final int laneCount,
+        final int surfaceCount,
+        final int swathCount,
+        final int tileCount,
+        final int sectionPerLane,
         final int lanePerSection) {
 
-      checkArgument(laneCount > 0,
-          "laneCount has not been defined in RunInfo.xml");
-      checkArgument(surfaceCount > 0,
-          "surfaceCount has not been defined in RunInfo.xml");
-      checkArgument(swathCount > 0,
-          "swathCount has not been defined in RunInfo.xml");
-      checkArgument(tileCount > 0,
-          "tileCount has not been defined in RunInfo.xml");
+      checkArgument(laneCount > 0, "laneCount has not been defined in RunInfo.xml");
+      checkArgument(surfaceCount > 0, "surfaceCount has not been defined in RunInfo.xml");
+      checkArgument(swathCount > 0, "swathCount has not been defined in RunInfo.xml");
+      checkArgument(tileCount > 0, "tileCount has not been defined in RunInfo.xml");
 
       this.laneCount = laneCount;
       this.surfaceCount = surfaceCount;
@@ -195,6 +197,7 @@ public class RunInfo {
 
   /**
    * Parses the run info file.
+   *
    * @param filepath the path to the run info file
    * @return a RunInfo object with the information of the parsed file
    * @throws ParserConfigurationException the parser configuration exception
@@ -211,6 +214,7 @@ public class RunInfo {
 
   /**
    * Parses the run info file.
+   *
    * @param file the run info file
    * @return a RunInfo object with the information of the parsed file
    * @throws ParserConfigurationException the parser configuration exception
@@ -222,14 +226,14 @@ public class RunInfo {
 
     requireNonNull(file, "RunInfo.xml file cannot be null");
 
-    checkArgument(file.isFile(),
-        "RunInfo.xml does not exists or is not a file");
+    checkArgument(file.isFile(), "RunInfo.xml does not exists or is not a file");
 
     return parse(new FileInputStream(file));
   }
 
   /**
    * Parses the run info file.
+   *
    * @param is the input stream on run info file
    * @return a RunInfo object with the information of the parsed file
    * @throws ParserConfigurationException the parser configuration exception
@@ -245,8 +249,7 @@ public class RunInfo {
 
       final Document doc;
 
-      final DocumentBuilderFactory dbFactory =
-          DocumentBuilderFactory.newInstance();
+      final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
       final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
       doc = dBuilder.parse(in);
       doc.getDocumentElement().normalize();
@@ -257,6 +260,7 @@ public class RunInfo {
 
   /**
    * Parses the run info file.
+   *
    * @param document the document from run info XML file
    */
   private static RunInfo parse(final Document document) {
@@ -276,15 +280,15 @@ public class RunInfo {
           final String value = runElement.getAttribute(name);
 
           switch (name) {
-          case "Id":
-            id = value;
-            break;
-          case "Number":
-            number = Integer.parseInt(value);
-            break;
-          default:
-            throw new KenetreRuntimeException(
-                "in RunInfo unvalid value for name attribute on run tag.");
+            case "Id":
+              id = value;
+              break;
+            case "Number":
+              number = Integer.parseInt(value);
+              break;
+            default:
+              throw new KenetreRuntimeException(
+                  "in RunInfo unvalid value for name attribute on run tag.");
           }
         }
 
@@ -299,14 +303,13 @@ public class RunInfo {
         final FlowCellLayout layout = extractFlowcellElement(runElement);
 
         // After extract lane with PhiX
-        final List<Integer> lanesWithPhiX =
-            extractAlignToPhiXElement(runElement, layout.laneCount);
+        final List<Integer> lanesWithPhiX = extractAlignToPhiXElement(runElement, layout.laneCount);
 
         // Extract images channel data
         final List<String> imageChannels = extractImageChannels(runElement);
 
-        return new RunInfo(id, number, flowCell, instrument, date, readList,
-            layout, lanesWithPhiX, imageChannels);
+        return new RunInfo(
+            id, number, flowCell, instrument, date, readList, layout, lanesWithPhiX, imageChannels);
       }
     }
 
@@ -315,6 +318,7 @@ public class RunInfo {
 
   /**
    * Extract image channels data.
+   *
    * @param runElement the run element
    * @return a list
    */
@@ -342,6 +346,7 @@ public class RunInfo {
 
   /**
    * Extract the read data.
+   *
    * @param runElement the run element
    */
   private static List<Read> extractReadData(final Element runElement) {
@@ -364,26 +369,25 @@ public class RunInfo {
           final String value = e3.getAttribute(name);
 
           switch (name) {
-          case "Number":
-            readNumber = Integer.parseInt(value);
-            break;
-          case "NumCycles":
-            readNumberCycles = Integer.parseInt(value);
-            break;
-          case "IsIndexedRead":
-            readIndexedRead = "Y".equals(value.toUpperCase().trim());
-            break;
-          case "IsReverseComplement":
-            break;
-          default:
-            throw new KenetreRuntimeException(
-                "in RunInfo unvalid value for name attribute on read tag.");
-
+            case "Number":
+              readNumber = Integer.parseInt(value);
+              break;
+            case "NumCycles":
+              readNumberCycles = Integer.parseInt(value);
+              break;
+            case "IsIndexedRead":
+              readIndexedRead = "Y".equals(value.toUpperCase().trim());
+              break;
+            case "IsReverseComplement":
+              break;
+            default:
+              throw new KenetreRuntimeException(
+                  "in RunInfo unvalid value for name attribute on read tag.");
           }
         }
 
-        final Read read = new Read(readNumber == 0 ? readCount : readNumber,
-            readNumberCycles, readIndexedRead);
+        final Read read =
+            new Read(readNumber == 0 ? readCount : readNumber, readNumberCycles, readIndexedRead);
 
         result.add(read);
       }
@@ -394,10 +398,10 @@ public class RunInfo {
 
   /**
    * Parses the flowcell element to set variable used to compute tile number.
+   *
    * @param runElement the element parent.
    */
-  private static FlowCellLayout extractFlowcellElement(
-      final Element runElement) {
+  private static FlowCellLayout extractFlowcellElement(final Element runElement) {
 
     int laneCount = -1;
     int surfaceCount = -1;
@@ -416,41 +420,40 @@ public class RunInfo {
         final int value = Integer.parseInt(e2.getAttribute(name));
 
         switch (name) {
-        case "LaneCount":
-          laneCount = value;
-          break;
-        case "SurfaceCount":
-          surfaceCount = value;
-          break;
-        case "SwathCount":
-          swathCount = value;
-          break;
-        case "TileCount":
-          tileCount = value;
-          break;
+          case "LaneCount":
+            laneCount = value;
+            break;
+          case "SurfaceCount":
+            surfaceCount = value;
+            break;
+          case "SwathCount":
+            swathCount = value;
+            break;
+          case "TileCount":
+            tileCount = value;
+            break;
 
-        // Value specific on RTA version 2.X
-        case "SectionPerLane":
-          sectionPerLane = value;
-          break;
-        case "LanePerSection":
-          lanePerSection = value;
-          break;
-        default:
-          throw new KenetreRuntimeException(
-              "in RunInfo unvalid value for name attribute FlowcellLayout tag.");
-
+          // Value specific on RTA version 2.X
+          case "SectionPerLane":
+            sectionPerLane = value;
+            break;
+          case "LanePerSection":
+            lanePerSection = value;
+            break;
+          default:
+            throw new KenetreRuntimeException(
+                "in RunInfo unvalid value for name attribute FlowcellLayout tag.");
         }
       }
     }
 
-    return new FlowCellLayout(laneCount, surfaceCount, swathCount, tileCount,
-        sectionPerLane, lanePerSection);
+    return new FlowCellLayout(
+        laneCount, surfaceCount, swathCount, tileCount, sectionPerLane, lanePerSection);
   }
 
   /**
-   * Set the lane with Phix. Per default all for a NextSeq, specified for an
-   * HiSeq.
+   * Set the lane with Phix. Per default all for a NextSeq, specified for an HiSeq.
+   *
    * @param runElement the element parent
    * @return a list with the lane number with PhiX
    */
@@ -489,6 +492,7 @@ public class RunInfo {
 
   /**
    * Gets the tiles count.
+   *
    * @return the tiles count
    */
   public int getTilesCount() {
@@ -609,26 +613,40 @@ public class RunInfo {
   public String toString() {
 
     return this.getClass().getSimpleName()
-        + "{id=" + this.id + ", number=" + this.number + ", flowCell="
-        + this.flowCell + ", instrument=" + this.instrument + ", date="
-        + this.date + ", reads=" + this.reads + ", flowCellLaneCount="
-        + this.flowCellLayout.laneCount + ", flowCellSurfaceCount="
-        + this.flowCellLayout.surfaceCount + ", flowCellSwathCount="
-        + this.flowCellLayout.swathCount + ", flowCellTileCount="
-        + this.flowCellLayout.tileCount + ", alignToPhix=" + this.alignToPhix
+        + "{id="
+        + this.id
+        + ", number="
+        + this.number
+        + ", flowCell="
+        + this.flowCell
+        + ", instrument="
+        + this.instrument
+        + ", date="
+        + this.date
+        + ", reads="
+        + this.reads
+        + ", flowCellLaneCount="
+        + this.flowCellLayout.laneCount
+        + ", flowCellSurfaceCount="
+        + this.flowCellLayout.surfaceCount
+        + ", flowCellSwathCount="
+        + this.flowCellLayout.swathCount
+        + ", flowCellTileCount="
+        + this.flowCellLayout.tileCount
+        + ", alignToPhix="
+        + this.alignToPhix
         + "}";
-
   }
 
   // TODO to remove used version in next Eoulsan version
   /**
    * Checks if is element exists by tag name.
+   *
    * @param element the element
    * @param tagName the tag name
    * @return true, if is element exists by tag name
    */
-  public static boolean isElementExistsByTagName(final Element element,
-      final String tagName) {
+  public static boolean isElementExistsByTagName(final Element element, final String tagName) {
 
     if (element == null || tagName == null || tagName.isEmpty()) {
       return false;
@@ -658,12 +676,16 @@ public class RunInfo {
   // Constructor
   //
 
-  /**
-   * Private constructor.
-   */
-  private RunInfo(final String id, final int number, final String flowCell,
-      final String instrument, final String date, final List<Read> readList,
-      final FlowCellLayout layout, final List<Integer> alignToPhiX,
+  /** Private constructor. */
+  private RunInfo(
+      final String id,
+      final int number,
+      final String flowCell,
+      final String instrument,
+      final String date,
+      final List<Read> readList,
+      final FlowCellLayout layout,
+      final List<Integer> alignToPhiX,
       final List<String> imageChannels) {
 
     requireNonNull(id, "Run id argument cannot be null");
@@ -685,7 +707,5 @@ public class RunInfo {
     this.flowCellLayout = layout;
     this.alignToPhix = alignToPhiX;
     this.imageChannels = imageChannels;
-
   }
-
 }

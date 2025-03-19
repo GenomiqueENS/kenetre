@@ -24,13 +24,13 @@
 
 package fr.ens.biologie.genomique.kenetre.bio;
 
+import htsjdk.samtools.SAMRecord;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import htsjdk.samtools.SAMRecord;
-
 /**
  * This class is a Comparator for SAM records.
+ *
  * @since 1.2
  * @author Claire Wallon
  */
@@ -79,26 +79,19 @@ public class SAMComparator implements Comparator<SAMRecord>, Serializable {
               if (r0.getFirstOfPairFlag() && r1.getFirstOfPairFlag()) {
                 comp = r0.getAlignmentStart() - r1.getAlignmentStart();
                 if (comp == 0) {
-                  comp =
-                      r0.getMateAlignmentStart() - r1.getMateAlignmentStart();
+                  comp = r0.getMateAlignmentStart() - r1.getMateAlignmentStart();
                 }
-              }
-
-              else if (!r0.getFirstOfPairFlag() && !r1.getFirstOfPairFlag()) {
+              } else if (!r0.getFirstOfPairFlag() && !r1.getFirstOfPairFlag()) {
                 comp = r0.getMateAlignmentStart() - r1.getMateAlignmentStart();
                 if (comp == 0) {
                   comp = r0.getAlignmentStart() - r1.getAlignmentStart();
                 }
-              }
-
-              else if (r0.getFirstOfPairFlag() && !r1.getFirstOfPairFlag()) {
+              } else if (r0.getFirstOfPairFlag() && !r1.getFirstOfPairFlag()) {
                 comp = r0.getAlignmentStart() - r1.getMateAlignmentStart();
                 if (comp == 0) {
                   comp = r0.getMateAlignmentStart() - r1.getAlignmentStart();
                 }
-              }
-
-              else {
+              } else {
                 comp = r0.getMateAlignmentStart() - r1.getAlignmentStart();
                 if (comp == 0) {
                   comp = r0.getAlignmentStart() - r1.getMateAlignmentStart();
@@ -109,7 +102,6 @@ public class SAMComparator implements Comparator<SAMRecord>, Serializable {
                 // Compare the CIGAR code
                 comp = r0.getCigarString().compareTo(r1.getCigarString());
               }
-
             }
           }
 
@@ -129,12 +121,10 @@ public class SAMComparator implements Comparator<SAMRecord>, Serializable {
               }
             }
           }
-
         }
       }
     }
 
     return comp;
   }
-
 }

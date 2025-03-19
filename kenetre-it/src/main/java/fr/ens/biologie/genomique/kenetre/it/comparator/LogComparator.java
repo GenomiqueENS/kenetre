@@ -23,17 +23,16 @@
  */
 package fr.ens.biologie.genomique.kenetre.it.comparator;
 
+import com.google.common.collect.Sets;
+import fr.ens.biologie.genomique.kenetre.io.ReporterLogReader;
+import fr.ens.biologie.genomique.kenetre.util.Reporter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
-import com.google.common.collect.Sets;
-
-import fr.ens.biologie.genomique.kenetre.io.ReporterLogReader;
-import fr.ens.biologie.genomique.kenetre.util.Reporter;
-
 /**
  * This class allow compare two log files writing by step Eoulsan.
+ *
  * @since 2.0
  * @author Sandrine Perrin
  */
@@ -47,8 +46,7 @@ public class LogComparator extends AbstractComparator {
   private int numberElementsCompared;
 
   @Override
-  public boolean compareFiles(final InputStream isA, final InputStream isB)
-      throws IOException {
+  public boolean compareFiles(final InputStream isA, final InputStream isB) throws IOException {
 
     Reporter logExpected = new ReporterLogReader(isA).read();
     Reporter logTested = new ReporterLogReader(isB).read();
@@ -67,14 +65,17 @@ public class LogComparator extends AbstractComparator {
         this.numberElementsCompared++;
 
         // Compute difference between two reporter
-        diffExpectedTested = logExpected.getCounterValue(counterGroup, counter)
-            - getCounterValue(logTested, counterGroup, counter);
+        diffExpectedTested =
+            logExpected.getCounterValue(counterGroup, counter)
+                - getCounterValue(logTested, counterGroup, counter);
 
         if (Math.abs(diffExpectedTested) >= 1) {
-          setCauseFailComparison("Invalid value found: "
-              + getCounterValue(logTested, counterGroup, counter) + ", "
-              + logExpected.getCounterValue(counterGroup, counter)
-              + " was expected.");
+          setCauseFailComparison(
+              "Invalid value found: "
+                  + getCounterValue(logTested, counterGroup, counter)
+                  + ", "
+                  + logExpected.getCounterValue(counterGroup, counter)
+                  + " was expected.");
           return false;
         }
       }
@@ -82,9 +83,12 @@ public class LogComparator extends AbstractComparator {
 
     // Check all elements present in first log are compare from second log
     if (numberElements != this.numberElementsCompared) {
-      setCauseFailComparison("Found "
-          + this.numberElementsCompared + " elements, " + numberElements
-          + " were expected.");
+      setCauseFailComparison(
+          "Found "
+              + this.numberElementsCompared
+              + " elements, "
+              + numberElements
+              + " were expected.");
       return false;
     }
 
@@ -92,15 +96,16 @@ public class LogComparator extends AbstractComparator {
   }
 
   /**
-   * Retrieve value for counterGroup and counter from a instance reporter, by
-   * using the prefix of the key counterGroup (string before the first virgule)
+   * Retrieve value for counterGroup and counter from a instance reporter, by using the prefix of
+   * the key counterGroup (string before the first virgule)
+   *
    * @param logTested reporter contains values
    * @param counterGroupExpected key of counterGroup
    * @param counter key of counter
    * @return value corresponding to counterGroup and counter
    */
-  private long getCounterValue(final Reporter logTested,
-      final String counterGroupExpected, final String counter) {
+  private long getCounterValue(
+      final Reporter logTested, final String counterGroupExpected, final String counter) {
 
     int pos = counterGroupExpected.indexOf(",");
     // Retrieve prefix of key CounterGroup, without file path
@@ -130,5 +135,4 @@ public class LogComparator extends AbstractComparator {
   public int getNumberElementsCompared() {
     return this.numberElementsCompared;
   }
-
 }

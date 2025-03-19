@@ -28,6 +28,9 @@ import static fr.ens.biologie.genomique.kenetre.util.StringUtils.md5DigestToStri
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.bio.io.FastaLineParser;
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
+import fr.ens.biologie.genomique.kenetre.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -45,12 +48,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import fr.ens.biologie.genomique.kenetre.bio.io.FastaLineParser;
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-import fr.ens.biologie.genomique.kenetre.util.StringUtils;
-
 /**
  * This class define a genome description.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -73,6 +73,7 @@ public class GenomeDescription {
 
   /**
    * Set the genome name.
+   *
    * @param genomeName name of the genome
    */
   private void setGenomeName(final String genomeName) {
@@ -82,17 +83,18 @@ public class GenomeDescription {
 
   /**
    * Add a sequence.
+   *
    * @param sequenceName name of the sequence
    * @param sequenceLength length of the sequence
    */
-  public void addSequence(final String sequenceName,
-      final long sequenceLength) {
+  public void addSequence(final String sequenceName, final long sequenceLength) {
 
     this.sequences.put(sequenceName, sequenceLength);
   }
 
   /**
    * Set the md5 digest of the genome file
+   *
    * @param md5Digest the md5 digest
    */
   public void setMD5Sum(final String md5Digest) {
@@ -106,6 +108,7 @@ public class GenomeDescription {
 
   /**
    * Get the genome name.
+   *
    * @return the genome name
    */
   public String getGenomeName() {
@@ -115,6 +118,7 @@ public class GenomeDescription {
 
   /**
    * Get the length of a sequence
+   *
    * @param sequenceName name of the sequence
    * @return the length of the sequence or -1 if the sequence does not exists
    */
@@ -130,6 +134,7 @@ public class GenomeDescription {
 
   /**
    * Test if the genome description contains a sequence
+   *
    * @param sequenceName name of the sequence
    * @return true if the sequence exists in the genome description
    */
@@ -140,16 +145,17 @@ public class GenomeDescription {
 
   /**
    * Get the names of the sequences.
+   *
    * @return a set with the name of the sequence
    */
   public List<String> getSequencesNames() {
 
-    return Collections
-        .unmodifiableList(new ArrayList<>(this.sequences.keySet()));
+    return Collections.unmodifiableList(new ArrayList<>(this.sequences.keySet()));
   }
 
   /**
    * Get the md5 sum for the genome.
+   *
    * @return the md5 sum
    */
   public String getMD5Sum() {
@@ -159,6 +165,7 @@ public class GenomeDescription {
 
   /**
    * Get the number of sequences in the genome.
+   *
    * @return the number of sequences in the genome
    */
   public int getSequenceCount() {
@@ -168,6 +175,7 @@ public class GenomeDescription {
 
   /**
    * Get the genome length;
+   *
    * @return the genome length
    */
   public long getGenomeLength() {
@@ -183,6 +191,7 @@ public class GenomeDescription {
 
   /**
    * Convert Object to a map of chromosome lengths
+   *
    * @return a Map object
    */
   public Map<String, Long> toMap() {
@@ -202,6 +211,7 @@ public class GenomeDescription {
 
   /**
    * Save genome description.
+   *
    * @param os OutputStream to use for genome description writing
    * @throws IOException if an error occurs while saving the genome description
    */
@@ -225,8 +235,7 @@ public class GenomeDescription {
 
     for (String seqName : getSequencesNames()) {
 
-      writer.write(
-          SEQUENCE_PREFIX + seqName + "=" + getSequenceLength(seqName) + "\n");
+      writer.write(SEQUENCE_PREFIX + seqName + "=" + getSequenceLength(seqName) + "\n");
     }
 
     writer.close();
@@ -234,6 +243,7 @@ public class GenomeDescription {
 
   /**
    * Save genome description.
+   *
    * @param file output file
    * @throws IOException if an error while writing the genome description
    */
@@ -245,6 +255,7 @@ public class GenomeDescription {
 
   /**
    * Save genome description in UCSC TSV format.
+   *
    * @param os OutputStream to use for TSV file
    * @throws IOException if an error occurs while saving the genome description
    */
@@ -262,6 +273,7 @@ public class GenomeDescription {
 
   /**
    * Save genome description in UCSC TSV format.
+   *
    * @param os OutputStream to use for TSV file
    * @throws IOException if an error occurs while saving the genome description
    */
@@ -277,12 +289,12 @@ public class GenomeDescription {
 
   /**
    * Load genome description.
+   *
    * @param is InputStream to use
    * @return a genome description object
    * @throws IOException if an error while loading the genome description
    */
-  public static GenomeDescription load(final InputStream is)
-      throws IOException {
+  public static GenomeDescription load(final InputStream is) throws IOException {
 
     requireNonNull(is, "InputStream is null");
 
@@ -308,8 +320,8 @@ public class GenomeDescription {
         } else {
           try {
             if (key.startsWith(SEQUENCE_PREFIX)) {
-              result.addSequence(key.substring(SEQUENCE_PREFIX.length()),
-                  Integer.parseInt(fields.get(1)));
+              result.addSequence(
+                  key.substring(SEQUENCE_PREFIX.length()), Integer.parseInt(fields.get(1)));
             }
           } catch (NumberFormatException e) {
 
@@ -325,6 +337,7 @@ public class GenomeDescription {
 
   /**
    * Load genome description.
+   *
    * @param file File to use
    * @return a genome description object
    * @throws IOException if an error while loading the genome description
@@ -341,29 +354,28 @@ public class GenomeDescription {
 
   /**
    * Create a GenomeDescription object from a Fasta file.
+   *
    * @param genomeFastaFile genome fasta file
    * @return a genome description object
-   * @throws BadBioEntryException if an error occurs while creating the genome
-   *           description
+   * @throws BadBioEntryException if an error occurs while creating the genome description
    * @throws IOException if an error occurs while reading the FASTA file
    */
-  public static GenomeDescription createGenomeDescFromFasta(
-      final File genomeFastaFile) throws BadBioEntryException, IOException {
+  public static GenomeDescription createGenomeDescFromFasta(final File genomeFastaFile)
+      throws BadBioEntryException, IOException {
 
     requireNonNull(genomeFastaFile, "The genome file is null");
 
     return createGenomeDescFromFasta(
-        FileUtils.createInputStream(genomeFastaFile),
-        genomeFastaFile.getName());
+        FileUtils.createInputStream(genomeFastaFile), genomeFastaFile.getName());
   }
 
   /**
    * Create a GenomeDescription object from a Fasta file.
+   *
    * @param genomeFastaIs genome fasta input stream
    * @param filename name of the file of the input stream
    * @return a genome description object
-   * @throws BadBioEntryException if an error occurs while creating the genome
-   *           description
+   * @throws BadBioEntryException if an error occurs while creating the genome description
    * @throws IOException if an error occurs while reading the FASTA file
    */
   public static GenomeDescription createGenomeDescFromFasta(
@@ -375,10 +387,10 @@ public class GenomeDescription {
 
   /**
    * Create a GenomeDescription object from a GFF file.
+   *
    * @param gffFile genome in GFF file
    * @return a genome description object
-   * @throws BadBioEntryException if an error occurs while creating the genome
-   *           description
+   * @throws BadBioEntryException if an error occurs while creating the genome description
    * @throws IOException if an error occurs while reading the GFF file
    */
   public static GenomeDescription createGenomeDescFromGFF(final File gffFile)
@@ -386,39 +398,37 @@ public class GenomeDescription {
 
     requireNonNull(gffFile, "The genome file is null");
 
-    return createGenomeDescFromGFF(FileUtils.createInputStream(gffFile),
-        gffFile.getName());
+    return createGenomeDescFromGFF(FileUtils.createInputStream(gffFile), gffFile.getName());
   }
 
   /**
    * Create a GenomeDescription object from a GFF file.
+   *
    * @param gffFile genome in GFF input stream
    * @param filename name of the file of the input stream
    * @return a genome description object
-   * @throws BadBioEntryException if an error occurs while creating the genome
-   *           description
+   * @throws BadBioEntryException if an error occurs while creating the genome description
    * @throws IOException if an error occurs while reading the GFF file
    */
   public static GenomeDescription createGenomeDescFromGFF(
-      final InputStream gffFile, final String filename)
-      throws BadBioEntryException, IOException {
+      final InputStream gffFile, final String filename) throws BadBioEntryException, IOException {
 
     return createGenomeDesc(gffFile, filename, true);
   }
 
   /**
    * Create a GenomeDescription object from a Fasta file of GFF file.
+   *
    * @param genomeFastaIs genome fasta input stream
    * @param filename name of the file of the input stream
    * @param gffFormat the input file is in GFF format
    * @return a genome description object
-   * @throws BadBioEntryException if an error occurs while creating the genome
-   *           description
+   * @throws BadBioEntryException if an error occurs while creating the genome description
    * @throws IOException if an error occurs while reading the GFF file
    */
   public static GenomeDescription createGenomeDesc(
-      final InputStream genomeFastaIs, final String filename,
-      final boolean gffFormat) throws BadBioEntryException, IOException {
+      final InputStream genomeFastaIs, final String filename, final boolean gffFormat)
+      throws BadBioEntryException, IOException {
 
     requireNonNull(genomeFastaIs, "The input stream of the genome is null");
 
@@ -432,8 +442,7 @@ public class GenomeDescription {
       md5Digest = null;
     }
 
-    final FastaLineParser parser =
-        new FastaLineParser(genomeFastaIs, gffFormat);
+    final FastaLineParser parser = new FastaLineParser(genomeFastaIs, gffFormat);
 
     final Alphabet alphabet = Alphabets.AMBIGUOUS_DNA_ALPHABET;
     String seqName = null;
@@ -447,8 +456,7 @@ public class GenomeDescription {
 
         // Check if sequence has been found more than one time
         if (result.getSequenceLength(lastSeqName) != -1) {
-          throw new BadBioEntryException(
-              "Sequence name found twice: " + lastSeqName, lastSeqName);
+          throw new BadBioEntryException("Sequence name found twice: " + lastSeqName, lastSeqName);
         }
 
         // Add sequence
@@ -500,25 +508,23 @@ public class GenomeDescription {
   }
 
   /**
-   * Create a GenomeDescription object from a UCSC TSV file (two fields:
-   * chromosome name and chromosome length). No checksum will be computed when
-   * using this method.
+   * Create a GenomeDescription object from a UCSC TSV file (two fields: chromosome name and
+   * chromosome length). No checksum will be computed when using this method.
+   *
    * @param tsvFile TSV file
    * @param filename name of the file of the input stream
    * @return a genome description object
    * @throws IOException if an error occurs while reading the GFF file
    */
-  public static GenomeDescription createGenomeDescFromTSV(final File tsvFile)
-      throws IOException {
+  public static GenomeDescription createGenomeDescFromTSV(final File tsvFile) throws IOException {
 
-    return createGenomeDescFromTSV(FileUtils.createInputStream(tsvFile),
-        tsvFile.getName());
+    return createGenomeDescFromTSV(FileUtils.createInputStream(tsvFile), tsvFile.getName());
   }
 
   /**
-   * Create a GenomeDescription object from a UCSC TSV file(two fields:
-   * chromosome name and chromosome length). No checksum will be computed when
-   * using this method.
+   * Create a GenomeDescription object from a UCSC TSV file(two fields: chromosome name and
+   * chromosome length). No checksum will be computed when using this method.
+   *
    * @param genomeFastaIs genome fasta input stream
    * @param filename name of the file of the input stream
    * @return a genome description object
@@ -532,8 +538,7 @@ public class GenomeDescription {
     final GenomeDescription result = new GenomeDescription();
     result.setGenomeName(StringUtils.basename(filename));
 
-    try (BufferedReader reader =
-        new BufferedReader(new InputStreamReader(tsvIs))) {
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(tsvIs))) {
 
       for (String line : (Iterable<String>) reader.lines()::iterator) {
         String[] fields = line.trim().split("\t");
@@ -543,51 +548,45 @@ public class GenomeDescription {
 
         result.addSequence(fields[0].trim(), Long.parseLong(fields[1]));
       }
-
     }
 
     return result;
   }
 
-  private static String parseChromosomeName(final String fastaHeader)
-      throws BadBioEntryException {
+  private static String parseChromosomeName(final String fastaHeader) throws BadBioEntryException {
 
     if (fastaHeader == null) {
       return null;
     }
 
     if ("".equals(fastaHeader.trim())) {
-      throw new BadBioEntryException("Sequence header is empty",
-          ">" + fastaHeader);
+      throw new BadBioEntryException("Sequence header is empty", ">" + fastaHeader);
     }
 
     if (fastaHeader.startsWith(" ")) {
       throw new BadBioEntryException(
-          "A whitespace was found at the beginning of the sequence name",
-          ">" + fastaHeader);
+          "A whitespace was found at the beginning of the sequence name", ">" + fastaHeader);
     }
 
     final String s = fastaHeader.trim();
     String[] fields = s.split("\\s");
 
     if (fields == null || fields.length == 0) {
-      throw new BadBioEntryException("Invalid sequence header",
-          ">" + fastaHeader);
+      throw new BadBioEntryException("Invalid sequence header", ">" + fastaHeader);
     }
 
     return fields[0];
   }
 
-  private static long checkBases(final String sequence,
-      final String sequenceName, final Alphabet alphabet)
+  private static long checkBases(
+      final String sequence, final String sequenceName, final Alphabet alphabet)
       throws BadBioEntryException {
 
     final char[] array = sequence.toCharArray();
 
     for (final char c : array) {
       if (!alphabet.isLetterValid(c)) {
-        throw new BadBioEntryException("Invalid base in genome: " + c,
-            sequenceName);
+        throw new BadBioEntryException("Invalid base in genome: " + c, sequenceName);
       }
     }
 
@@ -602,8 +601,14 @@ public class GenomeDescription {
   public String toString() {
 
     return this.getClass().getSimpleName()
-        + "{genomeName=" + this.genomeName + ", sequencesCount="
-        + this.sequences.size() + ", md5Sum=" + this.md5Sum + ", sequences="
-        + this.sequences + "}";
+        + "{genomeName="
+        + this.genomeName
+        + ", sequencesCount="
+        + this.sequences.size()
+        + ", md5Sum="
+        + this.md5Sum
+        + ", sequences="
+        + this.sequences
+        + "}";
   }
 }

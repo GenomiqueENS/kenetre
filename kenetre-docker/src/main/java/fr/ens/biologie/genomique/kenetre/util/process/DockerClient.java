@@ -6,6 +6,7 @@ import java.util.Set;
 
 /**
  * This interface define a Docker client.
+ *
  * @author Laurent Jourdren
  * @since 2.0
  */
@@ -13,14 +14,15 @@ public interface DockerClient {
 
   /**
    * Initialize the Docker client.
+   *
    * @param dockerConnectionURI the URI of the Docker connection.
-   * @throws IOException if an error occurs while initialize the Docker
-   *           connection
+   * @throws IOException if an error occurs while initialize the Docker connection
    */
   void initialize(URI dockerConnectionURI) throws IOException;
 
   /**
    * Create a Docker connection.
+   *
    * @param dockerImage the Docker image to use with the connection
    * @return a new Docker connection
    * @throws IOException if an error occurs while creating the connection
@@ -29,17 +31,19 @@ public interface DockerClient {
 
   /**
    * Create a Docker connection.
+   *
    * @param dockerImage the Docker image to use with the connection
-   * @param mountFileIndirections if true, indirections for files and
-   *          directories will be also mounted
+   * @param mountFileIndirections if true, indirections for files and directories will be also
+   *     mounted
    * @return a new Docker connection
    * @throws IOException if an error occurs while creating the connection
    */
-  DockerImageInstance createConnection(String dockerImage,
-      boolean mountFileIndirections) throws IOException;
+  DockerImageInstance createConnection(String dockerImage, boolean mountFileIndirections)
+      throws IOException;
 
   /**
    * List the Docker images tags.
+   *
    * @return a set with the Docker image tags
    * @throws IOException if an error occurs while listing the Docker image tags
    */
@@ -47,8 +51,8 @@ public interface DockerClient {
 
   /**
    * Close the Docker client.
+   *
    * @throws IOException if an error occurs while closing the client
    */
   void close() throws IOException;
-
 }

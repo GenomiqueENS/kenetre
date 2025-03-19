@@ -26,6 +26,10 @@ package fr.ens.biologie.genomique.kenetre.bio.io;
 
 import static fr.ens.biologie.genomique.kenetre.bio.io.BioCharsets.GFF_CHARSET;
 
+import fr.ens.biologie.genomique.kenetre.bio.BadBioEntryException;
+import fr.ens.biologie.genomique.kenetre.bio.EntryMetadata;
+import fr.ens.biologie.genomique.kenetre.bio.GFFEntry;
+import fr.ens.biologie.genomique.kenetre.io.FileUtils;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
@@ -36,18 +40,13 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import fr.ens.biologie.genomique.kenetre.bio.BadBioEntryException;
-import fr.ens.biologie.genomique.kenetre.bio.EntryMetadata;
-import fr.ens.biologie.genomique.kenetre.bio.GFFEntry;
-import fr.ens.biologie.genomique.kenetre.io.FileUtils;
-
 /**
  * This class defines a GFF3 reader.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
-public class GFFReader
-    implements Iterator<GFFEntry>, Iterable<GFFEntry>, Closeable {
+public class GFFReader implements Iterator<GFFEntry>, Iterable<GFFEntry>, Closeable {
 
   private final BufferedReader reader;
   private GFFEntry result = null;
@@ -69,6 +68,7 @@ public class GFFReader
 
   /**
    * Test if a fasta section was found.
+   *
    * @return true if a Fasta section was found
    */
   public boolean isFastaSectionFound() {
@@ -157,6 +157,7 @@ public class GFFReader
 
   /**
    * Close the stream.
+   *
    * @throws IOException if an error occurs while closing the file
    */
   @Override
@@ -166,10 +167,9 @@ public class GFFReader
   }
 
   /**
-   * Throw an exception if an exception has been caught while last hasNext()
-   * method call.
-   * @throws IOException if an exception has been caught while last hasNext()
-   *           method call
+   * Throw an exception if an exception has been caught while last hasNext() method call.
+   *
+   * @throws IOException if an exception has been caught while last hasNext() method call
    * @throws BadBioEntryException if the last entry is not valid
    */
   public void throwException() throws IOException, BadBioEntryException {
@@ -189,6 +189,7 @@ public class GFFReader
 
   /**
    * Get the format of the data to read.
+   *
    * @return true if the data to read is in GFF format
    */
   protected boolean isGFF3Format() {
@@ -198,6 +199,7 @@ public class GFFReader
 
   /**
    * Set the format of the data to read.
+   *
    * @param gffFormat true if the data to read is in GFF3 format
    */
   protected void setGFF3Format(final boolean gffFormat) {
@@ -211,6 +213,7 @@ public class GFFReader
 
   /**
    * Public constructor
+   *
    * @param is InputStream to use
    */
   public GFFReader(final InputStream is) {
@@ -224,6 +227,7 @@ public class GFFReader
 
   /**
    * Public constructor
+   *
    * @param file File to use
    * @throws FileNotFoundException if the file does not exists
    */
@@ -238,6 +242,7 @@ public class GFFReader
 
   /**
    * Public constructor.
+   *
    * @param filename File to use
    * @throws FileNotFoundException if the file does not exists
    */

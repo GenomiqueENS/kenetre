@@ -24,12 +24,12 @@
 
 package fr.ens.biologie.genomique.kenetre.util;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 /**
  * Describe a version of a software.
+ *
  * @since 1.0
  * @author Laurent Jourdren
  */
@@ -48,6 +48,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Get the number of major version of the Version.
+   *
    * @return The major version
    */
   public int getMajor() {
@@ -56,6 +57,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Get the number of minor version of the Version.
+   *
    * @return The minor version
    */
   public int getMinor() {
@@ -64,6 +66,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Get the number of revision of the Version
+   *
    * @return the number of revision of the version
    */
   public int getRevision() {
@@ -72,6 +75,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Get the type of the Version
+   *
    * @return the type of the version
    */
   public String getType() {
@@ -84,6 +88,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Set the number of major version of the Version.
+   *
    * @param major The major version of the version
    */
   public void setMajor(final int major) {
@@ -96,6 +101,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Set the number of minor version of the Version.
+   *
    * @param minor The minor version of the version
    */
   public void setMinor(final int minor) {
@@ -108,6 +114,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Set the number of revision of the Version
+   *
    * @param revision The number of revision of the version
    */
   public void setRevision(final int revision) {
@@ -120,6 +127,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Set the type of the Version
+   *
    * @param type The type of revision. The value cannot be null
    */
   public void setType(final String type) {
@@ -137,6 +145,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Get the version in a string format.
+   *
    * @return The version in a string format
    */
   @Override
@@ -159,6 +168,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Set the version.
+   *
    * @param major The major version of the version
    * @param minor The minor version of the version
    * @param revision The number of revision of the version
@@ -169,13 +179,13 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Set the version.
+   *
    * @param major The major version of the version
    * @param minor The minor version of the version
    * @param revision The number of revision of the version
    * @param type The type of the version
    */
-  public void setVersion(final int major, final int minor, final int revision,
-      final String type) {
+  public void setVersion(final int major, final int minor, final int revision, final String type) {
     setMajor(major);
     setMinor(minor);
     setRevision(revision);
@@ -184,6 +194,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Set the version.
+   *
    * @param version The version to set
    */
   public void setVersion(final String version) {
@@ -209,21 +220,21 @@ public final class Version implements Comparable<Version> {
 
           if (sb.length() > 0) {
             switch (fieldCount) {
-            case 0:
-              setMajor(Integer.parseInt(sb.toString()));
-              break;
+              case 0:
+                setMajor(Integer.parseInt(sb.toString()));
+                break;
 
-            case 1:
-              setMinor(Integer.parseInt(sb.toString()));
-              break;
+              case 1:
+                setMinor(Integer.parseInt(sb.toString()));
+                break;
 
-            case 2:
-              setRevision(Integer.parseInt(sb.toString()));
-              inType = true;
-              break;
+              case 2:
+                setRevision(Integer.parseInt(sb.toString()));
+                inType = true;
+                break;
 
-            default:
-              break;
+              default:
+                break;
             }
             sb.setLength(0);
           }
@@ -243,36 +254,35 @@ public final class Version implements Comparable<Version> {
         } else {
 
           switch (fieldCount) {
-          case 0:
-            setMajor(Integer.parseInt(sb.toString()));
-            break;
+            case 0:
+              setMajor(Integer.parseInt(sb.toString()));
+              break;
 
-          case 1:
-            setMinor(Integer.parseInt(sb.toString()));
-            break;
+            case 1:
+              setMinor(Integer.parseInt(sb.toString()));
+              break;
 
-          case 2:
-            setRevision(Integer.parseInt(sb.toString()));
-            break;
+            case 2:
+              setRevision(Integer.parseInt(sb.toString()));
+              break;
 
-          default:
-            break;
+            default:
+              break;
           }
-
         }
       }
 
     } catch (NumberFormatException e) {
-      throw new IllegalArgumentException(
-          "Invalid version format in string: " + version);
+      throw new IllegalArgumentException("Invalid version format in string: " + version);
     }
   }
 
   /**
    * Compare the version to another version as a String.
+   *
    * @param version Version to compare.
-   * @return a negative integer, zero, or a positive integer as this object is
-   *         less than, equal to, or greater than the specified object.
+   * @return a negative integer, zero, or a positive integer as this object is less than, equal to,
+   *     or greater than the specified object.
    */
   public int compareTo(final String version) {
 
@@ -281,9 +291,10 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Compare 2 Version object.
+   *
    * @param version Version to compare.
-   * @return a negative integer, zero, or a positive integer as this object is
-   *         less than, equal to, or greater than the specified object.
+   * @return a negative integer, zero, or a positive integer as this object is less than, equal to,
+   *     or greater than the specified object.
    */
   @Override
   public int compareTo(final Version version) {
@@ -303,8 +314,7 @@ public final class Version implements Comparable<Version> {
       return compMinor;
     }
 
-    final int compRevision =
-        Integer.compare(getRevision(), version.getRevision());
+    final int compRevision = Integer.compare(getRevision(), version.getRevision());
     if (compRevision != 0) {
       return compRevision;
     }
@@ -314,6 +324,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Test if a version is less than the current version.
+   *
    * @param version version to test
    * @return true if a version is less than the current version
    */
@@ -324,6 +335,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Test if a version is less than the current version.
+   *
    * @param version version to test
    * @return true if a version is less than the current version
    */
@@ -334,6 +346,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Test if a version is less than or equals to the current version.
+   *
    * @param version version to test
    * @return true if a version is less than or equals to the current version
    */
@@ -344,6 +357,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Test if a version is less than or equals to the current version.
+   *
    * @param version version to test
    * @return true if a version is less than or equals to the current version
    */
@@ -354,6 +368,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Test if a version is greater than the current version.
+   *
    * @param version version to test
    * @return true if a version is greater than the current version
    */
@@ -364,6 +379,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Test if a version is greater than the current version.
+   *
    * @param version version to test
    * @return true if a version is greater than the current version
    */
@@ -374,6 +390,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Test if a version if greater than or equals to the current version.
+   *
    * @param version version to test
    * @return true if a version is greater than or equals to the current version
    */
@@ -384,6 +401,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Test if a version if greater than or equals to the current version.
+   *
    * @param version version to test
    * @return true if a version is greater than or equals to the current version
    */
@@ -394,6 +412,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Get the minimal version from an array of versions.
+   *
    * @param versions The array of versions
    * @return The minimal version
    */
@@ -416,6 +435,7 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Get the maximal version from an array of versions.
+   *
    * @param versions The array of versions
    * @return The maximal version
    */
@@ -454,7 +474,8 @@ public final class Version implements Comparable<Version> {
     final Version v = (Version) o;
 
     return v.major == this.major
-        && v.minor == this.minor && v.revision == this.revision
+        && v.minor == this.minor
+        && v.revision == this.revision
         && this.type.equals(v.type);
   }
 
@@ -468,9 +489,7 @@ public final class Version implements Comparable<Version> {
   // Constructor
   //
 
-  /**
-   * Public constructor.
-   */
+  /** Public constructor. */
   public Version() {
 
     this(null);
@@ -478,19 +497,20 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Public constructor.
+   *
    * @param major The major version of the version
    * @param minor The minor version of the version
    * @param revision The number of revision of the version
    * @param type The type of the version
    */
-  public Version(final int major, final int minor, final int revision,
-      final String type) {
+  public Version(final int major, final int minor, final int revision, final String type) {
 
     setVersion(major, minor, revision, type);
   }
 
   /**
    * Public constructor.
+   *
    * @param major The major version of the version
    * @param minor The minor version of the version
    * @param revision The number of revision of the version
@@ -502,11 +522,11 @@ public final class Version implements Comparable<Version> {
 
   /**
    * Public constructor.
+   *
    * @param version The version to set
    */
   public Version(final String version) {
 
     setVersion(version);
   }
-
 }

@@ -26,12 +26,12 @@ package fr.ens.biologie.genomique.kenetre.bio.alignmentfilter;
 
 /**
  * This alignment filter remove all the unmapped alignments.
+ *
  * @since 1.1
  * @author Laurent Jourdren
  * @author Claire Wallon
  */
-public class RemoveUnmappedReadAlignmentFilter
-    extends AbstractRemoveFlagReadAlignmentFilter {
+public class RemoveUnmappedReadAlignmentFilter extends AbstractRemoveFlagReadAlignmentFilter {
 
   public static final String FILTER_NAME = "removeunmapped";
   private static final int FLAG_VALUE = 0x4;
@@ -47,9 +47,7 @@ public class RemoveUnmappedReadAlignmentFilter
     return "Remove all the unmapped alignments";
   }
 
-  /**
-   * Public constructor.
-   */
+  /** Public constructor. */
   public RemoveUnmappedReadAlignmentFilter() {
     super(FLAG_VALUE);
   }

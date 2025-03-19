@@ -1,5 +1,6 @@
 package fr.ens.biologie.genomique.kenetre.illumina.interop;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -7,16 +8,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-
 /**
- * This class define a specified iterator for reading the binary file:
- * ExtendedTileMetricsOut.bin.
+ * This class define a specified iterator for reading the binary file: ExtendedTileMetricsOut.bin.
+ *
  * @author Laurent Jourdren
  * @since 0.3
  */
-public class ExtendedTileMetricsReader
-    extends AbstractBinaryFileReader<ExtendedTileMetric> {
+public class ExtendedTileMetricsReader extends AbstractBinaryFileReader<ExtendedTileMetric> {
 
   public static final String NAME = "ExtendedTileMetricsOut";
 
@@ -37,17 +35,16 @@ public class ExtendedTileMetricsReader
   protected int getExpectedRecordSize(int version) {
 
     switch (version) {
-    case 1:
-    case 2:
-      return 10;
+      case 1:
+      case 2:
+        return 10;
 
-    case 3:
-      return 18;
+      case 3:
+        return 18;
 
-    default:
-      throw new IllegalArgumentException();
+      default:
+        throw new IllegalArgumentException();
     }
-
   }
 
   @Override
@@ -57,8 +54,7 @@ public class ExtendedTileMetricsReader
   }
 
   @Override
-  protected void readMetricRecord(List<ExtendedTileMetric> collection,
-      ByteBuffer bb, int version) {
+  protected void readMetricRecord(List<ExtendedTileMetric> collection, ByteBuffer bb, int version) {
 
     collection.add(new ExtendedTileMetric(version, bb));
   }
@@ -70,5 +66,4 @@ public class ExtendedTileMetricsReader
   public ExtendedTileMetricsReader(final File dirPath) throws KenetreException {
     super(dirPath);
   }
-
 }

@@ -24,12 +24,12 @@
 
 package fr.ens.biologie.genomique.kenetre.bio.readfilter;
 
-import java.util.regex.Pattern;
-
 import fr.ens.biologie.genomique.kenetre.bio.ReadSequence;
+import java.util.regex.Pattern;
 
 /**
  * Define a filter that remove terminal polyN sequences.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
@@ -57,12 +57,14 @@ public class TrimPolyNEndReadFilter extends AbstractReadFilter {
 
   /**
    * Trim the read sequence and quality if ends with polyN.
+   *
    * @param read Read to trim
    */
   public static void trim(final ReadSequence read) {
 
     if (read == null
-        || read.getSequence() == null || read.getQuality() == null
+        || read.getSequence() == null
+        || read.getQuality() == null
         || read.getSequence().length() != read.getQuality().length()
         || read.getSequence().length() == 0) {
       return;
@@ -101,5 +103,4 @@ public class TrimPolyNEndReadFilter extends AbstractReadFilter {
 
     return this.getClass().getSimpleName() + "{}";
   }
-
 }

@@ -30,12 +30,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-
 import org.junit.Test;
 
 public class BinaryComparatorTest {
-  private final File dir =
-      new File(new File(".").getAbsolutePath() + "/src/test/java/files");
+  private final File dir = new File(new File(".").getAbsolutePath() + "/src/test/java/files");
 
   private final File fileA = new File(this.dir, "mapper_results_1.bam");
   private final File fileB = new File(this.dir, "mapper_results_2.bam");
@@ -69,7 +67,6 @@ public class BinaryComparatorTest {
             .createInputStream(new FileInputStream(this.fileB));
 
     assertFalse("files are different", this.comparator.compareFiles(isA, isB));
-
   }
 
   @Test
@@ -77,8 +74,8 @@ public class BinaryComparatorTest {
 
     // File mapper_results_SE.bam change few character in one read then generate
     // bam
-    assertFalse("files are different: characters change",
+    assertFalse(
+        "files are different: characters change",
         this.comparator.compareFiles(this.fileA, this.fileC));
   }
-
 }

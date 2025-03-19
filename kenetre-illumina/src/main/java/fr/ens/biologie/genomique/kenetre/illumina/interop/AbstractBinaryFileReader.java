@@ -2,8 +2,8 @@
  *                  Aozan development code
  *
  * This code may be freely distributed and modified under the
- * terms of the GNU General Public License version 3 or later 
- * and CeCILL. This should be distributed with the code. If you 
+ * terms of the GNU General Public License version 3 or later
+ * and CeCILL. This should be distributed with the code. If you
  * do not have a copy, see:
  *
  *      http://www.gnu.org/licenses/gpl-3.0-standalone.html
@@ -23,6 +23,7 @@
 
 package fr.ens.biologie.genomique.kenetre.illumina.interop;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -33,11 +34,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import fr.ens.biologie.genomique.kenetre.KenetreException;
-
 /**
- * This class define an iterator on Illumina Metrics for reading binary files
- * from the InterOp directory. It allow to parse all records.
+ * This class define an iterator on Illumina Metrics for reading binary files from the InterOp
+ * directory. It allow to parse all records.
+ *
  * @author Sandrine Perrin
  * @since Aozan 1.1
  */
@@ -50,18 +50,21 @@ abstract class AbstractBinaryFileReader<M> {
 
   /**
    * Gets the name.
+   *
    * @return collector name
    */
   public abstract String getName();
 
   /**
    * Gets the metrics file.
+   *
    * @return metrics filename
    */
   protected abstract File getMetricsFile();
 
   /**
    * Gets the expected record size.
+   *
    * @param version version of the format
    * @return expected record size
    */
@@ -69,12 +72,14 @@ abstract class AbstractBinaryFileReader<M> {
 
   /**
    * Gets the expected versions for the file.
+   *
    * @return a set with the expected versions of binary file
    */
   protected abstract Set<Integer> getExpectedVersions();
 
   /**
    * Gets the dir path inter op.
+   *
    * @return the dir path inter op
    */
   public File getDirPathInterOP() {
@@ -83,6 +88,7 @@ abstract class AbstractBinaryFileReader<M> {
 
   /**
    * Gets the sets the illumina metrics.
+   *
    * @return set Illumina metrics corresponding to one binary InterOp file
    * @throws KenetreException if an error occurs while reading metrics
    */
@@ -94,8 +100,8 @@ abstract class AbstractBinaryFileReader<M> {
     final byte[] header = new byte[HEADER_SIZE];
 
     try {
-      checkExistingFile(getMetricsFile(),
-          "Error binary file " + getMetricsFile().getAbsolutePath());
+      checkExistingFile(
+          getMetricsFile(), "Error binary file " + getMetricsFile().getAbsolutePath());
 
       final FileInputStream is = new FileInputStream(getMetricsFile());
       final FileChannel channel = is.getChannel();
@@ -126,9 +132,13 @@ abstract class AbstractBinaryFileReader<M> {
 
       // Check version
       if (!getExpectedVersions().contains(version)) {
-        throw new KenetreException(getName()
-            + " expects the version number to be " + getExpectedVersions()
-            + ".  Actual Version in Header(" + version + ")");
+        throw new KenetreException(
+            getName()
+                + " expects the version number to be "
+                + getExpectedVersions()
+                + ".  Actual Version in Header("
+                + version
+                + ")");
       }
 
       // Read byte 1: length of each record
@@ -140,9 +150,13 @@ abstract class AbstractBinaryFileReader<M> {
       // Check the size record needed
       final int expectedRecordSize = getExpectedRecordSize(version);
       if (expectedRecordSize != recordSize) {
-        throw new KenetreException(getName()
-            + " expects the record size to be " + expectedRecordSize
-            + ". Actual Record Size in Header(" + recordSize + ")");
+        throw new KenetreException(
+            getName()
+                + " expects the record size to be "
+                + expectedRecordSize
+                + ". Actual Record Size in Header("
+                + recordSize
+                + ")");
       }
 
       // checkRecordSize(recordSize);
@@ -168,21 +182,21 @@ abstract class AbstractBinaryFileReader<M> {
 
   /**
    * Read optional flags.
+   *
    * @param bb byte buffer
    * @param version version of the format of the file
    */
-  protected void readOptionalFlag(ByteBuffer bb, int version) {
-  }
+  protected void readOptionalFlag(ByteBuffer bb, int version) {}
 
   /**
-   * Build a set of a type of illumina metrics (M) according to the interop file
-   * reading.
+   * Build a set of a type of illumina metrics (M) according to the interop file reading.
+   *
    * @param collection list of illumina metrics
    * @param bb ByteBuffer contains the value corresponding to one record
    * @param version version of the format
    */
-  protected abstract void readMetricRecord(final List<M> collection,
-      final ByteBuffer bb, int version);
+  protected abstract void readMetricRecord(
+      final List<M> collection, final ByteBuffer bb, int version);
 
   //
   // Private methods
@@ -190,27 +204,29 @@ abstract class AbstractBinaryFileReader<M> {
 
   /**
    * Check if a file exists
+   *
    * @param file File to test
    * @param msgFileType message for the description of the file
    * @throws IOException if the file doesn't exists
    */
-  private static void checkExistingFile(final File file,
-      final String msgFileType) throws IOException {
+  private static void checkExistingFile(final File file, final String msgFileType)
+      throws IOException {
 
     if (msgFileType == null) {
-      throw new NullPointerException(
-          "Message file type for check isn't defined");
+      throw new NullPointerException("Message file type for check isn't defined");
     }
 
     if (file == null) {
-      throw new NullPointerException("The "
-          + msgFileType + " is not defined. Please check and define "
-          + msgFileType + " path and/or files.");
+      throw new NullPointerException(
+          "The "
+              + msgFileType
+              + " is not defined. Please check and define "
+              + msgFileType
+              + " path and/or files.");
     }
 
     if (!file.exists()) {
-      throw new IOException(
-          "The " + msgFileType + " does not exists: " + file.getAbsolutePath());
+      throw new IOException("The " + msgFileType + " does not exists: " + file.getAbsolutePath());
     }
   }
 
@@ -220,6 +236,7 @@ abstract class AbstractBinaryFileReader<M> {
 
   /**
    * Convert an unsigned byte to a signed int.
+   *
    * @param bb byte buffer
    * @return an unsigned byte converted to a signed int
    */
@@ -229,6 +246,7 @@ abstract class AbstractBinaryFileReader<M> {
 
   /**
    * Convert an unsigned short to a signed int.
+   *
    * @param bb byte buffer
    * @return an unsigned short converted to a signed int
    */
@@ -238,6 +256,7 @@ abstract class AbstractBinaryFileReader<M> {
 
   /**
    * Convert an unsigned int to a long.
+   *
    * @param bb byte buffer
    * @return an unsigned int converted to a signed long
    */
@@ -251,22 +270,20 @@ abstract class AbstractBinaryFileReader<M> {
 
   /**
    * Constructor.
+   *
    * @param dirPath path to the interop directory for a run
    * @throws KenetreException if the path does not exists
    */
   AbstractBinaryFileReader(final File dirPath) throws KenetreException {
 
     if (dirPath == null) {
-      throw new KenetreException(
-          "No path to the InterOp directory has been provided");
+      throw new KenetreException("No path to the InterOp directory has been provided");
     }
 
     if (!dirPath.exists()) {
-      throw new KenetreException(
-          "Path to interOp directory doesn't exists " + dirPath);
+      throw new KenetreException("Path to interOp directory doesn't exists " + dirPath);
     }
 
     this.dirInterOpPath = dirPath;
   }
-
 }

@@ -34,6 +34,7 @@ import java.nio.charset.Charset;
 
 /**
  * This class define a TranslatorOutputFormat that generate a tabular text file.
+ *
  * @since 2.0
  * @author Laurent Jourdren
  */
@@ -70,7 +71,6 @@ public class TSVTranslatorOutputFormat implements TranslatorOutputFormat {
     } else {
       this.writer.write('\t');
     }
-
   }
 
   @Override
@@ -83,7 +83,6 @@ public class TSVTranslatorOutputFormat implements TranslatorOutputFormat {
     }
 
     this.writer.write(Long.toString(l));
-
   }
 
   @Override
@@ -96,7 +95,6 @@ public class TSVTranslatorOutputFormat implements TranslatorOutputFormat {
     }
 
     this.writer.write(Double.toString(d));
-
   }
 
   @Override
@@ -111,12 +109,10 @@ public class TSVTranslatorOutputFormat implements TranslatorOutputFormat {
     if (text != null) {
       this.writer.write(text);
     }
-
   }
 
   @Override
-  public void writeLink(final String text, final String link)
-      throws IOException {
+  public void writeLink(final String text, final String link) throws IOException {
 
     writeText(text);
   }
@@ -133,24 +129,24 @@ public class TSVTranslatorOutputFormat implements TranslatorOutputFormat {
 
   /**
    * Public constructor.
+   *
    * @param os output stream
    */
   public TSVTranslatorOutputFormat(final OutputStream os) {
 
-    this.writer = new BufferedWriter(
-        new OutputStreamWriter(os, Charset.defaultCharset()));
+    this.writer = new BufferedWriter(new OutputStreamWriter(os, Charset.defaultCharset()));
   }
 
   /**
    * Public constructor.
+   *
    * @param file output file
    * @throws IOException if an error occurs while creating the output file
    */
   public TSVTranslatorOutputFormat(final File file) throws IOException {
 
     this.writer =
-        new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),
-            Charset.defaultCharset()));
+        new BufferedWriter(
+            new OutputStreamWriter(new FileOutputStream(file), Charset.defaultCharset()));
   }
-
 }

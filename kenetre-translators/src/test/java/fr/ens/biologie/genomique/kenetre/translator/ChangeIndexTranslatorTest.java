@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,8 +17,7 @@ public class ChangeIndexTranslatorTest {
   private static final String[] ARRAY_ROW_THREE = {"C", "3.0", "C3", "0"};
   private static final String[] ARRAY_ROW_FOUR = {"D", "4", "D4", "0"};
   private static final String[] ARRAY_ROW_FIVE = {"E", "4", "D4"};
-  private final MultiColumnTranslator transl =
-      new MultiColumnTranslator(ARRAY_FIELD);
+  private final MultiColumnTranslator transl = new MultiColumnTranslator(ARRAY_FIELD);
 
   @Before
   public void setUp() throws Exception {
@@ -28,7 +26,6 @@ public class ChangeIndexTranslatorTest {
     transl.addRow(ARRAY_ROW_THREE);
     transl.addRow(ARRAY_ROW_FOUR);
     transl.addRow(ARRAY_ROW_FIVE);
-
   }
 
   @Test
@@ -50,8 +47,7 @@ public class ChangeIndexTranslatorTest {
       assertTrue(true);
     }
 
-    ChangeIndexTranslator ChangeIdxTransl =
-        new ChangeIndexTranslator(transl, "Col3");
+    ChangeIndexTranslator ChangeIdxTransl = new ChangeIndexTranslator(transl, "Col3");
     List<String> fields = ChangeIdxTransl.getFields();
     assertEquals("Col2", fields.get(0));
     assertEquals("Col4", fields.get(1));
@@ -60,5 +56,4 @@ public class ChangeIndexTranslatorTest {
     assertNull(ChangeIdxTransl.translateField("Col2", "A"));
     assertNull(ChangeIdxTransl.translateField("", ""));
   }
-
 }
