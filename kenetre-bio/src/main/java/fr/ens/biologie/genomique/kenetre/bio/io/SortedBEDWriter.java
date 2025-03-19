@@ -131,7 +131,8 @@ public class SortedBEDWriter implements Closeable {
     File tempFile =
         File.createTempFile("sorted_", ".bed.tmp", temporaryDirectory);
 
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile,
+        BED_CHARSET))) {
       for (BEDEntry entry : chunk) {
         writer.write(entry.toBED(this.format) + '\n');
       }
