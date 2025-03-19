@@ -37,8 +37,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-//import fr.ens.biologie.genomique.eoulsan.EoulsanRuntime;
-//import fr.ens.biologie.genomique.eoulsan.Globals;
 import fr.ens.biologie.genomique.kenetre.io.FileUtils;
 import fr.ens.biologie.genomique.kenetre.log.DummyLogger;
 import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
