@@ -66,32 +66,31 @@ public class XLSToTSVAction implements Action {
   @Override
   public void action(List<String> arguments) {
 
-    boolean keepEmptyLines = false;
-
     final CommandLineParser parser = new DefaultParser();
     final String[] argsArray = arguments.toArray(new String[0]);
 
     // Create Options object
     final Options options = new Options();
     options.addOption("k", "keep-empty-lines", false, "keep empty lines");
+    options.addOption("s", "stdout", false, "only print first tab on stdout");
     options.addOption("h", "help", false, "display this help");
 
     try {
       // parse the command line arguments
       final CommandLine line = parser.parse(options, argsArray, true);
 
-      // Help option
-      if (line.hasOption("keep-empty-lines")) {
-        keepEmptyLines = true;
-      }
+      boolean stdout = line.hasOption("stdout");
 
       // Help option
-      if (line.hasOption("help") || line.getArgList().size() != 2) {
+      if (line.hasOption("help") || line.getArgList().size() != (stdout ? 1 : 2)) {
         help(options);
       }
 
       convert(
-          new File(line.getArgList().get(0)), new File(line.getArgList().get(1)), keepEmptyLines);
+          new File(line.getArgList().get(0)),
+          stdout ? null : new File(line.getArgList().get(1)),
+          line.hasOption("keep-empty-lines"),
+          stdout);
 
     } catch (ParseException e) {
       Main.errorExit(e, "Error while parsing command line arguments: " + e.getMessage());
@@ -109,7 +108,8 @@ public class XLSToTSVAction implements Action {
   // Convert methods
   //
 
-  private static void convert(File inputFile, File outputDirectory, boolean keepEmptyLines) {
+  private static void convert(
+      File inputFile, File outputDirectory, boolean keepEmptyLines, boolean stdout) {
 
     if (!inputFile.isFile()) {
       System.err.println("input file does not exists: " + inputFile);
@@ -121,7 +121,7 @@ public class XLSToTSVAction implements Action {
       System.exit(1);
     }
 
-    if (!outputDirectory.isDirectory()) {
+    if (!stdout && !outputDirectory.isDirectory()) {
       System.err.println("output directory does not exists: " + outputDirectory);
       System.exit(1);
     }
@@ -136,6 +136,16 @@ public class XLSToTSVAction implements Action {
       for (int i = 0; i < sheetNames.size(); i++) {
 
         List<String> lines = readTab(wb, evaluator, i, keepEmptyLines);
+
+        if (stdout) {
+
+          // Print content of stdout
+          System.out.println(String.join("\n", lines));
+
+          // To no process other tabs
+          break;
+        }
+
         Path outputFile = new File(outputDirectory, sheetNames.get(i) + ".tsv").toPath();
         Files.writeString(outputFile, String.join("\n", lines) + '\n');
 
@@ -260,14 +270,15 @@ public class XLSToTSVAction implements Action {
 
   private static Workbook open(InputStream in, String filename) throws IOException {
 
-    if (filename.endsWith(".xls")) {
+    if (filename.toLowerCase().endsWith(".xls")) {
 
       // Create a POIFSFileSystem object to read the data
       final POIFSFileSystem fs = new POIFSFileSystem(in);
 
       // Create a workbook out of the input stream
       return new HSSFWorkbook(fs);
-    } else if (filename.endsWith(".xlsx") || filename.endsWith(".xlsm")) {
+    } else if (filename.toLowerCase().endsWith(".xlsx")
+        || filename.toLowerCase().endsWith(".xlsm")) {
 
       // Create a workbook out of the input stream
       return new XSSFWorkbook(in);
