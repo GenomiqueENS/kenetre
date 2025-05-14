@@ -32,7 +32,7 @@
   </developers>
 
   <properties>
-    <revision>0.34</revision>
+    <revision>0.35-SNAPSHOT</revision>
     <java.version>11</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
