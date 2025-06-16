@@ -5,16 +5,17 @@
   <parent>
     <groupId>fr.ens.biologie.genomique</groupId>
     <artifactId>kenetre</artifactId>
-    <version>1.0</version>
+    <version>0.35-SNAPSHOT</version>
   </parent>
   <groupId>fr.ens.biologie.genomique</groupId>
   <artifactId>kenetre-bin</artifactId>
-  <version>${revision}</version>
+  <packaging>jar</packaging>
   <name>kenetre-bin</name>
   <url>https://github.com/GenomiqueENS/Kenetre</url>
-<properties>
+  <properties>
     <main.class>fr.ens.biologie.genomique.kenetre.bin.Main</main.class>
-</properties>
+    <maven.deploy.skip>false</maven.deploy.skip>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>fr.ens.biologie.genomique</groupId>

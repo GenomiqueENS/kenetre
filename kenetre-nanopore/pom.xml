@@ -5,13 +5,16 @@
   <parent>
     <groupId>fr.ens.biologie.genomique</groupId>
     <artifactId>kenetre</artifactId>
-    <version>1.0</version>
+    <version>0.35-SNAPSHOT</version>
   </parent>
   <groupId>fr.ens.biologie.genomique</groupId>
   <artifactId>kenetre-nanopore</artifactId>
-  <version>${revision}</version>
+  <packaging>jar</packaging>
   <name>kenetre-nanopore</name>
   <url>https://github.com/GenomiqueENS/Kenetre</url>
+  <properties>
+    <maven.deploy.skip>false</maven.deploy.skip>
+  </properties>
   <repositories>
     <repository>
       <snapshots>

@@ -5,7 +5,7 @@
   <artifactId>kenetre</artifactId>
   <name>Kenetre</name>
   <packaging>pom</packaging>
-  <version>1.0</version>
+  <version>0.35-SNAPSHOT</version>
   <description>Common classes for Aozan and Eoulsan projects.</description>
   <url>https://github.com/GenomiqueENS/kenetre</url>
   <inceptionYear>2022</inceptionYear>
@@ -32,7 +32,6 @@
   </developers>
 
   <properties>
-    <revision>0.35-SNAPSHOT</revision>
     <java.version>11</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -43,6 +42,7 @@
     <guava.version>30.1.1-jre</guava.version>
     <htsjdk.version>2.13.2</htsjdk.version>
     <poi.version>4.1.2</poi.version>
+    <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
 
   <licenses>
@@ -76,6 +76,14 @@
       <url>https://outils.genomique.biologie.ens.fr/maven2</url>
     </repository>
   </repositories>
+
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/GenomiqueENS/kenetre</url>
+    </repository>
+  </distributionManagement>
 
   <dependencies>
     <dependency>

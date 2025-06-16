@@ -1,0 +1,113 @@
+name: release-please
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+  pull-requests: write
+  packages: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          release-type: maven
+
+      # Checkout the repository
+      - name: Checkout code
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/checkout@v4
+
+      # Debug Release Outputs
+      - name: Debug Release Outputs
+        shell: bash
+        run: |
+          echo "releases_created: ${{ steps.release.outputs.releases_created }}"
+          echo "release_created:  ${{ steps.release.outputs.release_created }}"
+          echo "tag_name:         ${{ steps.release.outputs.tag_name }}"
+          echo "version:          ${{ steps.release.outputs.version }}"
+          echo "major:            ${{ steps.release.outputs.major }}"
+          echo "minor:            ${{ steps.release.outputs.minor }}"
+          echo "patch:            ${{ steps.release.outputs.patch }}"
+
+      # Set up JDK
+      - name: Set up JDK
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: 11
+          distribution: 'temurin'
+
+      # Cache Maven dependencies
+      - name: Cache Maven dependencies
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      # Build the project with Maven
+      - name: Build with Maven
+        if: ${{ steps.release.outputs.release_created }}
+        run: mvn --batch-mode clean package -DskipTests
+
+      # Copy artifacts
+      - name: Copy artifacts
+        if: ${{ steps.release.outputs.release_created }}
+        run: mkdir staging && cp */target/*.jar staging/
+
+      # Upload artifacts
+      - name: Upload artifacts
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Package
+          path: staging
+          retention-days: 1
+
+      # Publish packages
+      - name: Publish package
+        if: ${{ steps.release.outputs.release_created }}
+        run: mvn --batch-mode deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Publish asset
+      - name: Publish jar asset
+        if: ${{ steps.release.outputs.release_created }}
+        shell: bash
+        run: gh release upload ${{ steps.release.outputs.tag_name }}  kenetre-bin/target/kenetre-bin-*-jar-with-dependencies.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Log in to Docker Hub
+      - name: Log in to Docker Hub
+        if: ${{ steps.release.outputs.release_created }}
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Create an empty context for Docker build
+      - name: Create empty context for docker build
+        if: ${{ steps.release.outputs.release_created }}
+        run: mkdir -p docker-context && cp -p Dockerfile docker-context/Dockerfile
+
+      # Build and push Docker image
+      - name: Build and push Docker image
+        if: ${{ steps.release.outputs.release_created }}
+        uses: docker/build-push-action@v5
+        with:
+          context: ./docker-context
+          push: true
+          tags: genomicpariscentre/kenetre:${{ steps.release.outputs.version }}
+          build-args: |
+            VERSION=${{ steps.release.outputs.version }}
