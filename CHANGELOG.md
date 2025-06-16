@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.36.0](https://github.com/GenomiqueENS/kenetre/compare/v0.35.0...v0.36.0) (2025-06-16)
+
+
+### Bug Fixes
+
+* Fix URL for downloading kenetre binary from GitHub in Dockerfile. ([#9](https://github.com/GenomiqueENS/kenetre/issues/9)) ([47afb3b](https://github.com/GenomiqueENS/kenetre/commit/47afb3b200229bf99ff9e8b0e6038a9a50734ac8))
+
+
+### Miscellaneous Chores
+
+* release 0.36.0 ([#10](https://github.com/GenomiqueENS/kenetre/issues/10)) ([680d047](https://github.com/GenomiqueENS/kenetre/commit/680d0476c633068df987325829ad5e9919a174ae))
+
 ## 1.0.0 (2025-06-16)
 
 
