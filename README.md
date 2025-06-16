@@ -17,5 +17,6 @@ The current avaiblable modules are :
 - **kenetre-storages**: storage classes;
 - **kenetre-translators**: translator related classes.
 
+This software is published under the LGPL and CeCILL-C licenses.
 
 This software is developped by the [GenomiqueENS core facility](https://genomique.biologie.ens.fr/) of the [Institute of Biology of the Ecole Normale Superieure (IBENS)](http://www.ibens.bio.ens.psl.eu/).
