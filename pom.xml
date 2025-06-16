@@ -5,7 +5,7 @@
   <artifactId>kenetre</artifactId>
   <name>Kenetre</name>
   <packaging>pom</packaging>
-  <version>0.35-SNAPSHOT</version>
+  <version>1.0.0</version>
   <description>Common classes for Aozan and Eoulsan projects.</description>
   <url>https://github.com/GenomiqueENS/kenetre</url>
   <inceptionYear>2022</inceptionYear>
@@ -159,8 +159,8 @@
               <version>1.24.0</version>
               <style>GOOGLE</style>
             </googleJavaFormat>
-            <importOrder />
-            <removeUnusedImports />
+            <importOrder/>
+            <removeUnusedImports/>
           </java>
         </configuration>
       </plugin>
