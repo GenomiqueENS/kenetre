@@ -8,7 +8,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt update && \
     apt install --yes $BUILD_PACKAGES openjdk-11-jre-headless && \
     cd /usr/local/bin && \
-    wget -q  https://github.com/jourdren/kenetre-bidon3/releases/download/v${VERSION}/kenetre-bin-${VERSION}-jar-with-dependencies.jar && \
+    wget -q  https://github.com/GenomiqueENS/kenetre/releases/download/v${VERSION}/kenetre-bin-${VERSION}-jar-with-dependencies.jar && \
     ln -s kenetre-bin-*.jar kenetre.jar && \
     echo "#!/bin/bash\njava -jar \"/usr/local/bin/kenetre.jar\" \"\$@\"" > kenetre.sh && \
     chmod +x kenetre.sh && \
