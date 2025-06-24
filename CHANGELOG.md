@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.37.0](https://github.com/GenomiqueENS/kenetre/compare/v0.36.0...v0.37.0) (2025-06-24)
+
+
+### Features
+
+* do not skip anymore the deployement in parent pom. ([#13](https://github.com/GenomiqueENS/kenetre/issues/13)) ([095d8ba](https://github.com/GenomiqueENS/kenetre/commit/095d8ba81dc6b2019e2e9bda7b86be24dd9f0521))
+
 ## [0.36.0](https://github.com/GenomiqueENS/kenetre/compare/v0.35.0...v0.36.0) (2025-06-16)
 
 
