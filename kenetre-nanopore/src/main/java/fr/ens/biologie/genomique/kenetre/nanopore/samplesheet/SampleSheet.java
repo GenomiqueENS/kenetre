@@ -253,7 +253,8 @@ public class SampleSheet {
       alias = alias.trim();
 
       if (!checkBarcodeName("barcode", barcode)) {
-        throw new IllegalArgumentException("Invalid barcode: " + barcode);
+        throw new IllegalArgumentException(
+            "Invalid barcode: " + barcode + " (barcode names must starts with \"barcode\").");
       }
 
       if (!checkAlias(alias)) {
