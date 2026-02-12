@@ -2,6 +2,7 @@ package fr.ens.biologie.genomique.kenetre.nanopore.samplesheet;
 
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,8 +12,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-
-import fr.ens.biologie.genomique.kenetre.KenetreException;
 
 /**
  * This class define a sample sheet for Nanopore software.
@@ -254,7 +253,8 @@ public class SampleSheet {
       alias = alias.trim();
 
       if (!checkBarcodeName("barcode", barcode)) {
-        throw new IllegalArgumentException("Invalid barcode: " + barcode + " (barcode names must starts with \"barcode\").");
+        throw new IllegalArgumentException(
+            "Invalid barcode: " + barcode + " (barcode names must starts with \"barcode\").");
       }
 
       if (!checkAlias(alias)) {
@@ -1160,5 +1160,4 @@ public class SampleSheet {
         + barcodes
         + "]";
   }
-
 }
