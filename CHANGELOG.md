@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.38.0](https://github.com/GenomiqueENS/kenetre/compare/v0.37.0...v0.38.0) (2026-02-13)
+
+
+### Features
+
+* Add minimap2 2.30 binary to kenetre-mappers. ([#18](https://github.com/GenomiqueENS/kenetre/issues/18)) ([0ab8fb6](https://github.com/GenomiqueENS/kenetre/commit/0ab8fb6cd50924066539d68a80d89438c06b4ef0))
+
+
+### Bug Fixes
+
+* Update exception message in SampleSheet when adding a barcode. ([#17](https://github.com/GenomiqueENS/kenetre/issues/17)) ([1cb1928](https://github.com/GenomiqueENS/kenetre/commit/1cb1928c87e6000e9d532a9e5f30aba4c83806e9))
+
+
+### Miscellaneous Chores
+
+* release 0.38.0 ([#19](https://github.com/GenomiqueENS/kenetre/issues/19)) ([1bdc1f3](https://github.com/GenomiqueENS/kenetre/commit/1bdc1f30d75f2287888f0123804232ad11c1ebc9))
+
 ## [0.37.0](https://github.com/GenomiqueENS/kenetre/compare/v0.36.0...v0.37.0) (2025-06-24)
 
 
