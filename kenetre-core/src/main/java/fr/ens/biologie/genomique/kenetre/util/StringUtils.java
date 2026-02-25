@@ -33,6 +33,9 @@ import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.MessageDigest;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -1276,6 +1279,29 @@ public final class StringUtils {
     }
 
     return s1.compareTo(s2);
+  }
+
+  /**
+   * Convert epoch date to String like the Date.toString().
+   *
+   * @param millis number of milliseconds since the epoch
+   * @return a String with the date
+   */
+  public static final String datetoString(long millis) {
+
+    return Instant.ofEpochMilli(millis)
+        .atZone(ZoneId.systemDefault())
+        .format(DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH));
+  }
+
+  /**
+   * Convert the current date to String like the Date.toString().
+   *
+   * @return a String with the date
+   */
+  public static final String datetoString() {
+
+    return datetoString(System.currentTimeMillis());
   }
 
   //

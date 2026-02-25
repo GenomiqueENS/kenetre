@@ -343,4 +343,18 @@ public class Utils {
 
     collection.removeAll(toRemove);
   }
+
+  /**
+   * Sleep several milliseconds without throwing an exception.
+   *
+   * @param millis milliseconds to sleep
+   */
+  public static final void silentSleep(int millis) {
+
+    try {
+      Thread.sleep(millis);
+    } catch (InterruptedException e) {
+      // Do not handle interruption exception
+    }
+  }
 }
