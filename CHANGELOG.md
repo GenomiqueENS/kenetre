@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.39.0](https://github.com/GenomiqueENS/kenetre/compare/v0.38.0...v0.39.0) (2026-02-25)
+
+
+### Features
+
+* Add StringUtils.datetoString() and Utils.silentSleep() methods. ([#22](https://github.com/GenomiqueENS/kenetre/issues/22)) ([73df107](https://github.com/GenomiqueENS/kenetre/commit/73df107e80ae881fdee1f5b85b898b4c4ee90b01))
+
+
+### Miscellaneous Chores
+
+* release 0.39.0 ([#23](https://github.com/GenomiqueENS/kenetre/issues/23)) ([f33a822](https://github.com/GenomiqueENS/kenetre/commit/f33a822cb482970c6688b86118ca4877fba45d49))
+
 ## [0.38.0](https://github.com/GenomiqueENS/kenetre/compare/v0.37.0...v0.38.0) (2026-02-13)
 
 
