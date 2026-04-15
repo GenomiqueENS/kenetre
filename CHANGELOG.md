@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.40.0](https://github.com/GenomiqueENS/kenetre/compare/v0.39.0...v0.40.0) (2026-04-15)
+
+
+### Bug Fixes
+
+* Comma are forbidden in the description field of the Illumina sample sheet. ([#26](https://github.com/GenomiqueENS/kenetre/issues/26)) ([6980254](https://github.com/GenomiqueENS/kenetre/commit/698025438e85166c4cd666e8549af1b9a0f553b0))
+
+
+### Miscellaneous Chores
+
+* release 0.40.0 ([#27](https://github.com/GenomiqueENS/kenetre/issues/27)) ([393defe](https://github.com/GenomiqueENS/kenetre/commit/393defe140396f724722da44b01f8d7010ff8ce6))
+
 ## [0.39.0](https://github.com/GenomiqueENS/kenetre/compare/v0.38.0...v0.39.0) (2026-02-25)
 
 
