@@ -476,7 +476,7 @@ public class SampleSheetChecker {
     // Check for forbidden characters
     for (int i = 0; i < sampleDescription.length(); i++) {
       final char c = sampleDescription.charAt(i);
-      if (c == '\'' || c == '\"') {
+      if (c == '\'' || c == '\"' || c == ',') {
         throw new KenetreException(
             "Invalid sample description, '"
                 + c
