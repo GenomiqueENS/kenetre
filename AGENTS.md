@@ -7,7 +7,7 @@ This document formalizes the de facto rules of the `kenetre` repository for huma
 ## 1) Project context
 
 - Java multi-module Maven project (`packaging=pom` at the root).
-- Target Java version: `11` (`maven.compiler.source/target/release=11`).
+- Target Java version: `17` (`maven.compiler.source/target/release=17`).
 - Main modules: `kenetre-core`, `kenetre-bio`, `kenetre-illumina`, `kenetre-nanopore`, `kenetre-it`, etc.
 
 ## 2) Style and quality rules
@@ -48,7 +48,7 @@ This document formalizes the de facto rules of the `kenetre` repository for huma
 
 - Centralize versions in the root POM when possible (`guava.version`, `junit.version`, `htsjdk.version`, `poi.version`).
 - Prefer internal dependencies via `${project.version}` between `kenetre-*` modules.
-- Keep Java 11 compatibility (no API requiring Java > 11).
+- Keep Java 17 compatibility (no API requiring Java > 17).
 - Any update of historical dependencies must be justified and tested module by module.
 
 ## 5) Tests
