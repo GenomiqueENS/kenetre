@@ -81,9 +81,9 @@ mvn spotless:check
 
 ## 7) Changelog and releases
 
-- `CHANGELOG.md` follows a semver-like structure with sections `Features`, `Bug Fixes`, `Miscellaneous Chores`.
+- `CHANGELOG.md` is **automatically managed by [release-please](https://github.com/googleapis/release-please)** via a GitHub Actions workflow. **Do not edit `CHANGELOG.md` manually.**
 - Releases are tagged `vX.Y.Z`.
-- For user-visible changes, add a consistent changelog entry.
+- `CHANGELOG.md` follows a semver-like structure with sections `Features`, `Bug Fixes`, `Miscellaneous Chores`; these entries are generated from conventional commit messages.
 
 ## 8) Practical rules for AI agents
 
@@ -100,6 +100,7 @@ mvn spotless:check
 - Do not raise the target Java version without explicit request.
 - Do not remove historical license headers.
 - Do not move test resources out of `src/test/java/files`.
+- **Do not edit `CHANGELOG.md`** — it is automatically updated by `release-please` during the GitHub Actions release workflow.
 
 ## 9) Quick PR checklist
 
@@ -107,4 +108,4 @@ mvn spotless:check
 - [ ] Spotless formatting check is green.
 - [ ] Tests for modified module(s) are green.
 - [ ] Resources (`files`, `META-INF/services`) updated if needed.
-- [ ] Changelog updated for functional/user-visible changes.
+- [ ] `CHANGELOG.md` **not modified** (managed automatically by `release-please`).
