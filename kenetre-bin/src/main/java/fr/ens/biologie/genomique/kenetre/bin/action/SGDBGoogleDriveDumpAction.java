@@ -294,7 +294,7 @@ public class SGDBGoogleDriveDumpAction implements Action {
   }
 
   @Override
-  public void action(List<String> arguments) {
+  public void action(Map<String, String> conf, List<String> arguments) {
 
     // Check arguments
     if (arguments.size() != 4) {
