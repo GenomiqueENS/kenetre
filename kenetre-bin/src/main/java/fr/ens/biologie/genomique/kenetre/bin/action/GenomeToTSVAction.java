@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This program allow to create UCSC TSV chromosome files.
@@ -35,7 +36,7 @@ public class GenomeToTSVAction implements Action {
   }
 
   @Override
-  public void action(List<String> arguments) {
+  public void action(Map<String, String> conf, List<String> arguments) {
 
     if (arguments.size() != 2) {
       System.err.println(getName() + " genome.fasta chromosomes.tsv");

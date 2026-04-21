@@ -1,14 +1,19 @@
 package fr.ens.biologie.genomique.kenetre.bin;
 
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.*;
+import static java.util.Objects.requireNonNull;
 
 import com.google.common.base.Strings;
 import fr.ens.biologie.genomique.kenetre.bin.action.Action;
 import fr.ens.biologie.genomique.kenetre.bin.action.ActionService;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import org.apache.commons.cli.CommandLine;
@@ -71,10 +76,10 @@ public class Main {
   public static final String WELCOME_MSG = APP_NAME + " version " + APP_VERSION_STRING;
 
   private static Main main;
-  private final List<String> args;
   private int errorExitCode = 0;
   private Action action;
   private List<String> actionArgs;
+  private final Map<String, String> conf = new LinkedHashMap<>();
 
   /**
    * Exit the application.
@@ -211,6 +216,7 @@ public class Main {
     // Create Options object
     final Options options = new Options();
 
+    options.addOption("c", "conf", true, "configuration file");
     options.addOption("v", "version", false, "show version of the software");
     options.addOption("about", false, "display information about this software");
     options.addOption("h", "help", false, "display this help");
@@ -224,20 +230,21 @@ public class Main {
   /**
    * Parse the options of the command line
    *
-   * @return the number of options argument in the command line
+   * @return the arguments that are not options (i.e. the action name and action arguments)
    */
-  private int parseCommandLine() {
+  private List<String> parseCommandLine(String[] args) {
 
     final Options options = makeOptions();
     final CommandLineParser parser = new DefaultParser();
-    final String[] argsArray = this.args.toArray(new String[0]);
 
-    int argsOptions = 0;
+    // int argsOptions = 0;
+    String confPath = System.getenv(APP_NAME_LOWER_CASE.toUpperCase() + "_CONFFILE");
+    List<String> argList = null;
 
     try {
 
       // parse the command line arguments
-      final CommandLine line = parser.parse(options, argsArray, true);
+      final CommandLine line = parser.parse(options, args, true);
 
       // Help option
       if (line.hasOption("help")) {
@@ -259,30 +266,49 @@ public class Main {
         showMessageAndExit(LICENSE_TXT);
       }
 
+      // Configuration option
+      if (line.hasOption("conf")) {
+        // Configuration file option
+        confPath = line.getOptionValue("conf");
+      }
+
+      // Get arguments that are not options
+      argList = line.getArgList();
+
     } catch (ParseException e) {
       errorExit(e, "Error while parsing command line arguments: " + e.getMessage());
     }
 
     // No arguments found
-    if (this.args == null || this.args.size() == argsOptions) {
+    if (argList == null || argList.isEmpty()) {
 
       showErrorMessageAndExit(
           "This program needs one argument." + " Use the -h option to get more information.\n");
     }
 
-    return argsOptions;
+    // Load configuration
+    if (confPath != null) {
+      try {
+        this.conf.putAll(loadConfiguration(confPath, "configuration"));
+      } catch (IOException e) {
+        errorExit(e, "Error while loading configuration file: " + e.getMessage());
+        return emptyList(); // Unreachable but required to compile
+      }
+    }
+    return argList;
   }
 
   /**
    * Parse the action name and arguments from command line.
    *
-   * @param optionsCount number of options in the command line
+   * @param actionNameAndArgs the list of the action name and arguments (first element is the action
+   *     name and the others
    */
-  private void parseAction(final int optionsCount) {
+  private void parseAction(List<String> actionNameAndArgs) {
 
     // Set action name and arguments
-    final String actionName = this.args.get(optionsCount).trim().toLowerCase();
-    this.actionArgs = this.args.subList(optionsCount + 1, this.args.size());
+    final String actionName = actionNameAndArgs.get(0).trim().toLowerCase();
+    this.actionArgs = actionNameAndArgs.subList(1, actionNameAndArgs.size());
 
     // Search action
     this.action = ActionService.getInstance().newService(actionName);
@@ -300,13 +326,13 @@ public class Main {
   }
 
   /**
-   * Get command line arguments.
+   * Get configuration.
    *
-   * @return Returns the arguments
+   * @return Returns the configuration
    */
-  public List<String> getArgs() {
+  public Map<String, String> getConfiguration() {
 
-    return unmodifiableList(this.args);
+    return unmodifiableMap(this.conf);
   }
 
   /**
@@ -398,6 +424,49 @@ public class Main {
   }
 
   //
+  // Configuration methods
+  //
+
+  /**
+   * Load configuration from a key=value file. Lines starting with '#' and blank lines are ignored.
+   *
+   * @param configurationPath path to the credential file
+   * @param description description used in error messages
+   * @return a map of credential keys (lowercased) to values. Underscore characters in keys are
+   *     replaced by dots.
+   * @throws IOException if the file cannot be read
+   */
+  public static Map<String, String> loadConfiguration(String configurationPath, String description)
+      throws IOException {
+
+    requireNonNull(configurationPath, "credentialPath must not be null");
+    requireNonNull(description, "description must not be null");
+
+    Map<String, String> result = new LinkedHashMap<>();
+
+    try (BufferedReader reader = Files.newBufferedReader(Path.of(configurationPath))) {
+      String line;
+      while ((line = reader.readLine()) != null) {
+        line = line.trim();
+        if (line.isEmpty() || line.charAt(0) == '#') {
+          continue;
+        }
+        int i = line.indexOf('=');
+        if (i > -1) {
+          String key = line.substring(0, i).trim().toLowerCase().replace('_', '.');
+          String value = line.substring(i + 1).trim();
+          result.put(key, value);
+        }
+      }
+    } catch (IOException e) {
+      throw new IOException(
+          "Unable to read " + description + " credential file: " + configurationPath, e);
+    }
+
+    return result;
+  }
+
+  //
   // Constructor
   //
 
@@ -408,13 +477,8 @@ public class Main {
    */
   Main(final String[] args) {
 
-    this.args = Arrays.asList(args);
-
-    // Parse the command line
-    final int optionsCount = parseCommandLine();
-
-    // Parse action name and action arguments from command line
-    parseAction(optionsCount);
+    // Parse command line and then action name and action arguments from command line
+    parseAction(parseCommandLine(args));
   }
 
   //
@@ -441,7 +505,7 @@ public class Main {
     try {
 
       // Run action
-      action.action(main.getActionArgs());
+      action.action(main.getConfiguration(), main.getActionArgs());
 
     } catch (Throwable e) {
       errorExit(e, e.getMessage(), main.getErrorExitCode());

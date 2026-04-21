@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -64,7 +65,7 @@ public class XLSToTSVAction implements Action {
   }
 
   @Override
-  public void action(List<String> arguments) {
+  public void action(Map<String, String> conf, List<String> arguments) {
 
     final CommandLineParser parser = new DefaultParser();
     final String[] argsArray = arguments.toArray(new String[0]);

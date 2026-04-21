@@ -1,6 +1,7 @@
 package fr.ens.biologie.genomique.kenetre.bin.action;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * This interface define an action.
@@ -27,9 +28,10 @@ public interface Action {
   /**
    * Execute action.
    *
+   * @param conf Kenetre configuration
    * @param arguments arguments of the action
    */
-  void action(List<String> arguments);
+  void action(Map<String, String> conf, List<String> arguments);
 
   /**
    * Test if the action must be hidden from the list of available actions.

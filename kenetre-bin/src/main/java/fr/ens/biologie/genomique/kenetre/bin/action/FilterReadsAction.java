@@ -63,7 +63,7 @@ public class FilterReadsAction implements Action {
   }
 
   @Override
-  public void action(List<String> arguments) {
+  public void action(Map<String, String> conf, List<String> arguments) {
 
     try {
 

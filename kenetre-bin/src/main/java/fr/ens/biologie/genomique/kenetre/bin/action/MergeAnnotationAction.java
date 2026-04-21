@@ -5,6 +5,7 @@ import fr.ens.biologie.genomique.kenetre.bin.MergeAnnotation;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class MergeAnnotationAction implements Action {
 
@@ -27,7 +28,7 @@ public class MergeAnnotationAction implements Action {
   }
 
   @Override
-  public void action(List<String> arguments) {
+  public void action(Map<String, String> conf, List<String> arguments) {
 
     if (arguments.size() != 2) {
       System.err.println("Syntax: merge-annotation reference.gtf input.gtf");
