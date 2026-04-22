@@ -1,5 +1,6 @@
 package fr.ens.biologie.genomique.kenetre.bin.action;
 
+import fr.ens.biologie.genomique.kenetre.KenetreException;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public interface Action {
    * @param conf Kenetre configuration
    * @param arguments arguments of the action
    */
-  void action(Map<String, String> conf, List<String> arguments);
+  void action(Map<String, String> conf, List<String> arguments) throws KenetreException;
 
   /**
    * Test if the action must be hidden from the list of available actions.
