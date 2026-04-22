@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import org.apache.commons.cli.CommandLine;
@@ -193,13 +194,22 @@ public class Main {
     formatter.printHelp("Kenetre [options] action arguments", options);
 
     System.out.println("Available actions:");
+
+    var actionMaps = new TreeMap<String, String>();
+    var padding = 0;
+
     for (Action action : ActionService.getInstance().getActions()) {
 
       if (!action.isHidden()) {
-
-        System.out.println(
-            Strings.padEnd(" - " + action.getName(), 23, ' ') + action.getDescription());
+        var actionName = action.getName();
+        padding = Math.max(padding, actionName.length());
+        actionMaps.put(actionName, action.getDescription());
       }
+    }
+    padding += 4; // Add some space for padding
+
+    for (Map.Entry<String, String> entry : actionMaps.entrySet()) {
+      System.out.println(Strings.padEnd(" - " + entry.getKey(), padding, ' ') + entry.getValue());
     }
 
     System.exit(0);
