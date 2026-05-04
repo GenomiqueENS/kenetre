@@ -25,6 +25,6 @@ public class ListCurrentProjectsAction implements Action {
   @Override
   public void action(Map<String, String> conf, List<String> arguments) throws KenetreException {
 
-    new ListCurrentProjectsCommand(this.getName(), conf).execute(arguments);
+    new ListCurrentProjectsCommand(this.getName(), conf, arguments).execute();
   }
 }

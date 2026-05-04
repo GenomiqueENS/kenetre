@@ -49,9 +49,18 @@ public class ListTerminatedProjectsCommand extends AbstractCommand {
   // Constructor
   //
 
-  public ListTerminatedProjectsCommand(String actionName, Map<String, String> conf)
-      throws KenetreException {
+  /**
+   * Constructor.
+   *
+   * @param actionName The name of the action to execute (e.g., "list-terminated-projects").
+   * @param conf The configuration map containing necessary parameters for the command.
+   * @param arguments The list of arguments provided to the command.
+   * @throws KenetreException If an error occurs while initializing the command (e.g., invalid
+   *     configuration).
+   */
+  public ListTerminatedProjectsCommand(
+      String actionName, Map<String, String> conf, List<String> arguments) throws KenetreException {
 
-    super(actionName, conf, true, false);
+    super(actionName, conf, arguments, false);
   }
 }

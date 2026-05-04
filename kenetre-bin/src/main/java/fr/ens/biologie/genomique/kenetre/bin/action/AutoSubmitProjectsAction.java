@@ -25,6 +25,6 @@ public class AutoSubmitProjectsAction implements Action {
   @Override
   public void action(Map<String, String> conf, List<String> arguments) throws KenetreException {
 
-    new AutoSubmitProjectsCommand(getName(), conf).execute(arguments);
+    new AutoSubmitProjectsCommand(getName(), conf, arguments).execute();
   }
 }

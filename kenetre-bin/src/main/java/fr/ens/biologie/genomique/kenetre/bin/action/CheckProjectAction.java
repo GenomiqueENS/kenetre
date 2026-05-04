@@ -25,6 +25,6 @@ public class CheckProjectAction implements Action {
   @Override
   public void action(Map<String, String> conf, List<String> arguments) throws KenetreException {
 
-    new CheckProjectCommand(getName(), conf).execute(arguments);
+    new CheckProjectCommand(getName(), conf, arguments).execute();
   }
 }

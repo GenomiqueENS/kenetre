@@ -25,6 +25,6 @@ public class ListTerminatedProjectsAction implements Action {
   @Override
   public void action(Map<String, String> conf, List<String> arguments) throws KenetreException {
 
-    new ListTerminatedProjectsCommand(this.getName(), conf).execute(arguments);
+    new ListTerminatedProjectsCommand(this.getName(), conf, arguments).execute();
   }
 }

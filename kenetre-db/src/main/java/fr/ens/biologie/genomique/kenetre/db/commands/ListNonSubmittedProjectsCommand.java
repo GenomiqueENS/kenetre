@@ -70,12 +70,13 @@ public class ListNonSubmittedProjectsCommand extends AbstractCommand {
    *
    * @param actionName The name of the action to execute (e.g., "list-non-submitted-projects").
    * @param conf A map of configuration parameters (e.g., database connection settings).
+   * @param arguments The list of arguments passed to the command.
    * @throws KenetreException If an error occurs while initializing the command (e.g., invalid
    *     configuration).
    */
-  public ListNonSubmittedProjectsCommand(String actionName, Map<String, String> conf)
-      throws KenetreException {
+  public ListNonSubmittedProjectsCommand(
+      String actionName, Map<String, String> conf, List<String> arguments) throws KenetreException {
 
-    super(actionName, conf, true, true);
+    super(actionName, conf, arguments, true);
   }
 }

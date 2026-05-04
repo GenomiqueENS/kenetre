@@ -25,6 +25,6 @@ public class ListNonSubmittedProjectsAction implements Action {
   @Override
   public void action(Map<String, String> conf, List<String> arguments) throws KenetreException {
 
-    new ListNonSubmittedProjectsCommand(this.getName(), conf).execute(arguments);
+    new ListNonSubmittedProjectsCommand(this.getName(), conf, arguments).execute();
   }
 }

@@ -25,6 +25,8 @@ public abstract class AbstractCommand {
   private static final int DEFAULT_SINCE_YEAR = 2025;
 
   private final String actionName;
+  private List<String> internalArguments;
+
   protected final GenomiqueEnsApiClient gensApiClient;
   protected final FgApiClient fgApiClient;
   protected final ProjectSubmissionBuilder submissionBuilder;
@@ -77,7 +79,16 @@ public abstract class AbstractCommand {
 
   protected abstract void internalExecute(List<String> arguments) throws KenetreException;
 
-  public void execute(List<String> arguments) throws KenetreException {
+
+  /**
+   * Parse command line arguments and set class fields accordingly. This method is called by the
+   * constructor and should not be called directly by child classes.
+   *
+   * @param arguments A list of command line arguments passed to the command.
+   * @throws KenetreException If an error occurs while parsing the arguments (e.g., invalid option
+   *     value).
+   */
+  private void parseArguments(List<String> arguments) throws KenetreException {
 
     var options = additionalOptions(defaultOptions());
     var parser = new DefaultParser();
@@ -123,7 +134,7 @@ public abstract class AbstractCommand {
       parseAdditionalOptions(line);
 
       // Execute
-      internalExecute(line.getArgList());
+      this.internalArguments = line.getArgList();
 
     } catch (ParseException e) {
       throw new KenetreException(
@@ -131,16 +142,34 @@ public abstract class AbstractCommand {
     }
   }
 
+  /**
+   * Execute the command. This method should be called after the constructor to run the command's
+   * logic. It will call the internalExecute method implemented by child classes with the parsed
+   * arguments.
+   *
+   * @throws KenetreException If an error occurs while executing the command (e.g., database access
+   *     error).
+   */
+  public void execute() throws KenetreException {
+
+    // Execute
+    internalExecute(this.internalArguments);
+  }
+
   //
   // Constructor
   //
 
   protected AbstractCommand(
-      String actionName, Map<String, String> conf, boolean databaseConnection, boolean fgConnection)
+      String actionName, Map<String, String> conf, List<String> arguments, boolean fgConnection)
       throws KenetreException {
 
     requireNonNull(actionName);
     requireNonNull(conf);
+    requireNonNull(arguments);
+
+    // Parse command line arguments
+    parseArguments(arguments);
 
     // Set action name
     this.actionName = actionName;

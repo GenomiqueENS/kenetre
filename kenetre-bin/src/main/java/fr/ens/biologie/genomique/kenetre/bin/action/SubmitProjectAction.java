@@ -25,6 +25,6 @@ public class SubmitProjectAction implements Action {
   @Override
   public void action(Map<String, String> conf, List<String> arguments) throws KenetreException {
 
-    new SubmitProjectCommand(this.getName(), conf).execute(arguments);
+    new SubmitProjectCommand(this.getName(), conf, arguments).execute();
   }
 }

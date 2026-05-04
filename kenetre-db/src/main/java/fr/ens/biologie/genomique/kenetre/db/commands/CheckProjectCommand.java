@@ -62,11 +62,13 @@ public class CheckProjectCommand extends AbstractCommand {
    *
    * @param actionName The name of the action to execute (e.g., "check-project").
    * @param conf The configuration map containing necessary parameters for the command.
+   * @param arguments A list of command-line arguments passed to the command.
    * @throws KenetreException If an error occurs while initializing the command (e.g., invalid
    *     configuration).
    */
-  public CheckProjectCommand(String actionName, Map<String, String> conf) throws KenetreException {
+  public CheckProjectCommand(String actionName, Map<String, String> conf, List<String> arguments)
+      throws KenetreException {
 
-    super(actionName, conf, true, true);
+    super(actionName, conf, arguments, true);
   }
 }

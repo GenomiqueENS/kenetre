@@ -64,12 +64,13 @@ public class AutoSubmitProjectsCommand extends AbstractCommand {
    *
    * @param actionName The name of the action to execute (e.g., "auto-submit-projects").
    * @param conf A map of configuration parameters (e.g., database connection settings).
+   * @param arguments A list of command-line arguments passed to the command.
    * @throws KenetreException If an error occurs while initializing the command (e.g., invalid
    *     configuration).
    */
-  public AutoSubmitProjectsCommand(String actionName, Map<String, String> conf)
-      throws KenetreException {
+  public AutoSubmitProjectsCommand(
+      String actionName, Map<String, String> conf, List<String> arguments) throws KenetreException {
 
-    super(actionName, conf, false, true);
+    super(actionName, conf, arguments, true);
   }
 }

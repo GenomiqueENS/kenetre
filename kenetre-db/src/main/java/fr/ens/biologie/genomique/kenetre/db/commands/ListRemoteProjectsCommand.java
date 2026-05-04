@@ -51,12 +51,13 @@ public class ListRemoteProjectsCommand extends AbstractCommand {
    *
    * @param actionName The name of the action to execute (e.g., "list-remote-projects").
    * @param conf The configuration map containing necessary parameters for the command.
+   * @param arguments A list of command-line arguments passed to the command.
    * @throws KenetreException If an error occurs while initializing the command (e.g., invalid
    *     configuration).
    */
-  public ListRemoteProjectsCommand(String actionName, Map<String, String> conf)
-      throws KenetreException {
+  public ListRemoteProjectsCommand(
+      String actionName, Map<String, String> conf, List<String> arguments) throws KenetreException {
 
-    super(actionName, conf, false, true);
+    super(actionName, conf, arguments, true);
   }
 }

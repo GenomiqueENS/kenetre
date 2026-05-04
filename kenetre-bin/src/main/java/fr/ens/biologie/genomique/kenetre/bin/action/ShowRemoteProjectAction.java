@@ -25,6 +25,6 @@ public class ShowRemoteProjectAction implements Action {
   @Override
   public void action(Map<String, String> conf, List<String> arguments) throws KenetreException {
 
-    new ShowRemoteProjectCommand(this.getName(), conf).execute(arguments);
+    new ShowRemoteProjectCommand(this.getName(), conf, arguments).execute();
   }
 }
