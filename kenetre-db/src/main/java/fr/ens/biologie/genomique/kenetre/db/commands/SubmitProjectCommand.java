@@ -3,7 +3,7 @@ package fr.ens.biologie.genomique.kenetre.db.commands;
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.db.fg.FgApiClient;
 import fr.ens.biologie.genomique.kenetre.db.GenomiqueEnsApiClient;
-import fr.ens.biologie.genomique.kenetre.db.fg.ProjectSubmissionBuilder;
+import fr.ens.biologie.genomique.kenetre.db.fg.FgProjectSubmissionBuilder;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +45,7 @@ public class SubmitProjectCommand extends AbstractCommand {
   static void submitProject(
       FgApiClient fgApiClient,
       GenomiqueEnsApiClient gensApiClient,
-      ProjectSubmissionBuilder submissionBuilder,
+      FgProjectSubmissionBuilder submissionBuilder,
       String projectName,
       boolean force)
       throws IOException {
@@ -59,7 +59,7 @@ public class SubmitProjectCommand extends AbstractCommand {
       }
     }
 
-    ProjectSubmissionBuilder.SubmissionData data =
+    FgProjectSubmissionBuilder.SubmissionData data =
         submissionBuilder.createSubmissionData(gensApiClient, projectName);
 
     fgApiClient.addProject(data.projectDict());

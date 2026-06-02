@@ -7,7 +7,7 @@ import com.google.gson.GsonBuilder;
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.db.fg.FgApiClient;
 import fr.ens.biologie.genomique.kenetre.db.GenomiqueEnsApiClient;
-import fr.ens.biologie.genomique.kenetre.db.fg.ProjectSubmissionBuilder;
+import fr.ens.biologie.genomique.kenetre.db.fg.FgProjectSubmissionBuilder;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +70,7 @@ public abstract class AbstractCommand {
 
   protected abstract void internalExecute(List<String> arguments) throws KenetreException;
 
-  public ProjectSubmissionBuilder newSubmissionBuilder() throws KenetreException {
+  public FgProjectSubmissionBuilder newSubmissionBuilder() throws KenetreException {
 
     if (fgApiClient == null) {
       new IllegalStateException(
@@ -93,7 +93,7 @@ public abstract class AbstractCommand {
       var speciesFgDict =
           this.fgApiClient.getNomenclature("especes", "nom_espece", "cle_espece_fg");
 
-      return new ProjectSubmissionBuilder(
+      return new FgProjectSubmissionBuilder(
           applicationFgMap, instrumentFgMap, flowcellFgMap, speciesFgDict);
 
     } catch (IOException e) {

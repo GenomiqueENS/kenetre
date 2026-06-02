@@ -1,7 +1,7 @@
 package fr.ens.biologie.genomique.kenetre.db.commands;
 
 import fr.ens.biologie.genomique.kenetre.KenetreException;
-import fr.ens.biologie.genomique.kenetre.db.fg.ProjectSubmissionBuilder;
+import fr.ens.biologie.genomique.kenetre.db.fg.FgProjectSubmissionBuilder;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +43,7 @@ public class CheckProjectCommand extends AbstractCommand {
    */
   private void checkProject(String projectName) throws IOException, KenetreException {
 
-    ProjectSubmissionBuilder.SubmissionData data =
+    FgProjectSubmissionBuilder.SubmissionData data =
         newSubmissionBuilder().createSubmissionData(this.gensApiClient, projectName);
 
     System.out.println();

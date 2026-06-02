@@ -22,7 +22,7 @@ import java.util.Map;
  * @since 0.41
  * @author Laurent Jourdren
  */
-public class ProjectSubmissionBuilder {
+public class FgProjectSubmissionBuilder {
 
   public static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -39,7 +39,7 @@ public class ProjectSubmissionBuilder {
    * @param flowcellFgDict flowcell nomenclature map
    * @param speciesFgDict species nomenclature map
    */
-  public ProjectSubmissionBuilder(
+  public FgProjectSubmissionBuilder(
       Map<String, String> applicationFgDict,
       Map<String, String> instrumentFgDict,
       Map<String, String> flowcellFgDict,
