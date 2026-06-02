@@ -14,6 +14,8 @@ public record LibraryInfo(
     Object librarySequencedCount,
     String protocol,
     String fgApplication,
+    String enaLibrarySource,
+    String enaLibraryStrategy,
     String receiptDate,
     String qcDate,
     List<String> runs) {}

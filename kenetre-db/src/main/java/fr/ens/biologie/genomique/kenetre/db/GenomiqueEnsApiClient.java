@@ -98,25 +98,49 @@ public class GenomiqueEnsApiClient extends ApiClient {
 
   private ProjectInfo fetchProjectInfo(JsonObject obj) {
 
+    List<String> species = new ArrayList<>();
+    List<Integer> taxons = new ArrayList<>();
+
+    // Get species info
+    for (JsonElement e : obj.getAsJsonArray("especes")) {
+      JsonObject especeObj = e.getAsJsonObject();
+      if (!especeObj.get("espece").isJsonNull()) {
+        species.add(especeObj.get("espece").getAsString());
+      } else {
+        species.add(null);
+      }
+      if (!especeObj.get("taxonomy_id").isJsonNull()) {
+        taxons.add(especeObj.get("taxonomy_id").getAsInt());
+      } else {
+        taxons.add(null);
+      }
+    }
+
+    // Get lab info
+    JsonObject labObj = obj.getAsJsonObject("laboratoire");
+
+    // Get employer info
+    JsonObject employerObj = obj.getAsJsonObject("chef_equipe");
+
     return new ProjectInfo(
         jsonArrayToStringList(obj.getAsJsonArray("banques")),
         jsonArrayToStringList(obj.getAsJsonArray("runs")),
-        jsonArrayToStringList(obj.getAsJsonArray("especes")),
-        jsonArrayToIntegerList(obj.getAsJsonArray("taxons")),
+        species,
+        taxons,
         jsonToString(obj, "acronyme"),
         jsonToBoolean(obj, "rd"),
         jsonToString(obj, "date_envoi_resultats"),
-        jsonToString(obj, "prenom"),
-        jsonToString(obj, "nom"),
-        jsonToString(obj, "courriel"),
-        jsonToString(obj, "employeur"),
+        jsonToString(employerObj, "prenom"),
+        jsonToString(employerObj, "nom"),
+        jsonToString(employerObj, "courriel"),
+        jsonToString(employerObj, "employeur"),
         jsonToString(obj, "statut"),
         jsonToInteger(obj, "annee_de_fin"),
-        jsonToString(obj, "indicateur_laboratoires"),
-        jsonToString(obj, "commune"),
-        jsonToString(obj, "code_postal"),
-        jsonToString(obj, "numero_national_de_structure"),
-        jsonToString(obj, "etablissement"),
+        labObj.get("indicateur_laboratoires").getAsString(),
+        labObj.get("commune").getAsString(),
+        labObj.get("code_postal").getAsString(),
+        labObj.get("numero_national_de_structure").getAsString(),
+        labObj.get("etablissement").getAsString(),
         jsonToBoolean(obj, "prestation_fabrication_de_banque"),
         jsonToBoolean(obj, "prestation_sequencage"),
         jsonToString(obj, "prestation_analyse"));
@@ -141,6 +165,8 @@ public class GenomiqueEnsApiClient extends ApiClient {
         jsonToObject(obj, "nb_banques_sequencees"),
         jsonToString(obj, "protocole"),
         jsonToString(obj, "application_fg"),
+        jsonToString(obj, "ena_library_source"),
+        jsonToString(obj, "ena_library_strategy"),
         jsonToString(obj, "date_reception"),
         jsonToString(obj, "date_qc_banques"),
         jsonArrayToStringList(obj.getAsJsonArray("runs")));
@@ -212,6 +238,50 @@ public class GenomiqueEnsApiClient extends ApiClient {
     }
 
     return (double) cluster_count_project / cluster_count_total;
+  }
+
+  public record IlluminaSample(String name, String description, int lane, boolean pairedEnd) {}
+
+  public List<IlluminaSample> fetchIlluminaSamples(String runId, String projectName)
+      throws IOException {
+
+    List<IlluminaSample> result = new ArrayList<>();
+
+    JsonObject runObj = fetchJsonObject("illumina-runs", runId);
+    var pairedEnd = runObj.get("read_count").getAsInt() > 1;
+
+    // Get the project name used in the sample sheet
+    var sampleProject = projectName;
+    for (JsonElement e1 : runObj.getAsJsonArray("projects")) {
+
+      JsonObject projectObj = e1.getAsJsonObject();
+      String elementAcronym = projectObj.get("acronym").getAsString();
+      String elementSampleProject = projectObj.get("sample_project").getAsString();
+      if (projectName.equals(elementAcronym)) {
+        sampleProject = elementSampleProject;
+        break;
+      }
+    }
+
+    // Get the samples for the project in the run
+    for (JsonElement e1 : runObj.getAsJsonArray("samples")) {
+
+      JsonObject sampleObj = e1.getAsJsonObject();
+
+      if (!sampleObj.get("sample_project").getAsString().equals(sampleProject)
+          || sampleObj.get("undetermined").getAsBoolean()) {
+        continue;
+      }
+
+      result.add(
+          new IlluminaSample(
+              sampleObj.get("sample_id").getAsString(),
+              sampleObj.get("description").getAsString(),
+              sampleObj.get("lane").getAsInt(),
+              pairedEnd));
+    }
+
+    return result;
   }
 
   public RunMetrics fetchIlluminaRunMetrics(String runName) throws IOException {
