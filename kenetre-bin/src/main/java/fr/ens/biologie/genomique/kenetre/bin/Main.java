@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import org.apache.commons.cli.CommandLine;
@@ -173,8 +174,12 @@ public class Main {
   private static void printStackTrace(final Throwable e) {
 
     System.err.println("\n=== " + APP_NAME + " Debug Stack Trace ===");
-    e.printStackTrace();
-    System.err.println();
+    var cause = e;
+    do {
+      cause.printStackTrace();
+      System.err.println();
+      cause = cause.getCause();
+    } while (cause != null);
   }
 
   //
@@ -193,13 +198,22 @@ public class Main {
     formatter.printHelp("Kenetre [options] action arguments", options);
 
     System.out.println("Available actions:");
+
+    var actionMaps = new TreeMap<String, String>();
+    var padding = 0;
+
     for (Action action : ActionService.getInstance().getActions()) {
 
       if (!action.isHidden()) {
-
-        System.out.println(
-            Strings.padEnd(" - " + action.getName(), 23, ' ') + action.getDescription());
+        var actionName = action.getName();
+        padding = Math.max(padding, actionName.length());
+        actionMaps.put(actionName, action.getDescription());
       }
+    }
+    padding += 4; // Add some space for padding
+
+    for (Map.Entry<String, String> entry : actionMaps.entrySet()) {
+      System.out.println(Strings.padEnd(" - " + entry.getKey(), padding, ' ') + entry.getValue());
     }
 
     System.exit(0);
@@ -448,7 +462,7 @@ public class Main {
       String line;
       while ((line = reader.readLine()) != null) {
         line = line.trim();
-        if (line.isEmpty() || line.charAt(0) == '#') {
+        if (line.isBlank() || line.charAt(0) == '#') {
           continue;
         }
         int i = line.indexOf('=');

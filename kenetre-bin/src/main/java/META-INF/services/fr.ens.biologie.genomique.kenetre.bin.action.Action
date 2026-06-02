@@ -5,3 +5,13 @@ fr.ens.biologie.genomique.kenetre.bin.action.FilterReadsAction
 fr.ens.biologie.genomique.kenetre.bin.action.FilterSAMAction
 fr.ens.biologie.genomique.kenetre.bin.action.GenomeToTSVAction
 fr.ens.biologie.genomique.kenetre.bin.action.MergeAnnotationAction
+fr.ens.biologie.genomique.kenetre.bin.action.CheckProjectAction
+fr.ens.biologie.genomique.kenetre.bin.action.ListTerminatedProjectsAction
+fr.ens.biologie.genomique.kenetre.bin.action.ListCurrentProjectsAction
+fr.ens.biologie.genomique.kenetre.bin.action.ListRemoteProjectsAction
+fr.ens.biologie.genomique.kenetre.bin.action.ListNonSubmittedProjectsAction
+fr.ens.biologie.genomique.kenetre.bin.action.ShowRemoteProjectAction
+fr.ens.biologie.genomique.kenetre.bin.action.SubmitProjectAction
+fr.ens.biologie.genomique.kenetre.bin.action.RemoveRemoteProjectAction
+fr.ens.biologie.genomique.kenetre.bin.action.AutoSubmitProjectsAction
+fr.ens.biologie.genomique.kenetre.bin.action.SubmitMadbotAction
