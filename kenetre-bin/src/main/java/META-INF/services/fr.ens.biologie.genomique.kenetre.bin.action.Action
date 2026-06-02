@@ -14,3 +14,4 @@ fr.ens.biologie.genomique.kenetre.bin.action.ShowRemoteProjectAction
 fr.ens.biologie.genomique.kenetre.bin.action.SubmitProjectAction
 fr.ens.biologie.genomique.kenetre.bin.action.RemoveRemoteProjectAction
 fr.ens.biologie.genomique.kenetre.bin.action.AutoSubmitProjectsAction
+fr.ens.biologie.genomique.kenetre.bin.action.SubmitMadbotAction

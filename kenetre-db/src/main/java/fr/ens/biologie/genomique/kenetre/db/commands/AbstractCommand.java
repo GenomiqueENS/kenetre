@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import fr.ens.biologie.genomique.kenetre.KenetreException;
 import fr.ens.biologie.genomique.kenetre.db.fg.FgApiClient;
 import fr.ens.biologie.genomique.kenetre.db.GenomiqueEnsApiClient;
+import fr.ens.biologie.genomique.kenetre.db.madbot.MadbotApiClient;
 import fr.ens.biologie.genomique.kenetre.db.fg.FgProjectSubmissionBuilder;
 import java.io.IOException;
 import java.util.List;
@@ -29,6 +30,8 @@ public abstract class AbstractCommand {
 
   protected final GenomiqueEnsApiClient gensApiClient;
   protected final FgApiClient fgApiClient;
+  protected final MadbotApiClient madbotApiClient;
+
   protected final Gson gson =
       new GsonBuilder().serializeNulls().setPrettyPrinting().disableHtmlEscaping().create();
 
@@ -198,6 +201,8 @@ public abstract class AbstractCommand {
     // Initialize GenomiqueENS connection
     this.gensApiClient = new GenomiqueEnsApiClient(conf, this.debug);
 
+    // Initialize Madbot connection
+    this.madbotApiClient = new MadbotApiClient(conf, this.debug);
 
     // Create FG API client and retrieve nomemclatures
     this.fgApiClient = fgConnection ? new FgApiClient(conf, true, this.debug) : null;
