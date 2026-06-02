@@ -381,6 +381,6 @@ public class FgApiClient extends ApiClient {
   public FgApiClient(
       Map<String, String> credentials, boolean useOuiNonInJson, boolean debugApiRequests) {
 
-    super(credentials, "fg", useOuiNonInJson, debugApiRequests);
+    super(credentials, "fg", useOuiNonInJson, debugApiRequests, true, false);
   }
 }

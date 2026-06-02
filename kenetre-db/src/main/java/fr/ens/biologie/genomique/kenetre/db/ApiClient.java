@@ -14,6 +14,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 public class ApiClient {
 
   private final String apiUrl;
+  private final boolean trailSlash;
   private final boolean keycloak;
   private final String keycloakDomain;
   private final String realm;
@@ -32,6 +34,8 @@ public class ApiClient {
   private final String clientSecret;
   private final boolean useOuiNonInJson;
   private final boolean debugApiRequests;
+  private final boolean correctHttpCodes;
+  private final boolean jsonContentType = true;
 
   private String bearer;
   private final HttpClient httpClient;
@@ -78,7 +82,7 @@ public class ApiClient {
     try {
       HttpResponse<String> response =
           this.httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-      checkHttpStatusCode(response, 200, url, "POST", formBody);
+      checkHttpStatusCode(request, response, 200);
       JsonObject json = this.gson.fromJson(response.body(), JsonObject.class);
       this.bearer = json.get("access_token").getAsString();
       return this.bearer;
@@ -124,7 +128,7 @@ public class ApiClient {
    * @throws IOException if an I/O or HTTP error occurs
    */
   public String get(String route, Map<String, String> params) throws IOException {
-    return get(route, null, params);
+    return get(route, null, params, null);
   }
 
   /**
@@ -137,6 +141,22 @@ public class ApiClient {
    * @throws IOException if an I/O or HTTP error occurs
    */
   public String get(String route, String entryId, Map<String, String> params) throws IOException {
+
+    return get(route, entryId, params, null);
+  }
+
+  /**
+   * Perform a GET request.
+   *
+   * @param route the API route
+   * @param entryId the entry identifier
+   * @param params query parameters
+   * @return the response body as a string
+   * @throws IOException if an I/O or HTTP error occurs
+   */
+  public String get(
+      String route, String entryId, Map<String, String> params, Map<String, String> headers)
+      throws IOException {
 
     String url = createApiUrl(route, entryId);
 
@@ -153,17 +173,13 @@ public class ApiClient {
     }
 
     // Create HTTP request
-    HttpRequest.Builder builder =
-        HttpRequest.newBuilder().uri(URI.create(url)).header("Accept", "application/json").GET();
-    if (this.keycloak) {
-      builder.header("Authorization", "Bearer " + getBearerToken());
-    }
-    HttpRequest request = builder.build();
+    HttpRequest.Builder builder = HttpRequest.newBuilder().uri(URI.create(url)).GET();
+    HttpRequest request = defineHeader(builder, headers).build();
 
     try {
       HttpResponse<String> response =
           this.httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-      checkHttpStatusCode(response, 200, url, "GET", params != null ? params.toString() : null);
+      checkHttpStatusCode(request, response, 200);
       return response.body();
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
@@ -180,28 +196,37 @@ public class ApiClient {
    * @throws IOException if an I/O or HTTP error occurs
    */
   public String post(String route, Map<String, Object> data) throws IOException {
+
+    return post(route, data, null);
+  }
+
+  /**
+   * Perform a POST request.
+   *
+   * @param route the API route
+   * @param data the data map to send
+   * @return the response body as a string
+   * @throws IOException if an I/O or HTTP error occurs
+   */
+  public String post(String route, Map<String, Object> data, Map<String, String> headers)
+      throws IOException {
     if (this.useOuiNonInJson) {
       replaceBoolsWithStrings(data);
     }
     String url = createApiUrl(route, null);
-    String formBody = encodeFormData(data);
+    String formBody = this.jsonContentType ? this.gson.toJson(data) : encodeFormData(data);
 
     // Create HTTP request
     HttpRequest.Builder builder =
         HttpRequest.newBuilder()
             .uri(URI.create(url))
-            .header("Accept", "application/json")
-            .header("Content-Type", "application/x-www-form-urlencoded")
             .POST(HttpRequest.BodyPublishers.ofString(formBody));
-    if (this.keycloak) {
-      builder.header("Authorization", "Bearer " + getBearerToken());
-    }
-    HttpRequest request = builder.build();
+    HttpRequest request = defineHeader(builder, headers).build();
 
     try {
       HttpResponse<String> response =
           this.httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-      checkHttpStatusCode(response, 200, url, "POST", formBody);
+      checkHttpStatusCode(request, response, Set.of(200, 201));
       return response.body();
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
@@ -219,29 +244,38 @@ public class ApiClient {
    * @throws IOException if an I/O or HTTP error occurs
    */
   public String put(String route, String entryId, Map<String, Object> data) throws IOException {
+    return put(route, entryId, data, null);
+  }
+
+  /**
+   * Perform a PUT request.
+   *
+   * @param route the API route
+   * @param entryId the entry identifier
+   * @param data the data map to send
+   * @return the response body as a string
+   * @throws IOException if an I/O or HTTP error occurs
+   */
+  public String put(
+      String route, String entryId, Map<String, Object> data, Map<String, String> headers)
+      throws IOException {
     if (this.useOuiNonInJson) {
       replaceBoolsWithStrings(data);
     }
     String url = createApiUrl(route, entryId);
-    String formBody = encodeFormData(data);
+    String formBody = this.jsonContentType ? this.gson.toJson(data) : encodeFormData(data);
 
     // Create HTTP request
     HttpRequest.Builder builder =
         HttpRequest.newBuilder()
             .uri(URI.create(url))
-            .header("Accept", "application/json")
-            .header("Content-Type", "application/x-www-form-urlencoded")
             .PUT(HttpRequest.BodyPublishers.ofString(formBody));
-
-    if (this.keycloak) {
-      builder.header("Authorization", "Bearer " + getBearerToken());
-    }
-    HttpRequest request = builder.build();
+    HttpRequest request = defineHeader(builder, headers).build();
 
     try {
       HttpResponse<String> response =
           this.httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-      checkHttpStatusCode(response, 200, url, "PUT", formBody);
+      checkHttpStatusCode(request, response, 200);
       return response.body();
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
@@ -258,30 +292,65 @@ public class ApiClient {
    * @throws IOException if an I/O or HTTP error occurs
    */
   public String delete(String route, Map<String, Object> data) throws IOException {
-    String url = createApiUrl(route, null);
-    String formBody = encodeFormData(data);
+
+    return delete(route, null, data, null);
+  }
+
+  /**
+   * Perform a DELETE request.
+   *
+   * @param route the API route
+   * @param data the data map to send
+   * @return the response body as a string
+   * @throws IOException if an I/O or HTTP error occurs
+   */
+  public String delete(
+      String route, String entryId, Map<String, Object> data, Map<String, String> headers)
+      throws IOException {
+
+    String url = createApiUrl(route, entryId);
+    String formBody = this.jsonContentType ? this.gson.toJson(data) : encodeFormData(data);
 
     // Create HTTP request
     HttpRequest.Builder builder =
         HttpRequest.newBuilder()
             .uri(URI.create(url))
-            .header("Accept", "application/json")
-            .method("DELETE", HttpRequest.BodyPublishers.ofString(formBody))
-            .header("Content-Type", "application/x-www-form-urlencoded");
-    if (this.keycloak) {
-      builder.header("Authorization", "Bearer " + getBearerToken());
-    }
-    HttpRequest request = builder.build();
+            .method("DELETE", HttpRequest.BodyPublishers.ofString(formBody));
+    HttpRequest request = defineHeader(builder, headers).build();
 
     try {
       HttpResponse<String> response =
           this.httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-      checkHttpStatusCode(response, 200, url, "DELETE", null);
+      checkHttpStatusCode(request, response, this.correctHttpCodes ? 204 : 200);
       return response.body();
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new IOException("Interrupted during DELETE request", e);
     }
+  }
+
+  HttpRequest.Builder defineHeader(HttpRequest.Builder builder, Map<String, String> headers)
+      throws IOException {
+
+    builder.header("Accept", "application/json");
+
+    // FG API does not like JSON GET requests
+    if (!builder.build().method().equals("GET")) {
+      builder.header(
+          "Content-Type",
+          this.jsonContentType ? "application/json" : "application/x-www-form-urlencoded");
+    }
+
+    if (this.bearer != null || this.keycloak) {
+      builder.header("Authorization", "Bearer " + getBearerToken());
+    }
+    if (headers != null && !headers.isEmpty()) {
+      for (Map.Entry<String, String> entry : headers.entrySet()) {
+        builder.header(entry.getKey(), entry.getValue());
+      }
+    }
+
+    return builder;
   }
 
   //
@@ -294,43 +363,59 @@ public class ApiClient {
 
   private String createApiUrl(String route, String entryId) {
     if (entryId == null) {
-      return this.apiUrl + "/" + route + "/";
+      return this.apiUrl + "/" + route + (this.trailSlash ? "/" : "");
     }
     return this.apiUrl + "/" + route + "/" + entryId;
   }
 
   private void checkHttpStatusCode(
-      HttpResponse<String> response, int expectedCode, String url, String method, String data)
+      HttpRequest request, HttpResponse<String> response, int expectedCode) throws IOException {
+
+    checkHttpStatusCode(request, response, Set.of(expectedCode));
+  }
+
+  private void checkHttpStatusCode(
+      HttpRequest request, HttpResponse<String> response, Set<Integer> expectedCodes)
+      throws IOException {
+    checkHttpStatusCode(request, response, expectedCodes, null);
+  }
+
+  private void checkHttpStatusCode(
+      HttpRequest request,
+      HttpResponse<String> response,
+      Set<Integer> expectedCodes,
+      String requestBodyContent)
       throws IOException {
 
     int status = response.statusCode();
     String body = response.body();
+    String method = request.method();
+    String data = request.bodyPublisher().map(p -> p.toString()).orElse("");
 
     if (this.debugApiRequests
         || ((status < 400 || status >= 500) && (body == null || body.isEmpty()))) {
-      System.err.println("Empty " + method + " server response!");
-      System.err.println(method + " request URL: " + url);
-      System.err.println(method + " request data: " + data);
-      System.err.println(method + " response status_code: " + status);
-      System.err.println(method + " response headers: " + response.headers().map());
-      System.err.println(method + " response content: " + body);
-      System.err.println();
+      printHttpRequestAndResponse(request, requestBodyContent, response);
     }
 
     switch (status) {
-      case 400 -> throw new IOException("HTTP error 400: Bad request.");
-      case 401 -> throw new IOException("HTTP error 401: Unauthorized (token expired or invalid).");
+      case 400 -> throw new IOException("HTTP error 400: Bad request: " + body);
+      case 401 -> throw new IOException("HTTP error 401: Unauthorized (token expired or invalid)");
       case 403 -> throw new IOException("HTTP error 403: Forbidden access (bad or missing token).");
       case 404 -> throw new IOException("HTTP error 404: Not found.");
       case 405 ->
           throw new IOException("HTTP error 405: Method Not Allowed (FG operation not allowed).");
       default -> {
-        if (status != expectedCode) {
+        if (!expectedCodes.contains(status)) {
           throw new IOException(
-              "ERROR: expected HTTP " + expectedCode + " status code, got " + status + ".");
+              "ERROR: expected HTTP "
+                  + expectedCodes
+                  + " status code, got "
+                  + status
+                  + ". Body received: "
+                  + body);
         }
         String contentType = response.headers().firstValue("Content-Type").orElse("");
-        if (!contentType.startsWith("application/json")) {
+        if (!"".equals(contentType) && !contentType.startsWith("application/json")) {
           System.err.println("response.headers: " + response.headers().map());
           System.err.println("response.text: " + body);
           throw new IOException(
@@ -338,6 +423,19 @@ public class ApiClient {
         }
       }
     }
+  }
+
+  private static void printHttpRequestAndResponse(
+      HttpRequest request, String requestBodyContent, HttpResponse<String> response) {
+
+    String method = request.method();
+    System.err.println(method + " request URI: " + request.uri());
+    System.err.println(method + " request headers: " + request.headers().map());
+    System.err.println(method + " request data: " + requestBodyContent);
+    System.err.println(method + " response status_code: " + response.statusCode());
+    System.err.println(method + " response headers: " + response.headers().map());
+    System.err.println(method + " response content: " + response.body());
+    System.err.println();
   }
 
   private static String encodeFormData(Map<String, Object> data) {
@@ -418,7 +516,9 @@ public class ApiClient {
       Map<String, String> credentials,
       String credentialPrefix,
       boolean useOuiNonInJson,
-      boolean debugApiRequests) {
+      boolean debugApiRequests,
+      boolean trailSlash,
+      boolean correctHttpCodes) {
 
     requireNonNull(credentials, "credentials must not be null");
     requireNonNull(credentialPrefix, "credentialPrefix must not be null");
@@ -438,8 +538,15 @@ public class ApiClient {
       this.clientSecret = null;
     }
 
+    if (credentials.containsKey(credentialPrefix + ".bearer")) {
+      this.bearer = requireField(credentials, credentialPrefix + ".bearer");
+    }
+
     this.useOuiNonInJson = useOuiNonInJson;
     this.debugApiRequests = debugApiRequests;
+    this.trailSlash = trailSlash;
+    this.correctHttpCodes = correctHttpCodes;
+
     this.httpClient = HttpClient.newHttpClient();
     this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
   }

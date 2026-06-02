@@ -347,6 +347,6 @@ public class GenomiqueEnsApiClient extends ApiClient {
    * @param debugApiRequests whether to log debug information for API requests
    */
   public GenomiqueEnsApiClient(Map<String, String> credentials, boolean debugApiRequests) {
-    super(credentials, "genomiqueens", false, false);
+    super(credentials, "genomiqueens", false, false, true, true);
   }
 }
