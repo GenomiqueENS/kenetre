@@ -29,7 +29,6 @@ public abstract class AbstractCommand {
 
   protected final GenomiqueEnsApiClient gensApiClient;
   protected final FgApiClient fgApiClient;
-  protected final ProjectSubmissionBuilder submissionBuilder;
   protected final Gson gson =
       new GsonBuilder().serializeNulls().setPrettyPrinting().disableHtmlEscaping().create();
 
@@ -37,12 +36,6 @@ public abstract class AbstractCommand {
   protected boolean force = false;
   protected boolean debug = false;
   protected int sinceYear = DEFAULT_SINCE_YEAR;
-
-  // Nomemclatures
-  protected final Map<String, String> applicationFgMap;
-  protected final Map<String, String> instrumentFgMap;
-  protected final Map<String, String> flowcellFgMap;
-  protected final Map<String, String> speciesFgDict;
 
   //
   // Parsing methods
@@ -72,13 +65,41 @@ public abstract class AbstractCommand {
   protected Options additionalOptions(Options options) {
     return options;
   }
-  ;
 
   protected void parseAdditionalOptions(CommandLine line) {}
-  ;
 
   protected abstract void internalExecute(List<String> arguments) throws KenetreException;
 
+  public ProjectSubmissionBuilder newSubmissionBuilder() throws KenetreException {
+
+    if (fgApiClient == null) {
+      new IllegalStateException(
+          "FG API client is not initialized. Cannot create submission builder.");
+    }
+
+    try {
+      var applicationFgMap =
+          this.fgApiClient.getNomenclature("applications", "nom_application", "cle_application_fg");
+      var instrumentFgMap =
+          this.fgApiClient.getNomenclature(
+              "typeinstruments", "nom_instrument", "cle_type_instrument_fg");
+      var flowcellFgMap =
+          this.fgApiClient.getNomenclature(
+              "flowcells",
+              "descriptif",
+              "cle_type_flowcell_fg",
+              "nom_instrument",
+              List.of("NextSeq 2000", "MinION", "PromethION P2 solo"));
+      var speciesFgDict =
+          this.fgApiClient.getNomenclature("especes", "nom_espece", "cle_espece_fg");
+
+      return new ProjectSubmissionBuilder(
+          applicationFgMap, instrumentFgMap, flowcellFgMap, speciesFgDict);
+
+    } catch (IOException e) {
+      throw new KenetreException("Unable to retrieve nomenclature", e);
+    }
+  }
 
   /**
    * Parse command line arguments and set class fields accordingly. This method is called by the
@@ -175,48 +196,10 @@ public abstract class AbstractCommand {
     this.actionName = actionName;
 
     // Initialize GenomiqueENS connection
-    this.gensApiClient = new GenomiqueEnsApiClient(conf, debug);
+    this.gensApiClient = new GenomiqueEnsApiClient(conf, this.debug);
+
 
     // Create FG API client and retrieve nomemclatures
-    if (fgConnection) {
-
-      this.fgApiClient = new FgApiClient(conf, true, debug);
-
-      try {
-        this.applicationFgMap =
-            this.fgApiClient.getNomenclature(
-                "applications", "nom_application", "cle_application_fg");
-        this.instrumentFgMap =
-            this.fgApiClient.getNomenclature(
-                "typeinstruments", "nom_instrument", "cle_type_instrument_fg");
-        this.flowcellFgMap =
-            this.fgApiClient.getNomenclature(
-                "flowcells",
-                "descriptif",
-                "cle_type_flowcell_fg",
-                "nom_instrument",
-                List.of("NextSeq 2000", "MinION", "PromethION P2 solo"));
-        this.speciesFgDict =
-            this.fgApiClient.getNomenclature("especes", "nom_espece", "cle_espece_fg");
-
-        this.submissionBuilder =
-            new ProjectSubmissionBuilder(
-                applicationFgMap, instrumentFgMap, flowcellFgMap, speciesFgDict);
-
-      } catch (IOException e) {
-        throw new KenetreException("Unable to retrieve nomenclature", e);
-      }
-
-      ProjectSubmissionBuilder builder =
-          new ProjectSubmissionBuilder(
-              applicationFgMap, instrumentFgMap, flowcellFgMap, speciesFgDict);
-    } else {
-      this.fgApiClient = null;
-      this.applicationFgMap = null;
-      this.instrumentFgMap = null;
-      this.flowcellFgMap = null;
-      this.speciesFgDict = null;
-      this.submissionBuilder = null;
-    }
+    this.fgApiClient = fgConnection ? new FgApiClient(conf, true, this.debug) : null;
   }
 }

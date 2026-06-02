@@ -41,10 +41,10 @@ public class CheckProjectCommand extends AbstractCommand {
    * @param projectName The name of the project to check.
    * @throws IOException If an I/O error occurs while accessing the database.
    */
-  private void checkProject(String projectName) throws IOException {
+  private void checkProject(String projectName) throws IOException, KenetreException {
 
     ProjectSubmissionBuilder.SubmissionData data =
-        this.submissionBuilder.createSubmissionData(this.gensApiClient, projectName);
+        newSubmissionBuilder().createSubmissionData(this.gensApiClient, projectName);
 
     System.out.println();
     System.out.println(this.gson.toJson(data.projectDict()));

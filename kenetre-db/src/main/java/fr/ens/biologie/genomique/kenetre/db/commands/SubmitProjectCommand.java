@@ -33,11 +33,11 @@ public class SubmitProjectCommand extends AbstractCommand {
       submitProject(
           this.fgApiClient,
           this.gensApiClient,
-          this.submissionBuilder,
+          newSubmissionBuilder(),
           arguments.get(0),
           this.force);
     } catch (IOException e) {
-      throw new KenetreException(e.getMessage());
+      throw new KenetreException(e);
     }
   }
 

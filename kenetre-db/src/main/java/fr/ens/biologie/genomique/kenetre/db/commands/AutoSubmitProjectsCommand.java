@@ -35,7 +35,7 @@ public class AutoSubmitProjectsCommand extends AbstractCommand {
    *     submit only non-submitted projects.
    * @throws IOException If an I/O error occurs while accessing the database.
    */
-  private void autoSubmitProjects(boolean force) throws IOException {
+  private void autoSubmitProjects(boolean force) throws IOException, KenetreException {
 
     Set<String> terminatedProjects =
         new HashSet<>(
@@ -51,7 +51,7 @@ public class AutoSubmitProjectsCommand extends AbstractCommand {
 
     for (String p : toSubmit) {
       SubmitProjectCommand.submitProject(
-          this.fgApiClient, this.gensApiClient, this.submissionBuilder, p, force);
+          this.fgApiClient, this.gensApiClient, this.newSubmissionBuilder(), p, force);
     }
   }
 
