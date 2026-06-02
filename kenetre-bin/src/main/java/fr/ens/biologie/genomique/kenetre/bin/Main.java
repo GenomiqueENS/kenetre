@@ -174,8 +174,12 @@ public class Main {
   private static void printStackTrace(final Throwable e) {
 
     System.err.println("\n=== " + APP_NAME + " Debug Stack Trace ===");
-    e.printStackTrace();
-    System.err.println();
+    var cause = e;
+    do {
+      cause.printStackTrace();
+      System.err.println();
+      cause = cause.getCause();
+    } while (cause != null);
   }
 
   //
@@ -458,7 +462,7 @@ public class Main {
       String line;
       while ((line = reader.readLine()) != null) {
         line = line.trim();
-        if (line.isEmpty() || line.charAt(0) == '#') {
+        if (line.isBlank() || line.charAt(0) == '#') {
           continue;
         }
         int i = line.indexOf('=');
