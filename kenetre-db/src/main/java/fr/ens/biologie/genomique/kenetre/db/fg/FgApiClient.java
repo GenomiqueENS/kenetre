@@ -1,8 +1,10 @@
-package fr.ens.biologie.genomique.kenetre.db;
+package fr.ens.biologie.genomique.kenetre.db.fg;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import fr.ens.biologie.genomique.kenetre.db.ApiClient;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

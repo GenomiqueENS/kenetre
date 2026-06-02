@@ -1,6 +1,6 @@
 package fr.ens.biologie.genomique.kenetre.db.commands;
 
-import static fr.ens.biologie.genomique.kenetre.db.FgApiClient.removeJsonIntegerKeys;
+import static fr.ens.biologie.genomique.kenetre.db.fg.FgApiClient.removeJsonIntegerKeys;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

@@ -1,7 +1,7 @@
 package fr.ens.biologie.genomique.kenetre.db.commands;
 
 import fr.ens.biologie.genomique.kenetre.KenetreException;
-import fr.ens.biologie.genomique.kenetre.db.ProjectSubmissionBuilder;
+import fr.ens.biologie.genomique.kenetre.db.fg.ProjectSubmissionBuilder;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;

@@ -1,7 +1,8 @@
-package fr.ens.biologie.genomique.kenetre.db;
+package fr.ens.biologie.genomique.kenetre.db.fg;
 
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.db.GenomiqueEnsApiClient;
 import fr.ens.biologie.genomique.kenetre.db.model.LibraryInfo;
 import fr.ens.biologie.genomique.kenetre.db.model.ProjectInfo;
 import fr.ens.biologie.genomique.kenetre.db.model.RunInfo;
@@ -174,9 +175,17 @@ public class ProjectSubmissionBuilder {
               "paired_end")) {
         checkEntry(manipDict, k);
       }
-      if ("standard".equals(manipDict.get("type_run"))) {
-        checkEntry(manipDict, "cle_application_fg");
+
+      switch (String.valueOf(manipDict.get("type_run"))) {
+        case "standard" -> {
+          checkEntry(manipDict, "cle_application_fg");
+        }
+        case "ready to load" -> {
+          manipDict.put("cle_application_fg", false);
+        }
+        default -> new IllegalStateException("Invalid type_run: " + manipDict.get("type_run"));
       }
+
       // Remove hidden entries (keys starting with '_')
       manipDict.keySet().removeIf(k -> k.startsWith("_"));
     }
