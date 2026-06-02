@@ -216,6 +216,7 @@ public abstract class AbstractFileGenomeIndexStorage implements GenomeIndexStora
       final Map<String, String> additionalDescription) {
 
     DataPath result = getDataPath(mapperInstance, genome, additionalDescription);
+    logGet(mapperInstance, genome, additionalDescription, result);
 
     return result == null ? null : result.toFile();
   }
@@ -406,6 +407,24 @@ public abstract class AbstractFileGenomeIndexStorage implements GenomeIndexStora
       }
     }
   }
+
+  //
+  // Log method
+  //
+
+  /**
+   * Log the get operation. This method is called when a get operation is performed on the storage.
+   *
+   * @param mapperInstance mapper to use
+   * @param genome genome description
+   * @param additionalDescription additional parameter for the index
+   * @param indexArchive the path of the index archive found in the storage (null if not found)
+   */
+  protected abstract void logGet(
+      MapperInstance mapperInstance,
+      GenomeDescription genome,
+      Map<String, String> additionalDescription,
+      DataPath indexArchive);
 
   //
   // Other methods

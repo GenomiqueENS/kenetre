@@ -26,8 +26,19 @@ package fr.ens.biologie.genomique.kenetre.storage;
 
 import static java.util.Objects.requireNonNull;
 
+import fr.ens.biologie.genomique.kenetre.bio.GenomeDescription;
+import fr.ens.biologie.genomique.kenetre.bio.readmapper.MapperInstance;
 import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
+import fr.ens.biologie.genomique.kenetre.util.Utils;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.time.OffsetDateTime;
+import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This class define a basic GenomeIndexStorage based on an index file.
@@ -36,6 +47,11 @@ import java.io.IOException;
  * @author Laurent Jourdren
  */
 public class FileGenomeIndexStorage extends AbstractFileGenomeIndexStorage {
+
+  private static final String LOG_FILENAME = "genomes_index_storage.log";
+  private static final ReentrantLock JVM_LOCK = new ReentrantLock();
+
+  private DataPath logPath;
 
   @Override
   protected DataPath newDataPath(String source) {
@@ -47,6 +63,65 @@ public class FileGenomeIndexStorage extends AbstractFileGenomeIndexStorage {
   protected DataPath newDataPath(DataPath parent, String filename) {
 
     return new FileDataPath(parent, filename);
+  }
+
+  @Override
+  protected void logGet(
+      MapperInstance mapperInstance,
+      GenomeDescription genome,
+      Map<String, String> additionalDescription,
+      DataPath indexArchive) {
+
+    if (this.logPath == null) {
+      return;
+    }
+
+    try {
+      if (!this.logPath.exists()) {
+
+        // Create the log file
+        appendLineWithLock(
+            this.logPath.toFile().toPath(),
+            "#Date\tMapperName\tMapperVersion\tMapperFlavor\tGenomeName\tIndexPath\tIndexMD5Sum");
+      }
+
+      StringBuilder sb = new StringBuilder();
+      sb.append(OffsetDateTime.now());
+      sb.append('\t');
+      sb.append(mapperInstance.getName());
+      sb.append('\t');
+      sb.append(mapperInstance.getVersion());
+      sb.append('\t');
+      sb.append(mapperInstance.getFlavor());
+      sb.append('\t');
+      sb.append(genome.getGenomeName());
+      sb.append('\t');
+      sb.append(indexArchive);
+      sb.append('\t');
+      sb.append(genome.getMD5Sum());
+
+      appendLineWithLock(this.logPath.toFile().toPath(), sb.toString());
+
+    } catch (IOException e) {
+      Utils.nop();
+    }
+  }
+
+  private static void appendLineWithLock(Path filePath, String line) throws IOException {
+
+    JVM_LOCK.lock();
+    try (FileChannel channel =
+            FileChannel.open(
+                filePath,
+                StandardOpenOption.CREATE,
+                StandardOpenOption.APPEND,
+                StandardOpenOption.WRITE);
+        FileLock lock = channel.lock()) {
+
+      channel.write(Charset.defaultCharset().encode(line + System.lineSeparator()));
+    } finally {
+      JVM_LOCK.unlock();
+    }
   }
 
   //
@@ -63,10 +138,25 @@ public class FileGenomeIndexStorage extends AbstractFileGenomeIndexStorage {
    */
   public static GenomeIndexStorage getInstance(final String dir, GenericLogger logger) {
 
+    return getInstance(dir, logger, false);
+  }
+
+  /**
+   * Create a GenomeIndexStorage
+   *
+   * @param dir the path of the genome descriptions storage
+   * @param logger the logger
+   * @param usageLogEnabled enable usage log
+   * @return a GenomeIndexStorage object if the path contains an index storage or null if no index
+   *     storage is found
+   */
+  public static GenomeIndexStorage getInstance(
+      final String dir, GenericLogger logger, boolean usageLogEnabled) {
+
     requireNonNull(dir);
 
     try {
-      return new FileGenomeIndexStorage(new FileDataPath(dir), logger);
+      return new FileGenomeIndexStorage(new FileDataPath(dir), logger, usageLogEnabled);
     } catch (IOException | NullPointerException e) {
       return null;
     }
@@ -81,10 +171,12 @@ public class FileGenomeIndexStorage extends AbstractFileGenomeIndexStorage {
    *
    * @param dir the path of the genome descriptions storage
    * @param logger logger to use
+   * @param usageLogEnabled enable usage log
    * @throws IOException
    */
-  private FileGenomeIndexStorage(DataPath dir, GenericLogger logger) throws IOException {
+  private FileGenomeIndexStorage(DataPath dir, GenericLogger logger, boolean usageLogEnabled)
+      throws IOException {
     super(dir, logger);
-    // TODO Auto-generated constructor stub
+    this.logPath = usageLogEnabled ? newDataPath(dir, LOG_FILENAME) : null;
   }
 }
