@@ -13,7 +13,7 @@ import java.util.Objects;
  * @since 0.41
  * @author Laurent Jourdren
  */
-public final class ProjectQuery {
+public final class GenomiqueEnsProjectQuery {
 
   /**
    * Get acronyms of non-internal terminated projects for a given year.

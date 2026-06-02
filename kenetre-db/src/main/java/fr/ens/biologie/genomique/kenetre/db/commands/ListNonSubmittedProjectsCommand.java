@@ -1,7 +1,7 @@
 package fr.ens.biologie.genomique.kenetre.db.commands;
 
 import fr.ens.biologie.genomique.kenetre.KenetreException;
-import fr.ens.biologie.genomique.kenetre.db.ProjectQuery;
+import fr.ens.biologie.genomique.kenetre.db.GenomiqueEnsProjectQuery;
 import java.io.IOException;
 import java.util.*;
 
@@ -38,7 +38,7 @@ public class ListNonSubmittedProjectsCommand extends AbstractCommand {
 
     Set<String> terminatedProjects =
         new HashSet<>(
-            ProjectQuery.getProjects(
+            GenomiqueEnsProjectQuery.getProjects(
                 this.gensApiClient, "Terminé", null, this.sinceYear, false, true));
     Set<String> submittedProjects = new HashSet<>();
     for (String[] p : this.fgApiClient.listProjects()) {

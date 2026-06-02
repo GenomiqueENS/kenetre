@@ -1,7 +1,7 @@
 package fr.ens.biologie.genomique.kenetre.db.commands;
 
 import fr.ens.biologie.genomique.kenetre.KenetreException;
-import fr.ens.biologie.genomique.kenetre.db.ProjectQuery;
+import fr.ens.biologie.genomique.kenetre.db.GenomiqueEnsProjectQuery;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +35,7 @@ public class ListTerminatedProjectsCommand extends AbstractCommand {
       System.out.println("Terminated projects:");
     }
     for (String p :
-        ProjectQuery.getProjects(
+        GenomiqueEnsProjectQuery.getProjects(
             this.gensApiClient, "Terminé", null, this.sinceYear, false, null)) {
       if (quiet) {
         System.out.println(p);

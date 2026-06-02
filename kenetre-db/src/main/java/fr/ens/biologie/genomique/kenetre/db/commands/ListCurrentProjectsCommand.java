@@ -1,7 +1,7 @@
 package fr.ens.biologie.genomique.kenetre.db.commands;
 
 import fr.ens.biologie.genomique.kenetre.KenetreException;
-import fr.ens.biologie.genomique.kenetre.db.ProjectQuery;
+import fr.ens.biologie.genomique.kenetre.db.GenomiqueEnsProjectQuery;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +41,8 @@ public class ListCurrentProjectsCommand extends AbstractCommand {
       System.out.println("Current projects:");
     }
     for (String p :
-        ProjectQuery.getProjects(this.gensApiClient, "En cours", null, null, null, null)) {
+        GenomiqueEnsProjectQuery.getProjects(
+            this.gensApiClient, "En cours", null, null, null, null)) {
       if (quiet) {
         System.out.println(p);
       } else {
