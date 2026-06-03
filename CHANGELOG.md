@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.41.0](https://github.com/GenomiqueENS/kenetre/compare/v0.40.0...v0.41.0) (2026-06-03)
+
+
+### Features
+
+* A configuration file can now be provided to kenetre bin actions. ([#34](https://github.com/GenomiqueENS/kenetre/issues/34)) ([d93757a](https://github.com/GenomiqueENS/kenetre/commit/d93757ac5724d818632657c3fc8dd560bedcd329))
+* Add a new module for Kenetre: kenetre-db ([#35](https://github.com/GenomiqueENS/kenetre/issues/35)) ([fb7f5b2](https://github.com/GenomiqueENS/kenetre/commit/fb7f5b262cc75187b904cdf3f12f33838f0b6cf1))
+* Add AGENTS.md file to the project. ([#31](https://github.com/GenomiqueENS/kenetre/issues/31)) ([e1c5268](https://github.com/GenomiqueENS/kenetre/commit/e1c5268de27c42ef2b8dc4a2af50897009d0c3f5))
+* Add optional log usage for genome index storage. ([#36](https://github.com/GenomiqueENS/kenetre/issues/36)) ([2edaf3f](https://github.com/GenomiqueENS/kenetre/commit/2edaf3fe4c193628c8800bd981ea9907b7f17153))
+* Kenetre now require Java 17. ([#32](https://github.com/GenomiqueENS/kenetre/issues/32)) ([e7998e5](https://github.com/GenomiqueENS/kenetre/commit/e7998e5355e8eb7d17e0c0fd0ad17f53e7672c19))
+
+
+### Bug Fixes
+
+* Fix genome index storage usage log ([#37](https://github.com/GenomiqueENS/kenetre/issues/37)) ([c385a7f](https://github.com/GenomiqueENS/kenetre/commit/c385a7f3c6166c73fceaf68ba4f8deb0d69ca64f))
+* Remove eoulan-eclipse-formatter-style.xml as Kenetre now use splotless and GOOGLE style format. ([#30](https://github.com/GenomiqueENS/kenetre/issues/30)) ([886125b](https://github.com/GenomiqueENS/kenetre/commit/886125bd079ca4abf3f2f03da8ee67d243298c91))
+
+
+### Miscellaneous Chores
+
+* release 0.41.0 ([#38](https://github.com/GenomiqueENS/kenetre/issues/38)) ([788ea4e](https://github.com/GenomiqueENS/kenetre/commit/788ea4efe0dced1c3420b3eed9ba6270beb87a78))
+
 ## [0.40.0](https://github.com/GenomiqueENS/kenetre/compare/v0.39.0...v0.40.0) (2026-04-15)
 
 
