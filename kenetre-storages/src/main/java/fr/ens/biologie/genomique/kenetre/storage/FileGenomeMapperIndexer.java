@@ -78,7 +78,7 @@ public class FileGenomeMapperIndexer {
    * @param mapperIndexDataFile output genome index archive
    * @throws IOException if an error occurs while creating the genome
    */
-  protected void createIndex(
+  public void createIndex(
       final DataPath genomeDataFile,
       final GenomeDescription genomeDescription,
       final DataPath mapperIndexDataFile)

@@ -138,25 +138,25 @@ public class FileGenomeIndexStorage extends AbstractFileGenomeIndexStorage {
    */
   public static GenomeIndexStorage getInstance(final String dir, GenericLogger logger) {
 
-    return getInstance(dir, logger, false);
+    return getInstance(dir, false, logger);
   }
 
   /**
    * Create a GenomeIndexStorage
    *
    * @param dir the path of the genome descriptions storage
-   * @param logger the logger
    * @param usageLogEnabled enable usage log
+   * @param logger the logger
    * @return a GenomeIndexStorage object if the path contains an index storage or null if no index
    *     storage is found
    */
   public static GenomeIndexStorage getInstance(
-      final String dir, GenericLogger logger, boolean usageLogEnabled) {
+      final String dir, boolean usageLogEnabled, GenericLogger logger) {
 
     requireNonNull(dir);
 
     try {
-      return new FileGenomeIndexStorage(new FileDataPath(dir), logger, usageLogEnabled);
+      return new FileGenomeIndexStorage(new FileDataPath(dir), usageLogEnabled, logger);
     } catch (IOException | NullPointerException e) {
       return null;
     }
@@ -170,11 +170,11 @@ public class FileGenomeIndexStorage extends AbstractFileGenomeIndexStorage {
    * Private constructor.
    *
    * @param dir the path of the genome descriptions storage
-   * @param logger logger to use
    * @param usageLogEnabled enable usage log
-   * @throws IOException
+   * @param logger logger to use
+   * @throws IOException if an error occurs while creating the object
    */
-  private FileGenomeIndexStorage(DataPath dir, GenericLogger logger, boolean usageLogEnabled)
+  private FileGenomeIndexStorage(DataPath dir, boolean usageLogEnabled, GenericLogger logger)
       throws IOException {
     super(dir, logger);
     this.logPath = usageLogEnabled ? newDataPath(dir, LOG_FILENAME) : null;
