@@ -142,7 +142,10 @@ public abstract class AbstractFileGenomeIndexStorage implements GenomeIndexStora
     final IndexEntry entry =
         this.entries.get(createKey(mapperInstance, genome, additionalDescription, this.logger));
 
-    return entry == null ? null : newDataPath(this.dir, entry.fileName);
+    DataPath result = entry == null ? null : newDataPath(this.dir, entry.fileName);
+    logGet(mapperInstance, genome, additionalDescription, result);
+
+    return result;
   }
 
   /**
@@ -216,7 +219,6 @@ public abstract class AbstractFileGenomeIndexStorage implements GenomeIndexStora
       final Map<String, String> additionalDescription) {
 
     DataPath result = getDataPath(mapperInstance, genome, additionalDescription);
-    logGet(mapperInstance, genome, additionalDescription, result);
 
     return result == null ? null : result.toFile();
   }
