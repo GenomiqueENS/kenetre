@@ -30,6 +30,12 @@ public class AnnotationMatrixTranslator extends AbstractTranslator {
     return this.matrix.getValue(id, field == null ? getDefaultField() : field);
   }
 
+  @Override
+  public List<String> getIds() {
+
+    return this.matrix.getRowNames();
+  }
+
   //
   // Constructor
   //
