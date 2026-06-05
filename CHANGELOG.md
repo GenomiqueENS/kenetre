@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.42.0](https://github.com/GenomiqueENS/kenetre/compare/v0.41.0...v0.42.0) (2026-06-05)
+
+
+### Features
+
+* Implements getIds() in AnnotationMatrixTranslator class. ([#42](https://github.com/GenomiqueENS/kenetre/issues/42)) ([2d01187](https://github.com/GenomiqueENS/kenetre/commit/2d01187cddaaba5b37cbc129a4b911c3b397d2c9))
+* Now use Docker fallback (cli) as default Docker client. ([#41](https://github.com/GenomiqueENS/kenetre/issues/41)) ([5630643](https://github.com/GenomiqueENS/kenetre/commit/5630643f17cb5202183ece6579e8882e5cfddc78))
+
 ## [0.41.0](https://github.com/GenomiqueENS/kenetre/compare/v0.40.0...v0.41.0) (2026-06-03)
 
 
