@@ -321,7 +321,7 @@ public class DockerJavaDockerImageInstance extends AbstractSimpleProcess
     String tag = "";
 
     int pos = this.dockerImage.lastIndexOf(':');
-    if (pos != 1) {
+    if (pos != -1) {
 
       imageName = this.dockerImage.substring(0, pos);
       tag = this.dockerImage.substring(pos + 1);

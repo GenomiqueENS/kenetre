@@ -175,6 +175,7 @@ public class DockerManager {
     requireNonNull(dockerConnection);
 
     switch (clientType) {
+      case DEFAULT:
       case FALLBACK:
         this.client = new FallBackDockerClient(logger);
         break;
@@ -183,7 +184,6 @@ public class DockerManager {
         this.client = new Singularity3DockerClient(logger);
         break;
 
-      case DEFAULT:
       case DOCKER_JAVA:
         this.client = new DockerJavaDockerClient(logger);
         break;
