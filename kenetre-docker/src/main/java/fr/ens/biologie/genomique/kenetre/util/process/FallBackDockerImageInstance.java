@@ -173,7 +173,8 @@ public class FallBackDockerImageInstance extends AbstractSimpleProcess
   public void pullImageIfNotExists() throws IOException {
 
     String images =
-        ProcessUtils.execToString("docker images | tr -s ' ' | cut -f 1,2 -d ' ' | tr ' ' :");
+        ProcessUtils.execToString(
+            "docker images --format table | tr -s ' ' | cut -f 1,2 -d ' ' | tr ' ' :");
 
     for (String image : images.split("\n")) {
 

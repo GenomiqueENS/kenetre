@@ -143,7 +143,7 @@ public class FallBackDockerClient implements DockerClient {
   public Set<String> listImageTags() throws IOException {
 
     Set<String> result = new HashSet<>();
-    String output = ProcessUtils.execToString("docker images");
+    String output = ProcessUtils.execToString("docker images --format table");
 
     Splitter lineSplitter = Splitter.on('\n');
     Splitter fieldSplitter = com.google.common.base.Splitter.on(' ').omitEmptyStrings();
