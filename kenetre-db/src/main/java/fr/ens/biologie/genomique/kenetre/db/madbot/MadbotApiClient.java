@@ -16,6 +16,20 @@ public class MadbotApiClient extends ApiClient {
   /** Holds the UUID and mandatory flag for a metadata field. */
   public record MetadataFieldInfo(UUID uuid, boolean mandatory) {}
 
+  private final String sftpServer;
+  private final String sftpLogin;
+  private final String sftpPassword;
+  private final String sftpBasePath;
+
+  /**
+   * Get SFTP server base path.
+   *
+   * @return the base path on the SFTP server
+   */
+  public String getSftpBasePath() {
+    return this.sftpBasePath;
+  }
+
   //
   // Workspace management
   //
@@ -353,6 +367,39 @@ public class MadbotApiClient extends ApiClient {
     return this.get("schemas/plugins/" + source.toLowerCase(Locale.ROOT), slug, null, null);
   }
 
+  public String getPluginInfo(String name) throws IOException {
+
+    requireNonNull(name, "name must not be null");
+
+    return this.get("plugins/" + name, null, null, null);
+  }
+
+  /**
+   * Get the list of available plugin slugs.
+   *
+   * @return a list of plugin slugs
+   * @throws IOException if an I/O error occurs
+   */
+  public List<String> getPluginNames() throws IOException {
+
+    String responseBody = this.get("plugins", null, null, null);
+
+    JsonArray results =
+        this.gson.fromJson(responseBody, JsonObject.class).getAsJsonArray("results");
+
+    List<String> plugins = new ArrayList<>();
+
+    for (JsonElement elem : results) {
+      plugins.add(elem.getAsJsonObject().get("name").getAsString());
+
+      if ("SSHFS".equals(elem.getAsJsonObject().get("name").getAsString())) {
+        System.out.println(elem.getAsJsonObject());
+      }
+    }
+
+    return plugins;
+  }
+
   //
   // Connections
   //
@@ -368,6 +415,200 @@ public class MadbotApiClient extends ApiClient {
     requireNonNull(workspaceUuid, "workspaceUuid must not be null");
 
     return this.get("connections", null, null, Map.of(WORKSPACE_HEADER_NAME, workspaceUuid));
+  }
+
+  /**
+   * Create an SSHFS connection in a workspace.
+   *
+   * @param workspaceUuid the workspace UUID
+   * @return the UUID of the created connection
+   * @throws IOException if an I/O error occurs
+   */
+  public UUID createSshfsConnection(UUID workspaceUuid) throws IOException {
+    return createSshfsConnection(workspaceUuid, this.sftpServer, this.sftpLogin, this.sftpPassword);
+  }
+
+  /**
+   * Create an SSHFS connection in a workspace.
+   *
+   * @param workspaceUuid the workspace UUID
+   * @param host the SSHFS host
+   * @param username the SSHFS username
+   * @param password the SSHFS password
+   * @return the UUID of the created connection
+   * @throws IOException if an I/O error occurs
+   */
+  public UUID createSshfsConnection(
+      UUID workspaceUuid, String host, String username, String password) throws IOException {
+
+    requireNonNull(workspaceUuid, "workspaceUuid must not be null");
+    requireNonNull(username, "username must not be null");
+    requireNonNull(password, "credentials must not be null");
+
+    var payload =
+        Map.of(
+            "plugin",
+            "madbot_sshfs.plugins.SSHFSPlugin",
+            "shared_params",
+            Map.of("host", host),
+            "private_params",
+            Map.of("username", username, "credential", Map.of("password", password)));
+
+    var responseBody =
+        this.post("connections", payload, Map.of(WORKSPACE_HEADER_NAME, workspaceUuid.toString()));
+
+    return UUID.fromString(
+        this.gson.fromJson(responseBody, JsonObject.class).get("id").getAsString());
+  }
+
+  public UUID getExistingSshfsConnections(UUID workspaceUuid) throws IOException {
+    return getExistingSshfsConnections(workspaceUuid, this.sftpServer);
+  }
+
+  public UUID getExistingSshfsConnections(UUID workspaceUuid, String host) throws IOException {
+
+    requireNonNull(workspaceUuid, "workspaceUuid must not be null");
+    requireNonNull(host, "host must not be null");
+
+    var responseBody =
+        this.get(
+            "connections", null, null, Map.of(WORKSPACE_HEADER_NAME, workspaceUuid.toString()));
+
+    var array = this.gson.fromJson(responseBody, JsonObject.class).get("results").getAsJsonArray();
+    for (var element : array) {
+
+      var jsonObject = element.getAsJsonObject();
+      var name = jsonObject.get("name").getAsString();
+      if ("SSHFS".equals(name)) {
+        return UUID.fromString(jsonObject.get("id").getAsString());
+      }
+    }
+    return null;
+  }
+
+  //
+  //  Data
+  //
+
+  /**
+   * Create a data object in a workspace.
+   *
+   * @param workspaceUuid workspace UUID
+   * @param connection connection UUID
+   * @param externalId path of the data on the remote connection (e.g. path/to/file.txt)
+   * @return the UUID of the created data object
+   * @throws IOException if an I/O error occurs
+   */
+  public UUID createData(UUID workspaceUuid, UUID connection, String externalId)
+      throws IOException {
+
+    requireNonNull(workspaceUuid, "workspaceUuid must not be null");
+    requireNonNull(connection, "connection must not be null");
+    requireNonNull(externalId, "externalId must not be null");
+
+    var responseBody =
+        this.post(
+            "data",
+            Map.of("connection", connection.toString(), "external_id", externalId),
+            Map.of(WORKSPACE_HEADER_NAME, workspaceUuid.toString()));
+
+    return UUID.fromString(
+        this.gson.fromJson(responseBody, JsonObject.class).get("id").getAsString());
+  }
+
+  /**
+   * Create a data link between a sample and a data object.
+   *
+   * @param workspaceUuid the workspace UUID
+   * @param project the project UUID
+   * @param sample the sample UUID
+   * @param data the data UUID
+   * @return the UUID of the created data link
+   * @throws IOException if an I/O error occurs
+   */
+  public UUID createDataLink(UUID workspaceUuid, UUID project, UUID sample, UUID data)
+      throws IOException {
+
+    requireNonNull(workspaceUuid, "workspaceUuid must not be null");
+    requireNonNull(sample, "sample must not be null");
+    requireNonNull(data, "data must not be null");
+
+    var responseBody =
+        this.post(
+            "nodes/" + project.toString() + "/datalinks",
+            Map.of("node", sample.toString(), "data", data.toString()),
+            Map.of(WORKSPACE_HEADER_NAME, workspaceUuid.toString()));
+
+    return UUID.fromString(
+        this.gson.fromJson(responseBody, JsonObject.class).get("id").getAsString());
+  }
+
+  /**
+   * Create bound sample.
+   *
+   * @param workspaceUuid the workspace UUID
+   * @param sample the sample UUID
+   * @param data the data UUID
+   * @param dataLink the datalink UUID
+   * @return the UUID of the created bound
+   * @throws IOException if an I/O error occurs
+   */
+  public UUID createBoundSample(UUID workspaceUuid, UUID sample, UUID data, UUID dataLink)
+      throws IOException {
+
+    requireNonNull(workspaceUuid, "workspaceUuid must not be null");
+    requireNonNull(sample, "sample must not be null");
+    requireNonNull(data, "data must not be null");
+    requireNonNull(dataLink, "dataLink must not be null");
+
+    var responseBody =
+        this.post(
+            "data/" + data.toString() + "/bound_samples",
+            Map.of(
+                "sample",
+                sample.toString(),
+                "data",
+                data.toString(),
+                "datalink",
+                dataLink.toString()),
+            Map.of(WORKSPACE_HEADER_NAME, workspaceUuid.toString()));
+
+    return UUID.fromString(
+        this.gson.fromJson(responseBody, JsonObject.class).get("id").getAsString());
+  }
+
+  /**
+   * Create association.
+   *
+   * @param workspaceUuid the workspace UUID
+   * @param dataList a list with data UUIDs
+   * @return the UUID of the created association
+   * @throws IOException if an I/O error occurs
+   */
+  public UUID createSampleAssociation(UUID workspaceUuid, List<UUID> dataList) throws IOException {
+
+    requireNonNull(workspaceUuid, "workspaceUuid must not be null");
+    requireNonNull(dataList, "dataList must not be null");
+
+    // Throw exception if there is less than 2 data
+    if (dataList.size() < 2) {
+      throw new IllegalArgumentException("dataList must have at least 2 elements");
+    }
+
+    UUID firstUuid = dataList.get(0);
+    List<String> otherUuid = new ArrayList<>();
+    for (UUID uuid : dataList.subList(1, dataList.size())) {
+      otherUuid.add(uuid.toString());
+    }
+
+    var responseBody =
+        this.post(
+            "data/" + firstUuid.toString() + "/associations",
+            Map.of("data_objects", otherUuid),
+            Map.of(WORKSPACE_HEADER_NAME, workspaceUuid.toString()));
+
+    return UUID.fromString(
+        this.gson.fromJson(responseBody, JsonObject.class).get("id").getAsString());
   }
 
   //
@@ -506,5 +747,10 @@ public class MadbotApiClient extends ApiClient {
    */
   public MadbotApiClient(Map<String, String> credentials, boolean debugApiRequests) {
     super(credentials, "madbot", false, debugApiRequests, false, true);
+
+    this.sftpServer = credentials.get("sftp.server");
+    this.sftpLogin = credentials.get("sftp.login");
+    this.sftpPassword = credentials.get("sftp.password");
+    this.sftpBasePath = credentials.get("sftp.base.path");
   }
 }
