@@ -8,18 +8,20 @@ import fr.ens.biologie.genomique.kenetre.db.madbot.MadbotApiClient;
 import fr.ens.biologie.genomique.kenetre.db.model.LibraryInfo;
 import fr.ens.biologie.genomique.kenetre.db.model.ProjectInfo;
 import fr.ens.biologie.genomique.kenetre.db.model.RunInfo;
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class SubmitMadbotCommand extends AbstractCommand {
 
   private static String MADBOT_WORKSPACE = "TEST-API";
   private static String ENA_PLUGIN_NAME = "ENA";
 
-  private record Sample(String sampleName, String sampleDescription, LibraryInfo library) {}
+  private record Sample(
+      String sampleName,
+      String sampleDescription,
+      LibraryInfo library,
+      List<List<String>> fastqPaths) {}
 
   @Override
   protected String syntax() {
@@ -55,12 +57,20 @@ public class SubmitMadbotCommand extends AbstractCommand {
       // Create workspace if not exists
       var workspaceUuid = madbotApiClient.createWorkspace(workspace);
 
+      // Create ssh connection if not exists
+      UUID sshConnectionUuid = this.madbotApiClient.getExistingSshfsConnections(workspaceUuid);
+      if (sshConnectionUuid == null) {
+        sshConnectionUuid = this.madbotApiClient.createSshfsConnection(workspaceUuid);
+      }
+
+      System.out.println("* Workspace \"" + workspace + "\" UUID: " + workspaceUuid);
+      System.out.println("* SSH Connection UUID: " + sshConnectionUuid);
+
       //  Get the ENA plugin slug
       var enaPluginslug = this.madbotApiClient.getPluginSlug(ENA_PLUGIN_NAME);
       if (enaPluginslug == null) {
         throw new KenetreException("Plugin " + ENA_PLUGIN_NAME + " not found");
       }
-      System.out.println("ENA plugin slug: " + enaPluginslug);
 
       List<Sample> samples = null;
       for (LibraryInfo library : libraries) {
@@ -80,7 +90,8 @@ public class SubmitMadbotCommand extends AbstractCommand {
       }
 
       // Submit project to Madbot
-      submitMadbot(this.madbotApiClient, enaPluginslug, workspaceUuid, project, samples);
+      submitMadbot(
+          this.madbotApiClient, sshConnectionUuid, enaPluginslug, workspaceUuid, project, samples);
 
     } catch (IOException e) {
       throw new KenetreException(e);
@@ -91,11 +102,33 @@ public class SubmitMadbotCommand extends AbstractCommand {
       throws IOException {
 
     List<Sample> samples = new ArrayList<>();
+    Map<String, Sample> samplesById = new HashMap<>();
+
+    // Define the base path on the SFTP server
+    String basePath = this.madbotApiClient.getSftpBasePath();
+    if (basePath == null) {
+      basePath = "";
+    } else if (!basePath.endsWith("/")) {
+      basePath += "/";
+    }
 
     for (GenomiqueEnsApiClient.IlluminaSample s :
         this.gensApiClient.fetchIlluminaSamples(runId, projectName)) {
 
-      Sample sample = new Sample(s.name(), s.description(), library);
+      List<String> externalIds = new ArrayList<>();
+      for (var p : s.fastqPaths()) {
+        externalIds.add(basePath + projectName + '/' + runId + '/' + new File(p).getName());
+      }
+
+      Sample sample;
+      if (samplesById.containsKey(s.name())) {
+        sample = samplesById.get(s.name());
+      } else {
+        sample = new Sample(s.name(), s.description(), library, new ArrayList<>());
+        samplesById.put(s.name(), sample);
+      }
+      sample.fastqPaths().add(externalIds);
+
       if (!samples.contains(sample)) {
         samples.add(sample);
       }
@@ -106,29 +139,30 @@ public class SubmitMadbotCommand extends AbstractCommand {
 
   private static void submitMadbot(
       MadbotApiClient madbot,
+      UUID sshConnectionUuid,
       String enaPluginslug,
       UUID workspaceUuid,
       ProjectInfo project,
       List<Sample> samples)
       throws IOException {
 
-    System.out.println("Workspace UUID: " + workspaceUuid);
-
     // Get the ids of required metadata for projects
     var studyMetadataIds = madbot.getMetadataCategory(workspaceUuid, ENA_PLUGIN_NAME, "study");
 
     // Create project node
     var projectUuid = madbot.createProjectNode(workspaceUuid, project.acronym());
-
-    System.out.println(project);
+    System.out.println("* Create project \"" + project.acronym() + "\" UUID: " + projectUuid);
 
     // Set known metadata values
+    System.out.println("* Set project metadata");
     for (var e : Map.of("ena__study__center_name", project.labName()).entrySet()) {
+      System.out.println("\t- " + e.getKey() + ": " + e.getValue());
       madbot.setProjectMetadata(
           workspaceUuid, projectUuid, studyMetadataIds.get(e.getKey()).uuid(), e.getValue());
     }
 
     // Set additional project metadata with complex values
+    System.out.println("\t- ena__study__additional_metadata");
     var additionalProjectMetadata =
         List.of(
             Map.of(
@@ -150,17 +184,16 @@ public class SubmitMadbotCommand extends AbstractCommand {
         studyMetadataIds.get("ena__study__additional_metadata").uuid(),
         additionalProjectMetadata);
 
-    // System.out.println(madbot.getPluginSchema(enaPluginslug, "ena__study__additional_metadata"));
-
     // Create project metadata with empty values
     for (Map.Entry<String, MadbotApiClient.MetadataFieldInfo> entry : studyMetadataIds.entrySet()) {
-      System.out.println(entry.getKey() + " -> " + entry.getValue());
+      System.out.println("\t- " + entry.getKey() + ": [empty]");
       if (entry.getValue().mandatory()) {
         madbot.addEmptyProjectMetadata(workspaceUuid, projectUuid, entry.getValue().uuid());
       }
     }
 
     // Add empty project description that is non-mandatory
+    System.out.println("\t- ena__study__description: [empty]");
     madbot.addEmptyProjectMetadata(
         workspaceUuid, projectUuid, studyMetadataIds.get("ena__study__description").uuid());
 
@@ -168,59 +201,56 @@ public class SubmitMadbotCommand extends AbstractCommand {
     for (var s : samples) {
       submitLibrariesToMadbot(
           madbot,
+          sshConnectionUuid,
           enaPluginslug,
           workspaceUuid,
           projectUuid,
           s.sampleName(),
           s.sampleDescription(),
-          s.library());
+          s.library(),
+          s.fastqPaths());
     }
   }
 
   private static void submitLibrariesToMadbot(
       MadbotApiClient madbot,
+      UUID sshConnectionUuid,
       String enaPluginslug,
       UUID workspaceUuid,
       UUID projectUuid,
       String sampleName,
       String sampleDescription,
-      LibraryInfo library)
+      LibraryInfo library,
+      List<List<String>> fastqPaths)
       throws IOException {
 
     requireNonNull(sampleName, "Sample name cannot be null");
     requireNonNull(sampleDescription, "Sample description cannot be null");
     requireNonNull(library, "library cannot be null");
+    requireNonNull(fastqPaths, "FASTQ paths cannot be null");
 
     // Create sample
-    var sample_uuid =
-        madbot.createSample(workspaceUuid, projectUuid, sampleName, sampleDescription);
-    System.out.println("Sample UUID: " + sample_uuid);
+    var sampleUuid = madbot.createSample(workspaceUuid, projectUuid, sampleName, sampleDescription);
+    System.out.println("* Create sample \"" + sampleName + "\" UUID: " + sampleUuid);
+
+    // Create Datalinks
+    createDataLink(madbot, workspaceUuid, projectUuid, sampleUuid, sshConnectionUuid, fastqPaths);
 
     // sample__erc000011 metadata
-    System.out.println("* sample__erc000011");
     var enaDefaultSampleMetadataIds =
         madbot.getMetadataGroup(workspaceUuid, enaPluginslug, "sample__erc000011");
-    System.out.println("enaDefaultSampleMetadataIds=" + enaDefaultSampleMetadataIds);
 
     // Set the required metadata for sample to empty
     for (var e : enaDefaultSampleMetadataIds.entrySet()) {
       if (e.getValue().mandatory()) {
-        System.out.println(e.getKey() + " -> " + e.getValue());
-        madbot.addEmptySampleMetadata(workspaceUuid, projectUuid, sample_uuid, e.getValue().uuid());
+        System.out.println("\t- " + e.getKey() + ": " + e.getValue());
+        madbot.addEmptySampleMetadata(workspaceUuid, projectUuid, sampleUuid, e.getValue().uuid());
       }
     }
 
     // Raw read metadata
-    System.out.println("* raw_read");
     var raw_read_metadata_ids =
         madbot.getMetadataCategory(workspaceUuid, enaPluginslug, "raw_read");
-
-    // ena__raw_read__library_layout : "Single" or "Paired"
-    // ena__raw_read__instrument
-
-    // Print schema of a metadata
-    // System.out.println(madbot.getPluginSchema(enaPluginslug, "ena__raw_read__library_layout"));
-    // System.out.println(madbot.getPluginSchema(enaPluginslug, "ena__raw_read__instrument"));
 
     // Define metadata complex values
     var libraryLayoutValue = Map.of("library_layout", "single", "library_selection", "cDNA");
@@ -245,11 +275,11 @@ public class SubmitMadbotCommand extends AbstractCommand {
       if (!raw_read_metadata_ids.containsKey(e.getKey())) {
         throw new IOException("Missing metadata key: " + e.getKey());
       }
-      System.out.println(e.getKey() + " -> " + e.getValue());
+      System.out.println("\t- " + e.getKey() + ": " + e.getValue());
       madbot.setSampleMetadata(
           workspaceUuid,
           projectUuid,
-          sample_uuid,
+          sampleUuid,
           raw_read_metadata_ids.get(e.getKey()).uuid(),
           e.getValue());
     }
@@ -259,8 +289,47 @@ public class SubmitMadbotCommand extends AbstractCommand {
         raw_read_metadata_ids.entrySet()) {
 
       if (e.getValue().mandatory()) {
-        System.out.println(e.getKey() + " -> " + e.getValue());
-        madbot.addEmptySampleMetadata(workspaceUuid, projectUuid, sample_uuid, e.getValue().uuid());
+        System.out.println("\t- " + e.getKey() + ": " + e.getValue());
+        madbot.addEmptySampleMetadata(workspaceUuid, projectUuid, sampleUuid, e.getValue().uuid());
+      }
+    }
+  }
+
+  private static void createDataLink(
+      MadbotApiClient madbot,
+      UUID workspaceUuid,
+      UUID projectUuid,
+      UUID sampleUuid,
+      UUID sshConnectionUuid,
+      List<List<String>> fastqPaths)
+      throws IOException {
+
+    System.out.println("Creating data links for sample UUID: " + sampleUuid + " " + fastqPaths);
+    for (var laneFastqPaths : fastqPaths) {
+
+      List<UUID> dataUuids = new ArrayList<>();
+
+      for (var fastqPath : laneFastqPaths) {
+
+        // Create data
+        var dataUuid = madbot.createData(workspaceUuid, sshConnectionUuid, fastqPath);
+        System.out.println("\t- Create data (" + fastqPath + ") UUID: " + dataUuid);
+        dataUuids.add(dataUuid);
+
+        // Create datalink
+        var datalinkUuid = madbot.createDataLink(workspaceUuid, projectUuid, sampleUuid, dataUuid);
+        System.out.println("\t- Create datalink UUID: " + datalinkUuid);
+
+        // Create bound sample
+        madbot.createBoundSample(workspaceUuid, sampleUuid, dataUuid, datalinkUuid);
+        System.out.println("\t- Create bound sample for data UUID: " + dataUuid);
+      }
+
+      // Associate paired-end files
+      if (dataUuids.size() > 1) {
+
+        var associationUuid = madbot.createSampleAssociation(workspaceUuid, dataUuids);
+        System.out.println("\t- Create sample association UUID: " + associationUuid);
       }
     }
   }
