@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.44.0](https://github.com/GenomiqueENS/kenetre/compare/v0.42.0...v0.44.0) (2026-07-21)
+
+
+### Bug Fixes
+
+* Fix command line to get the list of docker images with latest Docker versions in fallback mode. ([#46](https://github.com/GenomiqueENS/kenetre/issues/46)) ([bae2488](https://github.com/GenomiqueENS/kenetre/commit/bae24889719b2907807f5510677c247218fb7833))
+
+
+### Miscellaneous Chores
+
+* release 0.44.0 ([#49](https://github.com/GenomiqueENS/kenetre/issues/49)) ([fe04de5](https://github.com/GenomiqueENS/kenetre/commit/fe04de52488e3536dc193ffbe08fda3427a44fcd))
+
 ## [0.42.0](https://github.com/GenomiqueENS/kenetre/compare/v0.41.0...v0.42.0) (2026-06-05)
 
 
