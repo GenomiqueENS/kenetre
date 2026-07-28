@@ -5,7 +5,7 @@
   <artifactId>kenetre</artifactId>
   <name>Kenetre</name>
   <packaging>pom</packaging>
-  <version>0.44.0</version>
+  <version>0.44.1-SNAPSHOT</version>
   <description>Common classes for Aozan and Eoulsan projects.</description>
   <url>https://github.com/GenomiqueENS/kenetre</url>
   <inceptionYear>2022</inceptionYear>
