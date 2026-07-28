@@ -35,6 +35,7 @@ public class FallBackDockerImageInstance extends AbstractSimpleProcess
       final List<String> commandLine,
       final File executionDirectory,
       final Map<String, String> environmentVariables,
+      final Map<String, String> uLimits,
       final File temporaryDirectory,
       final File stdoutFile,
       final File stderrFile,
@@ -54,6 +55,8 @@ public class FallBackDockerImageInstance extends AbstractSimpleProcess
             + executionDirectory
             + ", environmentVariables="
             + environmentVariables
+            + ", uLimits="
+            + uLimits
             + ", temporaryDirectory="
             + temporaryDirectory
             + ", stdoutFile="
@@ -101,6 +104,14 @@ public class FallBackDockerImageInstance extends AbstractSimpleProcess
     if (environmentVariables != null) {
       for (Map.Entry<String, String> e : environmentVariables.entrySet()) {
         command.add("--env");
+        command.add(e.getKey() + '=' + e.getValue());
+      }
+    }
+
+    // uLimits
+    if (uLimits != null) {
+      for (Map.Entry<String, String> e : uLimits.entrySet()) {
+        command.add("--ulimit");
         command.add(e.getKey() + '=' + e.getValue());
       }
     }

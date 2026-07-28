@@ -29,6 +29,7 @@ public class Singukarity3DockerImageInstance extends AbstractSimpleProcess
       final List<String> commandLine,
       final File executionDirectory,
       final Map<String, String> environmentVariables,
+      final Map<String, String> uLimits,
       final File temporaryDirectory,
       final File stdoutFile,
       final File stderrFile,
