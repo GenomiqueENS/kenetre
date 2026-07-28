@@ -12,6 +12,7 @@ import com.github.dockerjava.api.command.PullImageResultCallback;
 import com.github.dockerjava.api.command.WaitContainerResultCallback;
 import com.github.dockerjava.api.model.Bind;
 import com.github.dockerjava.api.model.Frame;
+import com.github.dockerjava.api.model.Ulimit;
 import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
 import fr.ens.biologie.genomique.kenetre.util.SystemUtils;
 import fr.ens.biologie.genomique.kenetre.util.Utils;
@@ -161,6 +162,7 @@ public class DockerJavaDockerImageInstance extends AbstractSimpleProcess
       List<String> commandLine,
       File executionDirectory,
       Map<String, String> environmentVariables,
+      Map<String, String> uLimits,
       File temporaryDirectory,
       File stdoutFile,
       File stderrFile,
@@ -180,6 +182,8 @@ public class DockerJavaDockerImageInstance extends AbstractSimpleProcess
             + executionDirectory
             + ", environmentVariables="
             + environmentVariables
+            + ", uLimits="
+            + uLimits
             + ", temporaryDirectory="
             + temporaryDirectory
             + ", stdoutFile="
@@ -203,6 +207,12 @@ public class DockerJavaDockerImageInstance extends AbstractSimpleProcess
     if (environmentVariables != null) {
       for (Map.Entry<String, String> e : environmentVariables.entrySet()) {
         env.add(e.getKey() + '=' + e.getValue());
+      }
+    }
+    final List<Ulimit> ulimitList = new ArrayList<>();
+    if (uLimits != null) {
+      for (var e : uLimits.entrySet()) {
+        ulimitList.add(new Ulimit(e.getKey(), Long.parseLong(e.getValue()), -1L));
       }
     }
 
@@ -245,6 +255,11 @@ public class DockerJavaDockerImageInstance extends AbstractSimpleProcess
 
     // Set environment variables
     cmd.withEnv(env);
+
+    // Set uLimits
+    if (uLimits != null) {
+      cmd.getHostConfig().withUlimits(ulimitList);
+    }
 
     // Create container
     CreateContainerResponse container = cmd.exec();

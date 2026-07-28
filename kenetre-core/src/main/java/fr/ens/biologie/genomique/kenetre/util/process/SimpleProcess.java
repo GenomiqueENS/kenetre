@@ -45,6 +45,7 @@ public interface SimpleProcess {
    * @param commandLine command line
    * @param executionDirectory execution directory
    * @param environmentVariables environment variables
+   * @param uLimits ulimits of the execution
    * @param temporaryDirectory temporary directory
    * @param stdoutFile stdout file
    * @param stderrFile stderr file
@@ -57,6 +58,7 @@ public interface SimpleProcess {
       List<String> commandLine,
       File executionDirectory,
       Map<String, String> environmentVariables,
+      Map<String, String> uLimits,
       File temporaryDirectory,
       File stdoutFile,
       File stderrFile,
@@ -70,6 +72,7 @@ public interface SimpleProcess {
    * @param commandLine command line
    * @param executionDirectory execution directory
    * @param environmentVariables environment variables
+   * @param uLimits ulimits of the execution
    * @param temporaryDirectory temporary directory
    * @param stdoutFile stdout file
    * @param stderrFile stderr file
@@ -82,6 +85,7 @@ public interface SimpleProcess {
       List<String> commandLine,
       File executionDirectory,
       Map<String, String> environmentVariables,
+      Map<String, String> uLimits,
       File temporaryDirectory,
       File stdoutFile,
       File stderrFile,
