@@ -530,6 +530,7 @@ public class MadbotApiClient extends ApiClient {
       throws IOException {
 
     requireNonNull(workspaceUuid, "workspaceUuid must not be null");
+    requireNonNull(project, "project must not be null");
     requireNonNull(sample, "sample must not be null");
     requireNonNull(data, "data must not be null");
 

@@ -11,6 +11,9 @@ import fr.ens.biologie.genomique.kenetre.db.model.RunInfo;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Options;
 
 public class SubmitMadbotCommand extends AbstractCommand {
 
@@ -23,89 +26,178 @@ public class SubmitMadbotCommand extends AbstractCommand {
       LibraryInfo library,
       List<List<String>> fastqPaths) {}
 
+  private record Submission(
+      String workspace,
+      boolean removeExistingWorkspace,
+      String acronym,
+      String labName,
+      List<String> samples) {}
+
+  private Submission submission;
+
+  //
+  // AbstractCommand methods
+  //
+
   @Override
   protected String syntax() {
-    return "<project_name>";
+    return "<project_name>...";
+  }
+
+  protected Options additionalOptions(Options options) {
+
+    options.addOption("w", "workspace", true, "workspace name (default: " + MADBOT_WORKSPACE + ")");
+    options.addOption(
+        "r", "remove-existing-workspace", false, "remove existing workspace if it exists");
+    options.addOption(
+        "a", "submission-acronym", true, "submission acronym (default: project acronym)");
+    options.addOption("l", "lab-name", true, "laboratory name (default: project's lab)");
+    options.addOption(
+        "m",
+        "samples",
+        true,
+        "comma-separated list of sample names to submit (default: all samples of the project(s))");
+
+    return options;
+  }
+
+  protected void parseAdditionalOptions(CommandLine line) {
+
+    this.submission = new Submission(MADBOT_WORKSPACE, false, null, null, new ArrayList<>());
+
+    this.submission =
+        new Submission(
+            line.hasOption("w") ? line.getOptionValue("w") : this.submission.workspace,
+            line.hasOption("r"),
+            line.hasOption("a") ? line.getOptionValue("a") : this.submission.acronym,
+            line.hasOption("l") ? line.getOptionValue("l") : this.submission.labName,
+            line.hasOption("m")
+                ? Arrays.asList(line.getOptionValue("m").split(","))
+                : this.submission.samples);
   }
 
   @Override
   protected void internalExecute(List<String> arguments) throws KenetreException {
 
-    if (arguments.size() != 1) {
-      System.err.println("ERROR: Invalid number of arguments. Expected 1, got " + arguments.size());
+    if (arguments.size() < 1) {
+      System.err.println(
+          "ERROR: Invalid number of arguments. Expected at least 1, got " + arguments.size());
       System.exit(1);
     }
 
-    // Get the project name
-    var projectName = arguments.get(0);
-    var workspace = MADBOT_WORKSPACE;
+    System.out.println(this.submission);
+    System.out.println(arguments);
+
+    submit(arguments);
+  }
+
+  //
+  // Submission methods
+  //
+
+  private void submit(List<String> projectNames) throws KenetreException {
+
+    if (projectNames.isEmpty()) {
+      throw new KenetreException("No project name provided");
+    }
+
+    ProjectInfo firstProject = null;
+    List<Sample> samples = new ArrayList<>();
+    var submissionAcronym = this.submission.acronym();
+    var submissionLabName = this.submission.labName();
 
     try {
 
-      // Retrieve project and library information
-      ProjectInfo project = super.gensApiClient.fetchProjectInfo(projectName);
-      List<LibraryInfo> libraries = new ArrayList<>();
-      for (String libraryBatchId : project.libraryBatchIds()) {
-        libraries.add(super.gensApiClient.fetchLibraryBatch(libraryBatchId));
-      }
-
-      // Remove workspace if exists
-      if (super.madbotApiClient.isWorkspace(workspace)) {
-        super.madbotApiClient.removeWorkspace(workspace);
-      }
+      //  Get the ENA plugin slug
+      var enaPluginslug = fetchMadbotPluginSlug(this.madbotApiClient, ENA_PLUGIN_NAME);
 
       // Create workspace if not exists
-      var workspaceUuid = madbotApiClient.createWorkspace(workspace);
+      var workspaceUuid =
+          fetchMadBotWorkspaceUuid(
+              super.madbotApiClient,
+              this.submission.workspace(),
+              this.submission.removeExistingWorkspace());
 
       // Create ssh connection if not exists
-      UUID sshConnectionUuid = this.madbotApiClient.getExistingSshfsConnections(workspaceUuid);
-      if (sshConnectionUuid == null) {
-        sshConnectionUuid = this.madbotApiClient.createSshfsConnection(workspaceUuid);
-      }
+      UUID sshConnectionUuid = fetchMadbotSshConnectionUuid(super.madbotApiClient, workspaceUuid);
 
-      System.out.println("* Workspace \"" + workspace + "\" UUID: " + workspaceUuid);
+      System.out.println(
+          "* Workspace \"" + this.submission.workspace() + "\" UUID: " + workspaceUuid);
       System.out.println("* SSH Connection UUID: " + sshConnectionUuid);
 
-      //  Get the ENA plugin slug
-      var enaPluginslug = this.madbotApiClient.getPluginSlug(ENA_PLUGIN_NAME);
-      if (enaPluginslug == null) {
-        throw new KenetreException("Plugin " + ENA_PLUGIN_NAME + " not found");
-      }
+      for (var projectName : projectNames) {
 
-      List<Sample> samples = null;
-      for (LibraryInfo library : libraries) {
-        for (String run : library.runs()) {
-          RunInfo runInfo = super.gensApiClient.fetchRunInfo(run, projectName);
-          switch (runInfo.supplier()) {
-            case "Illumina":
-              samples = fetchIlluminaSamples(projectName, run, library);
-              break;
-            case "Oxford Nanopore Technologies":
-              throw new IllegalArgumentException("Unsupported supplier: " + runInfo.supplier());
+        // Retrieve project and library information
+        ProjectInfo project = super.gensApiClient.fetchProjectInfo(projectName);
+        if (firstProject == null) {
+          firstProject = project;
+          submissionAcronym =
+              submissionAcronym != null ? submissionAcronym : firstProject.acronym();
+          submissionLabName =
+              submissionLabName != null ? submissionLabName : firstProject.labName();
+        }
 
-            default:
-              throw new IllegalArgumentException("Unsupported supplier: " + runInfo.supplier());
+        List<LibraryInfo> libraries = new ArrayList<>();
+        for (String libraryBatchId : project.libraryBatchIds()) {
+          libraries.add(super.gensApiClient.fetchLibraryBatch(libraryBatchId));
+        }
+
+        // Fetch samples for each library and run
+        for (LibraryInfo library : libraries) {
+          for (String run : library.runs()) {
+            RunInfo runInfo = super.gensApiClient.fetchRunInfo(run, projectName);
+            switch (runInfo.supplier()) {
+              case "Illumina":
+                samples.addAll(
+                    filterSamplesByName(
+                        fetchIlluminaSamples(
+                            super.gensApiClient,
+                            this.madbotApiClient,
+                            projectName,
+                            submissionAcronym,
+                            run,
+                            library),
+                        this.submission.samples()));
+                break;
+              case "Oxford Nanopore Technologies":
+                throw new IllegalArgumentException("Unsupported supplier: " + runInfo.supplier());
+
+              default:
+                throw new IllegalArgumentException("Unsupported supplier: " + runInfo.supplier());
+            }
           }
         }
       }
 
       // Submit project to Madbot
-      submitMadbot(
-          this.madbotApiClient, sshConnectionUuid, enaPluginslug, workspaceUuid, project, samples);
+      submitProjectToMadbot(
+          this.madbotApiClient,
+          sshConnectionUuid,
+          enaPluginslug,
+          workspaceUuid,
+          submissionAcronym,
+          submissionLabName,
+          samples);
 
     } catch (IOException e) {
       throw new KenetreException(e);
     }
   }
 
-  private List<Sample> fetchIlluminaSamples(String projectName, String runId, LibraryInfo library)
+  private static List<Sample> fetchIlluminaSamples(
+      GenomiqueEnsApiClient gensApiClient,
+      MadbotApiClient madbotApiClient,
+      String projectName,
+      String submissionAcronym,
+      String runId,
+      LibraryInfo library)
       throws IOException {
 
     List<Sample> samples = new ArrayList<>();
     Map<String, Sample> samplesById = new HashMap<>();
 
     // Define the base path on the SFTP server
-    String basePath = this.madbotApiClient.getSftpBasePath();
+    String basePath = madbotApiClient.getSftpBasePath();
     if (basePath == null) {
       basePath = "";
     } else if (!basePath.endsWith("/")) {
@@ -113,11 +205,11 @@ public class SubmitMadbotCommand extends AbstractCommand {
     }
 
     for (GenomiqueEnsApiClient.IlluminaSample s :
-        this.gensApiClient.fetchIlluminaSamples(runId, projectName)) {
+        gensApiClient.fetchIlluminaSamples(runId, projectName)) {
 
       List<String> externalIds = new ArrayList<>();
       for (var p : s.fastqPaths()) {
-        externalIds.add(basePath + projectName + '/' + runId + '/' + new File(p).getName());
+        externalIds.add(basePath + submissionAcronym + '/' + runId + '/' + new File(p).getName());
       }
 
       Sample sample;
@@ -137,25 +229,29 @@ public class SubmitMadbotCommand extends AbstractCommand {
     return samples;
   }
 
-  private static void submitMadbot(
+  private static void submitProjectToMadbot(
       MadbotApiClient madbot,
       UUID sshConnectionUuid,
       String enaPluginslug,
       UUID workspaceUuid,
-      ProjectInfo project,
+      String acronym,
+      String labName,
       List<Sample> samples)
       throws IOException {
+
+    requireNonNull(acronym);
+    requireNonNull(labName);
 
     // Get the ids of required metadata for projects
     var studyMetadataIds = madbot.getMetadataCategory(workspaceUuid, ENA_PLUGIN_NAME, "study");
 
     // Create project node
-    var projectUuid = madbot.createProjectNode(workspaceUuid, project.acronym());
-    System.out.println("* Create project \"" + project.acronym() + "\" UUID: " + projectUuid);
+    var projectUuid = madbot.createProjectNode(workspaceUuid, acronym);
+    System.out.println("* Create project \"" + acronym + "\" UUID: " + projectUuid);
 
     // Set known metadata values
     System.out.println("* Set project metadata");
-    for (var e : Map.of("ena__study__center_name", project.labName()).entrySet()) {
+    for (var e : Map.of("ena__study__center_name", labName).entrySet()) {
       System.out.println("\t- " + e.getKey() + ": " + e.getValue());
       madbot.setProjectMetadata(
           workspaceUuid, projectUuid, studyMetadataIds.get(e.getKey()).uuid(), e.getValue());
@@ -295,6 +391,54 @@ public class SubmitMadbotCommand extends AbstractCommand {
     }
   }
 
+  //
+  // Utility methods
+  //
+
+  private static String fetchMadbotPluginSlug(MadbotApiClient madbotApiClient, String pluginName)
+      throws IOException, KenetreException {
+
+    var result = madbotApiClient.getPluginSlug(pluginName);
+    if (result == null) {
+      throw new KenetreException("Plugin " + pluginName + " not found");
+    }
+
+    return result;
+  }
+
+  private static UUID fetchMadBotWorkspaceUuid(
+      MadbotApiClient madbotApiClient, String workspaceName, boolean removeExistingWorkspace)
+      throws IOException, KenetreException {
+
+    // Remove workspace if exists
+    if (removeExistingWorkspace && madbotApiClient.isWorkspace(workspaceName)) {
+      madbotApiClient.removeWorkspace(workspaceName);
+    }
+
+    var result =
+        madbotApiClient.isWorkspace(workspaceName)
+            ? madbotApiClient.getWorkspaceUuid(workspaceName)
+            : madbotApiClient.createWorkspace(workspaceName);
+    if (result == null) {
+      throw new KenetreException("Workspace " + workspaceName + " not found");
+    }
+    return result;
+  }
+
+  private static UUID fetchMadbotSshConnectionUuid(
+      MadbotApiClient madbotApiClient, UUID workspaceUuid) throws IOException, KenetreException {
+
+    UUID result = madbotApiClient.getExistingSshfsConnections(workspaceUuid);
+    if (result == null) {
+      result = madbotApiClient.createSshfsConnection(workspaceUuid);
+    }
+    if (result == null) {
+      throw new KenetreException("Cannot create/obtain SSH connection");
+    }
+
+    return result;
+  }
+
   private static void createDataLink(
       MadbotApiClient madbot,
       UUID workspaceUuid,
@@ -332,6 +476,18 @@ public class SubmitMadbotCommand extends AbstractCommand {
         System.out.println("\t- Create sample association UUID: " + associationUuid);
       }
     }
+  }
+
+  private static List<Sample> filterSamplesByName(
+      List<Sample> samples, Collection<String> sampleNamesToKeep) {
+
+    if (sampleNamesToKeep == null || sampleNamesToKeep.isEmpty()) {
+      return samples;
+    }
+
+    return samples.stream()
+        .filter(sample -> sampleNamesToKeep.contains(sample.sampleName()))
+        .collect(Collectors.toList());
   }
 
   //
