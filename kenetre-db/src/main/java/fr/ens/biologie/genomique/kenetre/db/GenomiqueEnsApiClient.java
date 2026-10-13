@@ -118,7 +118,6 @@ public class GenomiqueEnsApiClient extends ApiClient {
 
     // Get lab info
     JsonObject labObj = obj.getAsJsonObject("laboratoire");
-
     // Get employer info
     JsonObject employerObj = obj.getAsJsonObject("chef_equipe");
 
@@ -136,11 +135,11 @@ public class GenomiqueEnsApiClient extends ApiClient {
         jsonToString(employerObj, "employeur"),
         jsonToString(obj, "statut"),
         jsonToInteger(obj, "annee_de_fin"),
-        labObj.get("indicateur_laboratoires").getAsString(),
-        labObj.get("commune").getAsString(),
-        labObj.get("code_postal").getAsString(),
-        labObj.get("numero_national_de_structure").getAsString(),
-        labObj.get("etablissement").getAsString(),
+        jsonToString(labObj, "indicateur_laboratoires"),
+        jsonToString(labObj, "commune"),
+        jsonToString(labObj, "code_postal"),
+        jsonToString(labObj, "numero_national_de_structure"),
+        jsonToString(labObj, "etablissement"),
         jsonToBoolean(obj, "prestation_fabrication_de_banque"),
         jsonToBoolean(obj, "prestation_sequencage"),
         jsonToString(obj, "prestation_analyse"));
@@ -323,7 +322,7 @@ public class GenomiqueEnsApiClient extends ApiClient {
 
   public RunMetrics fetchNanoporeRunMetrics(String runName) throws IOException {
 
-    JsonObject obj = fetchJsonObject("nanopre-runs", runName);
+    JsonObject obj = fetchJsonObject("nanopore-runs", runName);
 
     int cycleCount = 0; // Not applicable for Nanopore runs
     boolean pairedEnd = false; // No paired-end mode for Nanopore runs
@@ -334,7 +333,7 @@ public class GenomiqueEnsApiClient extends ApiClient {
     String model = instrumentObj.get("model").getAsString();
     String fgModel = instrumentObj.get("model_fg").getAsString();
 
-    JsonObject metricsObj = obj.getAsJsonObject("instrument");
+    JsonObject metricsObj = obj.getAsJsonObject("metrics");
 
     long readCount = metricsObj.get("total_read_count").getAsLong();
     long baseCount = metricsObj.get("total_base_count").getAsLong();
