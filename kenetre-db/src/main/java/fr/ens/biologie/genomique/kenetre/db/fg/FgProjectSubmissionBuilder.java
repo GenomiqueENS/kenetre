@@ -124,10 +124,10 @@ public class FgProjectSubmissionBuilder {
       Number mread = (Number) manipDict.get("mread_lib");
       Number gb = (Number) manipDict.get("gb_lib");
       if (mread != null) {
-        manipDict.put("mread_lib", mread.longValue() / 1_000_000L);
+        manipDict.put("mread_lib", Math.round(mread.longValue() / (double) 1_000_000L));
       }
       if (gb != null) {
-        manipDict.put("gb_lib", gb.longValue() / 1_000_000_000L);
+        manipDict.put("gb_lib", Math.round(gb.longValue() / (double) 1_000_000_000L));
       }
       manipDict.put("nouveau_sousProjet", false);
     }
