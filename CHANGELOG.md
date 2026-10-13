@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.45.0](https://github.com/GenomiqueENS/kenetre/compare/v0.44.0...v0.45.0) (2026-07-28)
+
+
+### Features
+
+* uLimits can be set in the SimpleProcess API. Actually, only DockerJavaDocker and FallBackDocker implements it. ([#52](https://github.com/GenomiqueENS/kenetre/issues/52)) ([8438d3b](https://github.com/GenomiqueENS/kenetre/commit/8438d3bc28388d0da058b68c194d156560e3feb1))
+
+
+### Miscellaneous Chores
+
+* release 0.45.0 ([#53](https://github.com/GenomiqueENS/kenetre/issues/53)) ([6feb18f](https://github.com/GenomiqueENS/kenetre/commit/6feb18f426d646406f395c06907406d6de8ee026))
+
 ## [0.44.0](https://github.com/GenomiqueENS/kenetre/compare/v0.42.0...v0.44.0) (2026-07-21)
 
 
