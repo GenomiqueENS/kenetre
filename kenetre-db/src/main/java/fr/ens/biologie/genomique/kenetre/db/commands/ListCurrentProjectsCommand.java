@@ -42,7 +42,7 @@ public class ListCurrentProjectsCommand extends AbstractCommand {
     }
     for (String p :
         GenomiqueEnsProjectQuery.getProjects(
-            this.gensApiClient, "En cours", null, null, null, null)) {
+            this.gensApiClient, "En cours", null, null, null, null, null)) {
       if (quiet) {
         System.out.println(p);
       } else {
