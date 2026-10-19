@@ -38,8 +38,8 @@ public class ListNonSubmittedProjectsCommand extends AbstractCommand {
 
     Set<String> terminatedProjects =
         new HashSet<>(
-            GenomiqueEnsProjectQuery.getProjects(
-                this.gensApiClient, "Terminé", null, this.sinceYear, false, true, false));
+            GenomiqueEnsProjectQuery.getTerminatedProjectsSinceYear(
+                this.gensApiClient, this.sinceYear));
     Set<String> submittedProjects = new HashSet<>();
     for (String[] p : this.fgApiClient.listProjects()) {
       submittedProjects.add(p[0]);

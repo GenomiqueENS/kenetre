@@ -16,6 +16,45 @@ import java.util.Objects;
 public final class GenomiqueEnsProjectQuery {
 
   /**
+   * Get acronyms of current projects.
+   *
+   * @param genomiqueEnsApiClient API connection
+   * @return list of project acronyms
+   */
+  public static List<String> getCurrentProjects(GenomiqueEnsApiClient genomiqueEnsApiClient)
+      throws IOException {
+    return getProjects(genomiqueEnsApiClient, "En cours", null, null, null, null, null, null);
+  }
+
+  /**
+   * Get acronyms of terminated projects for a given year.
+   *
+   * @param genomiqueEnsApiClient API connection
+   * @return list of project acronyms
+   */
+  public static List<String> getTerminatedProjects(GenomiqueEnsApiClient genomiqueEnsApiClient)
+      throws IOException {
+    return getTerminatedProjects(genomiqueEnsApiClient, null);
+  }
+
+  /**
+   * Get acronyms of terminated projects for a given year.
+   *
+   * @param genomiqueEnsApiClient API connection
+   * @param year year of project termination
+   * @return list of project acronyms
+   */
+  public static List<String> getTerminatedProjects(
+      GenomiqueEnsApiClient genomiqueEnsApiClient, Integer year) throws IOException {
+    return getProjects(genomiqueEnsApiClient, "Terminé", year, null, null, true, null, null);
+  }
+
+  public static List<String> getTerminatedProjectsSinceYear(
+      GenomiqueEnsApiClient genomiqueEnsApiClient, int sinceYear) throws IOException {
+    return getProjects(genomiqueEnsApiClient, "Terminé", null, sinceYear, null, true, null, null);
+  }
+
+  /**
    * Get acronyms of non-internal terminated projects for a given year.
    *
    * @param genomiqueEnsApiClient API connection
@@ -24,7 +63,7 @@ public final class GenomiqueEnsProjectQuery {
    */
   public static List<String> getNonInternalTerminatedProjects(
       GenomiqueEnsApiClient genomiqueEnsApiClient, int year) throws IOException {
-    return getProjects(genomiqueEnsApiClient, "Terminé", year, null, false, null, null);
+    return getProjects(genomiqueEnsApiClient, "Terminé", year, null, false, true, null, null);
   }
 
   /**
@@ -35,7 +74,7 @@ public final class GenomiqueEnsProjectQuery {
    */
   public static List<String> getNonInternalOngoingProjects(
       GenomiqueEnsApiClient genomiqueEnsApiClient) throws IOException {
-    return getProjects(genomiqueEnsApiClient, "En cours", null, null, false, null, null);
+    return getProjects(genomiqueEnsApiClient, "En cours", null, null, false, true, null, null);
   }
 
   /**
@@ -59,7 +98,8 @@ public final class GenomiqueEnsProjectQuery {
       Integer sinceYear,
       Boolean internal,
       Boolean libraryBuildingOrSequencing,
-      Boolean noAutonomousProjects)
+      Boolean noAutonomousProjects,
+      Boolean rd)
       throws IOException {
 
     Objects.requireNonNull(genomiqueEnsApiClient);
@@ -100,6 +140,14 @@ public final class GenomiqueEnsProjectQuery {
       }
 
       if (internal == Boolean.FALSE && "GenomiqueENS".equals(project.labName())) {
+        continue;
+      }
+
+      if (rd == Boolean.TRUE && !project.rd()) {
+        continue;
+      }
+
+      if (rd == Boolean.FALSE && project.rd()) {
         continue;
       }
 

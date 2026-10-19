@@ -40,9 +40,7 @@ public class ListCurrentProjectsCommand extends AbstractCommand {
     if (!quiet) {
       System.out.println("Current projects:");
     }
-    for (String p :
-        GenomiqueEnsProjectQuery.getProjects(
-            this.gensApiClient, "En cours", null, null, null, null, null)) {
+    for (String p : GenomiqueEnsProjectQuery.getCurrentProjects(this.gensApiClient)) {
       if (quiet) {
         System.out.println(p);
       } else {
