@@ -1,5 +1,6 @@
 package fr.ens.biologie.genomique.kenetre.db.fg;
 
+import static fr.ens.biologie.genomique.kenetre.db.GenomiqueEnsApiClient.AUTONOMOUS_PROJECTS_ROUTE;
 import static java.util.Objects.requireNonNull;
 
 import fr.ens.biologie.genomique.kenetre.db.GenomiqueEnsApiClient;
@@ -25,6 +26,8 @@ import java.util.Map;
 public class FgProjectSubmissionBuilder {
 
   public static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+  private static final String AUTONOMOUS_PROJECT_PREFIX = "AUTONOMIE_";
+  private static final int UNIDENTIFIED_TAXON_ID = 32644;
 
   private final Map<String, String> applicationFgDict;
   private final Map<String, String> instrumentFgDict;
@@ -70,19 +73,26 @@ public class FgProjectSubmissionBuilder {
     // requireNonNull(conn);
     requireNonNull(projectName);
 
+    boolean autonomousProject = projectName.startsWith(AUTONOMOUS_PROJECT_PREFIX);
     Map<String, Object> projectDict = new LinkedHashMap<>();
 
     // Retrieve project and library information
-    ProjectInfo project = gensApiclient.fetchProjectInfo(projectName);
+    ProjectInfo project =
+        autonomousProject
+            ? gensApiclient.fetchAutonomousProjectInfo(
+                projectName.replace(AUTONOMOUS_PROJECT_PREFIX, ""))
+            : gensApiclient.fetchProjectInfo(projectName);
     List<LibraryInfo> libraries = new ArrayList<>();
-    for (String libraryBatchId : project.libraryBatchIds()) {
-      libraries.add(gensApiclient.fetchLibraryBatch(libraryBatchId));
+    if (project.libraryBatchIds() != null) {
+      for (String libraryBatchId : project.libraryBatchIds()) {
+        libraries.add(gensApiclient.fetchLibraryBatch(libraryBatchId));
+      }
     }
 
     // Retrieve library information
 
     // Set results for project
-    retrieveProjectInfo(project, libraries, projectDict);
+    retrieveProjectInfo(project, libraries, projectDict, autonomousProject);
 
     List<Integer> taxonIds = project.taxons();
 
@@ -95,41 +105,17 @@ public class FgProjectSubmissionBuilder {
     // String maxLibraryReceipeDate = null;
     List<Map<String, Object>> manips = new ArrayList<>();
 
-    for (LibraryInfo library : libraries) {
-      Map<String, Object> manipDict = new LinkedHashMap<>();
-      manips.add(manipDict);
+    if (!autonomousProject) {
 
-      retrieveLibraryInfo(library, projectDict, manipDict);
-      List<String> runs = library.runs();
-
-      for (String runId : runs) {
-        RunInfo run = gensApiclient.fetchRunInfo(runId, projectName);
-
-        boolean successRun = retrieveRunInfo(gensApiclient, run, projectName, manipDict);
-        if (!successRun) {
-          continue;
-        }
-        String supplier = (String) manipDict.get("_instrument_supplier");
-        retrieveRunMetricsInfo(gensApiclient, supplier, runId, manipDict);
-
-        manipDict.put("cle_espece_fg", taxonIds);
+      // Standard and ready-to-load projects
+      for (LibraryInfo library : libraries) {
+        manips.add(createManipDict(gensApiclient, library, projectDict, projectName, taxonIds));
       }
-      projectDict.put(
-          "date_last_manip",
-          minDate(
-              (String) projectDict.get("date_last_manip"),
-              (String) manipDict.get("date_validation_qc")));
 
-      // Convert reads to millions and bases to gigabases
-      Number mread = (Number) manipDict.get("mread_lib");
-      Number gb = (Number) manipDict.get("gb_lib");
-      if (mread != null) {
-        manipDict.put("mread_lib", Math.round(mread.longValue() / (double) 1_000_000L));
-      }
-      if (gb != null) {
-        manipDict.put("gb_lib", Math.round(gb.longValue() / (double) 1_000_000_000L));
-      }
-      manipDict.put("nouveau_sousProjet", false);
+    } else {
+
+      // Autonomous projects
+      manips.add(createAutonomousManipDict(gensApiclient, project.runIds(), projectDict));
     }
 
     // Check project entries
@@ -193,12 +179,118 @@ public class FgProjectSubmissionBuilder {
     return new SubmissionData(projectDict, manips);
   }
 
+  private Map<String, Object> createManipDict(
+      GenomiqueEnsApiClient gensApiclient,
+      LibraryInfo library,
+      Map<String, Object> projectDict,
+      String projectName,
+      List<Integer> taxonIds)
+      throws IOException {
+
+    Map<String, Object> manipDict = new LinkedHashMap<>();
+
+    retrieveLibraryInfo(library, projectDict, manipDict);
+    List<String> runs = library.runs();
+
+    for (String runId : runs) {
+      RunInfo run = gensApiclient.fetchRunInfo(runId, projectName);
+
+      boolean successRun = retrieveRunInfo(gensApiclient, run, projectName, manipDict);
+      if (!successRun) {
+        continue;
+      }
+      String supplier = (String) manipDict.get("_instrument_supplier");
+      retrieveRunMetricsInfo(gensApiclient, supplier, runId, manipDict);
+
+      manipDict.put("cle_espece_fg", taxonIds);
+    }
+    projectDict.put(
+        "date_last_manip",
+        minDate(
+            (String) projectDict.get("date_last_manip"),
+            (String) manipDict.get("date_validation_qc")));
+
+    // Convert reads to millions and bases to gigabases
+    Number mread = (Number) manipDict.get("mread_lib");
+    Number gb = (Number) manipDict.get("gb_lib");
+    if (mread != null) {
+      manipDict.put("mread_lib", Math.round(mread.longValue() / (double) 1_000_000L));
+    }
+    if (gb != null) {
+      manipDict.put("gb_lib", Math.round(gb.longValue() / (double) 1_000_000_000L));
+    }
+    manipDict.put("nouveau_sousProjet", false);
+
+    return manipDict;
+  }
+
+  private Map<String, Object> createAutonomousManipDict(
+      GenomiqueEnsApiClient gensApiclient, List<String> runIds, Map<String, Object> projectDict)
+      throws IOException {
+
+    if (runIds.size() != 1) {
+      throw new IllegalStateException("Invalid number of runs: " + runIds.size());
+    }
+
+    Map<String, Object> manipDict = new LinkedHashMap<>();
+
+    for (String runId : runIds) {
+
+      var obj = gensApiclient.fetchJsonObject(AUTONOMOUS_PROJECTS_ROUTE, runId);
+      boolean illuminaRun = runId.matches("^\\d\\d\\d\\d\\d\\d_\\w*_\\d+_\\w+$");
+
+      var runInfo = obj.getAsJsonObject("run_info");
+
+      var runDate = LocalDate.parse(runInfo.get("run_date").getAsString(), DATE_FMT);
+      var qcDate = illuminaRun ? runDate.plusDays(1) : runDate.plusDays(5);
+      var sendDate = qcDate.plusDays(1);
+
+      projectDict.put("debut_projet", runDate.format(DATE_FMT));
+      projectDict.put("fin_projet", sendDate.format(DATE_FMT));
+      projectDict.put("date_first_manip", runDate.format(DATE_FMT));
+      projectDict.put("collab_presta", "autonomie");
+
+      manipDict.put("cle_projet_fg", null);
+      manipDict.put("cle_manip_pf", runId + "_manip");
+      manipDict.put("cle_projet_pf", projectDict.get("cle_projet_pf"));
+      manipDict.put("cle_espece_fg", UNIDENTIFIED_TAXON_ID);
+      manipDict.put(
+          "cle_type_flowcell_fg",
+          this.flowcellFgDict.get(runInfo.get("flow_cell_type").getAsString()));
+      manipDict.put("nb_librairies", runInfo.get("nb_banques").getAsInt());
+      manipDict.put("nb_flowcell", 1);
+      manipDict.put(
+          "gb_lib", Math.round(runInfo.get("nb_bases").getAsLong() / (double) 1_000_000_000L));
+      manipDict.put(
+          "mread_lib", Math.round(runInfo.get("nb_lectures").getAsLong() / (double) 1_000_000L));
+      manipDict.put("librairies_passees", true);
+      manipDict.put("developpement", false);
+      manipDict.put("type_run", "autonomie");
+      manipDict.put("date_validation_qc", qcDate.format(DATE_FMT));
+      manipDict.put("descriptif", "Run en autonomie");
+      manipDict.put("nb_cycles_total", runInfo.get("total_cycle_count").getAsInt());
+      manipDict.put("paired_end", runInfo.get("paired_end").getAsBoolean());
+    }
+    projectDict.put(
+        "date_last_manip",
+        minDate(
+            (String) projectDict.get("date_last_manip"),
+            (String) manipDict.get("date_validation_qc")));
+
+    manipDict.put("nouveau_sousProjet", false);
+
+    return manipDict;
+  }
+
   //
   // Database retrieval methods
   //
 
   private void retrieveProjectInfo(
-      ProjectInfo project, List<LibraryInfo> libraries, Map<String, Object> projectDict) {
+      ProjectInfo project,
+      List<LibraryInfo> libraries,
+      Map<String, Object> projectDict,
+      boolean autonomousProject) {
 
     requireNonNull(project);
     requireNonNull(projectDict);
@@ -220,7 +312,6 @@ public class FgProjectSubmissionBuilder {
     checkNotNull(project.employer(), projectName, "employeur chef équipe");
     checkNotNull(project.status(), projectName, "statut");
     checkNotNull(project.endYear(), projectName, "année de fin");
-    checkNotNull(project.resultSendDate(), projectName, "date envoi resultats");
     checkNotNull(project.city(), projectName, "commune");
     checkNotNull(project.zipCode(), projectName, "code postal");
     checkNotNull(project.labNationalNumber(), projectName, "numero national de structure");
@@ -236,18 +327,24 @@ public class FgProjectSubmissionBuilder {
       throw new IllegalStateException("Project " + projectName + " is not terminated");
     }
 
-    String maxLibraryReceipeDate = maxLibraryReceipeDate(libraries);
+    // Standard and ready-to-load projects must have a result send date
+    if (!autonomousProject) {
+      checkNotNull(project.resultSendDate(), projectName, "date envoi resultats");
+      String maxLibraryReceipeDate = maxLibraryReceipeDate(libraries);
 
-    // Set the start of the project to the latest library receipe date
-    if (maxLibraryReceipeDate == null) {
-      throw new IllegalStateException("Project " + projectName + " has no start date!");
+      // Set the start of the project to the latest library receipe date
+      if (maxLibraryReceipeDate == null) {
+        throw new IllegalStateException("Project " + projectName + " has no start date!");
+      }
+
+      projectDict.put("debut_projet", maxLibraryReceipeDate);
+      projectDict.put("fin_projet", project.resultSendDate());
     }
 
     // Build project dict
     projectDict.put("cle_surProjet_fg", "");
     projectDict.put("nom_projet", projectName);
-    projectDict.put("debut_projet", maxLibraryReceipeDate);
-    projectDict.put("fin_projet", project.resultSendDate());
+
     projectDict.put("date_first_manip", null);
     projectDict.put("date_last_manip", null);
     projectDict.put("projet_interne", "1 Plateforme".equals(project.labIndicator()));
