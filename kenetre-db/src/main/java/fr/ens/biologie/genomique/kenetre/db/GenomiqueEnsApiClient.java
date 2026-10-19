@@ -23,6 +23,13 @@ import java.util.Map;
  */
 public class GenomiqueEnsApiClient extends ApiClient {
 
+  public static final String PROJECTS_ROUTE = "projets";
+  public static final String AUTONOMOUS_PROJECTS_ROUTE = "projets-autonomes";
+  public static final String LIBRARIES_ROUTE = "banques";
+  public static final String RUNS_ROUTE = "runs";
+  public static final String ILLUMINA_RUNS_ROUTE = "illumina-runs";
+  public static final String NANOPORE_RUNS_ROUTE = "nanopore-runs";
+
   //
   // API methods
   //
@@ -33,7 +40,7 @@ public class GenomiqueEnsApiClient extends ApiClient {
    * @param route the API route (e.g., "projets", "banques", "runs")
    * @param key the key to identify the specific object (e.g., project acronym, library name, run
    *     name)
-   * @return
+   * @return a {@link JsonObject} representing the fetched data
    * @throws IOException
    */
   public JsonObject fetchJsonObject(String route, String key) throws IOException {
@@ -48,6 +55,43 @@ public class GenomiqueEnsApiClient extends ApiClient {
 
     // Get the first element of the array
     return array.get(0).getAsJsonObject();
+  }
+
+  /**
+   * Fetch autonomous project information for all projects from the REST API.
+   *
+   * @return a list of {@link ProjectInfo} objects populated from the API response
+   * @throws IOException
+   */
+  public List<ProjectInfo> fetchAutonomousProjectInfos() throws IOException {
+
+    return fetchAutonomousProjectInfos(null);
+  }
+
+  /**
+   * Fetch autonomous project information for all projects from the REST API.
+   *
+   * @return a list of {@link ProjectInfo} objects populated from the API response
+   * @throws IOException
+   */
+  public List<ProjectInfo> fetchAutonomousProjectInfos(Map<String, String> filters)
+      throws IOException {
+
+    return fetchProjectInfos(AUTONOMOUS_PROJECTS_ROUTE, filters);
+  }
+
+  /**
+   * Fetch autonomous project information from the REST API.
+   *
+   * @param projectName the project acronym
+   * @return a {@link ProjectInfo} object populated from the API response
+   * @throws IOException if an I/O or HTTP error occurs
+   * @throws IllegalStateException if the project is not found
+   */
+  public ProjectInfo fetchAutonomousProjectInfo(String projectName) throws IOException {
+
+    // Fetch the JSON object
+    return fetchProjectInfo(fetchJsonObject(AUTONOMOUS_PROJECTS_ROUTE, projectName));
   }
 
   /**
@@ -69,7 +113,13 @@ public class GenomiqueEnsApiClient extends ApiClient {
    */
   public List<ProjectInfo> fetchProjectInfos(Map<String, String> filters) throws IOException {
 
-    String json = get("projets", filters);
+    return fetchProjectInfos(PROJECTS_ROUTE, filters);
+  }
+
+  private List<ProjectInfo> fetchProjectInfos(String route, Map<String, String> filters)
+      throws IOException {
+
+    String json = get(route, filters);
 
     // Create JSON object
     JsonArray array = this.gson.fromJson(json, JsonArray.class);
@@ -93,7 +143,7 @@ public class GenomiqueEnsApiClient extends ApiClient {
   public ProjectInfo fetchProjectInfo(String projectName) throws IOException {
 
     // Fetch the JSON object
-    return fetchProjectInfo(fetchJsonObject("projets", projectName));
+    return fetchProjectInfo(fetchJsonObject(PROJECTS_ROUTE, projectName));
   }
 
   private ProjectInfo fetchProjectInfo(JsonObject obj) {
@@ -142,6 +192,7 @@ public class GenomiqueEnsApiClient extends ApiClient {
         jsonToString(labObj, "etablissement"),
         jsonToBoolean(obj, "prestation_fabrication_de_banque"),
         jsonToBoolean(obj, "prestation_sequencage"),
+        jsonToBoolean(obj, "run_en_autonomie"),
         jsonToString(obj, "prestation_analyse"));
   }
 
@@ -156,7 +207,7 @@ public class GenomiqueEnsApiClient extends ApiClient {
   public LibraryInfo fetchLibraryBatch(String libraryName) throws IOException {
 
     // Fetch the JSON object
-    JsonObject obj = fetchJsonObject("banques", libraryName);
+    JsonObject obj = fetchJsonObject(LIBRARIES_ROUTE, libraryName);
 
     return new LibraryInfo(
         jsonToString(obj, "banque_id"),
@@ -183,7 +234,7 @@ public class GenomiqueEnsApiClient extends ApiClient {
   public RunInfo fetchRunInfo(String runName, String projectName) throws IOException {
 
     // Fetch the JSON object
-    JsonObject obj = fetchJsonObject("runs", runName);
+    JsonObject obj = fetchJsonObject(RUNS_ROUTE, runName);
 
     // Check if acronyme is present for the run
     List<String> acronymes = jsonArrayToStringList(obj.getAsJsonArray("acronymes"));
@@ -208,7 +259,7 @@ public class GenomiqueEnsApiClient extends ApiClient {
   public double fetchIlluminaFlowcellPercentUsage(String runName, String projectName)
       throws IOException {
 
-    JsonObject obj = fetchJsonObject("illumina-runs", runName);
+    JsonObject obj = fetchJsonObject(ILLUMINA_RUNS_ROUTE, runName);
 
     long cluster_count_total = 0;
     long cluster_count_project = 0;
@@ -246,7 +297,7 @@ public class GenomiqueEnsApiClient extends ApiClient {
 
     List<IlluminaSample> result = new ArrayList<>();
 
-    JsonObject runObj = fetchJsonObject("illumina-runs", runId);
+    JsonObject runObj = fetchJsonObject(ILLUMINA_RUNS_ROUTE, runId);
     var pairedEnd = runObj.get("read_count").getAsInt() > 1;
 
     // Get the project name used in the sample sheet
@@ -285,7 +336,7 @@ public class GenomiqueEnsApiClient extends ApiClient {
 
   public RunMetrics fetchIlluminaRunMetrics(String runName) throws IOException {
 
-    JsonObject obj = fetchJsonObject("illumina-runs", runName);
+    JsonObject obj = fetchJsonObject(ILLUMINA_RUNS_ROUTE, runName);
 
     int cycleCount = obj.get("cycle_count").getAsInt();
     boolean pairedEnd = obj.get("read_count").getAsInt() == 2;
@@ -322,7 +373,7 @@ public class GenomiqueEnsApiClient extends ApiClient {
 
   public RunMetrics fetchNanoporeRunMetrics(String runName) throws IOException {
 
-    JsonObject obj = fetchJsonObject("nanopore-runs", runName);
+    JsonObject obj = fetchJsonObject(NANOPORE_RUNS_ROUTE, runName);
 
     int cycleCount = 0; // Not applicable for Nanopore runs
     boolean pairedEnd = false; // No paired-end mode for Nanopore runs
