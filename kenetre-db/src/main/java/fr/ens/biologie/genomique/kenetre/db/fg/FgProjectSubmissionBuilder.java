@@ -316,14 +316,6 @@ public class FgProjectSubmissionBuilder {
 
     var projectName = project.acronym();
 
-    // Check project data
-    if (project.rd() && "GenomiqueENS".equals(project.labName())) {
-      throw new IllegalStateException(
-          "This script does not handle GenomiqueENS R&D project like the "
-              + projectName
-              + " project!");
-    }
-
     checkNotNull(project.labName(), projectName, "etablissement");
     checkNotNull(project.firstName(), projectName, "prénom chef équipe");
     checkNotNull(project.lastName(), projectName, "nom chef équipe");
