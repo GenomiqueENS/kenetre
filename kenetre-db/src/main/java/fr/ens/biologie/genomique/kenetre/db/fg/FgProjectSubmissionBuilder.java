@@ -25,9 +25,30 @@ import java.util.Map;
  */
 public class FgProjectSubmissionBuilder {
 
+  /** Collaboration type for the project, used to determine the type of submission. */
+  private enum FgCollabType {
+    STANDARD("standard"),
+    READY_TO_LOAD("ready to load"),
+    EXTERNALISED("externalisé"),
+    AUTONOMOUS("autonomie");
+
+    private final String value;
+
+    public String toString() {
+      return this.value;
+    }
+
+    FgCollabType(String value) {
+      this.value = value;
+    }
+  }
+
   public static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
   private static final String AUTONOMOUS_PROJECT_PREFIX = "AUTONOMIE_";
   private static final int UNIDENTIFIED_TAXON_ID = 32644;
+  private static final String INTERNAL_LAB_INDICATOR = "1 Plateforme";
+  private static final String INTERNAL_INSTITUTE_NAME =
+      "Institut de Biologie de l'École Normale Supérieure";
 
   private final Map<String, String> applicationFgDict;
   private final Map<String, String> instrumentFgDict;
@@ -88,8 +109,6 @@ public class FgProjectSubmissionBuilder {
         libraries.add(gensApiclient.fetchLibraryBatch(libraryBatchId));
       }
     }
-
-    // Retrieve library information
 
     // Set results for project
     retrieveProjectInfo(project, libraries, projectDict, autonomousProject);
@@ -248,7 +267,7 @@ public class FgProjectSubmissionBuilder {
       projectDict.put("debut_projet", runDate.format(DATE_FMT));
       projectDict.put("fin_projet", sendDate.format(DATE_FMT));
       projectDict.put("date_first_manip", runDate.format(DATE_FMT));
-      projectDict.put("collab_presta", "autonomie");
+      projectDict.put("collab_presta", FgCollabType.AUTONOMOUS.toString());
 
       manipDict.put("cle_projet_fg", null);
       manipDict.put("cle_manip_pf", runId + "_manip");
@@ -347,13 +366,17 @@ public class FgProjectSubmissionBuilder {
 
     projectDict.put("date_first_manip", null);
     projectDict.put("date_last_manip", null);
-    projectDict.put("projet_interne", "1 Plateforme".equals(project.labIndicator()));
+    projectDict.put("projet_interne", INTERNAL_LAB_INDICATOR.equals(project.labIndicator()));
     projectDict.put("cle_projet_pf", projectName);
     projectDict.put("nom_porteur", project.lastName());
     projectDict.put("prenom_porteur", project.firstName());
     projectDict.put("email_porteur", project.email());
     projectDict.put("tutelle_porteur", project.employer());
-    projectDict.put("unite_porteur", project.labName());
+    projectDict.put(
+        "unite_porteur",
+        INTERNAL_LAB_INDICATOR.equals(project.labIndicator())
+            ? INTERNAL_INSTITUTE_NAME
+            : project.labName());
     projectDict.put("num_national_unite", project.labNationalNumber());
     projectDict.put("ville_porteur", project.city());
     projectDict.put("zcode_porteur", project.zipCode());
@@ -396,12 +419,9 @@ public class FgProjectSubmissionBuilder {
     manipDict.put("paired_end", false);
     manipDict.put("date_validation_qc", null);
     manipDict.put("descriptif", protocole);
-
-    if (readyToLoad) {
-      manipDict.put("type_run", "ready to load");
-    } else {
-      manipDict.put("type_run", "standard");
-    }
+    manipDict.put(
+        "type_run",
+        readyToLoad ? FgCollabType.READY_TO_LOAD.toString() : FgCollabType.STANDARD.toString());
 
     projectDict.put("collab_presta", manipDict.get("type_run"));
 
