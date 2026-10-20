@@ -137,7 +137,9 @@ public class FgProjectSubmissionBuilder {
 
       // Standard and ready-to-load projects
       for (LibraryInfo library : libraries) {
-        manips.add(createManipDict(gensApiclient, library, projectDict, projectName, taxonIds));
+        manips.add(
+            createManipDict(
+                gensApiclient, library, projectDict, projectName, taxonIds, project.rd()));
       }
 
     } else {
@@ -215,7 +217,8 @@ public class FgProjectSubmissionBuilder {
       LibraryInfo library,
       Map<String, Object> projectDict,
       String projectName,
-      List<Integer> taxonIds)
+      List<Integer> taxonIds,
+      boolean rd)
       throws IOException {
 
     Map<String, Object> manipDict = new LinkedHashMap<>();
@@ -234,6 +237,7 @@ public class FgProjectSubmissionBuilder {
       retrieveRunMetricsInfo(gensApiclient, supplier, runId, manipDict);
 
       manipDict.put("cle_espece_fg", taxonIds);
+      manipDict.put("developpement", rd);
     }
     projectDict.put("collab_presta", manipDict.get("type_run"));
     projectDict.put(
@@ -420,7 +424,6 @@ public class FgProjectSubmissionBuilder {
     manipDict.put("mread_lib", null);
     manipDict.put("nb_cycles_total", null);
     manipDict.put("librairies_passees", true);
-    manipDict.put("developpement", false);
     manipDict.put("paired_end", false);
     manipDict.put("date_validation_qc", null);
     manipDict.put("descriptif", protocole);
