@@ -30,4 +30,5 @@ public record ProjectInfo(
     String labName,
     boolean libraryBuilding,
     boolean librarySequencing,
+    boolean autonomousProject,
     String analysisType) {}

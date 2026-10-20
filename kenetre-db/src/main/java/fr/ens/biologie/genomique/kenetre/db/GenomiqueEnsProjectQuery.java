@@ -16,6 +16,45 @@ import java.util.Objects;
 public final class GenomiqueEnsProjectQuery {
 
   /**
+   * Get acronyms of current projects.
+   *
+   * @param genomiqueEnsApiClient API connection
+   * @return list of project acronyms
+   */
+  public static List<String> getCurrentProjects(GenomiqueEnsApiClient genomiqueEnsApiClient)
+      throws IOException {
+    return getProjects(genomiqueEnsApiClient, "En cours", null, null, null, null, null, null);
+  }
+
+  /**
+   * Get acronyms of terminated projects for a given year.
+   *
+   * @param genomiqueEnsApiClient API connection
+   * @return list of project acronyms
+   */
+  public static List<String> getTerminatedProjects(GenomiqueEnsApiClient genomiqueEnsApiClient)
+      throws IOException {
+    return getTerminatedProjects(genomiqueEnsApiClient, null);
+  }
+
+  /**
+   * Get acronyms of terminated projects for a given year.
+   *
+   * @param genomiqueEnsApiClient API connection
+   * @param year year of project termination
+   * @return list of project acronyms
+   */
+  public static List<String> getTerminatedProjects(
+      GenomiqueEnsApiClient genomiqueEnsApiClient, Integer year) throws IOException {
+    return getProjects(genomiqueEnsApiClient, "Terminé", year, null, null, true, null, null);
+  }
+
+  public static List<String> getTerminatedProjectsSinceYear(
+      GenomiqueEnsApiClient genomiqueEnsApiClient, int sinceYear) throws IOException {
+    return getProjects(genomiqueEnsApiClient, "Terminé", null, sinceYear, null, true, null, null);
+  }
+
+  /**
    * Get acronyms of non-internal terminated projects for a given year.
    *
    * @param genomiqueEnsApiClient API connection
@@ -24,7 +63,7 @@ public final class GenomiqueEnsProjectQuery {
    */
   public static List<String> getNonInternalTerminatedProjects(
       GenomiqueEnsApiClient genomiqueEnsApiClient, int year) throws IOException {
-    return getProjects(genomiqueEnsApiClient, "Terminé", year, null, false, null);
+    return getProjects(genomiqueEnsApiClient, "Terminé", year, null, false, true, null, null);
   }
 
   /**
@@ -35,7 +74,7 @@ public final class GenomiqueEnsProjectQuery {
    */
   public static List<String> getNonInternalOngoingProjects(
       GenomiqueEnsApiClient genomiqueEnsApiClient) throws IOException {
-    return getProjects(genomiqueEnsApiClient, "En cours", null, null, false, null);
+    return getProjects(genomiqueEnsApiClient, "En cours", null, null, false, true, null, null);
   }
 
   /**
@@ -58,7 +97,9 @@ public final class GenomiqueEnsProjectQuery {
       Integer year,
       Integer sinceYear,
       Boolean internal,
-      Boolean libraryBuildingOrSequencing)
+      Boolean libraryBuildingOrSequencing,
+      Boolean noAutonomousProjects,
+      Boolean rd)
       throws IOException {
 
     Objects.requireNonNull(genomiqueEnsApiClient);
@@ -75,7 +116,12 @@ public final class GenomiqueEnsProjectQuery {
     }
 
     List<String> result = new ArrayList<>();
-    for (ProjectInfo project : genomiqueEnsApiClient.fetchProjectInfos(filters)) {
+    List<ProjectInfo> projects = new ArrayList<>(genomiqueEnsApiClient.fetchProjectInfos(filters));
+    if (noAutonomousProjects == null || noAutonomousProjects == Boolean.FALSE) {
+      projects.addAll(genomiqueEnsApiClient.fetchAutonomousProjectInfos(filters));
+    }
+
+    for (ProjectInfo project : projects) {
 
       if (status != null && !status.equals(project.status())) {
         continue;
@@ -97,14 +143,24 @@ public final class GenomiqueEnsProjectQuery {
         continue;
       }
 
-      if (libraryBuildingOrSequencing == Boolean.TRUE
-          && !(project.libraryBuilding() || project.librarySequencing())) {
+      if (rd == Boolean.TRUE && !project.rd()) {
         continue;
       }
 
-      if (libraryBuildingOrSequencing == Boolean.FALSE
-          && (project.libraryBuilding() || project.librarySequencing())) {
+      if (rd == Boolean.FALSE && project.rd()) {
         continue;
+      }
+
+      if (!project.autonomousProject()) {
+        if (libraryBuildingOrSequencing == Boolean.TRUE
+            && !(project.libraryBuilding() || project.librarySequencing())) {
+          continue;
+        }
+
+        if (libraryBuildingOrSequencing == Boolean.FALSE
+            && (project.libraryBuilding() || project.librarySequencing())) {
+          continue;
+        }
       }
 
       result.add(project.acronym());

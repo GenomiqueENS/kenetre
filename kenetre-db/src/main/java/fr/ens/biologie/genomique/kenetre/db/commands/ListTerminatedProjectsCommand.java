@@ -34,9 +34,7 @@ public class ListTerminatedProjectsCommand extends AbstractCommand {
     if (!quiet) {
       System.out.println("Terminated projects:");
     }
-    for (String p :
-        GenomiqueEnsProjectQuery.getProjects(
-            this.gensApiClient, "Terminé", null, this.sinceYear, false, null)) {
+    for (String p : GenomiqueEnsProjectQuery.getTerminatedProjects(this.gensApiClient)) {
       if (quiet) {
         System.out.println(p);
       } else {
