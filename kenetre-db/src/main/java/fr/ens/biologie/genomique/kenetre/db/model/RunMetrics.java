@@ -11,6 +11,7 @@ public record RunMetrics(
     boolean pairedEnd,
     String model,
     String fgModel,
+    boolean external,
     long readCount,
     long baseCount,
     boolean success) {}
