@@ -225,7 +225,7 @@ public class FgProjectSubmissionBuilder {
     }
     projectDict.put(
         "date_last_manip",
-        minDate(
+        maxDate(
             (String) projectDict.get("date_last_manip"),
             (String) manipDict.get("date_validation_qc")));
 
