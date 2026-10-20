@@ -34,6 +34,15 @@ public class FgProjectSubmissionBuilder {
 
     private final String value;
 
+    private static final FgCollabType getType(String value) {
+      for (FgCollabType type : FgCollabType.values()) {
+        if (type.value.equals(value)) {
+          return type;
+        }
+      }
+      throw new IllegalArgumentException("Invalid collaboration type: " + value);
+    }
+
     public String toString() {
       return this.value;
     }
@@ -181,12 +190,15 @@ public class FgProjectSubmissionBuilder {
         checkEntry(manipDict, k);
       }
 
-      switch (String.valueOf(manipDict.get("type_run"))) {
-        case "standard" -> {
+      switch (FgCollabType.getType(String.valueOf(manipDict.get("type_run")))) {
+        case STANDARD -> {
           checkEntry(manipDict, "cle_application_fg");
         }
-        case "ready to load" -> {
+        case READY_TO_LOAD -> {
           manipDict.put("cle_application_fg", false);
+        }
+        case EXTERNALISED -> {
+          checkEntry(manipDict, "cle_application_fg");
         }
         default -> new IllegalStateException("Invalid type_run: " + manipDict.get("type_run"));
       }
