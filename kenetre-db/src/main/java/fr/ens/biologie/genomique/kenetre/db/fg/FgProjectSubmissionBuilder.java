@@ -162,7 +162,6 @@ public class FgProjectSubmissionBuilder {
             "email_porteur",
             "tutelle_porteur",
             "unite_porteur",
-            "num_national_unite",
             "ville_porteur",
             "zcode_porteur")) {
       checkEntry(projectDict, k);
@@ -338,7 +337,6 @@ public class FgProjectSubmissionBuilder {
     checkNotNull(project.endYear(), projectName, "année de fin");
     checkNotNull(project.city(), projectName, "commune");
     checkNotNull(project.zipCode(), projectName, "code postal");
-    checkNotNull(project.labNationalNumber(), projectName, "numero national de structure");
 
     // Check species
     List<String> especes = project.species();
