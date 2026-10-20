@@ -34,6 +34,15 @@ public class FgProjectSubmissionBuilder {
 
     private final String value;
 
+    private static final FgCollabType getType(String value) {
+      for (FgCollabType type : FgCollabType.values()) {
+        if (type.value.equals(value)) {
+          return type;
+        }
+      }
+      throw new IllegalArgumentException("Invalid collaboration type: " + value);
+    }
+
     public String toString() {
       return this.value;
     }
@@ -181,12 +190,15 @@ public class FgProjectSubmissionBuilder {
         checkEntry(manipDict, k);
       }
 
-      switch (String.valueOf(manipDict.get("type_run"))) {
-        case "standard" -> {
+      switch (FgCollabType.getType(String.valueOf(manipDict.get("type_run")))) {
+        case STANDARD -> {
           checkEntry(manipDict, "cle_application_fg");
         }
-        case "ready to load" -> {
+        case READY_TO_LOAD -> {
           manipDict.put("cle_application_fg", false);
+        }
+        case EXTERNALISED -> {
+          checkEntry(manipDict, "cle_application_fg");
         }
         default -> new IllegalStateException("Invalid type_run: " + manipDict.get("type_run"));
       }
@@ -223,6 +235,7 @@ public class FgProjectSubmissionBuilder {
 
       manipDict.put("cle_espece_fg", taxonIds);
     }
+    projectDict.put("collab_presta", manipDict.get("type_run"));
     projectDict.put(
         "date_last_manip",
         maxDate(
@@ -267,7 +280,7 @@ public class FgProjectSubmissionBuilder {
       projectDict.put("debut_projet", runDate.format(DATE_FMT));
       projectDict.put("fin_projet", sendDate.format(DATE_FMT));
       projectDict.put("date_first_manip", runDate.format(DATE_FMT));
-      projectDict.put("collab_presta", FgCollabType.AUTONOMOUS.toString());
+      projectDict.put("collab_presta", FgCollabType.AUTONOMOUS.value);
 
       manipDict.put("cle_projet_fg", null);
       manipDict.put("cle_manip_pf", runId + "_manip");
@@ -412,10 +425,7 @@ public class FgProjectSubmissionBuilder {
     manipDict.put("date_validation_qc", null);
     manipDict.put("descriptif", protocole);
     manipDict.put(
-        "type_run",
-        readyToLoad ? FgCollabType.READY_TO_LOAD.toString() : FgCollabType.STANDARD.toString());
-
-    projectDict.put("collab_presta", manipDict.get("type_run"));
+        "type_run", readyToLoad ? FgCollabType.READY_TO_LOAD.value : FgCollabType.STANDARD.value);
 
     if (library.receiptDate() != null) {
       projectDict.put(
@@ -485,6 +495,9 @@ public class FgProjectSubmissionBuilder {
     String modelFg = runMetrics.fgModel();
     if (modelFg != null && this.instrumentFgDict.containsKey(modelFg)) {
       manipDict.put("cle_type_instrument_fg", this.instrumentFgDict.get(modelFg));
+    }
+    if (runMetrics.external()) {
+      manipDict.put("type_run", FgCollabType.EXTERNALISED.value);
     }
 
     manipDict.put("mread_lib", runMetrics.readCount());

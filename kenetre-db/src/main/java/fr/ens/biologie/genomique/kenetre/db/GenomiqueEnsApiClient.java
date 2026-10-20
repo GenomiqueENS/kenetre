@@ -346,6 +346,7 @@ public class GenomiqueEnsApiClient extends ApiClient {
 
     String model = instrumentObj.get("model").getAsString();
     String fgModel = instrumentObj.get("model_fg").getAsString();
+    boolean external = instrumentObj.get("external").getAsBoolean();
 
     long readCount = 0L;
     long baseCount = 0L;
@@ -368,7 +369,8 @@ public class GenomiqueEnsApiClient extends ApiClient {
       }
     }
 
-    return new RunMetrics(cycleCount, pairedEnd, model, fgModel, readCount, baseCount, success);
+    return new RunMetrics(
+        cycleCount, pairedEnd, model, fgModel, external, readCount, baseCount, success);
   }
 
   public RunMetrics fetchNanoporeRunMetrics(String runName) throws IOException {
@@ -383,13 +385,15 @@ public class GenomiqueEnsApiClient extends ApiClient {
 
     String model = instrumentObj.get("model").getAsString();
     String fgModel = instrumentObj.get("model_fg").getAsString();
+    boolean external = instrumentObj.get("external").getAsBoolean();
 
     JsonObject metricsObj = obj.getAsJsonObject("metrics");
 
     long readCount = metricsObj.get("total_read_count").getAsLong();
     long baseCount = metricsObj.get("total_base_count").getAsLong();
 
-    return new RunMetrics(cycleCount, pairedEnd, model, fgModel, readCount, baseCount, success);
+    return new RunMetrics(
+        cycleCount, pairedEnd, model, fgModel, external, readCount, baseCount, success);
   }
 
   //
