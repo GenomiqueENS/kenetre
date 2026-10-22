@@ -136,6 +136,12 @@ public class TileMetricsReader extends AbstractBinaryFileReader<TileMetric> {
   // Constructor
   //
 
+  /**
+   * Constructor.
+   *
+   * @param dirPath the directory containing the interop files
+   * @throws KenetreException if the directory is invalid
+   */
   public TileMetricsReader(final File dirPath) throws KenetreException {
     super(dirPath);
   }

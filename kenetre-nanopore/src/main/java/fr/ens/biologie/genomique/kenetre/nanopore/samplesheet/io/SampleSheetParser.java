@@ -171,7 +171,7 @@ public class SampleSheetParser {
   /**
    * Parse header.
    *
-   * @param fields
+   * @param fields the list of column names from the header row of the sample sheet
    * @param lineNumber line number
    * @throws IOException if an error occurs while header
    */

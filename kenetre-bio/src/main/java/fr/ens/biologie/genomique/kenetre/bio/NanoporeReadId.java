@@ -41,6 +41,12 @@ public class NanoporeReadId {
     return this.readId;
   }
 
+  /**
+   * Get the sequence type based on the read id suffix.
+   *
+   * @return TEMPLATE if the read id ends with "_t", COMPLEMENT if it ends with "_c", CONSENSUS if
+   *     there is no underscore, or null otherwise
+   */
   public SequenceType getSequenceType() {
 
     if (this.readId == null) {

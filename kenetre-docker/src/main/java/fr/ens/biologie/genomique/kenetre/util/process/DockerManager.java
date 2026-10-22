@@ -46,6 +46,12 @@ public class DockerManager {
     SINGULARITY,
     FALLBACK;
 
+    /**
+     * Parse a client type from its name.
+     *
+     * @param name the name of the client type
+     * @return the corresponding ClientType, or DEFAULT if not recognized
+     */
     public static ClientType parseClientName(String name) {
 
       if (name == null) {

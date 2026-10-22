@@ -30,11 +30,22 @@ public class EnhancedBloomFilter implements Serializable {
   private final int expectedNumberOfElements;
   private final double falsePositiveProbability;
 
+  /**
+   * Add an element to the bloom filter.
+   *
+   * @param element the element to add
+   */
   public void put(final String element) {
     this.bf.put(element);
     this.addedNumberOfElements++;
   }
 
+  /**
+   * Test if an element might be in the bloom filter.
+   *
+   * @param element the element to test
+   * @return true if the element might be in the filter, false if it is definitely not
+   */
   public boolean mightContain(final String element) {
     return this.bf.mightContain(element);
   }

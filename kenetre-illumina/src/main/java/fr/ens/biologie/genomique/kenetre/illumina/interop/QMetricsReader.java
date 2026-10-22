@@ -305,6 +305,12 @@ public class QMetricsReader extends AbstractBinaryFileReader<QMetric> {
   // Constructor
   //
 
+  /**
+   * Constructor.
+   *
+   * @param dirPath the directory containing the interop files
+   * @throws KenetreException if the directory is invalid
+   */
   public QMetricsReader(final File dirPath) throws KenetreException {
     super(dirPath);
   }

@@ -144,6 +144,11 @@ public class QualityMetrics {
     }
   }
 
+  /**
+   * Get the list of quality metric entries.
+   *
+   * @return an unmodifiable list of entries
+   */
   public List<Entry> entries() {
 
     return Collections.unmodifiableList(this.entries);

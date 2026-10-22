@@ -92,6 +92,11 @@ public class MapperInstanceBuilder {
   // Constructor
   //
 
+  /**
+   * Constructor.
+   *
+   * @param mapper the mapper to build an instance for
+   */
   public MapperInstanceBuilder(Mapper mapper) {
 
     Objects.requireNonNull(mapper);

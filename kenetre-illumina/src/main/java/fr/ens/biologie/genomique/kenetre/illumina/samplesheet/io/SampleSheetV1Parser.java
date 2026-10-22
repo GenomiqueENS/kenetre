@@ -190,6 +190,7 @@ public class SampleSheetV1Parser implements SampleSheetParser {
   // Constructor
   //
 
+  /** Constructor. */
   public SampleSheetV1Parser() {
 
     this.samplesheet = new SampleSheet();

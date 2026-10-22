@@ -161,10 +161,10 @@ public class POPSReadFilter extends AbstractReadFilter {
    * " b","b","bb","b ". and only the index of the first result " b" is added to the list even if
    * "bb" have q lower error rate.
    *
-   * @param doc
-   * @param pattern
-   * @param k
-   * @return
+   * @param doc the text to search within
+   * @param pattern the substring to find using approximate matching
+   * @param k the maximum number of allowed mismatches (edit distance)
+   * @return the list of starting indexes where the pattern was found with at most k errors
    */
   private static List<Integer> find(String doc, String pattern, int k) {
 

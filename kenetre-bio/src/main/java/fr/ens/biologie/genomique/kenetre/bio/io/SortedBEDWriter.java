@@ -68,7 +68,8 @@ public class SortedBEDWriter implements Closeable {
   /**
    * Set the temporary directory
    *
-   * @param temporaryDirectory
+   * @param temporaryDirectory the directory used to store temporary sorted BED files during the
+   *     merge-sort process
    * @throws IOException if the temporary directory does not exists
    */
   public void setTemporaryDirectory(File temporaryDirectory) throws IOException {

@@ -27,6 +27,12 @@ public class PolyATailReadFilter extends AbstractReadFilter {
 
     private String name;
 
+    /**
+     * Parse a TailType from its string representation.
+     *
+     * @param s the string to parse
+     * @return the corresponding TailType, or null if not found
+     */
     public static TailType parse(String s) {
 
       if (s == null) {
@@ -43,6 +49,11 @@ public class PolyATailReadFilter extends AbstractReadFilter {
       return null;
     }
 
+    /**
+     * Get the string representation of this TailType.
+     *
+     * @return the name of this TailType
+     */
     public String toString() {
 
       return this.name;

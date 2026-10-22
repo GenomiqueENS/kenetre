@@ -261,12 +261,24 @@ public class ExtractionMetric extends Metric {
     }
   }
 
+  /**
+   * Convert a byte array to its hexadecimal string representation.
+   *
+   * @param a the byte array to convert
+   * @return the hexadecimal string representation
+   */
   public static String byteArrayToHex(byte[] a) {
     StringBuilder sb = new StringBuilder(a.length * 2);
     for (byte b : a) sb.append(String.format("%02x", b));
     return sb.toString();
   }
 
+  /**
+   * Convert a byte array to its binary string representation.
+   *
+   * @param a the byte array to convert
+   * @return the binary string representation with pipe separators
+   */
   public static String byteArrayToBin(byte[] a) {
     StringBuilder sb = new StringBuilder(a.length * 8);
     for (byte b : a) {

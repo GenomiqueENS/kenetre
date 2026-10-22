@@ -43,6 +43,11 @@ public class FgProjectSubmissionBuilder {
       throw new IllegalArgumentException("Invalid collaboration type: " + value);
     }
 
+    /**
+     * Get the string representation of this collaboration type.
+     *
+     * @return the value of this collaboration type
+     */
     public String toString() {
       return this.value;
     }

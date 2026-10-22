@@ -874,6 +874,11 @@ public class SampleSheet {
     return expansionKit.trim().toUpperCase();
   }
 
+  /**
+   * Convert this sample sheet to a CSV string representation.
+   *
+   * @return a CSV string with the sample sheet data
+   */
   public String toCSV() {
 
     StringBuilder sb = new StringBuilder();

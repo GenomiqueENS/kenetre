@@ -471,6 +471,12 @@ public class Sample {
   // Other methods
   //
 
+  /**
+   * Test if a field name is one of the internal sample fields.
+   *
+   * @param fieldName the field name to test
+   * @return true if the field is an internal field
+   */
   public static boolean isInternalField(final String fieldName) {
 
     if (fieldName == null) {
@@ -502,6 +508,11 @@ public class Sample {
   // Constructor
   //
 
+  /**
+   * Constructor.
+   *
+   * @param tableSection the table section containing the sample data
+   */
   public Sample(final TableSection tableSection) {
 
     if (tableSection == null) {

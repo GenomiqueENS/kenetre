@@ -103,6 +103,12 @@ public class ExtractionMetricsReader extends AbstractBinaryFileReader<Extraction
   // Constructor
   //
 
+  /**
+   * Constructor.
+   *
+   * @param dirPath the directory containing the interop files
+   * @throws KenetreException if the directory is invalid
+   */
   public ExtractionMetricsReader(final File dirPath) throws KenetreException {
     super(dirPath);
   }

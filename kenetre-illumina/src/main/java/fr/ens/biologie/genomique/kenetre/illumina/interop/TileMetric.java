@@ -406,6 +406,12 @@ public class TileMetric extends Metric {
     return values(0);
   }
 
+  /**
+   * Get the metric values for a specific read.
+   *
+   * @param read the read index (0-based)
+   * @return the list of metric values
+   */
   public List<Number> values(int read) {
 
     return Arrays.asList(
