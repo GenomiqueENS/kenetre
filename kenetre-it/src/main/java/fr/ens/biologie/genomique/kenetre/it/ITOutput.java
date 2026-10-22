@@ -621,6 +621,11 @@ public class ITOutput {
     return Collections.unmodifiableList(this.filesToCheckLength);
   }
 
+  /**
+   * Gets the files to check content.
+   *
+   * @return the files to check content
+   */
   public List<File> getFilesToCheckContent() {
     return Collections.unmodifiableList(this.filesToCheckContent);
   }
@@ -841,6 +846,11 @@ public class ITOutput {
     //
     // Getter
     //
+    /**
+     * Get the detail of the comparison result.
+     *
+     * @return the detail comparison string
+     */
     public String getDetailComparison() {
       return this.detailComparison;
     }

@@ -1,3 +1,27 @@
+/*
+ *                  Eoulsan development code
+ *
+ * This code may be freely distributed and modified under the
+ * terms of the GNU Lesser General Public License version 2.1 or
+ * later and CeCILL-C. This should be distributed with the code.
+ * If you do not have a copy, see:
+ *
+ *      http://www.gnu.org/licenses/lgpl-2.1.txt
+ *      http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.txt
+ *
+ * Copyright for this code is held jointly by the Genomic platform
+ * of the Institut de Biologie de l'École normale supérieure and
+ * the individual authors. These should be listed in @author doc
+ * comments.
+ *
+ * For more information on the Eoulsan project and its aims,
+ * or to join the Eoulsan Google group, visit the home page
+ * at:
+ *
+ *      http://outils.genomique.biologie.ens.fr/eoulsan
+ *
+ */
+
 package fr.ens.biologie.genomique.kenetre.db;
 
 import static java.util.Objects.requireNonNull;
@@ -256,6 +280,14 @@ public class GenomiqueEnsApiClient extends ApiClient {
         jsonToString(obj, "instrument_fg"));
   }
 
+  /**
+   * Fetch the percentage of flow cell usage for a given Illumina run and project.
+   *
+   * @param runName the name of the run
+   * @param projectName the name of the project
+   * @return the percentage of flow cell used by the project
+   * @throws IOException if the API request fails
+   */
   public double fetchIlluminaFlowcellPercentUsage(String runName, String projectName)
       throws IOException {
 
@@ -292,6 +324,14 @@ public class GenomiqueEnsApiClient extends ApiClient {
 
   public record IlluminaSample(String name, String description, int lane, boolean pairedEnd) {}
 
+  /**
+   * Fetch the list of Illumina samples for a given run and project.
+   *
+   * @param runId the ID of the run
+   * @param projectName the name of the project
+   * @return the list of samples
+   * @throws IOException if the API request fails
+   */
   public List<IlluminaSample> fetchIlluminaSamples(String runId, String projectName)
       throws IOException {
 
@@ -334,6 +374,13 @@ public class GenomiqueEnsApiClient extends ApiClient {
     return result;
   }
 
+  /**
+   * Fetch the metrics of an Illumina run.
+   *
+   * @param runName the name of the run
+   * @return the run metrics
+   * @throws IOException if the API request fails
+   */
   public RunMetrics fetchIlluminaRunMetrics(String runName) throws IOException {
 
     JsonObject obj = fetchJsonObject(ILLUMINA_RUNS_ROUTE, runName);
@@ -373,6 +420,13 @@ public class GenomiqueEnsApiClient extends ApiClient {
         cycleCount, pairedEnd, model, fgModel, external, readCount, baseCount, success);
   }
 
+  /**
+   * Fetch the metrics of a Nanopore run.
+   *
+   * @param runName the name of the run
+   * @return the run metrics
+   * @throws IOException if the API request fails
+   */
   public RunMetrics fetchNanoporeRunMetrics(String runName) throws IOException {
 
     JsonObject obj = fetchJsonObject(NANOPORE_RUNS_ROUTE, runName);

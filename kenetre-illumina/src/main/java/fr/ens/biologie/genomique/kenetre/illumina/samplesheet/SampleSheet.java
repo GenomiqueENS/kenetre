@@ -1,3 +1,27 @@
+/*
+ *                  Eoulsan development code
+ *
+ * This code may be freely distributed and modified under the
+ * terms of the GNU Lesser General Public License version 2.1 or
+ * later and CeCILL-C. This should be distributed with the code.
+ * If you do not have a copy, see:
+ *
+ *      http://www.gnu.org/licenses/lgpl-2.1.txt
+ *      http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.txt
+ *
+ * Copyright for this code is held jointly by the Genomic platform
+ * of the Institut de Biologie de l'École normale supérieure and
+ * the individual authors. These should be listed in @author doc
+ * comments.
+ *
+ * For more information on the Eoulsan project and its aims,
+ * or to join the Eoulsan Google group, visit the home page
+ * at:
+ *
+ *      http://outils.genomique.biologie.ens.fr/eoulsan
+ *
+ */
+
 package fr.ens.biologie.genomique.kenetre.illumina.samplesheet;
 
 import static java.util.Objects.requireNonNull;
@@ -411,6 +435,11 @@ public class SampleSheet implements Iterable<Sample> {
     propertySection.set(key, value);
   }
 
+  /**
+   * Add a metadata section. Deprecated, use addPropertySection instead.
+   *
+   * @param section the section name
+   */
   @Deprecated
   public void addMetadataSection(final String section) {
 
@@ -456,12 +485,24 @@ public class SampleSheet implements Iterable<Sample> {
   // Sample Handling
   //
 
+  /**
+   * Add a new sample to the default table section.
+   *
+   * @return the new sample
+   * @deprecated use getDefaultTableSection().addSample() instead
+   */
   @Deprecated
   public Sample addSample() {
 
     return getDefaultTableSection().addSample();
   }
 
+  /**
+   * Get an iterator over the samples in the default table section.
+   *
+   * @return an iterator over the samples
+   * @deprecated use getDefaultTableSection().iterator() instead
+   */
   @Override
   @Deprecated
   public Iterator<Sample> iterator() {
@@ -479,66 +520,134 @@ public class SampleSheet implements Iterable<Sample> {
     return getDefaultTableSection().getSamplesFieldNames();
   }
 
+  /**
+   * Test if the given field name is a sample field name.
+   *
+   * @param fieldName the field name to test
+   * @return true if the field is a sample field
+   * @deprecated use getDefaultTableSection().isSampleFieldName() instead
+   */
   @Deprecated
   public boolean isSampleFieldName(final String fieldName) {
 
     return getDefaultTableSection().isSampleFieldName(fieldName);
   }
 
+  /**
+   * Test if the lane field exists in the sample section.
+   *
+   * @return true if the lane field exists
+   * @deprecated use getDefaultTableSection().isLaneSampleField() instead
+   */
   @Deprecated
   public boolean isLaneSampleField() {
 
     return getDefaultTableSection().isLaneSampleField();
   }
 
+  /**
+   * Test if the sample ID field exists in the sample section.
+   *
+   * @return true if the sample ID field exists
+   * @deprecated use getDefaultTableSection().isSampleIdSampleField() instead
+   */
   @Deprecated
   public boolean isSampleIdSampleField() {
 
     return getDefaultTableSection().isSampleIdSampleField();
   }
 
+  /**
+   * Test if the sample name field exists in the sample section.
+   *
+   * @return true if the sample name field exists
+   * @deprecated use getDefaultTableSection().isSampleNameSampleField() instead
+   */
   @Deprecated
   public boolean isSampleNameSampleField() {
 
     return getDefaultTableSection().isSampleNameSampleField();
   }
 
+  /**
+   * Test if the description field exists in the sample section.
+   *
+   * @return true if the description field exists
+   * @deprecated use getDefaultTableSection().isDescriptionSampleField() instead
+   */
   @Deprecated
   public boolean isDescriptionSampleField() {
 
     return getDefaultTableSection().isDescriptionSampleField();
   }
 
+  /**
+   * Test if the project field exists in the sample section.
+   *
+   * @return true if the project field exists
+   * @deprecated use getDefaultTableSection().isProjectSampleField() instead
+   */
   @Deprecated
   public boolean isProjectSampleField() {
 
     return getDefaultTableSection().isProjectSampleField();
   }
 
+  /**
+   * Test if the index1 field exists in the sample section.
+   *
+   * @return true if the index1 field exists
+   * @deprecated use getDefaultTableSection().isIndex1SampleField() instead
+   */
   @Deprecated
   public boolean isIndex1SampleField() {
 
     return getDefaultTableSection().isIndex1SampleField();
   }
 
+  /**
+   * Test if the index2 field exists in the sample section.
+   *
+   * @return true if the index2 field exists
+   * @deprecated use getDefaultTableSection().isIndex2SampleField() instead
+   */
   @Deprecated
   public boolean isIndex2SampleField() {
 
     return getDefaultTableSection().isIndex2SampleField();
   }
 
+  /**
+   * Get the samples in the given lane.
+   *
+   * @param lane the lane number
+   * @return the list of samples in the lane
+   * @deprecated use getDefaultTableSection().getSampleInLane() instead
+   */
   @Deprecated
   public List<Sample> getSampleInLane(final int lane) {
 
     return getDefaultTableSection().getSampleInLane(lane);
   }
 
+  /**
+   * Get all samples in the default table section.
+   *
+   * @return the list of samples
+   * @deprecated use getDefaultTableSection().getSamples() instead
+   */
   @Deprecated
   public List<Sample> getSamples() {
 
     return getDefaultTableSection().getSamples();
   }
 
+  /**
+   * Get the number of samples in the default table section.
+   *
+   * @return the number of samples
+   * @deprecated use getDefaultTableSection().size() instead
+   */
   @Deprecated
   public int size() {
 

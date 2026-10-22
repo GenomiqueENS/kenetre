@@ -831,6 +831,7 @@ public class GenomicArray<T> implements Serializable {
   // Other
   //
 
+  /** Clear all chromosomes and their entries from this genomic array. */
   public void clear() {
 
     this.chromosomes.clear();

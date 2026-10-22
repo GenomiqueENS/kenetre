@@ -303,6 +303,12 @@ public class UniqueIdentifierTranslator extends AbstractTranslator {
     updateFields();
   }
 
+  /**
+   * Public constructor.
+   *
+   * @param ids Identifier to set unique
+   * @param translator Translator to use
+   */
   public UniqueIdentifierTranslator(String[] ids, final Translator translator) {
 
     this(Arrays.asList(ids), translator);
