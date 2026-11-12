@@ -16,6 +16,9 @@ public class MadbotApiClient extends ApiClient {
   /** Holds the UUID and mandatory flag for a metadata field. */
   public record MetadataFieldInfo(UUID uuid, boolean mandatory) {}
 
+  public record MadbotDataLink(
+      UUID sampleUuid, String name, String fastqPath, UUID dataUuid, UUID dataLinkUuid) {}
+
   private final String sftpServer;
   private final String sftpLogin;
   private final String sftpPassword;
@@ -542,6 +545,53 @@ public class MadbotApiClient extends ApiClient {
 
     return UUID.fromString(
         this.gson.fromJson(responseBody, JsonObject.class).get("id").getAsString());
+  }
+
+  /**
+   * Create multiple data links between samples and data objects.
+   *
+   * @param workspaceUuid the workspace UUID
+   * @param project the project UUID
+   * @param connection the connection UUID
+   * @param dataList the list of data links to create
+   * @return the list of created data links
+   * @throws IOException if an I/O error occurs
+   */
+  public List<MadbotDataLink> createDataLinks(
+      UUID workspaceUuid, UUID project, UUID connection, List<MadbotDataLink> dataList)
+      throws IOException {
+
+    requireNonNull(workspaceUuid, "workspaceUuid must not be null");
+    requireNonNull(project, "project must not be null");
+    requireNonNull(dataList, "dataList must not be null");
+
+    List<Map<String, String>> data = new ArrayList<>();
+    for (var dl : dataList) {
+      data.add(Map.of("external_id", dl.fastqPath, "name", dl.sampleUuid.toString()));
+    }
+
+    var responseBody =
+        this.post(
+            "nodes/" + project.toString() + "/datalinks/batch",
+            Map.of("connection", connection.toString(), "data", data),
+            Map.of(WORKSPACE_HEADER_NAME, workspaceUuid.toString()));
+
+    List<MadbotDataLink> results = new ArrayList<>();
+
+    // Parse the response to extract the created data links
+    var resultsObj = this.gson.fromJson(responseBody, JsonObject.class).get("results");
+    for (JsonElement elem : resultsObj.getAsJsonArray()) {
+      var dataLinkObj = elem.getAsJsonObject().get("datalink").getAsJsonObject();
+      var dataObj = dataLinkObj.get("data").getAsJsonObject();
+
+      UUID dataLinkId = UUID.fromString(dataLinkObj.get("id").getAsString());
+      UUID dataId = UUID.fromString(dataObj.get("id").getAsString());
+      String externalId = dataObj.get("external_id").getAsString();
+
+      results.add(new MadbotDataLink(null, null, externalId, dataId, dataLinkId));
+    }
+
+    return results;
   }
 
   /**
