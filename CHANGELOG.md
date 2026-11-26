@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.47.0](https://github.com/GenomiqueENS/kenetre/compare/v0.46.0...v0.47.0) (2026-11-26)
+
+
+### Features
+
+* Add datalinks and associations support for Madbot. ([#47](https://github.com/GenomiqueENS/kenetre/issues/47)) ([940ea5b](https://github.com/GenomiqueENS/kenetre/commit/940ea5b33cfd3db9884ef76fb3fc4d8e91ec52db))
+
+
+### Bug Fixes
+
+* Fix missing javadoc and file headers ([#66](https://github.com/GenomiqueENS/kenetre/issues/66)) ([d8bfd9d](https://github.com/GenomiqueENS/kenetre/commit/d8bfd9d6c5fe57a0c8c14ba8af1224765e68e466))
+
+
+### Miscellaneous Chores
+
+* release 0.47.0 ([#67](https://github.com/GenomiqueENS/kenetre/issues/67)) ([c5ee0d3](https://github.com/GenomiqueENS/kenetre/commit/c5ee0d30fe5831308fe4174204491060bf83374d))
+
 ## [0.46.0](https://github.com/GenomiqueENS/kenetre/compare/v0.45.0...v0.46.0) (2026-10-21)
 
 
