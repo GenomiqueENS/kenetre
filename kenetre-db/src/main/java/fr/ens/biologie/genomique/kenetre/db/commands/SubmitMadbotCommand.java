@@ -108,6 +108,9 @@ public class SubmitMadbotCommand extends AbstractCommand {
     var submissionAcronym = this.submission.acronym();
     var submissionLabName = this.submission.labName();
 
+    var taxonIds = new HashSet<Integer>();
+    var taxonScientificNames = new HashSet<String>();
+
     try {
 
       //  Get the ENA plugin slug
@@ -138,6 +141,10 @@ public class SubmitMadbotCommand extends AbstractCommand {
           submissionLabName =
               submissionLabName != null ? submissionLabName : firstProject.labName();
         }
+
+        // Add Taxon IDs and scientific names to the sets
+        taxonIds.addAll(project.taxons());
+        taxonScientificNames.addAll(project.species());
 
         // Retrieve library information
         List<LibraryInfo> libraries = new ArrayList<>();
@@ -180,7 +187,9 @@ public class SubmitMadbotCommand extends AbstractCommand {
           workspaceUuid,
           submissionAcronym,
           submissionLabName,
-          samples);
+          samples,
+          taxonIds.size() == 1 ? taxonIds.iterator().next() : -1,
+          taxonScientificNames.size() == 1 ? taxonScientificNames.iterator().next() : null);
 
     } catch (IOException e) {
       throw new KenetreException(e);
@@ -239,7 +248,9 @@ public class SubmitMadbotCommand extends AbstractCommand {
       UUID workspaceUuid,
       String acronym,
       String labName,
-      List<Sample> samples)
+      List<Sample> samples,
+      int taxonId,
+      String taxonScientificName)
       throws IOException {
 
     requireNonNull(acronym);
@@ -309,7 +320,9 @@ public class SubmitMadbotCommand extends AbstractCommand {
               projectUuid,
               s.sampleName(),
               s.sampleDescription(),
-              s.library());
+              s.library(),
+              taxonId,
+              taxonScientificName);
       dataLinksToCreate.put(sampleUuid, s.fastqPaths());
       samplefilesList.add(new Samplefiles(s.sampleName(), sampleUuid, s.fastqPaths()));
     }
@@ -327,7 +340,9 @@ public class SubmitMadbotCommand extends AbstractCommand {
       UUID projectUuid,
       String sampleName,
       String sampleDescription,
-      LibraryInfo library)
+      LibraryInfo library,
+      int taxonId,
+      String taxonScientificName)
       throws IOException {
 
     requireNonNull(sampleName, "Sample name cannot be null");
@@ -340,11 +355,43 @@ public class SubmitMadbotCommand extends AbstractCommand {
 
     // sample__erc000011 metadata
     var enaDefaultSampleMetadataIds =
-        madbot.getMetadataGroup(workspaceUuid, enaPluginslug, "sample__erc000011");
+        madbot.getMetadataCategory(workspaceUuid, enaPluginslug, "sample__erc000011");
+
+    var metadataUuidDefined = new HashSet<UUID>();
+
+    // Define metadata values for the sample
+    var sampleMetadataValues = new HashMap<String, Object>();
+    if (taxonId >= 0) {
+      sampleMetadataValues.put(
+          "ena__sample__taxon",
+          Map.of("taxonID", String.valueOf(taxonId), "scientificName", taxonScientificName));
+    }
+    sampleMetadataValues.putAll(
+        Map.of(
+            "ena__sample__alias",
+            sampleName,
+            "ena__sample__title",
+            sampleDescription,
+            "ena__sample__geographic_location_country_and_or_sea",
+            "missing",
+            "ena__sample__collection_date",
+            Map.of("status", "Value unavailable", "value", "missing")));
+
+    // Set the metadata values for the sample
+    for (var e : sampleMetadataValues.entrySet()) {
+
+      if (!enaDefaultSampleMetadataIds.containsKey(e.getKey())) {
+        throw new IOException("Missing metadata key: " + e.getKey());
+      }
+      System.out.println("\t- " + e.getKey() + ": " + e.getValue());
+      var metadataUuid = enaDefaultSampleMetadataIds.get(e.getKey()).uuid();
+      madbot.setSampleMetadata(workspaceUuid, projectUuid, sampleUuid, metadataUuid, e.getValue());
+      metadataUuidDefined.add(metadataUuid);
+    }
 
     // Set the required metadata for sample to empty
     for (var e : enaDefaultSampleMetadataIds.entrySet()) {
-      if (e.getValue().mandatory()) {
+      if (e.getValue().mandatory() && !metadataUuidDefined.contains(e.getValue().uuid())) {
         System.out.println("\t- " + e.getKey() + ": " + e.getValue());
         madbot.addEmptySampleMetadata(workspaceUuid, projectUuid, sampleUuid, e.getValue().uuid());
       }
@@ -358,6 +405,7 @@ public class SubmitMadbotCommand extends AbstractCommand {
     var libraryLayoutValue = Map.of("library_layout", "single", "library_selection", "cDNA");
     var instrumentValue = Map.of("platform", "ILLUMINA", "model", "NextSeq 2000");
 
+    metadataUuidDefined.clear();
     for (var e :
         Map.of(
                 "ena__raw_read__alias",
@@ -378,19 +426,16 @@ public class SubmitMadbotCommand extends AbstractCommand {
         throw new IOException("Missing metadata key: " + e.getKey());
       }
       System.out.println("\t- " + e.getKey() + ": " + e.getValue());
-      madbot.setSampleMetadata(
-          workspaceUuid,
-          projectUuid,
-          sampleUuid,
-          raw_read_metadata_ids.get(e.getKey()).uuid(),
-          e.getValue());
+      var metadataUuid = raw_read_metadata_ids.get(e.getKey()).uuid();
+      madbot.setSampleMetadata(workspaceUuid, projectUuid, sampleUuid, metadataUuid, e.getValue());
+      metadataUuidDefined.add(metadataUuid);
     }
 
     // Add unknown required metadata with empty values
     for (Map.Entry<String, MadbotApiClient.MetadataFieldInfo> e :
         raw_read_metadata_ids.entrySet()) {
 
-      if (e.getValue().mandatory()) {
+      if (e.getValue().mandatory() && !metadataUuidDefined.contains(e.getValue().uuid())) {
         System.out.println("\t- " + e.getKey() + ": " + e.getValue());
         madbot.addEmptySampleMetadata(workspaceUuid, projectUuid, sampleUuid, e.getValue().uuid());
       }
