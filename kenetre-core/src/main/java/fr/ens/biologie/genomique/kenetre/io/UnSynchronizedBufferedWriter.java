@@ -41,6 +41,11 @@ public class UnSynchronizedBufferedWriter extends Writer {
   private final Writer out;
   private boolean closed = false;
 
+  /**
+   * Constructor.
+   *
+   * @param out the underlying writer to wrap
+   */
   public UnSynchronizedBufferedWriter(final Writer out) {
     this.out = out;
   }

@@ -58,6 +58,11 @@ public class ITCommandResult {
 
   private boolean isReportCreated = false;
 
+  /**
+   * Test if the command result message is empty.
+   *
+   * @return true if the message is empty
+   */
   public boolean isEmpty() {
     return this.message.toString().isEmpty();
   }

@@ -226,6 +226,11 @@ public class MultiColumnTranslator extends AbstractTranslator {
     }
   }
 
+  /**
+   * Public constructor.
+   *
+   * @param fieldNames field names of the annotation
+   */
   public MultiColumnTranslator(String... fieldNames) {
 
     this(Arrays.asList(fieldNames));

@@ -65,11 +65,31 @@ public class HTSeqUtils {
 
     private static final long serialVersionUID = -7074516037283735042L;
 
+    /**
+     * Constructor.
+     *
+     * @param chromosome the name of the unknown chromosome
+     */
     public UnknownChromosomeException(String chromosome) {
       super("Unknown chromosome: " + chromosome);
     }
   }
 
+  /**
+   * Store annotation features from a GTF/GFF file into a genomic array.
+   *
+   * @param features the genomic array to store features in
+   * @param annotationIs input stream of the annotation file
+   * @param gtfFormat true if the annotation is in GTF format, false for GFF
+   * @param featureType the feature type to extract (e.g., "exon", "gene")
+   * @param stranded the strandedness mode for the count
+   * @param attributeId the attribute name to use as feature ID
+   * @param splitAttributeValues true to split comma-separated attribute values
+   * @param counts map to store the count for each feature
+   * @throws IOException if an error occurs while reading the annotation
+   * @throws KenetreException if the annotation is invalid for the stranded mode
+   * @throws BadBioEntryException if a bio entry is malformed
+   */
   public static void storeAnnotation(
       final GenomicArray<String> features,
       final InputStream annotationIs,

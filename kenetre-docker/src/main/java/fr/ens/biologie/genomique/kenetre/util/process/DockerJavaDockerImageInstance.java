@@ -1,3 +1,27 @@
+/*
+ *                  Eoulsan development code
+ *
+ * This code may be freely distributed and modified under the
+ * terms of the GNU Lesser General Public License version 2.1 or
+ * later and CeCILL-C. This should be distributed with the code.
+ * If you do not have a copy, see:
+ *
+ *      http://www.gnu.org/licenses/lgpl-2.1.txt
+ *      http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.txt
+ *
+ * Copyright for this code is held jointly by the Genomic platform
+ * of the Institut de Biologie de l'École normale supérieure and
+ * the individual authors. These should be listed in @author doc
+ * comments.
+ *
+ * For more information on the Eoulsan project and its aims,
+ * or to join the Eoulsan Google group, visit the home page
+ * at:
+ *
+ *      http://outils.genomique.biologie.ens.fr/eoulsan
+ *
+ */
+
 package fr.ens.biologie.genomique.kenetre.util.process;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -12,6 +36,7 @@ import com.github.dockerjava.api.command.PullImageResultCallback;
 import com.github.dockerjava.api.command.WaitContainerResultCallback;
 import com.github.dockerjava.api.model.Bind;
 import com.github.dockerjava.api.model.Frame;
+import com.github.dockerjava.api.model.Ulimit;
 import fr.ens.biologie.genomique.kenetre.log.GenericLogger;
 import fr.ens.biologie.genomique.kenetre.util.SystemUtils;
 import fr.ens.biologie.genomique.kenetre.util.Utils;
@@ -161,6 +186,7 @@ public class DockerJavaDockerImageInstance extends AbstractSimpleProcess
       List<String> commandLine,
       File executionDirectory,
       Map<String, String> environmentVariables,
+      Map<String, String> uLimits,
       File temporaryDirectory,
       File stdoutFile,
       File stderrFile,
@@ -180,6 +206,8 @@ public class DockerJavaDockerImageInstance extends AbstractSimpleProcess
             + executionDirectory
             + ", environmentVariables="
             + environmentVariables
+            + ", uLimits="
+            + uLimits
             + ", temporaryDirectory="
             + temporaryDirectory
             + ", stdoutFile="
@@ -203,6 +231,12 @@ public class DockerJavaDockerImageInstance extends AbstractSimpleProcess
     if (environmentVariables != null) {
       for (Map.Entry<String, String> e : environmentVariables.entrySet()) {
         env.add(e.getKey() + '=' + e.getValue());
+      }
+    }
+    final List<Ulimit> ulimitList = new ArrayList<>();
+    if (uLimits != null) {
+      for (var e : uLimits.entrySet()) {
+        ulimitList.add(new Ulimit(e.getKey(), Long.parseLong(e.getValue()), -1L));
       }
     }
 
@@ -245,6 +279,11 @@ public class DockerJavaDockerImageInstance extends AbstractSimpleProcess
 
     // Set environment variables
     cmd.withEnv(env);
+
+    // Set uLimits
+    if (uLimits != null) {
+      cmd.getHostConfig().withUlimits(ulimitList);
+    }
 
     // Create container
     CreateContainerResponse container = cmd.exec();

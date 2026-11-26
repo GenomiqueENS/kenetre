@@ -499,6 +499,11 @@ public class ITSuite {
     return this.generateNewExpectedDirectoryTests;
   }
 
+  /**
+   * Get the action type of the test suite.
+   *
+   * @return the action type
+   */
   public String getActionType() {
     return this.actionType;
   }

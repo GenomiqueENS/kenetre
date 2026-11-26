@@ -181,6 +181,7 @@ public class DockerMapperExecutor implements MapperExecutor {
               executionDirectory,
               null,
               null,
+              null,
               nullFile,
               finalErrFile,
               false,

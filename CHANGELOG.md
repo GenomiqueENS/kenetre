@@ -1,5 +1,51 @@
 # Changelog
 
+## [0.46.0](https://github.com/GenomiqueENS/kenetre/compare/v0.45.0...v0.46.0) (2026-10-21)
+
+
+### Features
+
+* Add autonomous and internal projects support ([#59](https://github.com/GenomiqueENS/kenetre/issues/59)) ([e9c1bc1](https://github.com/GenomiqueENS/kenetre/commit/e9c1bc1b214c463cf6a9f50cd6b1d5ddf2e76125))
+* Add external instrument support. ([#60](https://github.com/GenomiqueENS/kenetre/issues/60)) ([61ec08b](https://github.com/GenomiqueENS/kenetre/commit/61ec08bd40fc298ded3f2909b360dc87553246de))
+
+
+### Bug Fixes
+
+* Fix read count and yield round method ([#58](https://github.com/GenomiqueENS/kenetre/issues/58)) ([0f67bea](https://github.com/GenomiqueENS/kenetre/commit/0f67bea9b6309c24d2a48faf55e42ba2eab1c375))
+* Fix requests to nanopore runs and projects. ([#56](https://github.com/GenomiqueENS/kenetre/issues/56)) ([74a21e1](https://github.com/GenomiqueENS/kenetre/commit/74a21e1140e953f122d3a1f7e870a34fca4ba01d))
+* fix TestNG tests ([#57](https://github.com/GenomiqueENS/kenetre/issues/57)) ([10236f7](https://github.com/GenomiqueENS/kenetre/commit/10236f77085ce33243ec9b60aa0a3866fc489ba8))
+* For projects submitted to FG, "developement" key was always set to false. ([#61](https://github.com/GenomiqueENS/kenetre/issues/61)) ([9298b71](https://github.com/GenomiqueENS/kenetre/commit/9298b714ac937637838f4ce8f1abc22385c9d1d9))
+* The "numéro national de structure" is not mandatory. ([#62](https://github.com/GenomiqueENS/kenetre/issues/62)) ([7771e96](https://github.com/GenomiqueENS/kenetre/commit/7771e96971d61be7974d0bf796205605c0cd0ee5))
+
+
+### Miscellaneous Chores
+
+* release 0.46.0 ([#63](https://github.com/GenomiqueENS/kenetre/issues/63)) ([67416b2](https://github.com/GenomiqueENS/kenetre/commit/67416b27161f2e5760779cf8f7d83d55431c739a))
+
+## [0.45.0](https://github.com/GenomiqueENS/kenetre/compare/v0.44.0...v0.45.0) (2026-07-28)
+
+
+### Features
+
+* uLimits can be set in the SimpleProcess API. Actually, only DockerJavaDocker and FallBackDocker implements it. ([#52](https://github.com/GenomiqueENS/kenetre/issues/52)) ([8438d3b](https://github.com/GenomiqueENS/kenetre/commit/8438d3bc28388d0da058b68c194d156560e3feb1))
+
+
+### Miscellaneous Chores
+
+* release 0.45.0 ([#53](https://github.com/GenomiqueENS/kenetre/issues/53)) ([6feb18f](https://github.com/GenomiqueENS/kenetre/commit/6feb18f426d646406f395c06907406d6de8ee026))
+
+## [0.44.0](https://github.com/GenomiqueENS/kenetre/compare/v0.42.0...v0.44.0) (2026-07-21)
+
+
+### Bug Fixes
+
+* Fix command line to get the list of docker images with latest Docker versions in fallback mode. ([#46](https://github.com/GenomiqueENS/kenetre/issues/46)) ([bae2488](https://github.com/GenomiqueENS/kenetre/commit/bae24889719b2907807f5510677c247218fb7833))
+
+
+### Miscellaneous Chores
+
+* release 0.44.0 ([#49](https://github.com/GenomiqueENS/kenetre/issues/49)) ([fe04de5](https://github.com/GenomiqueENS/kenetre/commit/fe04de52488e3536dc193ffbe08fda3427a44fcd))
+
 ## [0.42.0](https://github.com/GenomiqueENS/kenetre/compare/v0.41.0...v0.42.0) (2026-06-05)
 
 

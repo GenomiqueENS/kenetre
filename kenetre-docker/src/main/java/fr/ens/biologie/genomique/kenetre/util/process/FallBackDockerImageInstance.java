@@ -1,3 +1,27 @@
+/*
+ *                  Eoulsan development code
+ *
+ * This code may be freely distributed and modified under the
+ * terms of the GNU Lesser General Public License version 2.1 or
+ * later and CeCILL-C. This should be distributed with the code.
+ * If you do not have a copy, see:
+ *
+ *      http://www.gnu.org/licenses/lgpl-2.1.txt
+ *      http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.txt
+ *
+ * Copyright for this code is held jointly by the Genomic platform
+ * of the Institut de Biologie de l'École normale supérieure and
+ * the individual authors. These should be listed in @author doc
+ * comments.
+ *
+ * For more information on the Eoulsan project and its aims,
+ * or to join the Eoulsan Google group, visit the home page
+ * at:
+ *
+ *      http://outils.genomique.biologie.ens.fr/eoulsan
+ *
+ */
+
 package fr.ens.biologie.genomique.kenetre.util.process;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -35,6 +59,7 @@ public class FallBackDockerImageInstance extends AbstractSimpleProcess
       final List<String> commandLine,
       final File executionDirectory,
       final Map<String, String> environmentVariables,
+      final Map<String, String> uLimits,
       final File temporaryDirectory,
       final File stdoutFile,
       final File stderrFile,
@@ -54,6 +79,8 @@ public class FallBackDockerImageInstance extends AbstractSimpleProcess
             + executionDirectory
             + ", environmentVariables="
             + environmentVariables
+            + ", uLimits="
+            + uLimits
             + ", temporaryDirectory="
             + temporaryDirectory
             + ", stdoutFile="
@@ -101,6 +128,14 @@ public class FallBackDockerImageInstance extends AbstractSimpleProcess
     if (environmentVariables != null) {
       for (Map.Entry<String, String> e : environmentVariables.entrySet()) {
         command.add("--env");
+        command.add(e.getKey() + '=' + e.getValue());
+      }
+    }
+
+    // uLimits
+    if (uLimits != null) {
+      for (Map.Entry<String, String> e : uLimits.entrySet()) {
+        command.add("--ulimit");
         command.add(e.getKey() + '=' + e.getValue());
       }
     }

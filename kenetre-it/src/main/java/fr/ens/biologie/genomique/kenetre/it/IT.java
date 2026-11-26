@@ -848,6 +848,11 @@ public class IT {
     return this.itOutput;
   }
 
+  /**
+   * Get the maximum duration in minutes for the integration test.
+   *
+   * @return the maximum duration in minutes, or the default if the configuration is invalid
+   */
   public int getDurationMaxInMinutes() {
     final String value = getProperty(ITFactory.RUNTIME_IT_MAXIMUM_KEY);
 

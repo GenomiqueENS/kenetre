@@ -1,3 +1,27 @@
+/*
+ *                  Eoulsan development code
+ *
+ * This code may be freely distributed and modified under the
+ * terms of the GNU Lesser General Public License version 2.1 or
+ * later and CeCILL-C. This should be distributed with the code.
+ * If you do not have a copy, see:
+ *
+ *      http://www.gnu.org/licenses/lgpl-2.1.txt
+ *      http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.txt
+ *
+ * Copyright for this code is held jointly by the Genomic platform
+ * of the Institut de Biologie de l'École normale supérieure and
+ * the individual authors. These should be listed in @author doc
+ * comments.
+ *
+ * For more information on the Eoulsan project and its aims,
+ * or to join the Eoulsan Google group, visit the home page
+ * at:
+ *
+ *      http://outils.genomique.biologie.ens.fr/eoulsan
+ *
+ */
+
 package fr.ens.biologie.genomique.kenetre.db;
 
 import static java.util.Objects.requireNonNull;
@@ -23,6 +47,13 @@ import java.util.Map;
  */
 public class GenomiqueEnsApiClient extends ApiClient {
 
+  public static final String PROJECTS_ROUTE = "projets";
+  public static final String AUTONOMOUS_PROJECTS_ROUTE = "projets-autonomes";
+  public static final String LIBRARIES_ROUTE = "banques";
+  public static final String RUNS_ROUTE = "runs";
+  public static final String ILLUMINA_RUNS_ROUTE = "illumina-runs";
+  public static final String NANOPORE_RUNS_ROUTE = "nanopore-runs";
+
   //
   // API methods
   //
@@ -33,7 +64,7 @@ public class GenomiqueEnsApiClient extends ApiClient {
    * @param route the API route (e.g., "projets", "banques", "runs")
    * @param key the key to identify the specific object (e.g., project acronym, library name, run
    *     name)
-   * @return
+   * @return a {@link JsonObject} representing the fetched data
    * @throws IOException
    */
   public JsonObject fetchJsonObject(String route, String key) throws IOException {
@@ -48,6 +79,43 @@ public class GenomiqueEnsApiClient extends ApiClient {
 
     // Get the first element of the array
     return array.get(0).getAsJsonObject();
+  }
+
+  /**
+   * Fetch autonomous project information for all projects from the REST API.
+   *
+   * @return a list of {@link ProjectInfo} objects populated from the API response
+   * @throws IOException
+   */
+  public List<ProjectInfo> fetchAutonomousProjectInfos() throws IOException {
+
+    return fetchAutonomousProjectInfos(null);
+  }
+
+  /**
+   * Fetch autonomous project information for all projects from the REST API.
+   *
+   * @return a list of {@link ProjectInfo} objects populated from the API response
+   * @throws IOException
+   */
+  public List<ProjectInfo> fetchAutonomousProjectInfos(Map<String, String> filters)
+      throws IOException {
+
+    return fetchProjectInfos(AUTONOMOUS_PROJECTS_ROUTE, filters);
+  }
+
+  /**
+   * Fetch autonomous project information from the REST API.
+   *
+   * @param projectName the project acronym
+   * @return a {@link ProjectInfo} object populated from the API response
+   * @throws IOException if an I/O or HTTP error occurs
+   * @throws IllegalStateException if the project is not found
+   */
+  public ProjectInfo fetchAutonomousProjectInfo(String projectName) throws IOException {
+
+    // Fetch the JSON object
+    return fetchProjectInfo(fetchJsonObject(AUTONOMOUS_PROJECTS_ROUTE, projectName));
   }
 
   /**
@@ -69,7 +137,13 @@ public class GenomiqueEnsApiClient extends ApiClient {
    */
   public List<ProjectInfo> fetchProjectInfos(Map<String, String> filters) throws IOException {
 
-    String json = get("projets", filters);
+    return fetchProjectInfos(PROJECTS_ROUTE, filters);
+  }
+
+  private List<ProjectInfo> fetchProjectInfos(String route, Map<String, String> filters)
+      throws IOException {
+
+    String json = get(route, filters);
 
     // Create JSON object
     JsonArray array = this.gson.fromJson(json, JsonArray.class);
@@ -93,7 +167,7 @@ public class GenomiqueEnsApiClient extends ApiClient {
   public ProjectInfo fetchProjectInfo(String projectName) throws IOException {
 
     // Fetch the JSON object
-    return fetchProjectInfo(fetchJsonObject("projets", projectName));
+    return fetchProjectInfo(fetchJsonObject(PROJECTS_ROUTE, projectName));
   }
 
   private ProjectInfo fetchProjectInfo(JsonObject obj) {
@@ -118,7 +192,6 @@ public class GenomiqueEnsApiClient extends ApiClient {
 
     // Get lab info
     JsonObject labObj = obj.getAsJsonObject("laboratoire");
-
     // Get employer info
     JsonObject employerObj = obj.getAsJsonObject("chef_equipe");
 
@@ -136,13 +209,14 @@ public class GenomiqueEnsApiClient extends ApiClient {
         jsonToString(employerObj, "employeur"),
         jsonToString(obj, "statut"),
         jsonToInteger(obj, "annee_de_fin"),
-        labObj.get("indicateur_laboratoires").getAsString(),
-        labObj.get("commune").getAsString(),
-        labObj.get("code_postal").getAsString(),
-        labObj.get("numero_national_de_structure").getAsString(),
-        labObj.get("etablissement").getAsString(),
+        jsonToString(labObj, "indicateur_laboratoires"),
+        jsonToString(labObj, "commune"),
+        jsonToString(labObj, "code_postal"),
+        jsonToString(labObj, "numero_national_de_structure"),
+        jsonToString(labObj, "etablissement"),
         jsonToBoolean(obj, "prestation_fabrication_de_banque"),
         jsonToBoolean(obj, "prestation_sequencage"),
+        jsonToBoolean(obj, "run_en_autonomie"),
         jsonToString(obj, "prestation_analyse"));
   }
 
@@ -157,7 +231,7 @@ public class GenomiqueEnsApiClient extends ApiClient {
   public LibraryInfo fetchLibraryBatch(String libraryName) throws IOException {
 
     // Fetch the JSON object
-    JsonObject obj = fetchJsonObject("banques", libraryName);
+    JsonObject obj = fetchJsonObject(LIBRARIES_ROUTE, libraryName);
 
     return new LibraryInfo(
         jsonToString(obj, "banque_id"),
@@ -184,7 +258,7 @@ public class GenomiqueEnsApiClient extends ApiClient {
   public RunInfo fetchRunInfo(String runName, String projectName) throws IOException {
 
     // Fetch the JSON object
-    JsonObject obj = fetchJsonObject("runs", runName);
+    JsonObject obj = fetchJsonObject(RUNS_ROUTE, runName);
 
     // Check if acronyme is present for the run
     List<String> acronymes = jsonArrayToStringList(obj.getAsJsonArray("acronymes"));
@@ -206,10 +280,18 @@ public class GenomiqueEnsApiClient extends ApiClient {
         jsonToString(obj, "instrument_fg"));
   }
 
+  /**
+   * Fetch the percentage of flow cell usage for a given Illumina run and project.
+   *
+   * @param runName the name of the run
+   * @param projectName the name of the project
+   * @return the percentage of flow cell used by the project
+   * @throws IOException if the API request fails
+   */
   public double fetchIlluminaFlowcellPercentUsage(String runName, String projectName)
       throws IOException {
 
-    JsonObject obj = fetchJsonObject("illumina-runs", runName);
+    JsonObject obj = fetchJsonObject(ILLUMINA_RUNS_ROUTE, runName);
 
     long cluster_count_total = 0;
     long cluster_count_project = 0;
@@ -243,12 +325,20 @@ public class GenomiqueEnsApiClient extends ApiClient {
   public record IlluminaSample(
       String name, String description, int lane, boolean pairedEnd, List<String> fastqPaths) {}
 
+  /**
+   * Fetch the list of Illumina samples for a given run and project.
+   *
+   * @param runId the ID of the run
+   * @param projectName the name of the project
+   * @return the list of samples
+   * @throws IOException if the API request fails
+   */
   public List<IlluminaSample> fetchIlluminaSamples(String runId, String projectName)
       throws IOException {
 
     List<IlluminaSample> result = new ArrayList<>();
 
-    JsonObject runObj = fetchJsonObject("illumina-runs", runId);
+    JsonObject runObj = fetchJsonObject(ILLUMINA_RUNS_ROUTE, runId);
     var pairedEnd = runObj.get("read_count").getAsInt() > 1;
 
     // Get the project name used in the sample sheet
@@ -286,9 +376,16 @@ public class GenomiqueEnsApiClient extends ApiClient {
     return result;
   }
 
+  /**
+   * Fetch the metrics of an Illumina run.
+   *
+   * @param runName the name of the run
+   * @return the run metrics
+   * @throws IOException if the API request fails
+   */
   public RunMetrics fetchIlluminaRunMetrics(String runName) throws IOException {
 
-    JsonObject obj = fetchJsonObject("illumina-runs", runName);
+    JsonObject obj = fetchJsonObject(ILLUMINA_RUNS_ROUTE, runName);
 
     int cycleCount = obj.get("cycle_count").getAsInt();
     boolean pairedEnd = obj.get("read_count").getAsInt() == 2;
@@ -298,6 +395,7 @@ public class GenomiqueEnsApiClient extends ApiClient {
 
     String model = instrumentObj.get("model").getAsString();
     String fgModel = instrumentObj.get("model_fg").getAsString();
+    boolean external = instrumentObj.get("external").getAsBoolean();
 
     long readCount = 0L;
     long baseCount = 0L;
@@ -320,12 +418,20 @@ public class GenomiqueEnsApiClient extends ApiClient {
       }
     }
 
-    return new RunMetrics(cycleCount, pairedEnd, model, fgModel, readCount, baseCount, success);
+    return new RunMetrics(
+        cycleCount, pairedEnd, model, fgModel, external, readCount, baseCount, success);
   }
 
+  /**
+   * Fetch the metrics of a Nanopore run.
+   *
+   * @param runName the name of the run
+   * @return the run metrics
+   * @throws IOException if the API request fails
+   */
   public RunMetrics fetchNanoporeRunMetrics(String runName) throws IOException {
 
-    JsonObject obj = fetchJsonObject("nanopre-runs", runName);
+    JsonObject obj = fetchJsonObject(NANOPORE_RUNS_ROUTE, runName);
 
     int cycleCount = 0; // Not applicable for Nanopore runs
     boolean pairedEnd = false; // No paired-end mode for Nanopore runs
@@ -335,13 +441,15 @@ public class GenomiqueEnsApiClient extends ApiClient {
 
     String model = instrumentObj.get("model").getAsString();
     String fgModel = instrumentObj.get("model_fg").getAsString();
+    boolean external = instrumentObj.get("external").getAsBoolean();
 
-    JsonObject metricsObj = obj.getAsJsonObject("instrument");
+    JsonObject metricsObj = obj.getAsJsonObject("metrics");
 
     long readCount = metricsObj.get("total_read_count").getAsLong();
     long baseCount = metricsObj.get("total_base_count").getAsLong();
 
-    return new RunMetrics(cycleCount, pairedEnd, model, fgModel, readCount, baseCount, success);
+    return new RunMetrics(
+        cycleCount, pairedEnd, model, fgModel, external, readCount, baseCount, success);
   }
 
   //

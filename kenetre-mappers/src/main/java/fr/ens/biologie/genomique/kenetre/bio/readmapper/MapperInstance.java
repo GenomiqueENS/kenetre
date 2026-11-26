@@ -519,6 +519,11 @@ public class MapperInstance {
     }
   }
 
+  /**
+   * Get the version of the mapper binary.
+   *
+   * @return the version string of the installed mapper binary
+   */
   public String getBinaryVersion() {
 
     if (!this.mapperInstalled) {}
