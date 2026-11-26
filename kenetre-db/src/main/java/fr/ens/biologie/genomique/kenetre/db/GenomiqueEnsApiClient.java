@@ -322,7 +322,8 @@ public class GenomiqueEnsApiClient extends ApiClient {
     return (double) cluster_count_project / cluster_count_total;
   }
 
-  public record IlluminaSample(String name, String description, int lane, boolean pairedEnd) {}
+  public record IlluminaSample(
+      String name, String description, int lane, boolean pairedEnd, List<String> fastqPaths) {}
 
   /**
    * Fetch the list of Illumina samples for a given run and project.
@@ -368,7 +369,8 @@ public class GenomiqueEnsApiClient extends ApiClient {
               sampleObj.get("sample_id").getAsString(),
               sampleObj.get("description").getAsString(),
               sampleObj.get("lane").getAsInt(),
-              pairedEnd));
+              pairedEnd,
+              jsonArrayToStringList(sampleObj.getAsJsonArray("fastq_files"))));
     }
 
     return result;

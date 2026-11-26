@@ -68,6 +68,13 @@
   </licenses>
 
   <repositories>
+    <!-- Force usage of Maven central before other repositories -->
+    <repository>
+      <id>central</id>
+      <url>https://repo.maven.apache.org/maven2</url>
+      <releases><enabled>true</enabled></releases>
+      <snapshots><enabled>false</enabled></snapshots>
+    </repository>
     <repository>
       <snapshots>
         <enabled>true</enabled>

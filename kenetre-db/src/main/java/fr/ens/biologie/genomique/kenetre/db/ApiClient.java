@@ -250,7 +250,7 @@ public class ApiClient {
     try {
       HttpResponse<String> response =
           this.httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-      checkHttpStatusCode(request, response, Set.of(200, 201));
+      checkHttpStatusCode(request, response, Set.of(200, 201, 202));
       return response.body();
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
