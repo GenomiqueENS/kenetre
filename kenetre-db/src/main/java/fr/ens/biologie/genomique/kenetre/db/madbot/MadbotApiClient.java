@@ -7,6 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fr.ens.biologie.genomique.kenetre.db.ApiClient;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 
 public class MadbotApiClient extends ApiClient {
@@ -567,7 +568,9 @@ public class MadbotApiClient extends ApiClient {
 
     List<Map<String, String>> data = new ArrayList<>();
     for (var dl : dataList) {
-      data.add(Map.of("external_id", dl.fastqPath, "name", dl.sampleUuid.toString()));
+      data.add(
+          Map.of(
+              "external_id", dl.fastqPath, "name", Path.of(dl.fastqPath).getFileName().toString()));
     }
 
     var responseBody =
